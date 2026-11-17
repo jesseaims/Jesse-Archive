@@ -1,9 +1,10 @@
 [package]
 name = "jesse_archive"
-version = "1.0.3"
+version = "1.1.1"
 description = "Jesse's Archive — local encrypted password manager"
 authors = ["Jesse's Archive"]
 edition = "2021"
+default-run = "jesse_archive"
 
 [lib]
 name = "jesse_archive_lib"
@@ -15,6 +16,7 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-single-instance = "2"
+tauri-plugin-global-shortcut = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 base64 = "0.22"

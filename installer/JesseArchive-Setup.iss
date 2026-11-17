@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.0.3"
+﻿#define AppVersion "1.1.1"
 #define AppName "Jesse's Archive"
 
 [Setup]
@@ -33,10 +33,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 ; Non viene installato due volte e non rimane nella cartella programmi.
 Source: "payload\JesseArchive.msi"; Flags: dontcopy noencryption
 
+[Run]
+Filename: "{code:GetInstalledApp}"; Parameters: "--browser-setup"; Description: "Configura le estensioni dei browser (collegamento automatico e caricamento guidato)"; Flags: postinstall nowait skipifsilent runasoriginaluser
+
 [Code]
 var
   MsiNeedsRestart: Boolean;
   InstallDirPage: TInputDirWizardPage;
+
+function GetInstalledApp(Param: String): String;
+begin
+  Result := AddBackslash(Trim(InstallDirPage.Values[0])) + 'jesse_archive.exe';
+end;
 
 procedure InitializeWizard();
 begin

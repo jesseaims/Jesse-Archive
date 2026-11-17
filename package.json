@@ -1,14 +1,15 @@
 {
   "name": "jesse-archive-tauri",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "prebuild": "node scripts/generate-commits.mjs"
+    "prebuild": "node scripts/generate-commits.mjs",
+    "test:browser": "node --test tests/browser-extension.test.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
@@ -21,6 +22,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^31.0.1",
     "typescript": "~5.7.3",
     "vite": "^6.0.0"
   }

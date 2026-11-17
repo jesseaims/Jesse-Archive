@@ -8,6 +8,9 @@ coverage/
 # Rust / Tauri
 src-tauri/target/
 target/
+src-tauri/resources/*.exe
+src-tauri/resources/browser-bundle.json
+src-tauri/gen/
 
 # Generated installer and local build artifacts
 installer/payload/*.msi

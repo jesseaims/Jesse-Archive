@@ -1,0 +1,84 @@
+/* Native channel is never exposed to page scripts or content-script messages. */
+const api = globalThis.browser || chrome;
+let port;
+let target = null;
+let retry;
+function connect() {
+  if (port) return;
+  port = api.runtime.connectNative('com.jessearchive.browser');
+  port.onMessage.addListener(message => { void receive(message).catch(() => {}); });
+  port.onDisconnect.addListener(() => {
+    void api.runtime.lastError;
+    port = null; target = null;
+    clearTimeout(retry); retry = setTimeout(connect, 10000);
+  });
+}
+function send(message) { port?.postMessage(message); }
+async function receive(message) {
+  if (message.kind === 'context') {
+    const win = await api.windows.getLastFocused();
+    if (!win.focused) return;
+    const [tab] = await api.tabs.query({active: true, windowId: win.id});
+    if (!tab?.id || !tab.url?.startsWith('https://')) return;
+    const frames = await api.scripting.executeScript({target: {tabId: tab.id, allFrames: true}, func: captureContext});
+    const frame = frames.find(f => f.result?.focused);
+    if (!frame || new URL(frame.result.url).origin !== new URL(tab.url).origin) return;
+    target = {request: message.request, tabId: tab.id, frameId: frame.frameId, url: frame.result.url, top: tab.url, captured: Date.now()};
+    send({kind: 'context', request: target.request, url: target.url, top: target.top});
+  }
+  if (message.kind === 'fill') {
+    const saved = target; target = null;
+    try {
+      if (!saved || saved.request !== message.request || saved.url !== message.url || saved.top !== message.top || Date.now() - saved.captured > 120000) throw Error('Richiesta scaduta: richiama il pannello dal campo di accesso.');
+      const tab = await api.tabs.get(saved.tabId);
+      if (tab.url !== saved.top || !tab.active) throw Error('La pagina è cambiata. Richiama il pannello.');
+      const results = await api.scripting.executeScript({target: {tabId: saved.tabId, frameIds: [saved.frameId]}, func: fillFields, args: [saved.url, message.username || '', message.password || '']});
+      const result = results[0]?.result;
+      if (!result?.ok) throw Error(result?.message || 'Nessun campo compilabile trovato.');
+      await api.windows.update(tab.windowId, {focused: true});
+      send({kind: 'filled', request: message.request, ok: true, message: result.message});
+    } catch (error) { send({kind: 'filled', request: message.request, ok: false, message: error.message}); }
+  }
+}
+function captureContext() {
+  const el = document.activeElement;
+  const editable = el instanceof HTMLInputElement && ['text','email','password','tel'].includes(el.type);
+  // Save only a DOM reference in an isolated extension world, never any secret.
+  globalThis.__jesseArchiveField = editable ? el : null;
+  return {focused: document.hasFocus() && editable, url: location.href};
+}
+function fillFields(expectedUrl, username, password) {
+  if (location.href !== expectedUrl || location.protocol !== 'https:') return {ok:false, message:'La pagina è cambiata.'};
+  const focused = globalThis.__jesseArchiveField;
+  delete globalThis.__jesseArchiveField;
+  if (!(focused instanceof HTMLInputElement) || !focused.isConnected) return {ok:false, message:'Seleziona nuovamente il campo di accesso.'};
+  const visible = el => !el.disabled && !el.readOnly && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+  if (!visible(focused)) return {ok:false, message:'Il campo selezionato non è modificabile.'};
+  const scope = focused.form || document;
+  const inputs = [...scope.querySelectorAll('input')].filter(visible);
+  const passwords = inputs.filter(el => el.type === 'password' && el.autocomplete !== 'new-password');
+  if (passwords.length > 1 || focused.autocomplete === 'new-password') return {ok:false, message:'Modulo ambiguo o registrazione: usa la copia manuale dall’app.'};
+  const passwordField = focused.type === 'password' ? focused : passwords[0];
+  const texts = inputs.filter(el => ['text','email','tel'].includes(el.type) && !/one-time-code/.test(el.autocomplete));
+  const usernameField = focused.type !== 'password' ? focused : texts.find(el => el.autocomplete === 'username') || texts.filter(el => (el.compareDocumentPosition(passwordField) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0).at(-1);
+  if (!passwordField && (!usernameField || !username)) return {ok:false, message:'Nessuna credenziale adatta al campo selezionato.'};
+  if (passwordField && !password) return {ok:false, message:'Questo account non ha una password salvata.'};
+  const setValue = (el, value) => {
+    el.focus(); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, value);
+    el.dispatchEvent(new Event('input', {bubbles:true})); el.dispatchEvent(new Event('change', {bubbles:true}));
+  };
+  if (usernameField && username) setValue(usernameField, username);
+  // Resolve again after username input handlers: never write to a detached/replaced password field.
+  if (passwordField) {
+    if (!passwordField.isConnected || !visible(passwordField) || location.href !== expectedUrl) return {ok:false, message:'Il modulo è cambiato: richiama il pannello sul campo password.'};
+    if (usernameField) { usernameField.dispatchEvent(new KeyboardEvent('keydown', {key:'Tab',bubbles:true})); usernameField.dispatchEvent(new KeyboardEvent('keyup', {key:'Tab',bubbles:true})); }
+    setValue(passwordField, password);
+  }
+  return {ok:true, message:passwordField ? 'Credenziali inserite. Il login non è stato inviato.' : 'Username inserito. Continua sul sito e richiama il pannello per la password.'};
+}
+api.action.onClicked.addListener(() => {
+  connect(); send({kind:'open'});
+});
+api.runtime.onStartup.addListener(connect);
+api.runtime.onInstalled.addListener(connect);
+connect();

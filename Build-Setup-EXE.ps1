@@ -75,6 +75,9 @@ $iss = Join-Path $project 'installer\JesseArchive-Setup.iss'
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup ha fallito con codice $LASTEXITCODE" }
 $exe = Join-Path $outFolder 'JesseArchive-Setup.exe'
 if (-not (Test-Path $exe)) { throw "Setup .exe non creato nel percorso atteso: $exe" }
+Compress-Archive -Path (Join-Path $project 'browser-extension/chromium/*') -DestinationPath (Join-Path $outFolder 'JesseArchive-Chromium.zip') -Force
+Compress-Archive -Path (Join-Path $project 'browser-extension/firefox/*') -DestinationPath (Join-Path $outFolder 'JesseArchive-Firefox-unsigned.zip') -Force
+Copy-Item -LiteralPath (Join-Path $project 'BROWSER-INTEGRATION.md') -Destination (Join-Path $outFolder 'BROWSER-INTEGRATION.md') -Force
 Write-Host "`nSetup generato: $exe" -ForegroundColor Green
 Write-Host 'ATTENZIONE: collaudare installazione, aggiornamento e disinstallazione offline su VM/PC di prova.' -ForegroundColor Yellow
 Write-Host 'La firma digitale non è inclusa: Windows SmartScreen può mostrare un avviso.' -ForegroundColor Yellow

@@ -1,5 +1,10 @@
 [
   {
+    "hash": "4cbfb98",
+    "date": "2026-11-17",
+    "subject": "feat: add offline news and commit history for beta 1.0.3"
+  },
+  {
     "hash": "6e769ab",
     "date": "2026-11-17",
     "subject": "git: 📝 Documented reconstructed commit provenance"

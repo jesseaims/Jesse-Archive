@@ -33,11 +33,20 @@ if (-not $SkipNpmInstall) {
 }
 Run-Step 'Test Rust e fixture legacy' { cargo test --manifest-path 'src-tauri/Cargo.toml' }
 Run-Step 'Verifica TypeScript e build frontend' { npm run build }
+Run-Step 'Test compilazione campi browser' { npm run test:browser }
+Run-Step 'Preparazione estensioni browser' { node scripts/package-browser-extension.mjs }
+Run-Step 'Build componente Native Messaging' { cargo build --release --manifest-path 'src-tauri/Cargo.toml' --bin jesse_browser_host }
+Run-Step 'Test canale Native Messaging' { node --test tests/browser-host.test.mjs }
+New-Item -ItemType Directory -Force -Path 'src-tauri/resources' | Out-Null
+Copy-Item -LiteralPath 'src-tauri/target/release/jesse_browser_host.exe' -Destination 'src-tauri/resources/jesse-browser-host.exe' -Force
+$browserBundle = '{"bundle":{"resources":{"resources/jesse-browser-host.exe":"jesse-browser-host.exe","../browser-extension/chromium/":"browser-extension/chromium/","../browser-extension/firefox/":"browser-extension/firefox/","../BROWSER-INTEGRATION.md":"browser-extension/BROWSER-INTEGRATION.md"}}}'
+$browserBundlePath = Join-Path $PSScriptRoot 'src-tauri/resources/browser-bundle.json'
+[System.IO.File]::WriteAllText($browserBundlePath, $browserBundle, (New-Object System.Text.UTF8Encoding($false)))
 if ($Formato -eq 'exe' -or $Formato -eq 'both') {
-    Run-Step 'Creazione setup EXE NSIS con WebView2 OFFLINE' { npm run tauri -- build --bundles nsis }
+    Run-Step 'Creazione setup EXE NSIS con WebView2 OFFLINE' { npm run tauri -- build --bundles nsis --config $browserBundlePath }
 }
 if ($Formato -eq 'msi' -or $Formato -eq 'both') {
-    Run-Step 'Creazione MSI con WebView2 OFFLINE' { npm run tauri -- build --bundles msi }
+    Run-Step 'Creazione MSI con WebView2 OFFLINE' { npm run tauri -- build --bundles msi --config $browserBundlePath }
 }
 Write-Host "`nPacchetti creati in src-tauri\target\release\bundle\" -ForegroundColor Green
 Get-ChildItem 'src-tauri/target/release/bundle' -Recurse -File -Include '*.exe','*.msi' |
