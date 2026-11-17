@@ -1,0 +1,34 @@
+[package]
+name = "jesse_archive"
+version = "1.0.0"
+description = "Jesse's Archive — local encrypted password manager"
+authors = ["Jesse's Archive"]
+edition = "2021"
+
+[lib]
+name = "jesse_archive_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+aes-gcm = "0.10"
+scrypt = "0.11"
+rand = "0.8"
+zeroize = "1.8"
+sha1 = "0.10"
+sha2 = "0.10"
+hmac = "0.12"
+data-encoding = "2.6"
+regex = "1.11"
+url = "2.5"
+csv = "1.3"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"], default-features = false }
+rfd = "0.15"
+hex = "0.4"

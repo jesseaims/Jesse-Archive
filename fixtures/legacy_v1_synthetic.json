@@ -1,0 +1,26 @@
+{
+  "password": "TestOnly-Password-2026",
+  "expected_dek_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "expected_kdf_hex": "ca462bce0562a3d9756987813437fdfef9a15d8d05b238c08fd214b54e017c6a",
+  "header": {
+    "v": 1,
+    "salt": "AAECAwQFBgcICQoLDA0ODw==",
+    "wrap": "AAECAwQFBgcICQoL+8DPFSw88Z/oZX9QAXZbvEMsXUkn0mY6MSqAjtHQVqT2op5vyhZYz0+5s4zLjk77",
+    "rsalt": "AAECAwQFBgcICQoLDA0ODw==",
+    "rwrap": "AAECAwQFBgcICQoL+8DPFSw88Z/oZX9QAXZbvEMsXUkn0mY6MSqAjtHQVqT2op5vyhZYz0+5s4zLjk77",
+    "hv": 1.0,
+    "data": "AAECAwQFBgcICQoLPCC/b6CIsTm3YczWnclaHeKl9EOfCTsPGl3F3kBFIJBnf8KYyrNhuk6EJLCkpwpcizUF+T+ygeAf7Fc1OMGGi4RIrxS0onkUbDCIVM+/Isga+awWAgo9D47fpOwD0tj4v5c1iccq6iC+KRKSahZNFspFWIvQ9Qm6b5A7qd2CD3fIcDrmhe/7LnX2o8uwAGH97dYHhlcExAyf"
+  },
+  "expected_data": {
+    "items": [],
+    "passwords": [],
+    "folders": [],
+    "deleted": {},
+    "settings_upd": 0,
+    "settings": {
+      "autolock": 5,
+      "clip": 30,
+      "old_days": 180
+    }
+  }
+}
