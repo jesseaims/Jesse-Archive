@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'interface-zoom',
+    addedAt: '2026-11-17T20:50:56+01:00',
+    version: 'Beta 1.1.11',
+    title: 'Zoom dell’interfaccia',
+    description:
+      'Ingrandisci o riduci l’app con Ctrl + + e Ctrl + − (oppure Ctrl + F12 / Ctrl + F11 o Ctrl + rotella del mouse) e torna al 100% con Ctrl + 0. Lo trovi anche in Impostazioni → Aspetto: vale per tutte le finestre e viene ricordato su questo PC.',
+    icon: 'sparkles',
+  },
+  {
     id: 'empty-trash',
     addedAt: '2026-11-17T20:36:53+01:00',
     version: 'Beta 1.1.10',
