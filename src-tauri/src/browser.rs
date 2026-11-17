@@ -47,8 +47,54 @@ pub fn host(value: &str) -> Option<String> {
 fn matching(item: &Value, url: &str) -> bool {
     item["type"] == "login"
         && item["trashed"].is_null()
-        && host(item["f"]["url"].as_str().unwrap_or("")) == host(url)
-        && host(url).is_some()
+        && same_account_site(item["f"]["url"].as_str().unwrap_or(""), url)
+}
+// Normalize saved addresses, but require an explicit HTTPS URL from the browser.
+// This is used for account suggestions AND the final credential release. The
+// stricter frame/top-page origin check intentionally keeps using `host` above.
+fn account_url(value: &str, saved: bool) -> Option<url::Url> {
+    let value = value.trim();
+    if value.is_empty() || value.chars().any(char::is_control) {
+        return None;
+    }
+    let normalized = if saved && !value.contains("://") {
+        if value.starts_with("//") {
+            format!("https:{value}")
+        } else {
+            format!("https://{value}")
+        }
+    } else {
+        value.to_string()
+    };
+    let url = url::Url::parse(&normalized).ok()?;
+    (url.scheme() == "https"
+        && url.username().is_empty()
+        && url.password().is_none()
+        && url.host_str().is_some())
+    .then_some(url)
+}
+fn same_account_site(saved: &str, target: &str) -> bool {
+    let (Some(saved), Some(target)) = (account_url(saved, true), account_url(target, false)) else {
+        return false;
+    };
+    if saved.port_or_known_default() != target.port_or_known_default() {
+        return false;
+    }
+    let saved_host = saved.host_str().unwrap().trim_end_matches('.');
+    let target_host = target.host_str().unwrap().trim_end_matches('.');
+    if saved_host == target_host {
+        return true;
+    }
+    if !matches!(saved.host(), Some(url::Host::Domain(_)))
+        || !matches!(target.host(), Some(url::Host::Domain(_)))
+    {
+        return false;
+    }
+    // Includes private suffixes: alice.github.io and bob.github.io remain distinct.
+    match (psl::domain_str(saved_host), psl::domain_str(target_host)) {
+        (Some(a), Some(b)) => a == b,
+        _ => false,
+    }
 }
 fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Result<(), String> {
     let bridge = app.state::<Bridge>();
@@ -411,7 +457,6 @@ mod tests {
             "https://evil-example.com",
             "http://example.com",
             "https://example.com@evil.test",
-            "https://sub.example.com",
             "https://example.com:8443",
         ] {
             assert!(!matching(&item, url));
@@ -419,5 +464,60 @@ mod tests {
         let mut trashed = item;
         trashed["trashed"] = json!(123);
         assert!(!matching(&trashed, "https://example.com"));
+    }
+    #[test]
+    fn epic_accounts_match_bare_domains_and_store_login_subdomains() {
+        for saved in [
+            "epicgames.com",
+            "https://store.epicgames.com/",
+            "  EPICGAMES.COM  ",
+            "https://www.epicgames.com/id/login",
+        ] {
+            let item = json!({"type":"login","f":{"url":saved}});
+            for target in [
+                "https://www.epicgames.com/id/login",
+                "https://accounts.epicgames.com/login",
+                "https://store.epicgames.com/en-US/",
+            ] {
+                assert!(matching(&item, target), "{saved} -> {target}");
+            }
+        }
+        // Broad account suggestions must not broaden the frame origin gate.
+        assert_ne!(
+            host("https://store.epicgames.com"),
+            host("https://accounts.epicgames.com")
+        );
+    }
+    #[test]
+    fn related_site_matching_respects_suffix_boundaries_and_protocols() {
+        for (saved, target) in [
+            ("epicgames.com", "https://epicgames.com.attacker.com"),
+            ("epicgames.com", "https://fakeepicgames.com"),
+            ("epicgames.com", "http://www.epicgames.com"),
+            ("epicgames.com", "https://epicgames.com@attacker.com"),
+            ("epicgames.com", "https://epicgames.com:8443"),
+            ("https://alice.github.io", "https://bob.github.io"),
+            ("https://alice.blogspot.com", "https://bob.blogspot.com"),
+            ("https://example.co.uk", "https://other.co.uk"),
+            ("co.uk", "https://example.co.uk"),
+            ("", "https://epicgames.com"),
+            ("https://user:secret@epicgames.com", "https://epicgames.com"),
+            ("epicgames.com", "epicgames.com"),
+            ("https://127.0.0.1", "https://127.0.0.2"),
+        ] {
+            assert!(!same_account_site(saved, target), "{saved} -> {target}");
+        }
+        assert!(same_account_site(
+            "https://shop.example.co.uk",
+            "https://login.example.co.uk"
+        ));
+        assert!(same_account_site(
+            "https://a.alice.github.io",
+            "https://alice.github.io"
+        ));
+        assert!(same_account_site(
+            "https://127.0.0.1:443",
+            "https://127.0.0.1"
+        ));
     }
 }

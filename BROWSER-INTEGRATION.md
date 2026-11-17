@@ -17,7 +17,7 @@ Il pulsante nella barra strumenti dell'estensione apre lo stesso pannello, ma pe
 
 ## Utilizzo
 
-- Salva nell'account di JesseArchive l'URL HTTPS del sito di accesso. Sono suggeriti solo gli account del dominio esatto (con o senza `www`); ad esempio `accounts.google.com` richiede quell'URL, non `google.com`.
+- Salva nell'account di JesseArchive l'URL HTTPS oppure il dominio senza protocollo, ad esempio `epicgames.com`. La ricerca comprende i sottodomini dello stesso sito: `store.epicgames.com`, `www.epicgames.com` e `accounts.epicgames.com` possono proporre gli stessi account. Il dominio viene confrontato usando la Public Suffix List inclusa nell'app, anche per suffissi come `co.uk` e servizi come `github.io`: `alice.github.io` non viene confuso con `bob.github.io`. La pagina aperta deve essere HTTPS e la porta deve corrispondere.
 - Seleziona il campo username o password nel sito e premi **Ctrl+Alt+J**. Puoi cambiare la combinazione nelle Impostazioni. Se è già occupata viene mostrato un errore e rimane quella precedente.
 - Se il vault è bloccato, inserisci la password principale nella mini finestra nativa. Non viene inviata al browser.
 - Cerca e scorri gli account con il mouse o ↑/↓. Premi Invio o fai clic sull'account per inserire le credenziali. Esc annulla.
