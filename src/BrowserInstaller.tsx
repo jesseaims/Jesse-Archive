@@ -183,6 +183,17 @@ export default function BrowserInstaller() {
         <p className="helper">
           La conferma iniziale del browser è necessaria per questa distribuzione locale.
         </p>
+        <button
+          className="primary browser-finish"
+          disabled={busy}
+          onClick={() => {
+            setError('');
+            void invoke('browser_setup_finish').catch((e) => setError(String(e)));
+          }}
+        >
+          <Check size={16} />
+          Ho installato l’estensione: apri Jesse’s Archive
+        </button>
       </footer>
     </main>
   );

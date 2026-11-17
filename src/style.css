@@ -572,15 +572,17 @@ p {
 }
 .two-cols,
 .settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.settings-grid {
-  align-items: start;
+  /* Masonry-style columns: each panel sits right below the previous one, so short
+     panels (Aspetto, Desktop) no longer leave empty space next to tall ones. */
+  column-count: 2;
+  column-gap: 20px;
 }
 .settings-panel {
   min-width: 0;
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 20px;
 }
 .form-stack {
   padding: 23px 25px;
@@ -1027,9 +1029,11 @@ p {
   .heading-row h1 {
     font-size: 25px;
   }
-  .two-cols,
-  .settings-grid {
+  .two-cols {
     grid-template-columns: 1fr;
+  }
+  .settings-grid {
+    column-count: 1;
   }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2403,6 +2407,11 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 }
 .browser-wizard footer strong {
   font-size: 13px;
+}
+.browser-wizard footer .browser-finish {
+  align-self: flex-start;
+  margin-top: 8px;
+  gap: 7px;
 }
 .news-entry {
   display: grid;

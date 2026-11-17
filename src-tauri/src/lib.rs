@@ -326,7 +326,8 @@ pub fn run() {
             browser::browser_open_extensions,
             browser_installer::browser_setup_status,
             browser_installer::browser_setup_open,
-            browser_installer::browser_setup_show
+            browser_installer::browser_setup_show,
+            browser_installer::browser_setup_finish
         ])
         .run(tauri::generate_context!())
         .expect("Tauri application failed");
