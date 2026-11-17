@@ -6,3 +6,5 @@ export async function saveFile(name:string,text:string){return invoke<boolean>('
 export async function copyText(text:string){return invoke<void>('copy_secret',{text})}
 
 export async function clearSecretIfUnchanged(expected:string){return invoke<void>('clear_secret_if_unchanged',{expected})}
+
+export async function pickIconData(){return invoke<string|null>('choose_icon_data')}

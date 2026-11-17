@@ -8,7 +8,7 @@ export type State={items:Item[];passwords:Password[];folders:Folder[];groups?:Re
 export type Status={exists:boolean;unlocked:boolean;path:string};
 export type Page='all'|'favorites'|'passwords'|'security'|'generator'|'trash'|'settings'|'groups'|'folder'|'login'|'passkey'|'note'|'card'|'personal'|'crypto'|'shared';
 export const categories:Record<Category,{label:string;fields:string[];secret?:string}>={
-login:{label:'Accesso',fields:['url','username','password','totp'],secret:'password'},
+login:{label:'Account',fields:['url','username','password','totp'],secret:'password'},
 card:{label:'Carta',fields:['holder','number','expiry','cvv','pin'],secret:'pin'},
 note:{label:'Nota protetta',fields:[]},
 personal:{label:'Identità',fields:['fullname','email','phone','address','city','zip','country','birthday']},

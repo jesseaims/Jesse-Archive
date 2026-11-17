@@ -12,8 +12,8 @@ if ($LASTEXITCODE -ne 0) { throw 'cargo test fallito. Non procedere con vault re
 Write-Host '[3/4] TypeScript e Vite'
 npm run build
 if ($LASTEXITCODE -ne 0) { throw 'Build TypeScript fallita' }
-Write-Host '[4/4] Bundle Windows MSI/NSIS'
-npm run tauri build
+Write-Host '[4/4] Installer Windows MSI'
+npm run tauri -- build --bundles msi
 if ($LASTEXITCODE -ne 0) { throw 'Build Tauri fallita' }
 Write-Host 'Build conclusa. Controlla: src-tauri/target/release/bundle' -ForegroundColor Green
 Write-Host 'ATTENZIONE: esegui regressione funzionale su vault sintetici prima di utilizzare dati reali.' -ForegroundColor Yellow

@@ -17,7 +17,7 @@ npm install
 cargo test --manifest-path src-tauri/Cargo.toml
 npm run build
 npm run tauri dev
-npm run tauri build
+npm run tauri -- build --bundles msi
 ```
 
 I bundle MSI/NSIS verranno prodotti in `src-tauri/target/release/bundle/` dopo una compilazione completata.

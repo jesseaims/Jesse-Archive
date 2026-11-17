@@ -1,0 +1,22 @@
+/** Complete visual palette. Values are stored inside the encrypted vault settings. */
+export const paletteKeys=[
+ ['accent','Colore principale'],['accentText','Testo sui pulsanti'],['background','Sfondo generale'],['sidebar','Barra laterale'],['surface','Riquadri e schede'],['modal','Finestre e dialoghi'],['input','Campi di inserimento'],['topbar','Barra superiore'],['border','Bordi e divisori'],['text','Testo principale'],['muted','Testo secondario'],['hover','Elementi al passaggio'],['selected','Voce selezionata'],['scroll','Barra di scorrimento']
+] as const;
+export type PaletteKey=typeof paletteKeys[number][0];
+export type Palette=Record<PaletteKey,string>;
+export const DEFAULT_CUSTOM:Palette={accent:'#a97ee0',accentText:'#ffffff',background:'#0d0e16',sidebar:'#10111b',surface:'#171823',modal:'#1a1b29',input:'#20212e',topbar:'#10111b',border:'#292a39',text:'#e9eaf5',muted:'#9396ab',hover:'#27283a',selected:'#27203f',scroll:'#66617e'};
+export const palettes:Record<string,Palette>={
+ night:DEFAULT_CUSTOM,
+ amethyst:{...DEFAULT_CUSTOM,accent:'#9966cc',background:'#141020',sidebar:'#1c152b',surface:'#241b35',modal:'#2a203e',input:'#312642',topbar:'#1e172d',border:'#473653',text:'#f6efff',muted:'#b7a7c6',hover:'#39294e',selected:'#432f62',scroll:'#8a6ca1'},
+ ocean:{...DEFAULT_CUSTOM,accent:'#4b9cf0',background:'#081522',sidebar:'#0b2133',surface:'#112a3c',modal:'#17344a',input:'#1a374b',topbar:'#0d2639',border:'#284759',text:'#e4f5ff',muted:'#9ab8cb',hover:'#204459',selected:'#1d4d70',scroll:'#5084a6'},
+ forest:{...DEFAULT_CUSTOM,accent:'#43bd83',background:'#091a16',sidebar:'#10251e',surface:'#152d24',modal:'#1d352c',input:'#233e32',topbar:'#122920',border:'#345548',text:'#e9fff4',muted:'#9ab7a8',hover:'#294b3b',selected:'#265841',scroll:'#5e9177'},
+ sunset:{...DEFAULT_CUSTOM,accent:'#f08750',background:'#21130f',sidebar:'#301b17',surface:'#3c241f',modal:'#432a26',input:'#4b3028',topbar:'#321e19',border:'#674338',text:'#fff0e7',muted:'#d0aa9f',hover:'#56332a',selected:'#67402f',scroll:'#a5775b'},
+ rose:{...DEFAULT_CUSTOM,accent:'#e36caa',background:'#1e101b',sidebar:'#2c1828',surface:'#352032',modal:'#3e2738',input:'#482e40',topbar:'#2c1b2b',border:'#65435e',text:'#fff0fa',muted:'#c8a4bd',hover:'#53364b',selected:'#633457',scroll:'#a16b8d'},
+ graphite:{...DEFAULT_CUSTOM,accent:'#93a4c1',background:'#11151b',sidebar:'#1b212a',surface:'#242b36',modal:'#2c3440',input:'#323b48',topbar:'#1f2631',border:'#454f5e',text:'#edf2f8',muted:'#a5afbe',hover:'#3b4554',selected:'#414b5f',scroll:'#7e8b9d'},
+ mint:{...DEFAULT_CUSTOM,accent:'#24c7ad',background:'#071b1a',sidebar:'#0a2925',surface:'#123732',modal:'#193f39',input:'#204a43',topbar:'#0d2f2a',border:'#2d5e54',text:'#e2fff8',muted:'#93c5b8',hover:'#24564b',selected:'#1d6151',scroll:'#568e81'}
+};
+const hex=/^#[0-9a-fA-F]{6}$/;
+export function applyPalette(theme?:{preset:string;custom?:Record<string,string>}){
+ const p=theme?.preset==='custom'?{...DEFAULT_CUSTOM,...theme.custom}:palettes[theme?.preset||'night']||DEFAULT_CUSTOM;
+ for(const [key] of paletteKeys){const value=p[key];document.documentElement.style.setProperty('--ui-'+key,hex.test(value)?value:DEFAULT_CUSTOM[key]);}
+}
