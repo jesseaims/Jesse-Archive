@@ -47,7 +47,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
 | Ridurre debito di organizzazione | `core.rs`/`App.tsx` monolitici e CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
 | Chiarire codice storico e contratti duplicati | Mantenere distinzione Python/Rust, `touch`/`show`, gruppi UI vs matching di sicurezza e sorgente JS vs copie generate |
-| Consolidare processo di release | Valutare pin toolchain, CI, firma, controlli versione e prove offline; non introdurre dipendenze/processi senza necessità |
+| Consolidare processo di release | CI presente (tipi, build frontend, test Rust/Node, host nativo); restano da valutare pin toolchain, clippy, firma, controlli versione e prove offline |
 
 Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e background hanno ruoli di packaging, il client storico è separatamente avviabile. “Apparentemente duplicato” non autorizza la rimozione.
 
@@ -58,7 +58,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 - Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati.
 - Compatibilità del prodotto completo su sistemi non Windows e minima versione Rust/browser realmente supportata; manifest e codice condizionale non bastano a certificarla.
 - Resistenza a interruzioni di scrittura, più istanze/writer esterni e servizi cloud che generano copie con timestamp inconsistente.
-- Risultati correnti di fmt/clippy e copertura aggiuntiva: non eseguiti in questa attività, nessun gate CI presente nella baseline.
+- Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.
 
 ## Mantenimento dello stato
 

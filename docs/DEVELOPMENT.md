@@ -6,6 +6,8 @@ Baseline `1f09624`, Beta 1.1.4, analisi del 17 novembre 2026. Leggere prima [AGE
 
 Il percorso di distribuzione completo è Windows x64 con Rust MSVC, Visual Studio Build Tools C++ e Windows SDK, Node/npm, WebView2 e Inno Setup 6 o 7. La build Tauri MSI usa gli strumenti WiX gestiti dalla CLI/cache: al primo utilizzo possono servire download. Non dichiarare offline l'ambiente di compilazione.
 
+Se il repository è stato creato da un altro account Windows (per esempio la sandbox di Codex), Git può rifiutarlo con "dubious ownership". La soluzione adottata è `git config --global --add safe.directory "<percorso del repository>"` per l'utente che sviluppa; non cambiare il proprietario della cartella, perché l'altro agente deve poter continuare a scriverci.
+
 Versioni osservate con comandi di sola lettura: `rustc 1.100.0`, `cargo 1.100.0`, Node `26.13.1`, npm `11.20.0`. Non sono versioni minime certificate: manca un pin `rust-toolchain`/`rust-version`, edizione Rust 2021 non significa MSRV 2021. `jsdom 31.0.1` richiede Node `^22.22.2 || ^24.15.0 || >=26.0.0`: una generica indicazione Node 18 è insufficiente per gli attuali test. Nessun campo `engines` impone il runtime in package.json.
 
 | Tecnologia | Risoluzione nei lockfile | Ruolo |
@@ -84,6 +86,10 @@ La precedente esecuzione riportava 11 test libreria Rust e uno di protocollo nel
 
 Mancano prove complete di concorrenza e durabilità, import malformati, inattività temporale, tutte le categorie CRUD, login reali su ogni browser, installazione/upgrade/disinstallazione in VM e offline su Windows pulito. Non aggiungere test che usino credenziali o vault personali.
 
+## Integrazione continua
+
+[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
+
 ## Setup Windows completo
 
 Chiudere JesseArchive anche nel tray: gli script verificano il processo e si interrompono se attivo. Non terminare forzatamente un processo con operazioni sui dati in corso. Per rigenerare il setup, quando autorizzato:
@@ -113,7 +119,7 @@ La soglia di dimensione MSI è un'euristica, non prova che ogni dipendenza WebVi
 - `scripts/package-browser-extension.mjs` copia il background canonico nelle due directory, prepara manifest e identità Chromium. Preservare la chiave **pubblica** e l'identità esistenti: rigenerarle cambia il collegamento Native Messaging. Non introdurre chiavi private nel repository.
 - `src-tauri/resources/` e la configurazione browser merge sono artefatti ignorati. I profili dei test e gli output di compilazione non sono sorgenti.
 - La versione compare in package.json/Cargo/Tauri/Inno e nei manifest generati; lockfile e fallback UI vanno valutati se si modifica la versione. Non eseguire un bump per una richiesta soltanto documentale.
-- Non applicare formatter globali al codice compatto esistente durante una correzione locale. Nessun workflow CI o configurazione lint dedicata risulta versionato nella baseline; fmt/clippy non sono gate già certificati.
+- Non applicare formatter globali al codice compatto esistente durante una correzione locale. Clippy non è un gate certificato.
 
 ## Metodo di lavoro
 

@@ -107,6 +107,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -S
 
 La procedura completa è quella con MSI + Inno; `Build-Windows.ps1` e il comando Tauri diretto non includono da soli il confezionamento del componente browser. `npm ci` installa e può eseguire script di dipendenze; non è un controllo in sola lettura. Non eseguire `npm run build` durante un incarico strettamente documentale: il prebuild aggiorna uno snapshot versionato.
 
+La CI GitHub Actions (`.github/workflows/ci.yml`, Windows) esegue questi controlli, escluso il setup, a ogni push/PR verso `main` e deve restare verde.
+
 Il test dell'host può essere saltato quando manca il binario; non trasformare uno skip in un successo funzionale. Il test Brave con `--ignored` apre realmente una finestra e un profilo dedicato. Per prerequisiti, comandi diagnostici, effetti collaterali e prove ancora necessarie vedere [DEVELOPMENT](docs/DEVELOPMENT.md).
 
 ## I. AI Agent Working Rules

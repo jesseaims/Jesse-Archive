@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      # tauri::generate_context!() needs ../dist at compile time.
+      # Plain vite build: `npm run build` would rewrite src/commits.generated.json.
+      - name: Build frontend bundle
+        run: npx vite build
+
+      - name: Rust tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - name: Browser extension tests
+        run: npm run test:browser
+
+      - name: Build native messaging host
+        run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
+
+      - name: Native messaging host tests
+        run: node --test tests/browser-host.test.mjs
