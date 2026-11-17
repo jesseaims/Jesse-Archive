@@ -10,7 +10,7 @@ if (!existsSync(keyFile)) {
 const key=readFileSync(keyFile,'utf8').trim();
 const id=[...createHash('sha256').update(Buffer.from(key,'base64')).digest().subarray(0,16)].map(b=>String.fromCharCode(97+(b>>4),97+(b&15))).join('');
 writeFileSync(new URL('chromium-id.txt',root),id+'\n');
-const shared={manifest_version:3,name:'JesseArchive · Inserimento rapido',version:'1.1.1',description:'Seleziona dal vault locale gli account per il sito corrente.',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],action:{default_title:'Apri JesseArchive per questo campo'}};
+const shared={manifest_version:3,name:'JesseArchive · Inserimento rapido',version:'1.1.2',description:'Seleziona dal vault locale gli account per il sito corrente.',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],action:{default_title:'Apri JesseArchive per questo campo'}};
 for (const browser of ['chromium','firefox']) {
   const dir=new URL(browser+'/',root); mkdirSync(dir,{recursive:true});
   const manifest=browser==='chromium'?{...shared,key,background:{service_worker:'background.js'}}:{...shared,background:{scripts:['background.js']},browser_specific_settings:{gecko:{id:'browser@jessearchive.local',strict_min_version:'115.0',data_collection_permissions:{required:['none']}}}};

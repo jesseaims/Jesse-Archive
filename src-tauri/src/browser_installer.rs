@@ -35,7 +35,12 @@ const BROWSERS: &[Browser] = &[
         id: "opera",
         name: "Opera",
         executable: "opera.exe",
-        paths: &["Programs/Opera/launcher.exe", "Opera/launcher.exe", "Programs/Opera/opera.exe", "Opera/opera.exe"],
+        paths: &[
+            "Programs/Opera/launcher.exe",
+            "Opera/launcher.exe",
+            "Programs/Opera/opera.exe",
+            "Opera/opera.exe",
+        ],
         page: "opera://extensions/",
     },
     Browser {
@@ -120,10 +125,9 @@ pub fn browser_setup_status() -> Value {
         .ok()
         .map(|p| p.with_file_name("jesse-browser-host.exe").is_file())
         .unwrap_or(false);
-    json!({"helper":helper,"browsers":BROWSERS.iter().map(|b|json!({"id":b.id,"name":b.name,"installed":executable(b).is_some(),"folder":extension_directory(b.id).ok().map(|p|p.to_string_lossy().to_string())})).collect::<Vec<_>>()})
+    json!({"helper":helper,"browsers":BROWSERS.iter().map(|b|json!({"id":b.id,"name":b.name,"page":b.page,"installed":executable(b).is_some(),"folder":extension_directory(b.id).ok().map(|p|p.to_string_lossy().to_string())})).collect::<Vec<_>>()})
 }
-#[tauri::command]
-pub fn browser_setup_open(id: String) -> Result<Value, String> {
+fn setup_open_impl(id: String) -> Result<Value, String> {
     let browser = browser(&id)?;
     let executable = executable(browser).ok_or(
         "Browser non rilevato. Puoi caricare l'estensione dalla cartella inclusa nel setup.",
@@ -133,11 +137,7 @@ pub fn browser_setup_open(id: String) -> Result<Value, String> {
     #[cfg(windows)]
     {
         use std::os::windows::process::CommandExt;
-        std::process::Command::new(executable)
-            .arg(browser.page)
-            .creation_flags(0x08000000)
-            .spawn()
-            .map_err(|e| format!("Impossibile aprire il browser: {e}"))?;
+        crate::browser_navigation::open(&executable, &id, browser.page)?;
         let mut explorer = std::process::Command::new("explorer.exe");
         if id == "firefox" {
             explorer
@@ -152,6 +152,12 @@ pub fn browser_setup_open(id: String) -> Result<Value, String> {
             .map_err(|e| format!("Impossibile aprire la cartella: {e}"))?;
     }
     Ok(json!({"folder":directory.to_string_lossy(),"firefox":id=="firefox"}))
+}
+#[tauri::command]
+pub async fn browser_setup_open(id: String) -> Result<Value, String> {
+    tauri::async_runtime::spawn_blocking(move || setup_open_impl(id))
+        .await
+        .map_err(|e| e.to_string())?
 }
 #[tauri::command]
 pub async fn browser_setup_show(app: tauri::AppHandle) -> Result<(), String> {

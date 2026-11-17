@@ -1,6 +1,8 @@
 mod core;
 mod browser;
 mod browser_installer;
+#[cfg(windows)]
+mod browser_navigation;
 mod browser_protocol;
 use std::sync::Mutex;
 use serde_json::Value;

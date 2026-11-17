@@ -1,6 +1,6 @@
 [package]
 name = "jesse_archive"
-version = "1.1.1"
+version = "1.1.2"
 description = "Jesse's Archive — local encrypted password manager"
 authors = ["Jesse's Archive"]
 edition = "2021"
@@ -38,3 +38,4 @@ hex = "0.4"
 [target.'cfg(windows)'.dependencies]
 clipboard-win = "5.4.1"
 winreg = "0.52"
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_Threading", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse"] }

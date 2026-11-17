@@ -15,7 +15,7 @@ function italianDate(value:string){
 
 export default function NewsPanel({onClose}:{onClose:()=>void}){
  const [tab,setTab]=useState<Tab>('updates');
- const [version,setVersion]=useState('1.1.1');
+ const [version,setVersion]=useState('1.1.2');
  const [query,setQuery]=useState('');
  const closeRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{void getVersion().then(setVersion).catch(()=>{});closeRef.current?.focus();},[]);

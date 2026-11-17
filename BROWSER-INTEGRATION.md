@@ -11,6 +11,8 @@
 
 La procedura non modifica i profili, non forza la modalità sviluppatore e non installa criteri aziendali. Copiare file nella cartella interna delle estensioni del browser non completa l'attivazione. Per questa distribuzione locale i clic indicati al punto 4 (o il caricamento temporaneo Firefox) rimangono necessari.
 
+La guida apre una nuova finestra del browser selezionato e naviga dalla sua barra degli indirizzi: Chrome, Edge, Brave, Opera e Vivaldi possono scartare questi indirizzi interni quando sono passati direttamente all'avvio. La navigazione procede soltanto se la nuova finestra appartiene al browser scelto ed è in primo piano. Se cambi finestra o Windows impedisce il cambio di focus, usa **Apri pagina estensioni** per riprovare oppure **Copia indirizzo pagina** e incolla l'indirizzo nella barra del browser.
+
 Il pulsante nella barra strumenti dell'estensione apre lo stesso pannello, ma per conservare il campo selezionato è preferibile usare la scorciatoia.
 
 ## Utilizzo

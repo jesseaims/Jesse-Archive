@@ -9,6 +9,7 @@ export type NewsEntry = {
 };
 
 export const NEWS_ENTRIES:NewsEntry[] = [
+  {id:'browser-extension-navigation',version:'Beta 1.1.2',title:'Apertura corretta della pagina estensioni',description:'La guida apre una nuova finestra del browser scelto e raggiunge la sua pagina delle estensioni dalla barra degli indirizzi. Aggiunti indirizzo copiabile e pulsante per riprovare.',icon:'wrench'},
   {id:'browser-setup-wizard',version:'Beta 1.1.1',title:'Configurazione guidata dei browser',description:'Il setup apre una procedura che rileva i browser, registra automaticamente il collegamento locale e apre pagina e cartella per caricare l’estensione. Disponibile anche nelle Impostazioni.',icon:'package'},
   {id:'browser-quick-fill',version:'Beta 1.1.0',title:'Inserimento rapido nei browser',description:'Scorciatoia globale personalizzabile, sblocco in una mini finestra e selezione degli account per il dominio HTTPS corrente tramite estensione Chromium o Firefox. Compilazione senza inviare il login.',icon:'key'},
   {id:'news-dialog',version:'Beta 1.0.3',title:'Novità e cronologia commit dentro JesseArchive',description:'Aggiunto il pulsante News accanto a «Protetto localmente»: due schede, Novità e Commit, con ricerca, dettagli delle revisioni e cronologia Git consultabile offline.',icon:'sparkles'},
