@@ -1,122 +1,164 @@
 [
   {
+    "hash": "1eb20b7",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T06:20:56+01:00",
+    "subject": "fix: recognize saved domains and related login subdomains in beta 1.1.3"
+  },
+  {
+    "hash": "b265d34",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T06:11:12+01:00",
+    "subject": "fix: open browser extensions pages reliably in beta 1.1.2"
+  },
+  {
+    "hash": "d8bd1f0",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T06:00:58+01:00",
+    "subject": "feat: add browser quick fill and guided setup for beta 1.1.1"
+  },
+  {
     "hash": "4cbfb98",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T05:08:13+01:00",
     "subject": "feat: add offline news and commit history for beta 1.0.3"
   },
   {
     "hash": "6e769ab",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:23:00Z",
     "subject": "git: 📝 Documented reconstructed commit provenance"
   },
   {
     "hash": "270f083",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:21:00Z",
     "subject": "git: 🧹 Added repository configuration and safety rules"
   },
   {
     "hash": "9c0be89",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:20:00Z",
     "subject": "generator: ✨ Enlarged password generation button"
   },
   {
     "hash": "351b244",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:19:00Z",
     "subject": "release: 🚧 Labeled application as Beta"
   },
   {
     "hash": "74b43e8",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:18:00Z",
     "subject": "release: 🏷️ Displayed app version and simplified setup filename"
   },
   {
     "hash": "d5b9ce8",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:17:00Z",
     "subject": "installer: 🖼️ Corrected installer logo proportions"
   },
   {
     "hash": "cfbd951",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:16:00Z",
     "subject": "installer: 📁 Added installation directory selection"
   },
   {
     "hash": "9d5854b",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:15:00Z",
     "subject": "editor: ✨ Preselected category for new entries"
   },
   {
     "hash": "2e882c4",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:14:00Z",
     "subject": "installer: 🪟 Added Inno Setup EXE packaging"
   },
   {
     "hash": "eda3ac8",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:13:00Z",
     "subject": "installer: 📦 Bundled WebView2 for offline distribution"
   },
   {
     "hash": "402c7af",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:12:00Z",
     "subject": "installer: 🎨 Added branded MSI graphics"
   },
   {
     "hash": "f3efd56",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:11:00Z",
     "subject": "cloud: ☁️ Improved local cloud folder discovery"
   },
   {
     "hash": "889411b",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:10:00Z",
     "subject": "history: 🔑 Improved password restoration and added creator credit"
   },
   {
     "hash": "b06cc67",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:09:00Z",
     "subject": "dialogs: 🎨 Replaced native dialogs with themed modals"
   },
   {
     "hash": "b29f1e6",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:08:00Z",
     "subject": "clipboard: 🛠️ Fixed clipboard write argument borrowing"
   },
   {
     "hash": "991524e",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:07:00Z",
     "subject": "clipboard: 🛠️ Corrected empty clipboard value type"
   },
   {
     "hash": "f7f578b",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:06:00Z",
     "subject": "clipboard: ⚡ Removed PowerShell clipboard operations"
   },
   {
     "hash": "3d56c4d",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:05:00Z",
     "subject": "vault: ✨ Improved branding, themes and account grouping"
   },
   {
     "hash": "507863b",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:04:00Z",
     "subject": "recovery: 🛠️ Fixed recovery code confirmation"
   },
   {
     "hash": "3866935",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:03:00Z",
     "subject": "tests: 🧪 Fixed legacy encryption fixture path"
   },
   {
     "hash": "f9b9c93",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:02:00Z",
     "subject": "crypto: 🔐 Fixed Rust key handling and lifetimes"
   },
   {
     "hash": "bd48e63",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:01:00Z",
     "subject": "migration: 🦀 Ported vault manager to Rust and Tauri 2"
   },
   {
     "hash": "388f0e4",
     "date": "2026-11-17",
+    "timestamp": "2026-11-17T12:00:00Z",
     "subject": "legacy: 🐍 Preserved original Python source"
   }
 ]

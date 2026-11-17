@@ -5,17 +5,24 @@ import {NEWS_ENTRIES} from './news-changelog';
 import gitCommits from './commits.generated.json';
 
 type Tab='updates'|'commits';
-type Commit={hash:string;date:string;subject:string};
+type Commit={hash:string;date:string;timestamp?:string;subject:string};
 const icons={sparkles:Sparkles,shield:ShieldCheck,palette:Palette,folder:Folder,package:Package,wrench:Wrench,key:KeyRound,cloud:Cloud};
 
 function italianDate(value:string){
  const parsed=new Date(`${value}T12:00:00`);
  return Number.isNaN(parsed.valueOf())?value:parsed.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
 }
+function EntryTimestamp({timestamp,date,source}:{timestamp?:string;date?:string;source?:'git'}){
+ const parsed=timestamp?new Date(timestamp):null;
+ const valid=parsed!==null&&!Number.isNaN(parsed.valueOf());
+ const label=valid?parsed.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}):`${date?italianDate(date)+' · ':''}Ora non disponibile`;
+ const title=valid?`${source==='git'?'Prima registrazione della novità in Git':'Data di registrazione'}: ${parsed.toLocaleString('it-IT',{timeZoneName:'short'})}`:'Il timestamp completo non è disponibile per questa voce';
+ return <time className="news-timestamp" dateTime={valid?timestamp:date} title={title}>{label}</time>;
+}
 
 export default function NewsPanel({onClose}:{onClose:()=>void}){
  const [tab,setTab]=useState<Tab>('updates');
- const [version,setVersion]=useState('1.1.3');
+ const [version,setVersion]=useState('1.1.4');
  const [query,setQuery]=useState('');
  const closeRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{void getVersion().then(setVersion).catch(()=>{});closeRef.current?.focus();},[]);
@@ -46,6 +53,7 @@ export default function NewsPanel({onClose}:{onClose:()=>void}){
        <div className="news-entry-symbol"><Icon size={19}/></div>
        <div className="news-entry-copy"><div className="news-entry-title"><h3>{entry.title}</h3><span className="news-entry-tag">{entry.version}</span></div><p>{entry.description}</p></div>
        {index===0&&!query&&<span className="news-new-tag">Ultima modifica</span>}
+       <EntryTimestamp timestamp={entry.addedAt} source={entry.dateSource}/>
       </article>})}
       {updates.length===0&&<div className="news-empty">Nessuna novità corrisponde alla ricerca.</div>}
      </div>:<div className="news-commits">
@@ -56,7 +64,7 @@ export default function NewsPanel({onClose}:{onClose:()=>void}){
        const area=match?.[1]||'project';const description=match?.[2]||commit.subject;
        return <div key={commit.hash}>
         {showDate&&<div className="news-commit-date"><strong>{italianDate(commit.date)}</strong><span/></div>}
-        <article className="news-commit"><div className="news-commit-dot"><GitCommitHorizontal size={15}/></div><div className="news-commit-body"><h3>{description}</h3><div className="news-commit-meta"><span className="news-commit-area">{area}</span><code>{commit.hash}</code></div></div></article>
+        <article className="news-commit"><div className="news-commit-dot"><GitCommitHorizontal size={15}/></div><div className="news-commit-body"><h3>{description}</h3><div className="news-commit-meta"><span className="news-commit-area">{area}</span><code>{commit.hash}</code></div><EntryTimestamp timestamp={commit.timestamp} date={commit.date}/></div></article>
        </div>
       })}
       {commits.length===0&&<div className="news-empty">Nessun commit corrisponde alla ricerca.</div>}
