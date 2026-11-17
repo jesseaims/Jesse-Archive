@@ -45,3 +45,8 @@ input:not([type=checkbox]):not([type=color]),textarea,select,.search-box{backgro
 input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none!important}
 input[type=password]::-webkit-credentials-auto-fill-button{visibility:hidden!important}
 @media(max-width:780px){.account-groups{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));padding:12px}}
+
+/* Group password: prevent long visible secrets from widening account cards. */
+.group-credential .group-password{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:text;}
+.group-credential .group-reveal{color:var(--ui-accent);}
+.group-credential .group-reveal:hover{background:var(--ui-selected);color:var(--ui-accent);}
