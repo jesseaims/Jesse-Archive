@@ -2541,3 +2541,37 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   line-height: 1;
   color: var(--ui-accent);
 }
+/* Automatic update download progress (src/Updater.tsx). */
+.update-progress {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-modal, var(--ui-surface));
+  color: var(--ui-text);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+}
+.update-progress-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--ui-accent, currentColor);
+  transition: width 0.3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .update-progress-bar {
+    transition: none;
+  }
+}

@@ -90,13 +90,32 @@ L'estensione verifica origine esatta tra frame e pagina principale, URL prima de
 
 `group_logo` richiede una favicon a DuckDuckGo e rivela il dominio richiesto e i normali metadati di rete. La preferenza loghi è attiva di default quando assente: il salvataggio di un account web può attivare la richiesta, senza un dialogo separato per ogni sito. Non descrivere tutte le operazioni dell'app come prive di rete. Le copie cloud sono gestite dal software del provider, non da una API di upload del progetto.
 
+### Aggiornamento automatico
+
+`updater.rs` legge `releases/latest` del repository pubblico tramite l'API GitHub, senza token. La richiesta rivela a GitHub l'indirizzo IP e la versione cercata, all'avvio e una volta al giorno. Il controllo è disattivabile per dispositivo (`update_auto` nella configurazione locale).
+
+Un'installazione avviene solo dopo la conferma esplicita dell'utente e solo se:
+- l'asset `JesseArchive-Setup.exe.sig` è un manifest testuale (versione, nome del file, dimensione, SHA-256) firmato Ed25519 con la chiave pubblica incorporata nel binario (`src-tauri/update-public-key.txt`);
+- la versione firmata coincide con il tag ed è più recente di quella installata;
+- dimensione e SHA-256 del setup scaricato coincidono con il manifest.
+
+Si accettano solo link diretti `https://github.com/jesseaims/Jesse-Archive/releases/download/<tag>/…`. Il backend ripete il controllo da zero prima di installare, quindi un valore manipolato nella UI non basta.
+
+Un account GitHub compromesso, da solo, non può quindi far installare un setup non firmato. Chi possiede la chiave privata invece sì: la chiave resta su un solo PC, cifrata con DPAPI per l'utente (`%APPDATA%\JesseArchive-Release\update-signing-key.dpapi`) e gestita da `scripts/Update-SigningKey.ps1`, con backup cifrato da passphrase.
+
+Limiti:
+- non c'è protezione anti-rollback oltre al confronto di versione;
+- non c'è rotazione della chiave: una chiave persa richiede un'installazione manuale con una chiave nuova;
+- il file scaricato in `%TEMP%` non è protetto da processi malevoli dello stesso utente fra la verifica e l'avvio;
+- il setup non ha Authenticode, quindi l'avviso di Windows dipende dalla reputazione SmartScreen.
+
 ## Persistenza, backup e anti-tampering
 
 GCM autentica i blob cifrati, non l'intero header esterno. `v` e `hv` non sono firme; `hv` guida l'adozione di un header durante la fusione. Non c'è una protezione dimostrata contro rollback di un file interamente valido, sostituzione con backup o manipolazione dei metadati non inclusi nell'AAD. SHA-256 in `loc_move` confronta una copia, non autentica il proprietario del file.
 
 La `.bak` contiene un envelope cifrato precedente. “Eliminazione definitiva” toglie record dalla collezione, ma password storiche possono essere conservate come orfane e vecchie copie persistono in backup/provider. Non è cancellazione sicura del disco.
 
-Il codice non configura Authenticode per il setup, firme di aggiornamento o un updater automatico. La chiave pubblica Chromium stabilizza un ID di sviluppo e non firma una release desktop. La firma Mozilla dell'estensione Firefox non è presente nella distribuzione locale.
+Il codice non configura Authenticode per il setup; gli aggiornamenti automatici usano una firma Ed25519 propria (vedere sopra), che non sostituisce la firma del codice di Windows. La chiave pubblica Chromium stabilizza un ID di sviluppo e non firma una release desktop. La firma Mozilla dell'estensione Firefox non è presente nella distribuzione locale.
 
 ## Registro delle criticità osservate
 

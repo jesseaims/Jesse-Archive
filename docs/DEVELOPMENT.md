@@ -20,7 +20,8 @@ Versioni osservate con comandi di sola lettura: `rustc 1.100.0`, `cargo 1.100.0`
 | aes-gcm / scrypt | 0.10.3 / 0.11.0 | Cifratura e derivazione chiavi |
 | rand diretto / zeroize | 0.8.8 / 1.9.1 | Casualità e cancellazione selettiva memoria |
 | psl | 2.1.255 | Confini dei domini, incluse suffix private |
-| reqwest diretto | 0.12.28 | Favicon e Pwned Passwords |
+| reqwest diretto | 0.12.28 | Favicon, Pwned Passwords e aggiornamenti |
+| ed25519-dalek | 2 | Verifica della firma degli aggiornamenti automatici |
 | windows-sys diretto | 0.61.2 | Clipboard, registro, finestre e integrazione Windows |
 | jsdom | 31.0.1 | DOM sintetico nei test estensione |
 
@@ -110,7 +111,14 @@ Lo script:
 3. Esegue `Build-Setup-EXE.ps1` in un processo separato: un exit code diverso da 0 interrompe tutto senza pubblicare.
 4. Ripristina `src/commits.generated.json` riscritto dalla build, quindi `main` resta invariato.
 5. Controlla che il setup sia della versione corrente, successivo all'avvio della build e di dimensione plausibile, e ne calcola lo SHA-256.
-6. Chiede conferma (salvo `-Yes`), crea la release "Beta X.Y.Z" segnata Latest con tag `vX.Y.Z` sul commit compilato, l'unico asset `JesseArchive-Setup.exe` e le note di [scripts/release-notes.mjs](../scripts/release-notes.mjs) (voci News successive all'ultima release o a `-NotesSince`), lette in UTF-8 anche con la console di Windows PowerShell in una code page OEM. Infine verifica che l'asset caricato abbia la stessa dimensione del file locale.
+6. Chiede conferma (salvo `-Yes`), crea la release "Beta X.Y.Z" segnata Latest con tag `vX.Y.Z` sul commit compilato, gli asset `JesseArchive-Setup.exe` e `JesseArchive-Setup.exe.sig` e le note di [scripts/release-notes.mjs](../scripts/release-notes.mjs) (voci News successive all'ultima release o a `-NotesSince`), lette in UTF-8 anche con la console di Windows PowerShell in una code page OEM. Infine verifica che l'asset caricato abbia la stessa dimensione del file locale.
+
+**Firma per l'aggiornamento automatico.** Dopo la verifica del setup, lo script firma `JesseArchive-Setup.exe.sig` con [scripts/update-signature.mjs](../scripts/update-signature.mjs) usando la chiave privata DPAPI di questo PC. Poi verifica la firma con la chiave pubblica incorporata nell'app ([src-tauri/update-public-key.txt](../src-tauri/update-public-key.txt)) e carica entrambi i file nella release.
+- Senza chiave la pubblicazione si ferma.
+- Gestione della chiave con [scripts/Update-SigningKey.ps1](../scripts/Update-SigningKey.ps1): `-Status`, `-Backup <file>` (cifrato con passphrase), `-Restore <file>`.
+- La chiave è stata creata il 18 novembre 2026.
+- Se la chiave va persa, le installazioni esistenti non accettano più aggiornamenti automatici finché non si installa a mano una versione con una nuova chiave pubblica.
+- Non leggere, stampare o committare la chiave privata.
 
 Opzioni: `-DryRun` (solo controlli e anteprima delle note), `-SkipBuild` (pubblica il setup già presente se è della versione corrente), `-Draft` (release in bozza), `-NotesSince X.Y.Z`, `-Yes`.
 

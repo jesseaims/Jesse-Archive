@@ -40,6 +40,7 @@ Finestre Tauri: `main`, `quick-fill`, `browser-setup`. Il frontend sceglie il co
 | `aes-gcm`, `scrypt`, `rand`, `zeroize` | AES-256-GCM, derivazione, casualità OS e cancellazione delle chiavi Rust protette |
 | `hmac`, `sha1`, `sha2`, `data-encoding` | TOTP, verifica Pwned Passwords e hash della copia del vault |
 | `url`, `psl`, `csv`, `reqwest` | URL/PSL offline, import/export e richieste HTTP opzionali |
+| `ed25519-dalek` | Verifica della firma degli aggiornamenti automatici (`updater.rs`) |
 | `rfd`, `clipboard-win`, `winreg`, `windows-sys` | Dialoghi e integrazione Windows |
 | Node.js/npm, Cargo MSVC, WiX/Tauri, Inno Setup | Toolchain e distribuzione Windows con WebView2 offline |
 | Node test runner, jsdom, fixture Python | Test dell'estensione, relay nativo e compatibilità crittografica |
@@ -60,12 +61,13 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Verifica violazioni e favicon | Implementate, opzionali e con rete; `breaches`, `group_logo`, `SecurityPage`, `saveItem` |
 | Esportazione/importazione e pacchetti cifrati | Implementati in `core.rs` e Settings; export JSON/CSV in chiaro, `.jshare` cifrato; selezione fine non completamente esposta nella UI |
 | Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
+| Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo |
 | Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali; niente WebAuthn |
 | Guida estensioni | Implementata; caricamento iniziale ancora manuale, Firefox locale temporaneo |
 | News e commit offline con orari individuali | Implementati in `NewsPanel.tsx`, changelog e snapshot generato |
 
-Non esiste una roadmap approvata per biometria, WebAuthn, updater o servizi cloud: sono assenze rilevate, non impegni di sviluppo.
+Non esiste una roadmap approvata per biometria, WebAuthn o servizi cloud: sono assenze rilevate, non impegni di sviluppo.
 
 ## E. Security Architecture
 

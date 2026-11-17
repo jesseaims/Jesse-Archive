@@ -35,6 +35,7 @@ Queste istruzioni valgono per Codex, Claude Code e qualsiasi altro agente che la
 - Usare fixture sintetiche e directory di prova isolate. Nessun avvio, import, ripristino, spostamento o modifica di un vault reale senza autorizzazione esplicita.
 - Non leggere o riportare password, codici di recupero, token, chiavi private o dati personali. Non inserirli in log, screenshot, documenti o commit.
 - Non eseguire operazioni distruttive, reset Git o pulizie ricorsive non richieste. `legacy-python/Crea-EXE.bat` contiene pulizie: non usarlo come script del prodotto corrente.
+- La chiave privata che firma gli aggiornamenti (`%APPDATA%\JesseArchive-Release\update-signing-key.dpapi`) non va letta, stampata, copiata né committata; usare solo `scripts/Update-SigningKey.ps1` e `Publish-Release.ps1`. Cambiare `src-tauri/update-public-key.txt` interrompe gli aggiornamenti automatici delle installazioni esistenti.
 - Non aggiungere stampe diagnostiche su stdout del Native Messaging host: stdout è il protocollo binario incorniciato e può trasportare credenziali.
 - Non dichiarare garantiti azzeramento JavaScript, blocco immediato per inattività, firma del setup o protezione anti-rollback: i limiti reali sono in [docs/SECURITY.md](docs/SECURITY.md).
 
