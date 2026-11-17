@@ -36,6 +36,40 @@ Source: "payload\JesseArchive.msi"; Flags: dontcopy noencryption
 [Code]
 var
   MsiNeedsRestart: Boolean;
+  InstallDirPage: TInputDirWizardPage;
+
+procedure InitializeWizard();
+begin
+  { Inno acts as an MSI bootstrapper, not the app installer.
+    Its normal directory page is not used (CreateAppDir=no).
+    This page supplies INSTALLDIR to the Tauri/WiX MSI. }
+  InstallDirPage := CreateInputDirPage(
+    wpWelcome,
+    'Cartella di installazione',
+    'Dove desideri installare Jesse''s Archive?',
+    'Seleziona la cartella in cui installare il programma. ' +
+      'I dati del vault rimangono separati dalla cartella applicativa.',
+    False, '');
+  InstallDirPage.Add('');
+  InstallDirPage.Values[0] := ExpandConstant('{autopf}\Jesse''s Archive');
+end;
+
+function NextButtonClick(CurPageID: Integer): Boolean;
+var
+  ChosenPath: String;
+begin
+  Result := True;
+  if CurPageID = InstallDirPage.ID then
+  begin
+    ChosenPath := Trim(InstallDirPage.Values[0]);
+    if (ChosenPath = '') or (Pos('"', ChosenPath) > 0) then
+    begin
+      MsgBox('Seleziona un percorso valido, senza virgolette.', mbError, MB_OK);
+      Result := False;
+      Exit;
+    end;
+  end;
+end;
 
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
@@ -48,7 +82,7 @@ begin
   try
     ExtractTemporaryFile('JesseArchive.msi');
     MsiFile := ExpandConstant('{tmp}\JesseArchive.msi');
-    Params := '/i "' + MsiFile + '" /passive /norestart';
+    Params := '/i "' + MsiFile + '" INSTALLDIR="' + Trim(InstallDirPage.Values[0]) + '" /passive /norestart';
     Log('Installazione tramite Windows Installer: ' + Params);
 
     if not Exec(ExpandConstant('{sys}\msiexec.exe'), Params, '', SW_SHOWNORMAL,

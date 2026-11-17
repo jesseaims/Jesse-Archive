@@ -45,6 +45,27 @@ if ($msi.Length -lt 50000000) {
     throw "MSI troppo piccolo ($($msi.Length) byte). Verifica che WebView2 offline sia stato incluso."
 }
 
+# Check the MSI really exposes the INSTALLDIR directory. Otherwise the
+# folder picker in the Inno EXE would be misleading and silently ignored.
+Write-Host "==> Verifico che MSI supporti la cartella personalizzata (INSTALLDIR)" -ForegroundColor Cyan
+$msiInstaller = $null; $msiDatabase = $null; $msiView = $null; $msiRow = $null
+try {
+    $msiInstaller = New-Object -ComObject WindowsInstaller.Installer
+    $msiDatabase = $msiInstaller.OpenDatabase($msi.FullName, 0)
+    $msiView = $msiDatabase.OpenView("SELECT ``Directory`` FROM ``Directory`` WHERE ``Directory`` = 'INSTALLDIR'")
+    $msiView.Execute()
+    $msiRow = $msiView.Fetch()
+    if ($null -eq $msiRow) {
+        throw 'MSI senza directory INSTALLDIR. La scelta della cartella non sarebbe applicata: build interrotta.'
+    }
+}
+finally {
+    if ($msiView) { try { $msiView.Close() } catch {} }
+    foreach ($obj in @($msiRow, $msiView, $msiDatabase, $msiInstaller)) {
+        if ($null -ne $obj) { [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($obj) }
+    }
+}
+
 New-Item -ItemType Directory -Force -Path $payloadFolder,$outFolder | Out-Null
 $targetMsi = Join-Path $payloadFolder 'JesseArchive.msi'
 Copy-Item -LiteralPath $msi.FullName -Destination $targetMsi -Force
