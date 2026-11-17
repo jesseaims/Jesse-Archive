@@ -60,6 +60,12 @@ fn obj<'a>(v: &'a mut V, k: &str) -> &'a mut serde_json::Map<String, V> {
         .as_object_mut()
         .unwrap()
 }
+/// Minimum length policy for secrets chosen by the user, counted in Unicode
+/// characters (not UTF-8 bytes) so accented passwords are treated consistently.
+const MIN_SECRET_CHARS: usize = 8;
+fn long_enough(v: &str) -> bool {
+    v.chars().count() >= MIN_SECRET_CHARS
+}
 fn key(k: &str) -> String {
     k.to_uppercase()
         .chars()
@@ -553,7 +559,7 @@ impl Vault {
                     return Err("Esiste già un vault".into());
                 }
                 let pw = s(&b, "password");
-                if pw.chars().count() < 8 {
+                if !long_enough(pw) {
                     return Err("Password principale: minimo 8 caratteri".into());
                 }
                 let dek = Zeroizing::new(rand_bytes::<32>());
@@ -574,6 +580,11 @@ impl Vault {
                 let h: V =
                     serde_json::from_slice(&fs::read(&self.path).map_err(err)?).map_err(err)?;
                 let is_rec = !s(&b, "recovery").is_empty();
+                let new_password = if is_rec { s(&b, "new_password") } else { "" };
+                // Checked before decryption so a rejected password never leaves the vault unlocked.
+                if !new_password.is_empty() && !long_enough(new_password) {
+                    return Err("Nuova password: minimo 8 caratteri".into());
+                }
                 let (salt, blob, pass) = if is_rec {
                     (decode(&h, "rsalt")?, s(&h, "rwrap"), key(s(&b, "recovery")))
                 } else {
@@ -613,12 +624,8 @@ impl Vault {
                 self.fails = 0;
                 self.signature = sig(&self.path);
                 self.push = false;
-                if is_rec && !s(&b, "new_password").is_empty() {
-                    let new = s(&b, "new_password");
-                    if new.len() < 8 {
-                        return Err("Nuova password troppo corta".into());
-                    }
-                    let (salt, wrap) = wrapped(new, self.key.as_ref().unwrap())?;
+                if !new_password.is_empty() {
+                    let (salt, wrap) = wrapped(new_password, self.key.as_ref().unwrap())?;
                     self.header["salt"] = json!(salt);
                     self.header["wrap"] = json!(wrap);
                     self.header["hv"] = json!(now());
@@ -900,7 +907,7 @@ impl Vault {
             }
             "master" => {
                 self.check_master(s(&b, "old"))?;
-                if s(&b, "new").len() < 8 {
+                if !long_enough(s(&b, "new")) {
                     return Err("Minimo 8 caratteri".into());
                 }
                 let (salt, wrap) = wrapped(s(&b, "new"), self.key.as_ref().unwrap())?;
@@ -922,7 +929,7 @@ impl Vault {
             }
             "pack" => {
                 let pw = s(&b, "passphrase");
-                if pw.len() < 8 {
+                if !long_enough(pw) {
                     return Err("Passphrase: minimo 8 caratteri".into());
                 }
                 let ids: HashSet<String> = array(&b, "ids")
@@ -1523,7 +1530,7 @@ fn health(d: &V) -> V {
     let reference = |p: &&V| json!({"pid":p["id"],"item_id":p["item_id"],"title":p["item_title"],"bits":bits(s(p,"value"))});
     let weak: Vec<_> = active
         .iter()
-        .filter(|p| bits(s(p, "value")) < 60. || s(p, "value").len() < 8)
+        .filter(|p| bits(s(p, "value")) < 60. || !long_enough(s(p, "value")))
         .map(reference)
         .collect();
     let mut groups: HashMap<String, Vec<V>> = HashMap::new();
@@ -1983,5 +1990,64 @@ mod legacy_python_vectors {
         let plain = unseal(&dek, s(h, "data")).unwrap();
         let d: V = serde_json::from_slice(&plain).unwrap();
         assert_eq!(d, f["expected_data"])
+    }
+}
+#[cfg(test)]
+mod vault_tests {
+    use super::*;
+    /// Synthetic vault in an isolated temporary directory; never touches real data.
+    fn test_vault() -> (Vault, PathBuf) {
+        let dir =
+            std::env::temp_dir().join(format!("jesse-test-{}", hex::encode(rand_bytes::<6>())));
+        fs::create_dir_all(&dir).unwrap();
+        let v = Vault {
+            path: dir.join("jesse_archive.vault"),
+            config: dir.join("config.json"),
+            key: None,
+            header: V::Null,
+            data: V::Null,
+            last: now(),
+            last_sync: 0.,
+            signature: None,
+            push: false,
+            rev: 0,
+            fails: 0,
+        };
+        (v, dir)
+    }
+    // 7 characters but 14 UTF-8 bytes, and 8 characters / 16 bytes.
+    const SHORT_ACCENTED: &str = "àèìòùéç";
+    const LONG_ACCENTED: &str = "àèìòùéçñ";
+    #[test]
+    fn length_policy_counts_characters() {
+        assert!(!long_enough(SHORT_ACCENTED));
+        assert!(long_enough(LONG_ACCENTED));
+        let (mut v, dir) = test_vault();
+        assert!(v
+            .call("create", json!({"password": SHORT_ACCENTED}))
+            .is_err());
+        let rec = v
+            .call("create", json!({"password": LONG_ACCENTED}))
+            .unwrap()["recovery"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let master = json!({"old": LONG_ACCENTED, "new": SHORT_ACCENTED});
+        assert!(v.call("master", master).is_err());
+        assert!(v
+            .call("pack", json!({"passphrase": SHORT_ACCENTED}))
+            .is_err());
+        v.call("lock", json!({})).unwrap();
+        // A rejected new password must not leave the vault unlocked.
+        let short = json!({"recovery": rec, "new_password": SHORT_ACCENTED});
+        assert!(v.call("unlock", short).is_err());
+        assert!(!v.unlocked());
+        let reset = json!({"recovery": rec, "new_password": "nuova-master-1"});
+        v.call("unlock", reset).unwrap();
+        assert!(v.unlocked());
+        v.call("lock", json!({})).unwrap();
+        v.call("unlock", json!({"password": "nuova-master-1"}))
+            .unwrap();
+        fs::remove_dir_all(dir).unwrap();
     }
 }

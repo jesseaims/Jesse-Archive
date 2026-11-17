@@ -35,7 +35,7 @@ I parametri KDF sono fissati nel codice, non negoziati dall'envelope. Non cambia
 
 `master` richiede la password corrente e riscrive il wrapper master. `recovery_new` verifica la master e rigenera il wrapper del recupero. Il recupero può impostare una nuova master. La **DEK resta la stessa**: è una rotazione delle protezioni della chiave, non della chiave dati. Un backup con wrapper precedente può consentire di recuperare la stessa DEK tramite credenziali precedenti. Non descrivere questa procedura come revoca globale su tutte le copie.
 
-`create` controlla almeno otto caratteri, mentre altre verifiche di lunghezza usano byte (`String::len`). La coerenza Unicode della policy è da migliorare. Nessuna policy di complessità master o autenticazione biometrica risulta implementata.
+Il minimo di otto caratteri (`long_enough`, `MIN_SECRET_CHARS`) è contato in caratteri Unicode, non in byte, in `create`, `master`, nel recupero con nuova password e in `pack`; il controllo salute usa la stessa funzione. Nel recupero la nuova password viene verificata prima della decifratura: se è troppo corta il vault resta bloccato. Test: `vault_tests::length_policy_counts_characters`. Nessuna policy di complessità master o autenticazione biometrica risulta implementata.
 
 ## Blocco e sessione: comportamento reale
 
