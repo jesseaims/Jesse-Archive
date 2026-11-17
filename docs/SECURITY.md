@@ -1,0 +1,118 @@
+# Architettura di sicurezza
+
+Questa pagina descrive ciò che è verificabile nel codice della baseline indicata in [ARCHITECTURE](ARCHITECTURE.md). Non è un audit indipendente, una certificazione o una garanzia contro compromissioni del sistema operativo. Nessuna criticità riportata è stata corretta durante l'incarico documentale.
+
+## Confini di fiducia
+
+Il file su disco è cifrato; dopo lo sblocco il processo Rust, la webview e parte della memoria JavaScript contengono dati in chiaro. Il frontend principale riceve un intero stato del vault. Il sistema operativo, l'utente della sessione Windows e il codice caricato nelle webview locali fanno parte della base fidata.
+
+Il browser è esterno all'app. L'estensione riceve le credenziali selezionate soltanto al momento del riempimento; il sito di destinazione può leggerle una volta inserite nei propri campi. La master password non viene inviata dal pannello rapido all'estensione. Un processo ostile già eseguito come lo stesso utente può accedere a memoria, AppData o clipboard: il progetto non implementa una difesa completa contro questo scenario.
+
+## Primitivi e formato
+
+Le implementazioni sono in [core.rs](../src-tauri/src/core.rs), funzioni `kdf`, `seal`, `unseal`, `wrapped`, `recovery`, `key`.
+
+| Elemento | Implementazione verificata |
+|---|---|
+| Cifratura autenticata | `Aes256Gcm`, crate `aes-gcm` |
+| DEK | 32 byte casuali da `OsRng` durante `create` |
+| Nonce | 12 byte nuovi da `OsRng` per ogni `seal` |
+| Tag | Tag GCM standard della libreria, 16 byte |
+| Blob | Base64 di `nonce || ciphertext || tag` |
+| KDF | scrypt: `log_n=15`, `r=8`, `p=1`, output 32 byte; N=32768 |
+| Sali dei wrapper | 16 byte casuali, separati per master e recupero |
+| AAD | Non passato dall'app a GCM; l'header non è autenticato come AAD |
+| Recupero | 24 simboli casuali formattati in gruppi; normalizzazione maiuscola/alfa-numerica prima della KDF |
+| Pacchetto condiviso | Payload cifrato direttamente con chiave scrypt della passphrase e sale dedicato |
+
+La master password non è memorizzata come hash verificabile separato: lo sblocco deriva la chiave e autentica il wrapper della DEK e il payload. Non risultano Argon2, bcrypt, pepper esterno o un server di autenticazione. SHA-1 serve a TOTP e Pwned Passwords, non alla derivazione della master; SHA-256 serve alla verifica della copia del file, non sostituisce GCM.
+
+I parametri KDF sono fissati nel codice, non negoziati dall'envelope. Non cambiarli senza un piano esplicito di compatibilità/migrazione: il formato legacy v1 dipende da questi valori. Il vettore sintetico è verificato in Rust e nel [test Python](../tests/test_legacy_fixture.py); questo non prova tutti i casi di compatibilità del client storico.
+
+## Sblocco, recupero e rotazione
+
+`Vault::call("unlock")` legge l'envelope, sceglie il wrapper master o recupero, ricava la DEK e decifra i dati. Un fallimento crittografico incrementa `fails` e produce un errore generico di password/recupero. Il Rust non usa quel contatore per rallentare o bloccare tentativi ulteriori.
+
+`master` richiede la password corrente e riscrive il wrapper master. `recovery_new` verifica la master e rigenera il wrapper del recupero. Il recupero può impostare una nuova master. La **DEK resta la stessa**: è una rotazione delle protezioni della chiave, non della chiave dati. Un backup con wrapper precedente può consentire di recuperare la stessa DEK tramite credenziali precedenti. Non descrivere questa procedura come revoca globale su tutte le copie.
+
+`create` controlla almeno otto caratteri, mentre altre verifiche di lunghezza usano byte (`String::len`). La coerenza Unicode della policy è da migliorare. Nessuna policy di complessità master o autenticazione biometrica risulta implementata.
+
+## Blocco e sessione: comportamento reale
+
+`Vault.key` è `Option<Zeroizing<[u8;32]>>`. `lock` toglie la chiave e sostituisce header/payload in memoria con `Null`. La finestra principale, in modalità tray, blocca alla chiusura; il menu tray può bloccare esplicitamente. Le finestre secondarie vengono nascoste secondo i propri handler.
+
+Il controllo dell'inattività è in `Vault::call`:
+
+- I comandi aperti sono `status`, `create`, `unlock`, `ping`, `suggest`, `loc_use`, `show`.
+- La scadenza viene applicata a richieste protette, non a `ping/status`.
+- La maggior parte dei comandi aggiorna `last`; `ping`, `status` e `browser_state` non lo aggiornano.
+- Il frontend principale invia `ping` ogni 15 secondi, senza un timer autonomo che azzeri il vault dopo il limite. Una ricerca locale React non passa necessariamente dal backend.
+- Un errore da `run` non cancella automaticamente ogni copia del vecchio stato UI. Un successivo refresh o evento può rimuoverla.
+
+Pertanto la voce “blocco automatico” è **parziale**: non garantisce che alla scadenza i segreti siano già cancellati o scomparsi dallo schermo. Non trasferire al Rust il comportamento più restrittivo del server Python, che verifica la scadenza anche prima delle richieste aperte.
+
+## Memoria e clipboard
+
+`Zeroizing` protegge alcuni oggetti chiave Rust al rilascio. Non copre tutte le copie create da serializzazione, `serde_json::Value`, `Vec`, stringhe intermedie, IPC o React. `App.tsx` conserva stato decifrato, editor e risultati; il blocco non azzera sistematicamente tutti gli stati secondari, per esempio `draft`. Il mascheramento con `type=password` o pallini riguarda la presentazione.
+
+Non risultano `mlock`/`VirtualLock`, memoria non paginabile, integrazione DPAPI/keyring, protezioni contro dump o cancellazione verificabile della memoria JavaScript. La DEK protetta non rende automaticamente sicuro tutto il processo.
+
+[lib.rs](../src-tauri/src/lib.rs) usa clipboard Windows nativa, su worker, senza PowerShell. `clear_secret_if_unchanged` apre gli appunti, confronta e svuota sotto lo stesso guard se il contenuto coincide ancora. Il timer è però avviato dal frontend e mantiene il valore atteso in una closure. La chiusura del processo, la sospensione, i gestori di cronologia e altre applicazioni impediscono di garantire una pulizia globale. Il percorso copiato dalla guida browser usa la stessa API di copia ma non è una credenziale.
+
+## IPC Tauri e file
+
+[tauri.conf.json](../src-tauri/tauri.conf.json) applica CSP: sorgenti script locali, immagini locali/data, connessione IPC, oggetti disabilitati e stile inline consentito. [capabilities/default.json](../src-tauri/capabilities/default.json) include `main`, `quick-fill`, `browser-setup` con `core:default`.
+
+La CSP è una misura utile; non equivale a isolamento dei comandi per finestra. I comandi applicativi sono tutti registrati nel Builder. `api` applica il gate del core, ma `read_file`, `save_file`, picker, clipboard e vari comandi browser non richiedono lo stesso stato sbloccato né verificano un'etichetta di finestra. `read_file` accetta un percorso e limita a 20.000.000 byte al controllo dei metadati; non ha una allowlist di directory. La valutazione della superficie IPC dipende quindi dalla fiducia nella webview locale.
+
+`choose_icon_data` limita il file a 150000 byte e controlla il magic number dei formati ammessi. Altri percorsi che accettano icone data URI non applicano necessariamente lo stesso controllo. I documenti non devono promettere validazione uniforme su tutti gli ingressi.
+
+## Native Messaging e sito di destinazione
+
+I moduli [browser.rs](../src-tauri/src/browser.rs), [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) e [helper](../src-tauri/src/bin/jesse_browser_host.rs) implementano:
+
+- Listener solo `127.0.0.1`, porta effimera, token casuale di 32 byte per avvio.
+- Descrittore e manifest sotto la directory browser di AppData; il token è memorizzato in chiaro, con permessi ereditati dal filesystem. Nessuna ACL dedicata viene impostata dal codice.
+- Autenticazione del primo frame, limite di 262144 byte per frame, timeout iniziale di 3 secondi e scrittura di 2 secondi. Dopo l'autenticazione non viene mantenuto lo stesso timeout di lettura.
+- Argomenti del native host controllati contro gli identificatori ammessi. Questo controllo non prova da solo che il chiamante sia un browser autentico: gli argomenti sono riproducibili da un processo locale.
+- Nessuna cifratura TLS del canale loopback. Il token protegge il servizio da un chiamante che non lo conosce, non da codice arbitrario dello stesso utente capace di leggerlo.
+
+Il protocollo espone messaggi `open`, `context`, `filled` dal relay, non `Vault::call`. La sessione attiva è unica per l'app, non un contenitore indipendente per ogni browser. Connessioni e thread non hanno un limite globale esplicito.
+
+La ricerca account richiede HTTPS nella pagina, stessa porta e dominio registrabile calcolato con PSL. Include i suffissi privati, evitando di unificare tenant diversi di servizi come `github.io`. Gli URL salvati senza schema sono normalizzati per la ricerca. Questo criterio non prova che ogni sottodominio della stessa organizzazione sia un servizio di login affidabile; la selezione resta manuale.
+
+L'estensione verifica origine esatta tra frame e pagina principale, URL prima dell'iniezione, richiesta recente e riferimento DOM ancora valido. Il backend ha un controllo `host` separato, con normalizzazione `www`; non chiamarlo verifica completa dell'origine web equivalente al controllo JavaScript. Il codice esclude iframe cross-origin anche se il dominio registrabile fosse lo stesso.
+
+[background.js](../browser-extension/background.js) non ascolta messaggi delle pagine o dei content script per esporre il canale nativo. Richiede `nativeMessaging`, `tabs`, `scripting` e accesso a tutte le pagine HTTPS: è una superficie ampia da mantenere sotto revisione. Nessuna credenziale è salvata nello storage dell'estensione; durante il riempimento passa però in memoria nell'estensione e nei campi del sito. Moduli personalizzati, mutazioni sincrone del DOM e policy browser richiedono collaudi reali oltre a jsdom.
+
+## Servizi di rete opzionali
+
+`breaches` calcola SHA-1 localmente e invia solo un prefisso di cinque cifre esadecimali a Pwned Passwords, con padding richiesto e cache per prefisso nella singola operazione. Il suffisso viene confrontato localmente. Non è una verifica della sicurezza complessiva di un account.
+
+`group_logo` richiede una favicon a DuckDuckGo e rivela il dominio richiesto e i normali metadati di rete. La preferenza loghi è attiva di default quando assente: il salvataggio di un account web può attivare la richiesta, senza un dialogo separato per ogni sito. Non descrivere tutte le operazioni dell'app come prive di rete. Le copie cloud sono gestite dal software del provider, non da una API di upload del progetto.
+
+## Persistenza, backup e anti-tampering
+
+GCM autentica i blob cifrati, non l'intero header esterno. `v` e `hv` non sono firme; `hv` guida l'adozione di un header durante la fusione. Non c'è una protezione dimostrata contro rollback di un file interamente valido, sostituzione con backup o manipolazione dei metadati non inclusi nell'AAD. SHA-256 in `loc_move` confronta una copia, non autentica il proprietario del file.
+
+La `.bak` contiene un envelope cifrato precedente. “Eliminazione definitiva” toglie record dalla collezione, ma password storiche possono essere conservate come orfane e vecchie copie persistono in backup/provider. Non è cancellazione sicura del disco.
+
+Il codice non configura Authenticode per il setup, firme di aggiornamento o un updater automatico. La chiave pubblica Chromium stabilizza un ID di sviluppo e non firma una release desktop. La firma Mozilla dell'estensione Firefox non è presente nella distribuzione locale.
+
+## Registro delle criticità osservate
+
+Le priorità seguenti sono valutazioni documentali per orientare una futura revisione, non interventi approvati né risultati di uno sfruttamento.
+
+| ID | Evidenza e impatto | Verifica/proposta |
+|---|---|---|
+| SEC-01 | `Vault::call`, `App` e polling: scadenza differita, UI potenzialmente ancora decifrata | Alta: test di inattività reale, lifecycle e pulizia stati |
+| SEC-02 | `unlock`: `fails` incrementato senza backoff nel Rust | Valutare limitazione tentativi locali e relativi test; non attribuire il backoff Python al prodotto attivo |
+| SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
+| SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
+| SEC-05 | `merge_import`, `item` e vari `unwrap`: validazione non uniforme, possibile stato invalido/panic | Alta: test di ingressi malformati e schema, senza cambiare ora il formato |
+| SEC-06 | Comandi nativi condivisi dalle tre finestre, I/O file generico | Rivedere autorizzazione per comando e confini delle webview |
+| SEC-07 | Token locale in chiaro e worker non limitati; fiducia nello stesso utente | Documentare ACL effettive e limiti; testare abuso/riconnessioni su profili sintetici |
+| SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini | Revisionare superficie e casi di delega, preservando scelta esplicita e gate iframe |
+| SEC-09 | Generatori/`bits`: stime euristiche; PIN usa modulo, passphrase a sillabe | Verificare distribuzioni, vincoli e accuratezza delle stime; nessuna certificazione di entropia |
+
+Non esistono test esaustivi dei punti sopra. L'elenco non è una prova dell'assenza di altri problemi. Stato e suggerimenti sono riepilogati in [ROADMAP](ROADMAP.md).
