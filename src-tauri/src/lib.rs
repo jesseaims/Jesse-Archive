@@ -10,6 +10,26 @@ use tauri::{Emitter, Manager};
 
 struct AppState(Mutex<core::Vault>);
 
+pub(crate) const POISONED_VAULT: &str =
+    "Errore interno: il vault è stato bloccato per sicurezza. Sbloccalo di nuovo.";
+
+impl AppState {
+    /// Locks the shared vault. If a previous command panicked while holding the
+    /// mutex, the in-memory vault may be inconsistent: wipe its keys and data,
+    /// clear the poison so the app stays usable, and report an error. The file on
+    /// disk is untouched.
+    fn vault(&self) -> Result<std::sync::MutexGuard<'_, core::Vault>, String> {
+        match self.0.lock() {
+            Ok(guard) => Ok(guard),
+            Err(poisoned) => {
+                poisoned.into_inner().lock();
+                self.0.clear_poison();
+                Err(POISONED_VAULT.into())
+            }
+        }
+    }
+}
+
 #[tauri::command]
 async fn api(
     app: tauri::AppHandle,
@@ -17,10 +37,10 @@ async fn api(
     name: String,
     body: Value,
 ) -> Result<Value, String> {
-    let mut core = state
-        .0
-        .lock()
-        .map_err(|_| "Stato applicazione non disponibile".to_string())?;
+    let mut core = state.vault().map_err(|e| {
+        let _ = app.emit("vault-locked", ());
+        e
+    })?;
     let result = core.call(&name, body);
     if result.is_ok() && ["unlock", "lock"].contains(&name.as_str()) {
         let _ = app.emit("vault-changed", ());
@@ -205,7 +225,7 @@ pub fn run() {
                         }
                         "lock" => {
                             if let Some(st) = app.try_state::<AppState>() {
-                                if let Ok(mut vault) = st.0.lock() {
+                                if let Ok(mut vault) = st.vault() {
                                     let _ = vault.call("lock", serde_json::json!({}));
                                 }
                             }
@@ -242,7 +262,7 @@ pub fn run() {
                     return;
                 }
                 if let Some(st) = app.try_state::<AppState>() {
-                    if let Ok(mut v) = st.0.lock() {
+                    if let Ok(mut v) = st.vault() {
                         let mode = v.close_action();
                         if mode == "tray" {
                             let _ = v.call("lock", serde_json::json!({}));

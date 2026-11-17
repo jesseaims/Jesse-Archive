@@ -109,7 +109,7 @@ Le priorità seguenti sono valutazioni documentali per orientare una futura revi
 | SEC-02 | `unlock`: `fails` incrementato senza backoff nel Rust | Valutare limitazione tentativi locali e relativi test; non attribuire il backoff Python al prodotto attivo |
 | SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
 | SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
-| SEC-05 | `merge_import`, `item` e vari `unwrap`: validazione non uniforme, possibile stato invalido/panic | Alta: test di ingressi malformati e schema, senza cambiare ora il formato |
+| SEC-05 | Attenuata: `validate_import` rifiuta payload malformati, `ensure_shape` garantisce la forma usata da `arr`/`obj`, `import`/`unpack` ripristinano la memoria se falliscono, e un mutex del vault avvelenato da un panic viene recuperato da `AppState::vault` bloccando il vault (dati su disco intatti). Restano `unwrap` interni e nessuno schema completo dei campi | Media: estendere i controlli alle altre route (`item`, `bulk`) e ai mutex di `browser.rs` |
 | SEC-06 | Comandi nativi condivisi dalle tre finestre, I/O file generico | Rivedere autorizzazione per comando e confini delle webview |
 | SEC-07 | Token locale in chiaro e worker non limitati; fiducia nello stesso utente | Documentare ACL effettive e limiti; testare abuso/riconnessioni su profili sintetici |
 | SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini | Revisionare superficie e casi di delega, preservando scelta esplicita e gate iframe |

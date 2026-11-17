@@ -126,6 +126,79 @@ fn wrapped(secret: &str, dek: &[u8; 32]) -> Res<(String, String)> {
 fn empty() -> V {
     json!({"items":[],"passwords":[],"folders":[],"deleted":{},"settings_upd":0,"settings":{"autolock":5,"clip":30,"old_days":180}})
 }
+/// Checks the top-level shape the rest of the core relies on (`arr`/`obj` and
+/// indexing assume these types). Fills missing collections, rejects wrong types
+/// instead of panicking later while the vault mutex is held.
+fn ensure_shape(d: &mut V) -> Res<()> {
+    let o = d.as_object_mut().ok_or("Dati del vault non validi")?;
+    for k in ["items", "passwords", "folders"] {
+        match o.entry(k).or_insert(json!([])) {
+            V::Array(list) if list.iter().all(V::is_object) => {}
+            _ => {
+                return Err(format!(
+                    "Dati del vault non validi: '{k}' non è un elenco di record"
+                ))
+            }
+        }
+    }
+    for k in ["deleted", "groups", "settings"] {
+        match o.get(k) {
+            None if k != "deleted" => {}
+            None | Some(V::Null) => {
+                o.insert(k.into(), json!({}));
+            }
+            Some(V::Object(_)) => {}
+            Some(_) => return Err(format!("Dati del vault non validi: '{k}' non è un oggetto")),
+        }
+    }
+    o.entry("settings_upd").or_insert(json!(0));
+    Ok(())
+}
+/// Rejects the whole JSON/.jshare payload at the first invalid record, so an
+/// import is applied entirely or not at all.
+fn validate_import(pl: &V) -> Res<()> {
+    if !pl.is_object() {
+        return Err("Importazione non valida: il file non contiene un oggetto JSON".into());
+    }
+    let list = |k: &str| -> Res<&[V]> {
+        match pl.get(k) {
+            None | Some(V::Null) => Ok(&[]),
+            Some(V::Array(a)) => Ok(a.as_slice()),
+            Some(_) => Err(format!("Importazione non valida: '{k}' non è un elenco")),
+        }
+    };
+    let bad = |what: &str, i: usize, why: &str| -> String {
+        format!("Importazione non valida: {what} n. {} {why}", i + 1)
+    };
+    for (i, f) in list("folders")?.iter().enumerate() {
+        if !f.is_object() || !f["name"].is_string() {
+            return Err(bad("cartella", i, "senza nome valido"));
+        }
+    }
+    for (i, it) in list("items")?.iter().enumerate() {
+        if !it.is_object() {
+            return Err(bad("elemento", i, "non è un oggetto"));
+        }
+        if s(it, "id").is_empty() {
+            return Err(bad("elemento", i, "senza identificativo"));
+        }
+        if fields(s(it, "type")).is_none() {
+            return Err(bad("elemento", i, "ha un tipo sconosciuto"));
+        }
+        if !(it["title"].is_null() || it["title"].is_string()) {
+            return Err(bad("elemento", i, "ha un titolo non valido"));
+        }
+        if !(it["f"].is_null() || it["f"].is_object()) {
+            return Err(bad("elemento", i, "ha campi non validi"));
+        }
+    }
+    for (i, p) in list("passwords")?.iter().enumerate() {
+        if !p.is_object() || s(p, "id").is_empty() || !p["value"].is_string() {
+            return Err(bad("password", i, "non valida"));
+        }
+    }
+    Ok(())
+}
 fn fields(typ: &str) -> Option<&'static [&'static str]> {
     match typ {
         "login" => Some(&["url", "username", "password", "totp"]),
@@ -429,7 +502,8 @@ impl Vault {
     fn read(&self, path: &Path) -> Res<(V, V)> {
         let h: V = serde_json::from_slice(&fs::read(path).map_err(err)?).map_err(err)?;
         let plain = unseal(&**self.key.as_ref().ok_or("Vault bloccato")?, s(&h, "data"))?;
-        let d = serde_json::from_slice(&plain).map_err(err)?;
+        let mut d = serde_json::from_slice(&plain).map_err(err)?;
+        ensure_shape(&mut d)?;
         Ok((h, d))
     }
     fn adopt(&mut self, h: &V) {
@@ -482,6 +556,17 @@ impl Vault {
         }
         self.last_sync = now();
         Ok(())
+    }
+    /// Applies `change` to the data and saves; on any error restores the previous
+    /// in-memory state (data, header, file signature) so a failed import or write
+    /// never leaves a half-applied vault in memory.
+    fn transact<T>(&mut self, change: impl FnOnce(&mut V) -> Res<T>) -> Res<T> {
+        let snapshot = (self.data.clone(), self.header.clone(), self.signature);
+        let result = change(&mut self.data).and_then(|out| self.save().map(|_| out));
+        if result.is_err() {
+            (self.data, self.header, self.signature) = snapshot;
+        }
+        result
     }
     fn save(&mut self) -> Res<()> {
         self.pull()?;
@@ -609,14 +694,7 @@ impl Vault {
                         return Err("Password o codice di recupero non corretti".into());
                     }
                 };
-                data.as_object_mut()
-                    .ok_or("Dati del vault non validi")?
-                    .entry("deleted")
-                    .or_insert(json!({}));
-                data.as_object_mut()
-                    .unwrap()
-                    .entry("settings_upd")
-                    .or_insert(json!(0));
+                ensure_shape(&mut data)?;
                 self.header = h;
                 self.header.as_object_mut().unwrap().remove("data");
                 self.key = Some(dek);
@@ -977,8 +1055,8 @@ impl Vault {
                     s(&pkg, "blob"),
                 )?)
                 .map_err(|_| "Passphrase errata o pacchetto non valido")?;
-                let n = merge_import(&mut self.data, &pl);
-                self.save()?;
+                validate_import(&pl)?;
+                let n = self.transact(|d| Ok(merge_import(d, &pl)))?;
                 Ok(json!({"count":n,"state":self.state()}))
             }
             "export" => {
@@ -987,13 +1065,13 @@ impl Vault {
             }
             "import" => {
                 let text = s(&b, "text").trim_start_matches('\u{feff}');
-                let n = if text.trim_start().starts_with('{') {
+                let n = if text.trim_start().starts_with(['{', '[']) {
                     let pl: V = serde_json::from_str(text).map_err(|_| "JSON non valido")?;
-                    merge_import(&mut self.data, &pl)
+                    validate_import(&pl)?;
+                    self.transact(|d| Ok(merge_import(d, &pl)))?
                 } else {
-                    import_csv(&mut self.data, text)?
+                    self.transact(|d| import_csv(d, text))?
                 };
-                self.save()?;
                 Ok(json!({"count":n,"state":self.state()}))
             }
             "group_edit" => {
@@ -2049,5 +2127,83 @@ mod vault_tests {
         v.call("unlock", json!({"password": "nuova-master-1"}))
             .unwrap();
         fs::remove_dir_all(dir).unwrap();
+    }
+
+    fn unlocked_vault() -> (Vault, PathBuf) {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        (v, dir)
+    }
+    fn item(id: &str) -> V {
+        json!({"id": id, "type": "login", "title": "Esempio", "updated": 1.0,
+               "f": {"url": "https://example.test", "username": "utente"}, "zz_unknown": 7})
+    }
+    #[test]
+    fn import_rejects_invalid_payloads_without_changes() {
+        let (mut v, dir) = unlocked_vault();
+        let before = v.data.clone();
+        let bad = [
+            json!([1, 2]),
+            json!({"items": "nope"}),
+            json!({"items": [item("a"), 5]}),
+            json!({"items": [{"type": "login", "title": "senza id"}]}),
+            json!({"items": [{"id": "b", "type": "sconosciuto", "title": "x"}]}),
+            json!({"items": [{"id": "c", "type": "login", "title": "x", "f": "testo"}]}),
+            json!({"items": [item("d")], "passwords": [{"value": "senza id"}]}),
+            json!({"folders": [{"id": "f1"}]}),
+        ];
+        for payload in bad {
+            let text = payload.to_string();
+            assert!(v.call("import", json!({"text": text})).is_err(), "{text}");
+            assert_eq!(v.data, before, "{text}");
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn import_roundtrip_keeps_unknown_fields() {
+        let (mut v, dir) = unlocked_vault();
+        let payload = json!({"kind": "jessamine-export", "folders": [], "items": [item("a")],
+                             "passwords": [{"id": "p1", "value": "segreto-sintetico"}]});
+        let r = v
+            .call("import", json!({"text": payload.to_string()}))
+            .unwrap();
+        assert_eq!(r["count"], 1);
+        let exported = v.call("export", json!({"format": "json"})).unwrap();
+        let (mut other, dir2) = unlocked_vault();
+        let text = exported["text"].as_str().unwrap();
+        other.call("import", json!({"text": text})).unwrap();
+        let items = array(&other.data, "items");
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0]["zz_unknown"], 7);
+        assert_eq!(array(&other.data, "passwords").len(), 1);
+        fs::remove_dir_all(dir).unwrap();
+        fs::remove_dir_all(dir2).unwrap();
+    }
+    #[test]
+    fn failed_save_restores_memory() {
+        let (mut v, dir) = unlocked_vault();
+        let before = v.data.clone();
+        // A file where the vault directory should be makes the write fail.
+        fs::write(dir.join("blocco"), b"x").unwrap();
+        v.path = dir.join("blocco").join("jesse_archive.vault");
+        let payload = json!({"items": [item("a")]}).to_string();
+        assert!(v.call("import", json!({"text": payload})).is_err());
+        assert_eq!(v.data, before);
+        let csv = "name,url,username,password\nEsempio,https://example.test,utente,pw-sintetica\n";
+        assert!(v.call("import", json!({"text": csv})).is_err());
+        assert_eq!(v.data, before);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn shape_is_completed_or_rejected() {
+        let mut d = json!({"groups": null, "settings": {"autolock": 5}});
+        ensure_shape(&mut d).unwrap();
+        assert!(d["items"].is_array() && d["passwords"].is_array() && d["folders"].is_array());
+        assert!(d["deleted"].is_object() && d["groups"].is_object());
+        assert!(ensure_shape(&mut json!({"items": "x"})).is_err());
+        assert!(ensure_shape(&mut json!({"items": [1]})).is_err());
+        assert!(ensure_shape(&mut json!({"settings": 3})).is_err());
+        assert!(ensure_shape(&mut json!([])).is_err());
     }
 }

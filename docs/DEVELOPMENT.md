@@ -79,7 +79,7 @@ Il test legge dati sintetici; non importare il modulo dell'app storica per prova
 
 | Suite | Copertura effettiva | Limiti |
 |---|---|---|
-| Test inline `core.rs` | KDF, AES, fusione, TOTP, compatibilità fixture v1; `vault_tests` su un vault sintetico in una cartella temporanea (policy di lunghezza, recupero) | Non coprono interamente CRUD/import/export o crash durante scrittura |
+| Test inline `core.rs` | KDF, AES, fusione, TOTP, compatibilità fixture v1; `vault_tests` su un vault sintetico in una cartella temporanea (policy di lunghezza, recupero, import non validi, round trip export/import, ripristino dopo salvataggio fallito, `ensure_shape`) | Non coprono interamente CRUD o crash durante scrittura |
 | Test inline browser/protocollo/installer/navigation | Matching domini, framing, target fissi e input navigazione | Non certificano sei browser reali |
 | `tests/browser-extension.test.mjs` | Sei casi con mock API e jsdom, focus e compilazione DOM | Non sostituisce il motore browser, pagine reali, CAPTCHA o framework esterni |
 | `tests/browser-host.test.mjs` | Due casi con processo helper, APPDATA isolato e bridge simulato | Può saltare se manca il binario; uno skip non è superamento funzionale |

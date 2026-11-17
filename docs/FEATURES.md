@@ -41,7 +41,7 @@ Per campi reali, collegamenti e semantica di cancellazione vedere [DATABASE](DAT
 | Posizione del vault | Presente: scelta percorso e copia verificata tramite hash nel cambio posizione | `core.rs`, `App.tsx` | `loc_move` Rust conserva l'originale; non chiamarlo cancellazione o spostamento distruttivo |
 | Cartella sincronizzata | Parziale: lettura modifiche e fusione record di copie `jesse_archive*.vault` con la stessa chiave | `core.rs` | Il trasporto cloud è esterno; timestamp e record interi, non merge per campo; frontend non ricarica sempre dal solo cambio revisione |
 | Esportazione CSV/JSON | Presente: file in chiaro con campi e, per JSON, cronologia | `core.rs`, `App.tsx`, dialoghi `lib.rs` | CSV esclude cestino; JSON non contiene tutte le impostazioni/gruppi/tombstone; non sono backup completi |
-| Importazione CSV/JSON | Presente: mapping campi/cartelle e fusione | `core.rs`, `App.tsx` | Validazione e migrazioni parziali, errori di forma possono raggiungere assunzioni interne; usare fixture sintetiche |
+| Importazione CSV/JSON | Presente: mapping campi/cartelle e fusione | `core.rs`, `App.tsx` | JSON/`.jshare` validati e rifiutati per intero se un record non è valido; import atomico in memoria; nessuno schema completo dei campi né migrazioni; usare fixture sintetiche |
 | Pacchetto protetto `.jshare` | Presente: payload cifrato con password separata, importabile | `core.rs`, `App.tsx`; scrypt, aes-gcm | Selezione supportata dal backend ma percorso UI prevalentemente esportazione completa; non è condivisione collaborativa o revocabile; marcatura shared può precedere un annullamento del dialogo |
 
 ## Integrazione browser

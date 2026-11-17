@@ -20,7 +20,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 | Blocco inattività | Controllo differito nelle chiamate protette, senza timer autonomo; ping non applica scadenza | [SECURITY](SECURITY.md), `core.rs` |
 | Memoria sensibile | Alcune chiavi Zeroizing, ma copie JSON, frontend e buffer non cancellati integralmente | SECURITY; `core.rs`, `App.tsx` |
 | Sincronizzazione | File esterni e timestamp per record intero; nessun trasporto cloud proprio, lock multiprocesso o transazione; UI non segue sempre rev | [DATABASE](DATABASE.md), [ARCHITECTURE](ARCHITECTURE.md) |
-| Validazione e migrazioni | Normalizzazioni mirate ma nessuno schema rigido/motore di migrazione generale; assunzioni su JSON importato | DATABASE; `core.rs` |
+| Validazione e migrazioni | Import JSON/`.jshare` validato e atomico, forma del vault garantita allo sblocco; nessuno schema completo dei campi né motore di migrazione | DATABASE; `core.rs` |
 | Distribuzione browser | Guida automatizzata e registrazione host, installazione estensione ancora locale/manuale; Firefox temporanea | FEATURES; `browser_installer.rs` |
 | Compilazione nei siti | HTTPS e campi supportati; casi ambigui o frame estranei rifiutati; multistep richiede nuova invocazione | FEATURES; background canonico |
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |

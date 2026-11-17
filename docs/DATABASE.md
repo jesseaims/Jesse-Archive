@@ -85,7 +85,7 @@ Il metodo `state` clona il payload e aggiunge `path`, `synced_at`, `prefs` per l
 - `pw_del`/`pw_bulk` impediscono di eliminare da quello storico una password ancora attiva e collegata. `folder` cancella la cartella ma lascia gli elementi senza cartella.
 - `bulk` offre cestino, ripristino, spostamento e cancellazione dal cestino. La route singola `delete` non impone sempre lo stesso vincolo di cestinamento: il controllo UI non va scambiato per un vincolo generale del backend.
 
-Non c'è una transazione con rollback generale: alcune operazioni cambiano il JSON in memoria prima del salvataggio e un errore I/O può lasciare quello stato modificato. Errori e validazione vanno verificati prima di presentare la persistenza come atomica a livello di intera operazione.
+Non c'è una transazione con rollback generale: molte operazioni cambiano il JSON in memoria prima del salvataggio e un errore I/O può lasciare quello stato modificato. Fanno eccezione `import` e `unpack`, che passano da `Vault::transact`: se il merge o il salvataggio falliscono, dati, header e firma del file in memoria tornano allo stato precedente. Errori e validazione vanno verificati prima di presentare la persistenza come atomica a livello di intera operazione.
 
 ## Scrittura e backup
 
@@ -136,10 +136,10 @@ L'export JSON e `pack` non filtrano tutti i dati come il CSV: un pacchetto compl
 
 La UI principale importa i file `.jshare` tramite `unpack`; altre estensioni sono trattate come import JSON/CSV. Il flusso `.jbackup` e il foglio stampabile appartengono alla UI Python storica, non a una schermata equivalente del client React corrente.
 
-La validazione è parziale: `merge_import` verifica almeno che gli elementi siano oggetti, ma non impone uno schema completo per tipo/campi/ID o ogni proprietà delle password. Un input ben formato come JSON può comunque produrre dati non validi per la UI o per assunzioni con `unwrap` nel core. Vedere SEC-05 in [SECURITY](SECURITY.md).
+Prima del merge, `validate_import` controlla l'intero payload JSON/`.jshare` e lo **rifiuta tutto** al primo record non valido, indicandone il numero: radice oggetto; `folders`/`items`/`passwords` elenchi; cartelle con `name` stringa; elementi oggetto con `id` non vuoto, `type` tra le sei categorie, `title` stringa o assente, `f` oggetto o assente; password oggetto con `id` non vuoto e `value` stringa. Le proprietà sconosciute dei record validi sono conservate. Un testo che inizia con `{` o `[` è trattato come JSON, il resto come CSV. Non è uno schema completo dei campi di ogni categoria (per esempio formati di data o URL). Vedere SEC-05 in [SECURITY](SECURITY.md).
 
 ## Compatibilità e modifiche future
 
-Lo sblocco aggiunge i default mancanti `deleted` e `settings_upd`; non esiste una pipeline generale di migrazione. La fixture certifica una corrispondenza tra scrypt/AES e un payload sintetico Python v1, non la portabilità completa di ogni vault storico.
+Allo sblocco e su ogni copia letta da `pull`, `ensure_shape` aggiunge le collezioni mancanti (`items`, `passwords`, `folders`, `deleted`, `settings_upd`) e rifiuta tipi errati (collezioni che non sono elenchi di oggetti, `deleted`/`groups`/`settings` non oggetti) invece di lasciare che il core vada in panic più tardi; una copia di conflitto rifiutata viene ignorata come le altre copie illeggibili. Non esiste una pipeline generale di migrazione. La fixture certifica una corrispondenza tra scrypt/AES e un payload sintetico Python v1, non la portabilità completa di ogni vault storico.
 
 Ogni modifica futura a schema, KDF, marker, identificatori o regole di merge deve prevedere test con dati sintetici, round trip, preservazione dei campi sconosciuti e casi d'errore. Non modificare automaticamente vault reali per “aggiornarli”. Aggiornare questa pagina, [SECURITY](SECURITY.md), [ARCHITECTURE](ARCHITECTURE.md) e gli altri documenti effettivamente coinvolti secondo [AGENTS.md](../AGENTS.md).

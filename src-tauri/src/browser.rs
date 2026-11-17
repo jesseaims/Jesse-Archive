@@ -325,7 +325,7 @@ pub fn browser_accounts(app: tauri::AppHandle) -> Result<Value, String> {
         return Ok(json!({"available":false}));
     };
     let state = app.state::<AppState>();
-    let mut vault = state.0.lock().map_err(|_| "Vault occupato")?;
+    let mut vault = state.vault()?;
     let status = vault.call("status", json!({}))?;
     let mut result = json!({"available":true,"url":s.url,"domain":host(&s.url),"unlocked":status["unlocked"],"accounts":[]});
     if status["unlocked"] == true {
@@ -353,7 +353,7 @@ pub fn browser_fill(app: tauri::AppHandle, id: String) -> Result<(), String> {
         .filter(|s| !s.filling && s.started.elapsed() < Duration::from_secs(120))
         .ok_or("Richiesta scaduta. Premi nuovamente la scorciatoia nel browser.")?;
     let state = app.state::<AppState>();
-    let mut vault = state.0.lock().map_err(|_| "Vault occupato")?;
+    let mut vault = state.vault()?;
     let data = vault.call("browser_state", json!({}))?;
     let item = data["items"]
         .as_array()
