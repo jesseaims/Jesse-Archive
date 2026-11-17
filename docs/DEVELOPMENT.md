@@ -95,7 +95,9 @@ Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inatt
 
 ## Pubblicazione delle release
 
-Le release si compilano **su questo PC** e si pubblicano con [Publish-Release.ps1](../Publish-Release.ps1), dalla root del repository, con JesseArchive chiuso:
+Le release si compilano **su questo PC** con [Publish-Release.ps1](../Publish-Release.ps1). Di norma lo avvia l'automazione locale del progetto del sito (attività Windows `JesseArchive-AutoPublish`, documentata in `DISTRIBUZIONE.md` del sito): reagisce agli aggiornamenti di `origin/main` nella copia locale, attende la CI verde e l'app chiusa, poi esegue lo script in un clone isolato e pubblica.
+
+**Dopo ogni merge su `main` eseguire `git fetch origin`** nella repository locale. `gh pr merge` lanciato dal branch della PR esegue già un pull, ma un merge dal sito GitHub, da un altro branch o con `--auto` non aggiorna `origin/main` sul PC: senza fetch l'automazione non riceve l'evento (non esiste polling). Non lanciare `Publish-Release.ps1` a mano in parallelo all'automazione. L'avvio manuale, con JesseArchive chiuso, resta possibile come ripiego:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Publish-Release.ps1 -SkipNpmInstall
@@ -103,11 +105,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Publish-Release.ps1 -S
 
 Lo script:
 
-1. Verifica GitHub CLI autenticato (cerca anche in `Program Files\GitHub CLI`, non serve nel PATH), branch `main` uguale a `origin/main` e senza modifiche, versione allineata in `package.json`, `tauri.conf.json`, `Cargo.toml` e `JesseArchive-Setup.iss`, voce News `Beta X.Y.Z` presente, release e tag `vX.Y.Z` non esistenti.
-2. Esegue `Build-Setup-EXE.ps1` in un processo separato: un exit code diverso da 0 interrompe tutto senza pubblicare.
-3. Ripristina `src/commits.generated.json` riscritto dalla build, quindi `main` resta invariato.
-4. Controlla che il setup sia della versione corrente, successivo all'avvio della build e di dimensione plausibile, e ne calcola lo SHA-256.
-5. Chiede conferma (salvo `-Yes`), crea la release "Beta X.Y.Z" segnata Latest con tag `vX.Y.Z` sul commit compilato, l'unico asset `JesseArchive-Setup.exe` e le note di [scripts/release-notes.mjs](../scripts/release-notes.mjs) (voci News successive all'ultima release o a `-NotesSince`). Infine verifica che l'asset caricato abbia la stessa dimensione del file locale.
+1. Prende il blocco di sistema `Global\JesseArchive-Publish-Release`: se un'altra pubblicazione (automatica o manuale) è in corso termina subito con exit code **75**, senza controlli né build. Windows rilascia il blocco alla fine del processo, quindi non restano lock orfani.
+2. Verifica GitHub CLI autenticato (cerca anche in `Program Files\GitHub CLI`, non serve nel PATH), branch `main` uguale a `origin/main` e senza modifiche, versione allineata in `package.json`, `tauri.conf.json`, `Cargo.toml` e `JesseArchive-Setup.iss`, voce News `Beta X.Y.Z` presente, CI `ci.yml` completata con successo sul commit, release (anche in bozza) e tag `vX.Y.Z` non esistenti.
+3. Esegue `Build-Setup-EXE.ps1` in un processo separato: un exit code diverso da 0 interrompe tutto senza pubblicare.
+4. Ripristina `src/commits.generated.json` riscritto dalla build, quindi `main` resta invariato.
+5. Controlla che il setup sia della versione corrente, successivo all'avvio della build e di dimensione plausibile, e ne calcola lo SHA-256.
+6. Chiede conferma (salvo `-Yes`), crea la release "Beta X.Y.Z" segnata Latest con tag `vX.Y.Z` sul commit compilato, l'unico asset `JesseArchive-Setup.exe` e le note di [scripts/release-notes.mjs](../scripts/release-notes.mjs) (voci News successive all'ultima release o a `-NotesSince`), lette in UTF-8 anche con la console di Windows PowerShell in una code page OEM. Infine verifica che l'asset caricato abbia la stessa dimensione del file locale.
 
 Opzioni: `-DryRun` (solo controlli e anteprima delle note), `-SkipBuild` (pubblica il setup già presente se è della versione corrente), `-Draft` (release in bozza), `-NotesSince X.Y.Z`, `-Yes`.
 
