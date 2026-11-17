@@ -35,21 +35,20 @@ I parametri KDF sono fissati nel codice, non negoziati dall'envelope. Non cambia
 
 `master` richiede la password corrente e riscrive il wrapper master. `recovery_new` verifica la master e rigenera il wrapper del recupero. Il recupero può impostare una nuova master. La **DEK resta la stessa**: è una rotazione delle protezioni della chiave, non della chiave dati. Un backup con wrapper precedente può consentire di recuperare la stessa DEK tramite credenziali precedenti. Non descrivere questa procedura come revoca globale su tutte le copie.
 
-`create` controlla almeno otto caratteri, mentre altre verifiche di lunghezza usano byte (`String::len`). La coerenza Unicode della policy è da migliorare. Nessuna policy di complessità master o autenticazione biometrica risulta implementata.
+Il minimo di otto caratteri (`long_enough`, `MIN_SECRET_CHARS`) è contato in caratteri Unicode, non in byte, in `create`, `master`, nel recupero con nuova password e in `pack`; il controllo salute usa la stessa funzione. Nel recupero la nuova password viene verificata prima della decifratura: se è troppo corta il vault resta bloccato. Test: `vault_tests::length_policy_counts_characters`. Nessuna policy di complessità master o autenticazione biometrica risulta implementata.
 
 ## Blocco e sessione: comportamento reale
 
 `Vault.key` è `Option<Zeroizing<[u8;32]>>`. `lock` toglie la chiave e sostituisce header/payload in memoria con `Null`. La finestra principale, in modalità tray, blocca alla chiusura; il menu tray può bloccare esplicitamente. Le finestre secondarie vengono nascoste secondo i propri handler.
 
-Il controllo dell'inattività è in `Vault::call`:
+Il controllo dell'inattività è `Vault::expire_if_idle` (`settings.autolock` in minuti, predefinito 5, 0 = mai):
 
-- I comandi aperti sono `status`, `create`, `unlock`, `ping`, `suggest`, `loc_use`, `show`.
-- La scadenza viene applicata a richieste protette, non a `ping/status`.
-- La maggior parte dei comandi aggiorna `last`; `ping`, `status` e `browser_state` non lo aggiornano.
-- Il frontend principale invia `ping` ogni 15 secondi, senza un timer autonomo che azzeri il vault dopo il limite. Una ricerca locale React non passa necessariamente dal backend.
-- Un errore da `run` non cancella automaticamente ogni copia del vecchio stato UI. Un successivo refresh o evento può rimuoverla.
+- Viene eseguito all'inizio di **ogni** comando di `Vault::call`, inclusi `ping` e `status`, che in quel caso rispondono `unlocked: false`; i comandi protetti rispondono "Sessione scaduta". I comandi aperti sono `status`, `create`, `unlock`, `ping`, `suggest`, `loc_use`, `show`.
+- Un thread di `lib.rs` (`spawn_idle_lock`) lo esegue ogni 5 secondi con `try_lock`, quindi il blocco avviene anche senza chiamate dalla UI (finestra nascosta o bloccata); se il vault è occupato da un comando lungo riprova al giro successivo.
+- Attività: i comandi aggiornano `last`, tranne `ping`, `status` e `browser_state`. La finestra principale invia `touch` su tastiera, clic e rotella, al massimo una volta ogni 30 secondi, così leggere o scorrere conta come attività mentre il polling no.
+- Ogni passaggio da sbloccato a bloccato, rilevato da `api` o dal thread, emette `vault-locked`. `App.tsx` risponde con `wipeSession`, che azzera vault, editor (`draft`), campi di password e recupero, dialoghi, selezioni e segreti mostrati; le pagine figlie che contengono segreti vengono smontate. Lo stesso avviene se `run` riceve "Vault bloccato" o "Sessione scaduta" e se il ping trova il vault bloccato.
 
-Pertanto la voce “blocco automatico” è **parziale**: non garantisce che alla scadenza i segreti siano già cancellati o scomparsi dallo schermo. Non trasferire al Rust il comportamento più restrittivo del server Python, che verifica la scadenza anche prima delle richieste aperte.
+Limiti: il blocco può ritardare fino a circa 5 secondi, o di più se un comando lungo tiene il vault; azzerare lo stato React non garantisce la cancellazione della memoria JavaScript (garbage collector, copie nel motore della webview); appunti già copiati seguono il proprio timer. Test: `vault_tests::idle_expiry_locks_on_every_command` e `touch_extends_and_zero_disables_autolock`.
 
 ## Memoria e clipboard
 
@@ -105,11 +104,11 @@ Le priorità seguenti sono valutazioni documentali per orientare una futura revi
 
 | ID | Evidenza e impatto | Verifica/proposta |
 |---|---|---|
-| SEC-01 | `Vault::call`, `App` e polling: scadenza differita, UI potenzialmente ancora decifrata | Alta: test di inattività reale, lifecycle e pulizia stati |
+| SEC-01 | Attenuata: scadenza su ogni comando, thread di blocco ogni 5 s, `vault-locked` emesso su ogni transizione, `wipeSession` nella UI | Media: collaudo manuale con finestra nascosta e pannello rapido; la memoria JavaScript non è cancellata in modo verificabile (vedere SEC-03) |
 | SEC-02 | `unlock`: `fails` incrementato senza backoff nel Rust | Valutare limitazione tentativi locali e relativi test; non attribuire il backoff Python al prodotto attivo |
 | SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
 | SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
-| SEC-05 | `merge_import`, `item` e vari `unwrap`: validazione non uniforme, possibile stato invalido/panic | Alta: test di ingressi malformati e schema, senza cambiare ora il formato |
+| SEC-05 | Attenuata: `validate_import` rifiuta payload malformati, `ensure_shape` garantisce la forma usata da `arr`/`obj`, `import`/`unpack` ripristinano la memoria se falliscono, e un mutex del vault avvelenato da un panic viene recuperato da `AppState::vault` bloccando il vault (dati su disco intatti). Restano `unwrap` interni e nessuno schema completo dei campi | Media: estendere i controlli alle altre route (`item`, `bulk`) e ai mutex di `browser.rs` |
 | SEC-06 | Comandi nativi condivisi dalle tre finestre, I/O file generico | Rivedere autorizzazione per comando e confini delle webview |
 | SEC-07 | Token locale in chiaro e worker non limitati; fiducia nello stesso utente | Documentare ACL effettive e limiti; testare abuso/riconnessioni su profili sintetici |
 | SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini | Revisionare superficie e casi di delega, preservando scelta esplicita e gate iframe |

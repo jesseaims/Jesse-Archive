@@ -7,7 +7,7 @@ Analisi statica del client Beta 1.1.4, baseline `1f09624`, 17 novembre 2026. **P
 | Funzionalità | Stato e comportamento | File, moduli e dipendenze | Limiti |
 |---|---|---|---|
 | Creazione e sblocco | Presente: master password e codice di recupero proteggono due copie della medesima chiave dati | `src/App.tsx`, `src/api.ts`, `src-tauri/src/core.rs`; scrypt, aes-gcm | Nessuna autenticazione remota o biometrica; recupero non equivale a revoca delle copie precedenti |
-| Blocco manuale e inattività | Parziale: comando di blocco, chiusura finestra principale, controllo temporale nelle chiamate protette | `src/App.tsx`, `src-tauri/src/lib.rs`, `core.rs` | Nessun timer autonomo del core; `ping` non impone la scadenza; vedere SEC-01 |
+| Blocco manuale e inattività | Presente: comando di blocco, chiusura finestra principale, scadenza su ogni comando e thread di controllo ogni 5 s; tastiera/clic/rotella contano come attività; la UI azzera lo stato su `vault-locked` | `src/App.tsx`, `src-tauri/src/lib.rs`, `core.rs` | Ritardo fino a circa 5 s; memoria JavaScript non cancellata in modo verificabile; vedere SEC-01 |
 | Cambio master e recupero | Presente: ricifratura degli involucri della chiave dati | `core.rs`, impostazioni in `App.tsx` | Non ricifra tutto con una nuova chiave dati; backup precedenti restano autonomamente decifrabili |
 | Schede archivio | Presente: login, carta, nota, dati personali, passkey, crypto; creazione, modifica, ricerca, preferiti | `src/types.ts`, `src/App.tsx`, `core.rs` | Passkey è un campo archiviato, senza WebAuthn; crypto non esegue operazioni blockchain |
 | Cartelle e cestino | Presente: cartelle, spostamento, selezione multipla, cestinamento, ripristino e cancellazione | `App.tsx`, `core.rs` | Cancellare un elemento può lasciare password storiche non associate; cancellare una cartella non cancella gli elementi |
@@ -41,7 +41,7 @@ Per campi reali, collegamenti e semantica di cancellazione vedere [DATABASE](DAT
 | Posizione del vault | Presente: scelta percorso e copia verificata tramite hash nel cambio posizione | `core.rs`, `App.tsx` | `loc_move` Rust conserva l'originale; non chiamarlo cancellazione o spostamento distruttivo |
 | Cartella sincronizzata | Parziale: lettura modifiche e fusione record di copie `jesse_archive*.vault` con la stessa chiave | `core.rs` | Il trasporto cloud è esterno; timestamp e record interi, non merge per campo; frontend non ricarica sempre dal solo cambio revisione |
 | Esportazione CSV/JSON | Presente: file in chiaro con campi e, per JSON, cronologia | `core.rs`, `App.tsx`, dialoghi `lib.rs` | CSV esclude cestino; JSON non contiene tutte le impostazioni/gruppi/tombstone; non sono backup completi |
-| Importazione CSV/JSON | Presente: mapping campi/cartelle e fusione | `core.rs`, `App.tsx` | Validazione e migrazioni parziali, errori di forma possono raggiungere assunzioni interne; usare fixture sintetiche |
+| Importazione CSV/JSON | Presente: mapping campi/cartelle e fusione | `core.rs`, `App.tsx` | JSON/`.jshare` validati e rifiutati per intero se un record non è valido; import atomico in memoria; nessuno schema completo dei campi né migrazioni; usare fixture sintetiche |
 | Pacchetto protetto `.jshare` | Presente: payload cifrato con password separata, importabile | `core.rs`, `App.tsx`; scrypt, aes-gcm | Selezione supportata dal backend ma percorso UI prevalentemente esportazione completa; non è condivisione collaborativa o revocabile; marcatura shared può precedere un annullamento del dialogo |
 
 ## Integrazione browser

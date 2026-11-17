@@ -70,7 +70,7 @@ Tutte e tre compaiono in [capabilities/default.json](../src-tauri/capabilities/d
 
 `App` mantiene il vault decifrato come stato React. `refresh` interroga `status` e poi `state`; `mutate` usa lo stato ritornato dal comando oppure aggiorna. `run` normalizza gli errori e gestisce `busy`, ma non elimina automaticamente il vecchio stato React su ogni errore di sessione.
 
-Il componente esegue `ping` ogni 15 secondi mentre dispone di un vault e ascolta `vault-changed` e `vault-locked`. Non usa il numero `rev` per ricaricare automaticamente il contenuto a ogni aggiornamento remoto. `touch` esiste nel dispatcher, ma non è collegato a un listener generale di attività del frontend attivo.
+Il componente esegue `ping` ogni 15 secondi mentre dispone di un vault e ascolta `vault-changed` e `vault-locked`. Non usa il numero `rev` per ricaricare automaticamente il contenuto a ogni aggiornamento remoto. Su tastiera, clic e rotella invia `touch` al massimo ogni 30 secondi; su `vault-locked`, o se un comando risponde "Vault bloccato"/"Sessione scaduta", `wipeSession` azzera tutto lo stato sensibile. Nel backend, `api` emette `vault-locked` quando un comando fa passare il vault da sbloccato a bloccato, e il thread `spawn_idle_lock` controlla la scadenza ogni 5 secondi con `try_lock`.
 
 `api(app, state, name, body)` acquisisce il mutex e chiama `Vault::call`. La forma del messaggio è un nome stringa e un oggetto JSON, non un enum tipizzato condiviso. La risposta è `Value` oppure un errore stringa. Le operazioni restano serializzate, incluse parti di I/O, scrypt e richieste HTTP eseguite sotto il mutex.
 
@@ -130,4 +130,4 @@ La sorgente canonica del worker è [browser-extension/background.js](../browser-
 
 Differenze da preservare nella documentazione: Python ha ritardo dopo sblocchi falliti, verifica la scadenza anche prima di `ping`, rinomina copie di conflitto in `.merged`, può spostare il file originale con `loc_move` e contiene foglio di emergenza/stampa e backup `.jbackup` nella UI. Questi comportamenti non vanno attribuiti al client Rust.
 
-Non è stata dimostrata l'inutilità di ogni simbolo apparentemente ridondante: `touch` e `show` rimangono contratti legacy, gli asset duplicati servono tool differenti e le copie JS hanno un generatore. Le opportunità di pulizia e i contratti da chiarire sono proposte in [ROADMAP](ROADMAP.md), non autorizzazioni a eliminare file.
+Non è stata dimostrata l'inutilità di ogni simbolo apparentemente ridondante: `show` rimane un contratto legacy (`touch` è di nuovo usato dalla UI per l'attività), gli asset duplicati servono tool differenti e le copie JS hanno un generatore. Le opportunità di pulizia e i contratti da chiarire sono proposte in [ROADMAP](ROADMAP.md), non autorizzazioni a eliminare file.

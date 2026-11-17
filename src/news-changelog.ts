@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'session-hardening',
+    addedAt: '2026-11-17T18:19:27+01:00',
+    version: 'Beta 1.1.5',
+    title: 'Blocco automatico più affidabile e importazioni più sicure',
+    description:
+      'Il vault si blocca davvero dopo il tempo di inattività scelto, anche con la finestra nascosta, e lo schermo viene svuotato. Tastiera, clic e scorrimento contano come attività. Un file da importare con anche un solo elemento non valido viene rifiutato senza modificare il vault, e la lunghezza minima delle password ora conta correttamente le lettere accentate.',
+    icon: 'shield',
+  },
+  {
     id: 'news-entry-timestamps',
     addedAt: '2026-11-17T12:43:14Z',
     version: 'Beta 1.1.4',

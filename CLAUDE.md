@@ -52,8 +52,8 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 
 | Funzionalità | Stato effettivo e riferimenti |
 |---|---|
-| Creazione, sblocco, blocco, recupero, cambio master | Implementate in `core.rs`, usate da `App.tsx` e in parte `QuickFill.tsx`; scadenza per inattività parziale |
-| Sei categorie, cartelle, preferiti, cestino e operazioni multiple | Implementate in `Vault::call`, `src/types.ts`, `App.tsx`; validazione degli import da rafforzare |
+| Creazione, sblocco, blocco, recupero, cambio master | Implementate in `core.rs`, usate da `App.tsx` e in parte `QuickFill.tsx`; scadenza per inattività su ogni comando e thread ogni 5 s |
+| Sei categorie, cartelle, preferiti, cestino e operazioni multiple | Implementate in `Vault::call`, `src/types.ts`, `App.tsx`; import JSON/`.jshare` validati e atomici, nessuno schema completo dei campi |
 | Storico delle password e riassegnazione | Implementati con `link`, `pw_*`, `PasswordPage`; la UI riassegna agli account login |
 | Password, PIN, username, passphrase | Implementati con `generate`; passphrase a sillabe e stime di robustezza euristiche |
 | TOTP e salute password | Implementati in `core.rs`; TOTP fisso SHA-1/6 cifre/30 secondi |
@@ -73,7 +73,7 @@ Il contenuto del vault è cifrato con AES-256-GCM e DEK casuale di 32 byte. La m
 
 Il codice usa `Zeroizing` per alcune chiavi; non per tutto il JSON, i buffer, l'IPC o la memoria JavaScript. Il frontend principale riceve dati decifrati. Il campo password mascherato non è una protezione della memoria. `fails` nel Rust non applica il ritardo progressivo presente nella copia Python.
 
-La scadenza si verifica su richieste protette e non su `ping/status`: non documentarla come timer autonomo di blocco. La rotazione master/recovery riscrive i wrapper e conserva la DEK; i backup storici possono mantenere accessi precedenti. Non risultano autenticazione biometrica, keyring OS, firma del payload applicativo, anti-rollback o audit di sicurezza indipendente.
+La scadenza (`expire_if_idle`) si verifica su ogni comando e in un thread ogni 5 secondi; ogni blocco emette `vault-locked` e la UI azzera il proprio stato. Non documentarla come cancellazione garantita della memoria JavaScript. La rotazione master/recovery riscrive i wrapper e conserva la DEK; i backup storici possono mantenere accessi precedenti. Non risultano autenticazione biometrica, keyring OS, firma del payload applicativo, anti-rollback o audit di sicurezza indipendente.
 
 Il bridge browser autentica un canale locale con un token per avvio salvato in AppData; non è una difesa contro codice ostile già in esecuzione come lo stesso utente. L'estensione controlla HTTPS, origine del frame, pagina e campo; la scelta delle credenziali rimane esplicita.
 
@@ -123,6 +123,6 @@ Nel resoconto finale dichiarare quali documenti sono cambiati e perché; se ness
 
 Il repository contiene una Beta Windows con core, UI e integrazione browser operativi nel codice. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
 
-Limiti principali: blocco per inattività differito; azzeramento dei segreti incompleto; validazione JSON/schema debole; assenza di transazioni e test estesi di concorrenza; duplicazione storica Python/Rust e CSS stratificato; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
+Limiti principali: azzeramento dei segreti incompleto; validazione limitata agli import e alla forma del vault, senza schema completo; assenza di transazioni e test estesi di concorrenza; duplicazione storica Python/Rust e CSS stratificato; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
 
 Vedere [ROADMAP](docs/ROADMAP.md) per stato, criticità e proposte separate dagli impegni effettivi. Nessuna proposta contenuta nella documentazione autorizza da sola una modifica al codice.

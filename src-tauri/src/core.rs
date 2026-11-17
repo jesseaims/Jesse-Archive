@@ -60,6 +60,12 @@ fn obj<'a>(v: &'a mut V, k: &str) -> &'a mut serde_json::Map<String, V> {
         .as_object_mut()
         .unwrap()
 }
+/// Minimum length policy for secrets chosen by the user, counted in Unicode
+/// characters (not UTF-8 bytes) so accented passwords are treated consistently.
+const MIN_SECRET_CHARS: usize = 8;
+fn long_enough(v: &str) -> bool {
+    v.chars().count() >= MIN_SECRET_CHARS
+}
 fn key(k: &str) -> String {
     k.to_uppercase()
         .chars()
@@ -119,6 +125,79 @@ fn wrapped(secret: &str, dek: &[u8; 32]) -> Res<(String, String)> {
 }
 fn empty() -> V {
     json!({"items":[],"passwords":[],"folders":[],"deleted":{},"settings_upd":0,"settings":{"autolock":5,"clip":30,"old_days":180}})
+}
+/// Checks the top-level shape the rest of the core relies on (`arr`/`obj` and
+/// indexing assume these types). Fills missing collections, rejects wrong types
+/// instead of panicking later while the vault mutex is held.
+fn ensure_shape(d: &mut V) -> Res<()> {
+    let o = d.as_object_mut().ok_or("Dati del vault non validi")?;
+    for k in ["items", "passwords", "folders"] {
+        match o.entry(k).or_insert(json!([])) {
+            V::Array(list) if list.iter().all(V::is_object) => {}
+            _ => {
+                return Err(format!(
+                    "Dati del vault non validi: '{k}' non è un elenco di record"
+                ))
+            }
+        }
+    }
+    for k in ["deleted", "groups", "settings"] {
+        match o.get(k) {
+            None if k != "deleted" => {}
+            None | Some(V::Null) => {
+                o.insert(k.into(), json!({}));
+            }
+            Some(V::Object(_)) => {}
+            Some(_) => return Err(format!("Dati del vault non validi: '{k}' non è un oggetto")),
+        }
+    }
+    o.entry("settings_upd").or_insert(json!(0));
+    Ok(())
+}
+/// Rejects the whole JSON/.jshare payload at the first invalid record, so an
+/// import is applied entirely or not at all.
+fn validate_import(pl: &V) -> Res<()> {
+    if !pl.is_object() {
+        return Err("Importazione non valida: il file non contiene un oggetto JSON".into());
+    }
+    let list = |k: &str| -> Res<&[V]> {
+        match pl.get(k) {
+            None | Some(V::Null) => Ok(&[]),
+            Some(V::Array(a)) => Ok(a.as_slice()),
+            Some(_) => Err(format!("Importazione non valida: '{k}' non è un elenco")),
+        }
+    };
+    let bad = |what: &str, i: usize, why: &str| -> String {
+        format!("Importazione non valida: {what} n. {} {why}", i + 1)
+    };
+    for (i, f) in list("folders")?.iter().enumerate() {
+        if !f.is_object() || !f["name"].is_string() {
+            return Err(bad("cartella", i, "senza nome valido"));
+        }
+    }
+    for (i, it) in list("items")?.iter().enumerate() {
+        if !it.is_object() {
+            return Err(bad("elemento", i, "non è un oggetto"));
+        }
+        if s(it, "id").is_empty() {
+            return Err(bad("elemento", i, "senza identificativo"));
+        }
+        if fields(s(it, "type")).is_none() {
+            return Err(bad("elemento", i, "ha un tipo sconosciuto"));
+        }
+        if !(it["title"].is_null() || it["title"].is_string()) {
+            return Err(bad("elemento", i, "ha un titolo non valido"));
+        }
+        if !(it["f"].is_null() || it["f"].is_object()) {
+            return Err(bad("elemento", i, "ha campi non validi"));
+        }
+    }
+    for (i, p) in list("passwords")?.iter().enumerate() {
+        if !p.is_object() || s(p, "id").is_empty() || !p["value"].is_string() {
+            return Err(bad("password", i, "non valida"));
+        }
+    }
+    Ok(())
 }
 fn fields(typ: &str) -> Option<&'static [&'static str]> {
     match typ {
@@ -383,6 +462,21 @@ impl Vault {
     pub fn unlocked(&self) -> bool {
         self.key.is_some()
     }
+    /// Locks the vault when the auto-lock delay (`settings.autolock`, minutes,
+    /// default 5, 0 = never) has passed since the last user activity. Called by
+    /// every command and by the periodic expiry thread in `lib.rs`. Returns true
+    /// only when this call performed the lock.
+    pub fn expire_if_idle(&mut self) -> bool {
+        if !self.unlocked() {
+            return false;
+        }
+        let minutes = self.data["settings"]["autolock"].as_f64().unwrap_or(5.);
+        if minutes > 0. && now() - self.last > minutes * 60. {
+            self.lock();
+            return true;
+        }
+        false
+    }
     pub fn close_action(&self) -> String {
         self.pref("close_action")
             .as_str()
@@ -423,7 +517,8 @@ impl Vault {
     fn read(&self, path: &Path) -> Res<(V, V)> {
         let h: V = serde_json::from_slice(&fs::read(path).map_err(err)?).map_err(err)?;
         let plain = unseal(&**self.key.as_ref().ok_or("Vault bloccato")?, s(&h, "data"))?;
-        let d = serde_json::from_slice(&plain).map_err(err)?;
+        let mut d = serde_json::from_slice(&plain).map_err(err)?;
+        ensure_shape(&mut d)?;
         Ok((h, d))
     }
     fn adopt(&mut self, h: &V) {
@@ -477,6 +572,17 @@ impl Vault {
         self.last_sync = now();
         Ok(())
     }
+    /// Applies `change` to the data and saves; on any error restores the previous
+    /// in-memory state (data, header, file signature) so a failed import or write
+    /// never leaves a half-applied vault in memory.
+    fn transact<T>(&mut self, change: impl FnOnce(&mut V) -> Res<T>) -> Res<T> {
+        let snapshot = (self.data.clone(), self.header.clone(), self.signature);
+        let result = change(&mut self.data).and_then(|out| self.save().map(|_| out));
+        if result.is_err() {
+            (self.data, self.header, self.signature) = snapshot;
+        }
+        result
+    }
     fn save(&mut self) -> Res<()> {
         self.pull()?;
         let mut h = self.header.clone();
@@ -522,15 +628,13 @@ impl Vault {
         let open = [
             "status", "create", "unlock", "ping", "suggest", "loc_use", "show",
         ];
+        // Expiry applies to every command, including ping/status: they then simply
+        // report `unlocked: false`.
+        if self.expire_if_idle() && !open.contains(&name) {
+            return Err("Sessione scaduta: vault bloccato".into());
+        }
         if !open.contains(&name) && !self.unlocked() {
             return Err("Vault bloccato".into());
-        }
-        if self.unlocked() {
-            let minutes = self.data["settings"]["autolock"].as_f64().unwrap_or(5.);
-            if minutes > 0. && now() - self.last > minutes * 60. && !open.contains(&name) {
-                self.lock();
-                return Err("Sessione scaduta: vault bloccato".into());
-            }
         }
         if !["ping", "status", "browser_state"].contains(&name) {
             self.last = now()
@@ -553,7 +657,7 @@ impl Vault {
                     return Err("Esiste già un vault".into());
                 }
                 let pw = s(&b, "password");
-                if pw.chars().count() < 8 {
+                if !long_enough(pw) {
                     return Err("Password principale: minimo 8 caratteri".into());
                 }
                 let dek = Zeroizing::new(rand_bytes::<32>());
@@ -574,6 +678,11 @@ impl Vault {
                 let h: V =
                     serde_json::from_slice(&fs::read(&self.path).map_err(err)?).map_err(err)?;
                 let is_rec = !s(&b, "recovery").is_empty();
+                let new_password = if is_rec { s(&b, "new_password") } else { "" };
+                // Checked before decryption so a rejected password never leaves the vault unlocked.
+                if !new_password.is_empty() && !long_enough(new_password) {
+                    return Err("Nuova password: minimo 8 caratteri".into());
+                }
                 let (salt, blob, pass) = if is_rec {
                     (decode(&h, "rsalt")?, s(&h, "rwrap"), key(s(&b, "recovery")))
                 } else {
@@ -598,14 +707,7 @@ impl Vault {
                         return Err("Password o codice di recupero non corretti".into());
                     }
                 };
-                data.as_object_mut()
-                    .ok_or("Dati del vault non validi")?
-                    .entry("deleted")
-                    .or_insert(json!({}));
-                data.as_object_mut()
-                    .unwrap()
-                    .entry("settings_upd")
-                    .or_insert(json!(0));
+                ensure_shape(&mut data)?;
                 self.header = h;
                 self.header.as_object_mut().unwrap().remove("data");
                 self.key = Some(dek);
@@ -613,12 +715,8 @@ impl Vault {
                 self.fails = 0;
                 self.signature = sig(&self.path);
                 self.push = false;
-                if is_rec && !s(&b, "new_password").is_empty() {
-                    let new = s(&b, "new_password");
-                    if new.len() < 8 {
-                        return Err("Nuova password troppo corta".into());
-                    }
-                    let (salt, wrap) = wrapped(new, self.key.as_ref().unwrap())?;
+                if !new_password.is_empty() {
+                    let (salt, wrap) = wrapped(new_password, self.key.as_ref().unwrap())?;
                     self.header["salt"] = json!(salt);
                     self.header["wrap"] = json!(wrap);
                     self.header["hv"] = json!(now());
@@ -900,7 +998,7 @@ impl Vault {
             }
             "master" => {
                 self.check_master(s(&b, "old"))?;
-                if s(&b, "new").len() < 8 {
+                if !long_enough(s(&b, "new")) {
                     return Err("Minimo 8 caratteri".into());
                 }
                 let (salt, wrap) = wrapped(s(&b, "new"), self.key.as_ref().unwrap())?;
@@ -922,7 +1020,7 @@ impl Vault {
             }
             "pack" => {
                 let pw = s(&b, "passphrase");
-                if pw.len() < 8 {
+                if !long_enough(pw) {
                     return Err("Passphrase: minimo 8 caratteri".into());
                 }
                 let ids: HashSet<String> = array(&b, "ids")
@@ -970,8 +1068,8 @@ impl Vault {
                     s(&pkg, "blob"),
                 )?)
                 .map_err(|_| "Passphrase errata o pacchetto non valido")?;
-                let n = merge_import(&mut self.data, &pl);
-                self.save()?;
+                validate_import(&pl)?;
+                let n = self.transact(|d| Ok(merge_import(d, &pl)))?;
                 Ok(json!({"count":n,"state":self.state()}))
             }
             "export" => {
@@ -980,13 +1078,13 @@ impl Vault {
             }
             "import" => {
                 let text = s(&b, "text").trim_start_matches('\u{feff}');
-                let n = if text.trim_start().starts_with('{') {
+                let n = if text.trim_start().starts_with(['{', '[']) {
                     let pl: V = serde_json::from_str(text).map_err(|_| "JSON non valido")?;
-                    merge_import(&mut self.data, &pl)
+                    validate_import(&pl)?;
+                    self.transact(|d| Ok(merge_import(d, &pl)))?
                 } else {
-                    import_csv(&mut self.data, text)?
+                    self.transact(|d| import_csv(d, text))?
                 };
-                self.save()?;
                 Ok(json!({"count":n,"state":self.state()}))
             }
             "group_edit" => {
@@ -1523,7 +1621,7 @@ fn health(d: &V) -> V {
     let reference = |p: &&V| json!({"pid":p["id"],"item_id":p["item_id"],"title":p["item_title"],"bits":bits(s(p,"value"))});
     let weak: Vec<_> = active
         .iter()
-        .filter(|p| bits(s(p, "value")) < 60. || s(p, "value").len() < 8)
+        .filter(|p| bits(s(p, "value")) < 60. || !long_enough(s(p, "value")))
         .map(reference)
         .collect();
     let mut groups: HashMap<String, Vec<V>> = HashMap::new();
@@ -1983,5 +2081,183 @@ mod legacy_python_vectors {
         let plain = unseal(&dek, s(h, "data")).unwrap();
         let d: V = serde_json::from_slice(&plain).unwrap();
         assert_eq!(d, f["expected_data"])
+    }
+}
+#[cfg(test)]
+mod vault_tests {
+    use super::*;
+    /// Synthetic vault in an isolated temporary directory; never touches real data.
+    fn test_vault() -> (Vault, PathBuf) {
+        let dir =
+            std::env::temp_dir().join(format!("jesse-test-{}", hex::encode(rand_bytes::<6>())));
+        fs::create_dir_all(&dir).unwrap();
+        let v = Vault {
+            path: dir.join("jesse_archive.vault"),
+            config: dir.join("config.json"),
+            key: None,
+            header: V::Null,
+            data: V::Null,
+            last: now(),
+            last_sync: 0.,
+            signature: None,
+            push: false,
+            rev: 0,
+            fails: 0,
+        };
+        (v, dir)
+    }
+    // 7 characters but 14 UTF-8 bytes, and 8 characters / 16 bytes.
+    const SHORT_ACCENTED: &str = "àèìòùéç";
+    const LONG_ACCENTED: &str = "àèìòùéçñ";
+    #[test]
+    fn length_policy_counts_characters() {
+        assert!(!long_enough(SHORT_ACCENTED));
+        assert!(long_enough(LONG_ACCENTED));
+        let (mut v, dir) = test_vault();
+        assert!(v
+            .call("create", json!({"password": SHORT_ACCENTED}))
+            .is_err());
+        let rec = v
+            .call("create", json!({"password": LONG_ACCENTED}))
+            .unwrap()["recovery"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let master = json!({"old": LONG_ACCENTED, "new": SHORT_ACCENTED});
+        assert!(v.call("master", master).is_err());
+        assert!(v
+            .call("pack", json!({"passphrase": SHORT_ACCENTED}))
+            .is_err());
+        v.call("lock", json!({})).unwrap();
+        // A rejected new password must not leave the vault unlocked.
+        let short = json!({"recovery": rec, "new_password": SHORT_ACCENTED});
+        assert!(v.call("unlock", short).is_err());
+        assert!(!v.unlocked());
+        let reset = json!({"recovery": rec, "new_password": "nuova-master-1"});
+        v.call("unlock", reset).unwrap();
+        assert!(v.unlocked());
+        v.call("lock", json!({})).unwrap();
+        v.call("unlock", json!({"password": "nuova-master-1"}))
+            .unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+
+    fn unlocked_vault() -> (Vault, PathBuf) {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        (v, dir)
+    }
+    fn item(id: &str) -> V {
+        json!({"id": id, "type": "login", "title": "Esempio", "updated": 1.0,
+               "f": {"url": "https://example.test", "username": "utente"}, "zz_unknown": 7})
+    }
+    #[test]
+    fn import_rejects_invalid_payloads_without_changes() {
+        let (mut v, dir) = unlocked_vault();
+        let before = v.data.clone();
+        let bad = [
+            json!([1, 2]),
+            json!({"items": "nope"}),
+            json!({"items": [item("a"), 5]}),
+            json!({"items": [{"type": "login", "title": "senza id"}]}),
+            json!({"items": [{"id": "b", "type": "sconosciuto", "title": "x"}]}),
+            json!({"items": [{"id": "c", "type": "login", "title": "x", "f": "testo"}]}),
+            json!({"items": [item("d")], "passwords": [{"value": "senza id"}]}),
+            json!({"folders": [{"id": "f1"}]}),
+        ];
+        for payload in bad {
+            let text = payload.to_string();
+            assert!(v.call("import", json!({"text": text})).is_err(), "{text}");
+            assert_eq!(v.data, before, "{text}");
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn import_roundtrip_keeps_unknown_fields() {
+        let (mut v, dir) = unlocked_vault();
+        let payload = json!({"kind": "jessamine-export", "folders": [], "items": [item("a")],
+                             "passwords": [{"id": "p1", "value": "segreto-sintetico"}]});
+        let r = v
+            .call("import", json!({"text": payload.to_string()}))
+            .unwrap();
+        assert_eq!(r["count"], 1);
+        let exported = v.call("export", json!({"format": "json"})).unwrap();
+        let (mut other, dir2) = unlocked_vault();
+        let text = exported["text"].as_str().unwrap();
+        other.call("import", json!({"text": text})).unwrap();
+        let items = array(&other.data, "items");
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0]["zz_unknown"], 7);
+        assert_eq!(array(&other.data, "passwords").len(), 1);
+        fs::remove_dir_all(dir).unwrap();
+        fs::remove_dir_all(dir2).unwrap();
+    }
+    #[test]
+    fn failed_save_restores_memory() {
+        let (mut v, dir) = unlocked_vault();
+        let before = v.data.clone();
+        // A file where the vault directory should be makes the write fail.
+        fs::write(dir.join("blocco"), b"x").unwrap();
+        v.path = dir.join("blocco").join("jesse_archive.vault");
+        let payload = json!({"items": [item("a")]}).to_string();
+        assert!(v.call("import", json!({"text": payload})).is_err());
+        assert_eq!(v.data, before);
+        let csv = "name,url,username,password\nEsempio,https://example.test,utente,pw-sintetica\n";
+        assert!(v.call("import", json!({"text": csv})).is_err());
+        assert_eq!(v.data, before);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn shape_is_completed_or_rejected() {
+        let mut d = json!({"groups": null, "settings": {"autolock": 5}});
+        ensure_shape(&mut d).unwrap();
+        assert!(d["items"].is_array() && d["passwords"].is_array() && d["folders"].is_array());
+        assert!(d["deleted"].is_object() && d["groups"].is_object());
+        assert!(ensure_shape(&mut json!({"items": "x"})).is_err());
+        assert!(ensure_shape(&mut json!({"items": [1]})).is_err());
+        assert!(ensure_shape(&mut json!({"settings": 3})).is_err());
+        assert!(ensure_shape(&mut json!([])).is_err());
+    }
+
+    #[test]
+    fn idle_expiry_locks_on_every_command() {
+        let (mut v, dir) = unlocked_vault();
+        // ping reports the expiry and wipes the in-memory vault.
+        v.last = now() - 6. * 60.;
+        let r = v.call("ping", json!({})).unwrap();
+        assert_eq!(r["unlocked"], false);
+        assert!(v.key.is_none() && v.data.is_null() && v.header.is_null());
+        // A protected command after expiry reports the expired session.
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        v.last = now() - 6. * 60.;
+        let err = v.call("state", json!({})).unwrap_err();
+        assert!(err.contains("Sessione scaduta"));
+        assert!(!v.unlocked());
+        // The periodic check used by the background thread.
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        assert!(!v.expire_if_idle());
+        v.last = now() - 6. * 60.;
+        assert!(v.expire_if_idle());
+        assert!(!v.expire_if_idle());
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn touch_extends_and_zero_disables_autolock() {
+        let (mut v, dir) = unlocked_vault();
+        v.last = now() - 4. * 60.;
+        v.call("touch", json!({})).unwrap();
+        assert!(now() - v.last < 5.);
+        // ping must not count as user activity.
+        v.last = now() - 4. * 60.;
+        v.call("ping", json!({})).unwrap();
+        assert!(now() - v.last > 3. * 60.);
+        v.data["settings"]["autolock"] = json!(0);
+        v.last = now() - 24. * 3600.;
+        assert!(!v.expire_if_idle());
+        assert!(v.unlocked());
+        fs::remove_dir_all(dir).unwrap();
     }
 }
