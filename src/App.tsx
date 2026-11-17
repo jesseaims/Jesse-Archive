@@ -43,7 +43,7 @@ import {
 } from 'lucide-react';
 import { api, copyText, clearSecretIfUnchanged, picker, readFile, saveFile } from './api';
 import { paletteKeys, DEFAULT_CUSTOM, applyPalette } from './theme';
-import { changeZoom, getZoom } from './zoom';
+import { changeZoom, getZoom, ZOOM_MAX, ZOOM_MIN } from './zoom';
 import { pickIconData } from './api';
 import {
   categories,
@@ -2768,7 +2768,26 @@ function SettingsPage({
     [cloudSearchStatus, setCloudSearchStatus] = useState(''),
     [cloudSearching, setCloudSearching] = useState(false),
     [appVersion, setAppVersion] = useState(''),
-    [zoom, setZoom] = useState(1);
+    [zoom, setZoom] = useState(1),
+    [zoomDraft, setZoomDraft] = useState('100');
+  // The typed value follows the real zoom (buttons, shortcuts, other windows).
+  useEffect(() => setZoomDraft(String(Math.round(zoom * 100))), [zoom]);
+  // Applies the typed percentage: invalid input is reverted, out-of-range values
+  // are clamped to the allowed limits.
+  const applyZoomDraft = () => {
+    const typed = Number.parseInt(zoomDraft, 10);
+    const current = Math.round(zoom * 100);
+    if (!Number.isFinite(typed)) {
+      setZoomDraft(String(current));
+      return;
+    }
+    const percent = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, typed));
+    setZoomDraft(String(percent));
+    if (percent !== current)
+      void changeZoom('set', percent / 100)
+        .then(setZoom)
+        .catch(() => setZoomDraft(String(current)));
+  };
   // Interface zoom is a per-device preference, applied immediately (not part of
   // "Salva aspetto"); keyboard shortcuts in any window keep this control in sync.
   useEffect(() => {
@@ -2881,20 +2900,56 @@ function SettingsPage({
                 <button
                   type="button"
                   className="secondary"
+                  title={`Zoom minimo (${ZOOM_MIN}%)`}
+                  aria-label={`Imposta lo zoom al minimo, ${ZOOM_MIN}%`}
+                  disabled={zoom <= ZOOM_MIN / 100}
+                  onClick={() => void changeZoom('set', ZOOM_MIN / 100).then(setZoom)}
+                >
+                  <span className="zoom-icon">
+                    <ZoomOut size={16} />
+                    <span className="zoom-badge" aria-hidden="true">
+                      +
+                    </span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
                   title="Riduci (Ctrl + − oppure Ctrl + F11)"
                   aria-label="Riduci dimensione interfaccia"
-                  disabled={zoom <= 0.5}
+                  disabled={zoom <= ZOOM_MIN / 100}
                   onClick={() => void changeZoom('out').then(setZoom)}
                 >
                   <ZoomOut size={16} />
                 </button>
-                <strong aria-live="polite">{Math.round(zoom * 100)}%</strong>
+                <label className="zoom-input" title="Scrivi la percentuale e premi Invio">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={ZOOM_MIN}
+                    max={ZOOM_MAX}
+                    step={1}
+                    aria-label={`Zoom in percentuale, da ${ZOOM_MIN} a ${ZOOM_MAX}`}
+                    value={zoomDraft}
+                    onChange={(e) => setZoomDraft(e.target.value)}
+                    onBlur={applyZoomDraft}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyZoomDraft();
+                      } else if (e.key === 'Escape') {
+                        setZoomDraft(String(Math.round(zoom * 100)));
+                      }
+                    }}
+                  />
+                  <span>%</span>
+                </label>
                 <button
                   type="button"
                   className="secondary"
                   title="Ingrandisci (Ctrl + + oppure Ctrl + F12)"
                   aria-label="Ingrandisci dimensione interfaccia"
-                  disabled={zoom >= 2}
+                  disabled={zoom >= ZOOM_MAX / 100}
                   onClick={() => void changeZoom('in').then(setZoom)}
                 >
                   <ZoomIn size={16} />
@@ -2902,16 +2957,24 @@ function SettingsPage({
                 <button
                   type="button"
                   className="secondary"
-                  disabled={Math.abs(zoom - 1) < 0.001}
-                  onClick={() => void changeZoom('reset').then(setZoom)}
+                  title={`Zoom massimo (${ZOOM_MAX}%)`}
+                  aria-label={`Imposta lo zoom al massimo, ${ZOOM_MAX}%`}
+                  disabled={zoom >= ZOOM_MAX / 100}
+                  onClick={() => void changeZoom('set', ZOOM_MAX / 100).then(setZoom)}
                 >
-                  100%
+                  <span className="zoom-icon">
+                    <ZoomIn size={16} />
+                    <span className="zoom-badge" aria-hidden="true">
+                      +
+                    </span>
+                  </span>
                 </button>
               </div>
               <p className="helper">
-                Si applica subito a tutte le finestre e viene ricordata su questo PC. Scorciatoie:
-                Ctrl + + / Ctrl + − (anche Ctrl + F12 / Ctrl + F11 o Ctrl + rotella), Ctrl + 0 per
-                tornare al 100%.
+                Scrivi una percentuale da {ZOOM_MIN} a {ZOOM_MAX} e premi Invio, oppure usa i
+                pulsanti. Si applica subito a tutte le finestre e viene ricordata su questo PC.
+                Scorciatoie: Ctrl + + / Ctrl + − (anche Ctrl + F12 / Ctrl + F11 o Ctrl + rotella),
+                Ctrl + 0 per tornare al 100%.
               </p>
             </div>
             <label className="field">

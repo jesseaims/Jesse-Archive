@@ -2,6 +2,10 @@ import { invoke } from '@tauri-apps/api/core';
 
 export type ZoomAction = 'in' | 'out' | 'reset' | 'set';
 
+/** Limits in percent; must match `LEVELS` bounds in src-tauri/src/zoom.rs. */
+export const ZOOM_MIN = 50;
+export const ZOOM_MAX = 200;
+
 /** Changes the interface zoom of every window (backend `zoom_change`). */
 export async function changeZoom(action: ZoomAction, value?: number): Promise<number> {
   const factor = await invoke<number>('zoom_change', { action, value });
