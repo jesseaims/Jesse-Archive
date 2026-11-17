@@ -93,6 +93,12 @@ Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inatt
 
 [.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
+## Rilasci automatici
+
+[.github/workflows/release.yml](../.github/workflows/release.yml) gira a ogni push su `main`. Se la versione di `package.json` non ha ancora una release (tag `vX.Y.Z`), su `windows-latest` installa Inno Setup (Chocolatey), esegue `npm ci` e `Build-Setup-EXE.ps1 -SkipNpmInstall` (stessi test e stesso MSI + Inno della build locale) e pubblica una release normale "Latest" intitolata **Beta X.Y.Z**, con l'unico asset `JesseArchive-Setup.exe` (nome invariato). Le note sono generate da [scripts/release-notes.mjs](../scripts/release-notes.mjs) con le voci News di tutte le versioni successive all'ultima release pubblicata. Un merge che non cambia versione termina subito senza pubblicare.
+
+Regole: ogni aggiornamento destinato agli utenti porta il bump di versione e la voce News nella stessa PR; non creare a mano tag `v*` o release (il workflow salterebbe la versione). Il setup pubblicato è compilato da GitHub, non è il file provato in locale, e non è firmato. Il repository è privato: release e asset sono visibili solo a chi ha accesso al repository, e i minuti Actions su Windows contano doppio nella quota del piano GitHub (una release richiede circa 20–30 minuti di build).
+
 ## Setup Windows completo
 
 Chiudere JesseArchive anche nel tray: gli script verificano il processo e si interrompono se attivo. Non terminare forzatamente un processo con operazioni sui dati in corso. Per rigenerare il setup, quando autorizzato:

@@ -1,0 +1,93 @@
+name: Release
+
+# Publishes JesseArchive-Setup.exe as GitHub release "Beta X.Y.Z" when main
+# contains a version (package.json) that has no release yet. Merges that do not
+# bump the version are skipped quickly. Never create the vX.Y.Z tags by hand.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the build regenerates the commit list shown in News.
+          fetch-depth: 0
+
+      - name: Check whether this version is already released
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          "version=$version" >> $env:GITHUB_OUTPUT
+          gh release view "v$version" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release v$version already exists: nothing to publish."
+            "skip=true" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+          "skip=false" >> $env:GITHUB_OUTPUT
+          # Notes cover every version since the last published release; for the
+          # very first release, since the version main had before this push.
+          $previous = gh release list --exclude-drafts --limit 1 --json tagName --jq '.[0].tagName' 2>$null
+          if (-not $previous) {
+            $previous = (git show "HEAD^1:package.json" | ConvertFrom-Json).version
+          }
+          "previous=$previous" >> $env:GITHUB_OUTPUT
+          Write-Host "Publishing v$version (notes since $previous)."
+          # `gh release view` failing above is expected: do not fail the step.
+          exit 0
+
+      - uses: actions/setup-node@v4
+        if: steps.version.outputs.skip == 'false'
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.version.outputs.skip == 'false'
+
+      - uses: Swatinem/rust-cache@v2
+        if: steps.version.outputs.skip == 'false'
+        with:
+          workspaces: src-tauri
+
+      - name: Install Inno Setup
+        if: steps.version.outputs.skip == 'false'
+        run: choco install innosetup -y --no-progress
+
+      - name: Install npm dependencies
+        if: steps.version.outputs.skip == 'false'
+        run: npm ci
+
+      # Same script used locally: tests, MSI with offline WebView2, Inno setup.
+      - name: Build JesseArchive-Setup.exe
+        if: steps.version.outputs.skip == 'false'
+        shell: pwsh
+        run: ./Build-Setup-EXE.ps1 -SkipNpmInstall
+
+      - name: Publish GitHub release
+        if: steps.version.outputs.skip == 'false'
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          $exe = 'src-tauri/target/release/bundle/distributable/JesseArchive-Setup.exe'
+          if (-not (Test-Path $exe)) { throw "Setup non trovato: $exe" }
+          node scripts/release-notes.mjs $version '${{ steps.version.outputs.previous }}' | Out-File -Encoding utf8 release-notes.md
+          gh release create "v$version" $exe `
+            --title "Beta $version" `
+            --notes-file release-notes.md `
+            --target $env:GITHUB_SHA `
+            --latest

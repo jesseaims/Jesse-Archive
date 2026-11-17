@@ -52,6 +52,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -S
 
 Il test dell'host richiede il relativo EXE compilato; in sua assenza viene saltato. Il test Brave interattivo è ignorato di default e apre un profilo di prova: non abilitarlo indiscriminatamente. Il setup richiede l'app chiusa, tool Windows e Inno Setup. `npm run build` aggiorna `src/commits.generated.json`; la procedura completa rigenera anche manifest e copie dell'estensione. Non eseguirli in un incarico che vieta tali scritture.
 
+Ogni aggiornamento per gli utenti include nella stessa PR il bump di versione (package.json, Cargo, Tauri, Inno, manifest, `NewsPanel`) e la voce in `src/news-changelog.ts`: al merge su `main`, [.github/workflows/release.yml](.github/workflows/release.yml) compila e pubblica `JesseArchive-Setup.exe` come release "Beta X.Y.Z". Non creare tag `v*` o release a mano.
+
 La CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) esegue tipi, build frontend, test Rust e Node su Windows a ogni push/PR verso `main`: ogni modifica deve lasciarla verde.
 
 Una build non sostituisce il collaudo di login, recupero, conflitti cloud, installazione e browser. Registrare esito, controlli saltati e motivi. Per modifiche soltanto documentali bastano controlli di riferimenti, coerenza e perimetro delle modifiche: non ricompilare l'app per abitudine.

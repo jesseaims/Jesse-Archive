@@ -8,7 +8,7 @@ Set-Location $PSScriptRoot
 
 # Solo la sessione corrente: correzione difensiva del PATH/PATHEXT.
 $nodeDir = 'C:\Program Files\nodejs'
-if ((Test-Path (Join-Path $nodeDir 'node.exe')) -and -not (($env:Path -split ';') -contains $nodeDir)) {
+if (-not (Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $nodeDir 'node.exe')) -and -not (($env:Path -split ';') -contains $nodeDir)) {
     $env:Path = "$nodeDir;$env:Path"
 }
 if (-not ($env:PATHEXT -split ';' | Where-Object { $_ -ieq '.EXE' })) {
