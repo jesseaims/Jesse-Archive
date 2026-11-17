@@ -1382,6 +1382,16 @@ select,
   gap: 5px;
   color: var(--ui-muted);
 }
+.danger-soft {
+  gap: 6px;
+  color: var(--ui-muted);
+  white-space: nowrap;
+}
+.danger-soft:hover:not(:disabled) {
+  color: #e5484d;
+  border-color: color-mix(in srgb, #e5484d 45%, var(--ui-border));
+  background: color-mix(in srgb, #e5484d 12%, transparent);
+}
 .group-delete-account:hover {
   color: #e5484d;
   border-color: color-mix(in srgb, #e5484d 45%, var(--ui-border));

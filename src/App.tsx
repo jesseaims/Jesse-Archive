@@ -864,6 +864,40 @@ export default function App() {
       `Gruppo ${label} spostato nel cestino`,
     );
   };
+  // "Svuota cestino": permanent deletion of exactly the trashed items listed in the
+  // popups (bulk/delete only removes ids that are still in the trash), after two
+  // confirmations.
+  const emptyTrash = async () => {
+    if (!vault) return;
+    const trashed = vault.items.filter((i) => i.trashed);
+    const n = trashed.length;
+    if (n === 0) return;
+    const shown = trashed
+      .slice(0, 8)
+      .map((i) => `• ${i.title} (${categories[i.type].label})`)
+      .join('\n');
+    const more = n > 8 ? `\n…e altri ${n - 8}` : '';
+    const first = await askConfirm(
+      `Stai per svuotare il cestino: ${n === 1 ? "l'elemento" : `tutti i ${n} elementi`} verranno eliminati DEFINITIVAMENTE e non potranno più essere ripristinati.\n\n` +
+        `${shown}${more}`,
+      { title: 'Svuotare il cestino?', danger: true, confirmLabel: 'Continua' },
+    );
+    if (!first) return;
+    const second = await askConfirm(
+      `Ultima conferma: ${n === 1 ? '1 elemento verrà eliminato' : `${n} elementi verranno eliminati`} per sempre dal vault.\n\n` +
+        'Le password collegate restano nello storico della pagina Password come non associate. ' +
+        'Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
+      {
+        title: 'Conferma svuotamento del cestino',
+        danger: true,
+        confirmLabel: `Elimina definitivamente (${n})`,
+      },
+    );
+    if (!second) return;
+    await mutate('bulk', { ids: trashed.map((i) => i.id), op: 'delete' }, 'Cestino svuotato').then(
+      () => setMulti([]),
+    );
+  };
   const openItem = (it?: Item, type: Category = 'login') => {
     setDraft(it ? structuredClone(it) : itemBase(type));
     setGroupIcon('');
@@ -1308,6 +1342,17 @@ export default function App() {
                     <span className="counter">{filtered.length}</span>
                   </h2>
                   <div className="toolbar">
+                    {page === 'trash' && (
+                      <button
+                        className="secondary danger-soft"
+                        disabled={!vault.items.some((i) => i.trashed)}
+                        title="Elimina definitivamente tutti gli elementi nel cestino"
+                        onClick={() => void emptyTrash()}
+                      >
+                        <Trash2 size={16} />
+                        Svuota cestino
+                      </button>
+                    )}
                     <div className="search-box">
                       <Search size={17} />
                       <input
