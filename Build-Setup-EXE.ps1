@@ -73,7 +73,7 @@ Write-Host "==> Creo setup EXE autonomo da MSI offline: $($msi.Name)" -Foregroun
 $iss = Join-Path $project 'installer\JesseArchive-Setup.iss'
 & $iscc $iss
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup ha fallito con codice $LASTEXITCODE" }
-$exe = Join-Path $outFolder 'JesseArchive-Setup-1.0.2-x64.exe'
+$exe = Join-Path $outFolder 'JesseArchive-Setup.exe'
 if (-not (Test-Path $exe)) { throw "Setup .exe non creato nel percorso atteso: $exe" }
 Write-Host "`nSetup generato: $exe" -ForegroundColor Green
 Write-Host 'ATTENZIONE: collaudare installazione, aggiornamento e disinstallazione offline su VM/PC di prova.' -ForegroundColor Yellow

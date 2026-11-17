@@ -36,7 +36,7 @@ Per saltare `npm install` se già eseguito:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\Build-Setup-EXE.ps1" -SkipNpmInstall
 ```
 
-Genera `src-tauri\target\release\bundle\distributable\JesseArchive-Setup-1.0.2-x64.exe`.
+Genera `src-tauri\target\release\bundle\distributable\JesseArchive-Setup.exe`.
 Lo script verifica che il pacchetto MSI sia recente e abbia dimensioni coerenti
 con il runtime offline prima di incorporarlo.
 

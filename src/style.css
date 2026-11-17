@@ -92,3 +92,6 @@ input[type=password]::-webkit-credentials-auto-fill-button{visibility:hidden!imp
 @media(max-width:660px){.password-assign{font-size:10px;padding:7px}.password-link-modal .modal-content{padding:18px}}
 
 .cloud-search-status{margin:2px 0 0;padding:9px 11px;border:1px solid var(--ui-border);border-radius:9px;color:var(--ui-muted);background:var(--ui-input);font-size:12px;line-height:1.5}
+
+.settings-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.settings-footer .app-version{margin-left:auto;color:var(--ui-muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
