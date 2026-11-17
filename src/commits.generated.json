@@ -1,5 +1,23 @@
 [
   {
+    "hash": "81d8cf7",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:24:07+01:00",
+    "subject": "chore: release beta 1.1.7"
+  },
+  {
+    "hash": "d606ce8",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:23:42+01:00",
+    "subject": "fix: regroup accounts when their website changes"
+  },
+  {
+    "hash": "39516d9",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:15:19+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.6 build"
+  },
+  {
     "hash": "33c6e48",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T19:10:19+01:00",

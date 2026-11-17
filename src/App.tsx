@@ -167,13 +167,38 @@ function domainOf(value: string): string {
     return '';
   }
 }
+function sourceOf(it: Item): 'web' | 'app' | 'other' {
+  if (it.src === 'app' || it.src === 'other' || it.src === 'web') return it.src;
+  return it.gk?.startsWith('app:') ? 'app' : it.gk?.startsWith('other:') ? 'other' : 'web';
+}
+// Group key computed from the item's current data: web accounts follow their
+// current URL (or email domain), the others their current title.
+function deriveGroupKey(it: Item): string {
+  const src = sourceOf(it);
+  if (src === 'web') {
+    const host = domainOf(it.f?.url || '') || domainOf((it.f?.username || '').split('@')[1] || '');
+    if (host) return 'web:' + host;
+  }
+  return (
+    (src === 'app' ? 'app:' : 'other:') +
+    (it.title || '').toLocaleLowerCase('it').trim().replace(/\s+/g, '-')
+  );
+}
+// Key used when saving: an explicitly associated installed app keeps its key,
+// everything else is recomputed so editing the site or title regroups the account.
+function savedGroupKey(it: Item): string {
+  if (sourceOf(it) === 'app' && it.gk?.startsWith('app:')) return it.gk;
+  return deriveGroupKey(it);
+}
 function groupFor(it: Item) {
-  if (it.gk) return it.gk;
-  if (it.type !== 'login') return '';
-  const host = domainOf(it.f?.url || '') || domainOf((it.f?.username || '').split('@')[1] || '');
-  return host
-    ? 'web:' + host
-    : 'other:' + it.title.toLocaleLowerCase('it').trim().replace(/\s+/g, '-');
+  if (it.type !== 'login') return it.gk || '';
+  // Web accounts are grouped by their current site even if an older save stored a
+  // stale key; app/other accounts keep their saved key.
+  if (sourceOf(it) === 'web') {
+    const key = deriveGroupKey(it);
+    if (key.startsWith('web:')) return key;
+  }
+  return it.gk || deriveGroupKey(it);
 }
 function GroupLogo({ icon, groupKey, name }: { icon?: string; groupKey: string; name: string }) {
   const [broken, setBroken] = useState(false);
@@ -789,15 +814,9 @@ export default function App() {
       setError('Inserisci un nome per l’elemento');
       return;
     }
-    let groupKey = draft.gk || '';
-    if (draft.type === 'login' && !groupKey) {
-      const host =
-        domainOf(draft.f.url || '') || domainOf((draft.f.username || '').split('@')[1] || '');
-      groupKey = host
-        ? 'web:' + host
-        : (draft.src === 'app' ? 'app:' : 'other:') +
-          draft.title.toLocaleLowerCase('it').trim().replace(/\s+/g, '-');
-    }
+    // Recomputed on every save: changing the site (or the title of app/other
+    // accounts) moves the account to the matching group.
+    const groupKey = draft.type === 'login' ? savedGroupKey(draft) : draft.gk || '';
     let icon = groupIcon;
     if (draft.type === 'login' && draft.src === 'app' && !icon) {
       try {
@@ -1432,7 +1451,9 @@ export default function App() {
                     <div className="item-body static">
                       <strong>{g.name || key}</strong>
                       <span>
-                        {key} · {vault.items.filter((i) => i.gk === key).length} account
+                        {key} ·{' '}
+                        {vault.items.filter((i) => !i.trashed && groupFor(i) === key).length}{' '}
+                        account
                       </span>
                     </div>
                     <button
@@ -1656,7 +1677,7 @@ export default function App() {
                           <span>Logo selezionato, verrà salvato nel vault cifrato</span>
                         </div>
                       )}
-                      {draft.gk && <div className="helper">Gruppo associato: {draft.gk}</div>}
+                      <div className="helper">Gruppo associato: {savedGroupKey(draft)}</div>
                       {(draft.src || 'web') === 'app' && (
                         <button
                           className="secondary"

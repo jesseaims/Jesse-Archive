@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'regroup-on-site-change',
+    addedAt: '2026-11-17T19:23:50+01:00',
+    version: 'Beta 1.1.7',
+    title: 'Il sito di un account si aggiorna quando lo modifichi',
+    description:
+      'Se cambi il sito web di un account, nella raccolta compare subito sotto il nuovo sito invece di restare in quello inserito all’inizio. Si sistemano da sole anche le voci già salvate in precedenza.',
+    icon: 'wrench',
+  },
+  {
     id: 'delete-accounts-and-groups',
     addedAt: '2026-11-17T19:10:00+01:00',
     version: 'Beta 1.1.6',
