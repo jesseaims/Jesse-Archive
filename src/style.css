@@ -95,3 +95,8 @@ input[type=password]::-webkit-credentials-auto-fill-button{visibility:hidden!imp
 
 .settings-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .settings-footer .app-version{margin-left:auto;color:var(--ui-muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+
+/* Generator primary action: larger target without affecting other buttons. */
+.generator-generate-button{min-height:54px;min-width:165px;padding:0 26px;font-size:15px;font-weight:800;border-radius:12px;gap:11px}
+.generator-generate-button svg{flex:none}
+@media(max-width:660px){.generator-generate-button{width:100%;min-height:52px}}
