@@ -163,6 +163,22 @@ pub async fn browser_setup_open(id: String) -> Result<Value, String> {
 pub async fn browser_setup_show(app: tauri::AppHandle) -> Result<(), String> {
     show(&app)
 }
+/// "Ho installato l'estensione": brings the main window to the front and closes
+/// (hides) the guide. Main is shown first so the app never ends up with no
+/// visible window.
+#[tauri::command]
+pub fn browser_setup_finish(app: tauri::AppHandle) -> Result<(), String> {
+    let main = app
+        .get_webview_window("main")
+        .ok_or("Finestra principale non disponibile")?;
+    main.unminimize().map_err(|e| e.to_string())?;
+    main.show().map_err(|e| e.to_string())?;
+    main.set_focus().map_err(|e| e.to_string())?;
+    if let Some(guide) = app.get_webview_window("browser-setup") {
+        guide.hide().map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
 pub fn show(app: &tauri::AppHandle) -> Result<(), String> {
     if let Some(window) = app.get_webview_window("browser-setup") {
         window.show().map_err(|e| e.to_string())?;

@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.1.8"
+﻿#define AppVersion "1.1.9"
 #define AppName "Jesse's Archive"
 
 [Setup]
@@ -35,6 +35,8 @@ Source: "payload\JesseArchive.msi"; Flags: dontcopy noencryption
 
 [Run]
 Filename: "{code:GetInstalledApp}"; Parameters: "--browser-setup"; Description: "Configura le estensioni dei browser (collegamento automatico e caricamento guidato)"; Flags: postinstall nowait skipifsilent runasoriginaluser
+; Must stay right after the browser entry: NextButtonClick refers to it as RunList item 1.
+Filename: "{code:GetInstalledApp}"; Description: "Avvia {#AppName} al termine dell'installazione"; Flags: postinstall nowait skipifsilent runasoriginaluser
 
 [Code]
 var
@@ -75,6 +77,18 @@ begin
       MsgBox('Seleziona un percorso valido, senza virgolette.', mbError, MB_OK);
       Result := False;
       Exit;
+    end;
+  end;
+  { Finish clicked: the postinstall entries run after this returns. When the browser
+    guide is selected it already starts the app, and its "Ho installato l'estensione"
+    button brings the main window up; launching a second instance at the same time
+    would race the single-instance check, so the plain launch is skipped. }
+  if (CurPageID = wpFinished) and (WizardForm.RunList.Items.Count >= 2) then
+  begin
+    if WizardForm.RunList.Checked[0] and WizardForm.RunList.Checked[1] then
+    begin
+      Log('Guida estensioni selezionata: avvio semplice saltato, la guida aprira'' l''app.');
+      WizardForm.RunList.Checked[1] := False;
     end;
   end;
 end;

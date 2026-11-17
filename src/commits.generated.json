@@ -1,5 +1,23 @@
 [
   {
+    "hash": "997bf65",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:56:01+01:00",
+    "subject": "chore: release beta 1.1.9"
+  },
+  {
+    "hash": "4b0f923",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:55:44+01:00",
+    "subject": "feat: compact settings layout, launch option in installer, finish button in browser guide"
+  },
+  {
+    "hash": "7f6b327",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:39:33+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.8 build"
+  },
+  {
     "hash": "4edb80b",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T19:36:29+01:00",

@@ -62,7 +62,7 @@ Non ci sono directory service/repository/domain separate: molte responsabilità 
 |---|---|---|
 | `main` | `App` | Preferenza `quit`: uscita; `tray`: blocco del vault e finestra nascosta |
 | `quick-fill` | `QuickFill`, query `?quick-fill` | Annulla la sessione, pulisce lo stato UI del pannello e nasconde la finestra |
-| `browser-setup` | `BrowserInstaller`, query `?browser-setup` | Nasconde la guida; il processo può rimanere nel tray |
+| `browser-setup` | `BrowserInstaller`, query `?browser-setup` | Nasconde la guida; il processo può rimanere nel tray. Il pulsante "Ho installato l'estensione" chiama `browser_setup_finish`, che mostra e mette a fuoco `main` e poi nasconde la guida |
 
 Tutte e tre compaiono in [capabilities/default.json](../src-tauri/capabilities/default.json), con `core:default`. I comandi applicativi registrati nel Builder non hanno un ulteriore controllo per etichetta della finestra.
 
