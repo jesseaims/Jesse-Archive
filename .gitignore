@@ -1,9 +1,58 @@
+# Node / Vite / TypeScript
 node_modules/
 dist/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# Rust / Tauri
 src-tauri/target/
+target/
+
+# Generated installer and local build artifacts
+installer/payload/*.msi
+installer/payload/*.exe
+!installer/payload/README.txt
+*.msi
+*.msix
+*.msixbundle
+JesseArchive-Setup.exe
+
+# Vaults, secrets and private user data (never commit)
 *.vault
-*.bak
+*.vault.*
+*.jshare
 *.merged
-config.json
+*.bak
+*.backup
+*.key
+*.pem
+*.p12
+*.pfx
+*.p8
+*.kdbx
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
 .env
+.env.*
+!.env.example
+config.json
+
+# Local diagnostics / temporary outputs
+rust-errors.txt
+npm-debug.log*
+*.log
+*.tmp
+*.temp
 .DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Keep Cargo.lock and package-lock.json tracked for reproducible app builds
