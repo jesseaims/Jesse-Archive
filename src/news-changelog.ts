@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'settings-layout-installer-flow',
+    addedAt: '2026-11-17T19:55:45+01:00',
+    version: 'Beta 1.1.9',
+    title: 'Impostazioni più compatte e installazione più comoda',
+    description:
+      'Le schede delle Impostazioni si dispongono senza spazi vuoti. L’installazione offre la spunta per avviare l’app al termine, e la guida delle estensioni ha il pulsante «Ho installato l’estensione» che la chiude e apre Jesse’s Archive.',
+    icon: 'sparkles',
+  },
+  {
     id: 'refresh-feedback-appearance',
     addedAt: '2026-11-17T19:36:12+01:00',
     version: 'Beta 1.1.8',
