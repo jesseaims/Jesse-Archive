@@ -20,7 +20,8 @@ Queste istruzioni valgono per Codex, Claude Code e qualsiasi altro agente che la
 
 ## Come intervenire
 
-- Preferire modifiche circoscritte; non riscrivere moduli interi, formattare tutto il repository, rimuovere funzionalità o modificare aree estranee alla richiesta.
+- Preferire modifiche circoscritte; non riscrivere moduli interi, rimuovere funzionalità o modificare aree estranee alla richiesta.
+- Formattazione: rustfmt (stile predefinito) e Prettier 3 (`.prettierrc.json`, ambito `src/`). Eseguire `npm run format` prima del commit; `npm run format:check` è un gate della CI. `browser-extension/` è escluso da Prettier perché le copie generate sono versionate. I commit di sola formattazione vanno aggiunti a `.git-blame-ignore-revs`.
 - Riutilizzare helper e componenti esistenti. Evitare logica duplicata e dipendenze senza una necessità concreta.
 - Conservare nomi di categorie, campi sconosciuti, wrapper crittografici, marker dei pacchetti e compatibilità del formato v1, salvo una modifica esplicitamente richiesta con migrazione e test appropriati.
 - Tenere distinti modello Rust/JSON e tipi TypeScript; verificare entrambi i lati quando cambia un contratto IPC.

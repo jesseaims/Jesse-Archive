@@ -57,8 +57,11 @@ npm run test:browser
 cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 node --test tests/browser-host.test.mjs
 
-# Diagnostica statica: esiti e warning da valutare, non assunti puliti
-cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+# Formattazione (rustfmt + Prettier): applica / verifica
+npm run format
+npm run format:check
+
+# Diagnostica statica: warning da valutare, non assunti puliti
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets
 ```
 
@@ -88,7 +91,7 @@ Mancano prove complete di concorrenza e durabilità, import malformati, inattivi
 
 ## Integrazione continua
 
-[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
+[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
 ## Setup Windows completo
 
@@ -119,7 +122,7 @@ La soglia di dimensione MSI è un'euristica, non prova che ogni dipendenza WebVi
 - `scripts/package-browser-extension.mjs` copia il background canonico nelle due directory, prepara manifest e identità Chromium. Preservare la chiave **pubblica** e l'identità esistenti: rigenerarle cambia il collegamento Native Messaging. Non introdurre chiavi private nel repository.
 - `src-tauri/resources/` e la configurazione browser merge sono artefatti ignorati. I profili dei test e gli output di compilazione non sono sorgenti.
 - La versione compare in package.json/Cargo/Tauri/Inno e nei manifest generati; lockfile e fallback UI vanno valutati se si modifica la versione. Non eseguire un bump per una richiesta soltanto documentale.
-- Non applicare formatter globali al codice compatto esistente durante una correzione locale. Clippy non è un gate certificato.
+- Il codice Rust e `src/` sono formattati (rustfmt predefinito, Prettier 3 con `.prettierrc.json`); la CI esegue `npm run format:check`. Il commit di formattazione iniziale è in `.git-blame-ignore-revs`: usare `git config blame.ignoreRevsFile .git-blame-ignore-revs` per un blame utile. `browser-extension/` e `legacy-python/` non sono formattati da Prettier. Clippy non è un gate certificato.
 
 ## Metodo di lavoro
 

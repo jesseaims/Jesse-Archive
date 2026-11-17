@@ -87,7 +87,7 @@ Percorso del vault: override `JESSE_ARCHIVE_VAULT`, poi configurazione dispositi
 
 ## G. Development Guidelines
 
-Applicare le regole di [AGENTS.md](AGENTS.md): interventi piccoli, nessuna modifica estranea, riuso degli helper, compatibilità v1, gestione esplicita degli errori e dipendenze motivate. Non eseguire un formatter sull'intero `core.rs` o `App.tsx` per accompagnare una modifica locale: l'attuale densità del codice è debito tecnico, non un'autorizzazione a riscriverlo.
+Applicare le regole di [AGENTS.md](AGENTS.md): interventi piccoli, nessuna modifica estranea, riuso degli helper, compatibilità v1, gestione esplicita degli errori e dipendenze motivate. Il codice è formattato con rustfmt (stile predefinito) e Prettier (`.prettierrc.json`): eseguire `npm run format` prima del commit; la CI rifiuta codice non formattato. La formattazione non autorizza a riorganizzare o riscrivere `core.rs`/`App.tsx`, che restano monolitici.
 
 Per Claude Code, ricercare prima il nome del comando in `src/App.tsx`/`src/api.ts` e nel match di `Vault::call`, oppure nei comandi `browser_*`. Seguire poi persistenza, test e UI chiamanti. Non trasferire automaticamente comportamenti Python nel Rust, né modificare le copie generate dell'estensione al posto della sorgente canonica.
 

@@ -45,7 +45,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 | Documentare/rafforzare modello chiave e rotazione | Distinguere cambio master da nuova chiave dati; studiare compatibilità di header autenticati e revoca delle vecchie copie |
 | Verificare bridge locale | ACL, limiti di connessioni/frame/thread, processi dello stesso utente, gestione errori e app assente |
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
-| Ridurre debito di organizzazione | `core.rs`/`App.tsx` monolitici e CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
+| Ridurre debito di organizzazione | Formattazione uniforme applicata e verificata dalla CI; `core.rs`/`App.tsx` restano monolitici e il CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
 | Chiarire codice storico e contratti duplicati | Mantenere distinzione Python/Rust, `touch`/`show`, gruppi UI vs matching di sicurezza e sorgente JS vs copie generate |
 | Consolidare processo di release | CI presente (tipi, build frontend, test Rust/Node, host nativo); restano da valutare pin toolchain, clippy, firma, controlli versione e prove offline |
 
