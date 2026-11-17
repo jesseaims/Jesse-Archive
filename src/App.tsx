@@ -193,11 +193,15 @@ function AccountGroups({
   vault,
   openItem,
   copy,
+  onDeleteAccount,
+  onDeleteGroup,
 }: {
   items: Item[];
   vault: State;
   openItem: (i?: Item) => void;
   copy: (v: string) => Promise<void>;
+  onDeleteAccount: (it: Item) => Promise<void>;
+  onDeleteGroup: (key: string, label: string) => Promise<void>;
 }) {
   const groups = useMemo(() => {
     const m = new Map<string, Item[]>();
@@ -236,6 +240,15 @@ function AccountGroups({
                   {rows.length} {rows.length === 1 ? 'account' : 'account'}
                 </small>
               </div>
+              <button
+                type="button"
+                className="icon-button danger group-delete"
+                title={"Elimina l'intero gruppo " + label}
+                aria-label={"Elimina l'intero gruppo " + label}
+                onClick={() => void onDeleteGroup(key, label)}
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
             <div className="account-group-body">
               <button className="account-name" onClick={() => openItem(it)}>
@@ -289,9 +302,19 @@ function AccountGroups({
                   </>
                 )}
               </div>
-              <button className="group-edit secondary" onClick={() => openItem(it)}>
-                Apri account <ArrowRight size={14} />
-              </button>
+              <div className="group-actions">
+                <button
+                  type="button"
+                  className="secondary group-delete-account"
+                  title={"Elimina solo l'account " + it.title}
+                  onClick={() => void onDeleteAccount(it)}
+                >
+                  <Trash2 size={14} /> Elimina account
+                </button>
+                <button className="group-edit secondary" onClick={() => openItem(it)}>
+                  Apri account <ArrowRight size={14} />
+                </button>
+              </div>
             </div>
             <div className="account-group-foot">
               <button
@@ -686,6 +709,62 @@ export default function App() {
       })
       .sort((a, b) => (b.updated || 0) - (a.updated || 0));
   }, [vault, page, folderId, search]);
+  // Deleting moves items to the Cestino (backend `trash`/`bulk`), where they can be
+  // restored or permanently deleted. Nothing happens before explicit confirmation.
+  const deleteItem = async (it: Item) => {
+    const isAccount = it.type === 'login';
+    const detail = isAccount && it.f?.username ? ` (${it.f.username})` : '';
+    const ok = await askConfirm(
+      `Spostare nel cestino ${isAccount ? "l'account" : "l'elemento"} "${it.title}"${detail}?\n\n` +
+        'Gli altri elementi non vengono toccati. Potrai ripristinarlo dalla sezione Cestino.',
+      {
+        title: isAccount ? 'Elimina account' : `Elimina ${categories[it.type].label.toLowerCase()}`,
+        danger: true,
+        confirmLabel: 'Sposta nel cestino',
+      },
+    );
+    if (ok)
+      await mutate(
+        'trash',
+        { id: it.id },
+        isAccount ? 'Account spostato nel cestino' : 'Elemento spostato nel cestino',
+      );
+  };
+  const deleteGroup = async (key: string, label: string) => {
+    if (!vault) return;
+    // The whole group, not only the accounts matching the current search.
+    const members = vault.items.filter(
+      (i) => i.type === 'login' && !i.trashed && groupFor(i) === key,
+    );
+    if (members.length === 0) return;
+    const shown = members
+      .slice(0, 8)
+      .map((i) => `• ${i.title}${i.f?.username ? ` (${i.f.username})` : ''}`)
+      .join('\n');
+    const more = members.length > 8 ? `\n…e altri ${members.length - 8}` : '';
+    const n = members.length;
+    const first = await askConfirm(
+      `Stai per eliminare l'INTERO gruppo "${label}", non un singolo account.\n\n` +
+        `Verranno spostati nel cestino tutti i ${n} account del gruppo:\n${shown}${more}`,
+      { title: `Eliminare il gruppo ${label}?`, danger: true, confirmLabel: 'Continua' },
+    );
+    if (!first) return;
+    const second = await askConfirm(
+      `Ultima conferma: tutti i ${n} account di "${label}" verranno spostati nel cestino insieme.\n\n` +
+        'Se volevi eliminare un solo account, premi Annulla e usa "Elimina account" dentro il gruppo.',
+      {
+        title: 'Conferma eliminazione del gruppo',
+        danger: true,
+        confirmLabel: `Elimina il gruppo (${n} account)`,
+      },
+    );
+    if (!second) return;
+    await mutate(
+      'bulk',
+      { ids: members.map((i) => i.id), op: 'trash' },
+      `Gruppo ${label} spostato nel cestino`,
+    );
+  };
   const openItem = (it?: Item, type: Category = 'login') => {
     setDraft(it ? structuredClone(it) : itemBase(type));
     setGroupIcon('');
@@ -1212,6 +1291,8 @@ export default function App() {
                     vault={vault}
                     openItem={openItem}
                     copy={copy}
+                    onDeleteAccount={deleteItem}
+                    onDeleteGroup={deleteGroup}
                   />
                 )}
                 <div className="items-list">
@@ -1280,9 +1361,19 @@ export default function App() {
                               </button>
                             </>
                           ) : (
-                            <button className="icon-button" onClick={() => openItem(it)}>
-                              <MoreHorizontal size={20} />
-                            </button>
+                            <>
+                              <button
+                                className="icon-button danger"
+                                title={'Elimina ' + it.title}
+                                aria-label={'Elimina ' + it.title}
+                                onClick={() => void deleteItem(it)}
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                              <button className="icon-button" onClick={() => openItem(it)}>
+                                <MoreHorizontal size={20} />
+                              </button>
+                            </>
                           )}
                         </div>
                       );
@@ -1801,7 +1892,14 @@ export default function App() {
           </div>
         </div>
       )}
-      {decision && <DecisionModal decision={decision} resolve={resolveDecision} />}
+      {decision && (
+        // Keyed so a follow-up confirmation remounts and refocuses "Annulla".
+        <DecisionModal
+          key={decision.title + decision.message}
+          decision={decision}
+          resolve={resolveDecision}
+        />
+      )}
       {newsOpen && <NewsPanel onClose={() => setNewsOpen(false)} />}
     </div>
   );

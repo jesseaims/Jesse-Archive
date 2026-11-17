@@ -347,8 +347,9 @@ p {
   background: var(--ui-hover);
 }
 .icon-button.danger:hover {
-  color: #ff818f;
-  background: #38232e;
+  color: #e5484d;
+  /* Translucent red over the current theme surface: works on light and dark themes. */
+  background: color-mix(in srgb, #e5484d 16%, transparent);
 }
 .stats-grid {
   display: grid;
@@ -1355,6 +1356,32 @@ select,
   align-self: flex-end;
   min-height: 29px;
   margin-top: auto;
+}
+.account-group-head .group-delete {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+}
+.group-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+.group-actions .group-edit {
+  margin-top: 0;
+}
+.group-delete-account {
+  min-height: 29px;
+  gap: 5px;
+  color: var(--ui-muted);
+}
+.group-delete-account:hover {
+  color: #e5484d;
+  border-color: color-mix(in srgb, #e5484d 45%, var(--ui-border));
+  background: color-mix(in srgb, #e5484d 12%, transparent);
 }
 .account-group-foot {
   border-top: 1px solid var(--ui-border);

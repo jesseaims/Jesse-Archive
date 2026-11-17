@@ -1,5 +1,35 @@
 [
   {
+    "hash": "33c6e48",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:10:19+01:00",
+    "subject": "chore: release beta 1.1.6"
+  },
+  {
+    "hash": "a7ad135",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:09:55+01:00",
+    "subject": "feat: add delete buttons for accounts, account groups and other items"
+  },
+  {
+    "hash": "02132bb",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T18:44:14+01:00",
+    "subject": "Merge pull request #2 from jesseaims/fix/session-hardening"
+  },
+  {
+    "hash": "b732a38",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T18:44:01+01:00",
+    "subject": "Merge pull request #1 from jesseaims/chore/ci-and-format"
+  },
+  {
+    "hash": "2314639",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T18:23:40+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.5 build"
+  },
+  {
     "hash": "a895c84",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T18:20:13+01:00",
