@@ -87,7 +87,7 @@ Il test legge dati sintetici; non importare il modulo dell'app storica per prova
 
 La precedente esecuzione riportava 11 test libreria Rust e uno di protocollo nel binario helper, oltre ai 6+2 Node. Il protocollo è compilato anche nel binario: non contare il test duplicato come nuova area coperta. Esiste un test GUI Brave ignorato normalmente: apre finestre e usa un profilo dedicato. Prima di eseguirlo leggere `src-tauri/src/browser_navigation.rs`; non avviare indiscriminatamente tutti gli ignored test su una sessione utente. Il precedente controllo manuale della navigazione riguarda Brave soltanto.
 
-Mancano prove complete di concorrenza e durabilità, import malformati, inattività temporale, tutte le categorie CRUD, login reali su ogni browser, installazione/upgrade/disinstallazione in VM e offline su Windows pulito. Non aggiungere test che usino credenziali o vault personali.
+Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inattività nell'app reale, tutte le categorie CRUD, login reali su ogni browser, installazione/upgrade/disinstallazione in VM e offline su Windows pulito. Non aggiungere test che usino credenziali o vault personali.
 
 ## Integrazione continua
 

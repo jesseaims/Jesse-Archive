@@ -17,7 +17,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 
 | Area | Stato osservato | Riferimento |
 |---|---|---|
-| Blocco inattività | Controllo differito nelle chiamate protette, senza timer autonomo; ping non applica scadenza | [SECURITY](SECURITY.md), `core.rs` |
+| Blocco inattività | Scadenza su ogni comando e thread di controllo ogni 5 s, UI azzerata su `vault-locked`; manca un collaudo manuale con finestra nascosta e pannello rapido | [SECURITY](SECURITY.md), `core.rs`, `lib.rs` |
 | Memoria sensibile | Alcune chiavi Zeroizing, ma copie JSON, frontend e buffer non cancellati integralmente | SECURITY; `core.rs`, `App.tsx` |
 | Sincronizzazione | File esterni e timestamp per record intero; nessun trasporto cloud proprio, lock multiprocesso o transazione; UI non segue sempre rev | [DATABASE](DATABASE.md), [ARCHITECTURE](ARCHITECTURE.md) |
 | Validazione e migrazioni | Import JSON/`.jshare` validato e atomico, forma del vault garantita allo sblocco; nessuno schema completo dei campi né motore di migrazione | DATABASE; `core.rs` |
@@ -38,7 +38,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 
 | Proposta | Motivazione e cautela |
 |---|---|
-| Rendere esplicito il modello di inattività/sessione | Distinguere attività utente da polling; provare scadenza senza interazione, blocco e ripresa pannello |
+| Collaudare il modello di inattività/sessione | Implementato (attività utente distinta dal polling, thread di scadenza); resta da provare manualmente scadenza senza interazione, blocco e ripresa del pannello |
 | Rafforzare confini IPC e gestione memoria | Valutare comandi accessibili alle finestre, copie plaintext, cleanup di draft/state e buffer; non promettere wipe assoluto |
 | Validazione strutturale e migrazioni | Rifiutare dati malformati senza panic o mutazioni parziali; mantenere compatibilità con vault e fixture v1 |
 | Durabilità, concorrenza e merge | Test di guasto e rollback, writer concorrenti, timestamp conflittuali e interazione UI/revisione prima di cambiare formato |

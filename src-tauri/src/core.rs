@@ -462,6 +462,21 @@ impl Vault {
     pub fn unlocked(&self) -> bool {
         self.key.is_some()
     }
+    /// Locks the vault when the auto-lock delay (`settings.autolock`, minutes,
+    /// default 5, 0 = never) has passed since the last user activity. Called by
+    /// every command and by the periodic expiry thread in `lib.rs`. Returns true
+    /// only when this call performed the lock.
+    pub fn expire_if_idle(&mut self) -> bool {
+        if !self.unlocked() {
+            return false;
+        }
+        let minutes = self.data["settings"]["autolock"].as_f64().unwrap_or(5.);
+        if minutes > 0. && now() - self.last > minutes * 60. {
+            self.lock();
+            return true;
+        }
+        false
+    }
     pub fn close_action(&self) -> String {
         self.pref("close_action")
             .as_str()
@@ -613,15 +628,13 @@ impl Vault {
         let open = [
             "status", "create", "unlock", "ping", "suggest", "loc_use", "show",
         ];
+        // Expiry applies to every command, including ping/status: they then simply
+        // report `unlocked: false`.
+        if self.expire_if_idle() && !open.contains(&name) {
+            return Err("Sessione scaduta: vault bloccato".into());
+        }
         if !open.contains(&name) && !self.unlocked() {
             return Err("Vault bloccato".into());
-        }
-        if self.unlocked() {
-            let minutes = self.data["settings"]["autolock"].as_f64().unwrap_or(5.);
-            if minutes > 0. && now() - self.last > minutes * 60. && !open.contains(&name) {
-                self.lock();
-                return Err("Sessione scaduta: vault bloccato".into());
-            }
         }
         if !["ping", "status", "browser_state"].contains(&name) {
             self.last = now()
@@ -2205,5 +2218,46 @@ mod vault_tests {
         assert!(ensure_shape(&mut json!({"items": [1]})).is_err());
         assert!(ensure_shape(&mut json!({"settings": 3})).is_err());
         assert!(ensure_shape(&mut json!([])).is_err());
+    }
+
+    #[test]
+    fn idle_expiry_locks_on_every_command() {
+        let (mut v, dir) = unlocked_vault();
+        // ping reports the expiry and wipes the in-memory vault.
+        v.last = now() - 6. * 60.;
+        let r = v.call("ping", json!({})).unwrap();
+        assert_eq!(r["unlocked"], false);
+        assert!(v.key.is_none() && v.data.is_null() && v.header.is_null());
+        // A protected command after expiry reports the expired session.
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        v.last = now() - 6. * 60.;
+        let err = v.call("state", json!({})).unwrap_err();
+        assert!(err.contains("Sessione scaduta"));
+        assert!(!v.unlocked());
+        // The periodic check used by the background thread.
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        assert!(!v.expire_if_idle());
+        v.last = now() - 6. * 60.;
+        assert!(v.expire_if_idle());
+        assert!(!v.expire_if_idle());
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn touch_extends_and_zero_disables_autolock() {
+        let (mut v, dir) = unlocked_vault();
+        v.last = now() - 4. * 60.;
+        v.call("touch", json!({})).unwrap();
+        assert!(now() - v.last < 5.);
+        // ping must not count as user activity.
+        v.last = now() - 4. * 60.;
+        v.call("ping", json!({})).unwrap();
+        assert!(now() - v.last > 3. * 60.);
+        v.data["settings"]["autolock"] = json!(0);
+        v.last = now() - 24. * 3600.;
+        assert!(!v.expire_if_idle());
+        assert!(v.unlocked());
+        fs::remove_dir_all(dir).unwrap();
     }
 }

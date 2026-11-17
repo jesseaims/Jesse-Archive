@@ -523,18 +523,43 @@ export default function App() {
     setToast(message);
     window.setTimeout(() => setToast(''), 4000);
   };
-  const run = useCallback(async <T,>(name: string, body: Dict = {}): Promise<T | undefined> => {
-    setError('');
-    setBusy(true);
-    try {
-      return await api<T>(name, body);
-    } catch (e) {
-      setError(formatError(e));
-      return undefined;
-    } finally {
-      setBusy(false);
-    }
+  // Drops every piece of decrypted or secret UI state when the vault locks.
+  // Child pages holding secrets unmount because they render only with a vault.
+  const wipeSession = useCallback(() => {
+    setVault(null);
+    setPassword('');
+    setRecovery('');
+    setRecoveryNew('');
+    setViewRecovery('');
+    setSearch('');
+    setDialog(null);
+    setDraft(itemBase());
+    setFolderDraft({ id: '', name: '' });
+    setGroupDraft({ key: '', name: '', icon: '' });
+    setMulti([]);
+    setSharePass('');
+    setShareImport('');
+    setShowSecrets([]);
+    setAppsList(null);
+    setGroupIcon('');
   }, []);
+  const run = useCallback(
+    async <T,>(name: string, body: Dict = {}): Promise<T | undefined> => {
+      setError('');
+      setBusy(true);
+      try {
+        return await api<T>(name, body);
+      } catch (e) {
+        const message = formatError(e);
+        if (/Vault bloccato|Sessione scaduta/.test(message)) wipeSession();
+        setError(message);
+        return undefined;
+      } finally {
+        setBusy(false);
+      }
+    },
+    [wipeSession],
+  );
   const refresh = useCallback(async () => {
     try {
       const s = await api<Status>('status');
@@ -560,14 +585,30 @@ export default function App() {
       void api<{ unlocked: boolean; rev: number }>('ping')
         .then((r) => {
           if (!r.unlocked) {
-            setVault(null);
+            wipeSession();
             void refresh();
           }
         })
         .catch(() => {});
     }, 15000);
     return () => window.clearInterval(id);
-  }, [vault, refresh]);
+  }, [vault, refresh, wipeSession]);
+  // User interaction counts as activity for the auto-lock delay (backend `touch`),
+  // throttled to one call every 30 seconds.
+  const unlocked = !!vault;
+  useEffect(() => {
+    if (!unlocked) return;
+    let lastTouch = Date.now();
+    const onActivity = () => {
+      const t = Date.now();
+      if (t - lastTouch < 30000) return;
+      lastTouch = t;
+      void api('touch').catch(() => {});
+    };
+    const events = ['keydown', 'pointerdown', 'wheel'] as const;
+    events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
+    return () => events.forEach((e) => window.removeEventListener(e, onActivity));
+  }, [unlocked]);
   useEffect(() => {
     const stop = listen('vault-changed', () => {
       void refresh();
@@ -579,12 +620,13 @@ export default function App() {
   useEffect(() => {
     let stop: undefined | (() => void);
     void listen('vault-locked', () => {
+      wipeSession();
       void refresh();
     }).then((fn) => {
       stop = fn;
     });
     return () => stop?.();
-  }, [refresh]);
+  }, [refresh, wipeSession]);
   const mutate = async (name: string, body: Dict = {}, message = 'Modifiche salvate') => {
     const r = await run<{ state?: State; [key: string]: unknown }>(name, body);
     if (r) {
@@ -609,8 +651,7 @@ export default function App() {
   };
   const lock = async () => {
     await run('lock');
-    setVault(null);
-    setPassword('');
+    wipeSession();
     await refresh();
   };
   const selectPage = (p: Page, fid = '') => {
