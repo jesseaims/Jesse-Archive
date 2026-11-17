@@ -1,5 +1,65 @@
 [
   {
+    "hash": "a895c84",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T18:20:13+01:00",
+    "subject": "chore: release beta 1.1.5"
+  },
+  {
+    "hash": "ce891a8",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T18:17:54+01:00",
+    "subject": "docs: update import validation status in CLAUDE.md"
+  },
+  {
+    "hash": "fdb080c",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T15:12:01+01:00",
+    "subject": "fix: enforce idle auto-lock with a backend timer and wipe UI state"
+  },
+  {
+    "hash": "3630b94",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T15:08:54+01:00",
+    "subject": "fix: validate imports, apply them atomically and recover a poisoned vault mutex"
+  },
+  {
+    "hash": "4e337d9",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T15:05:36+01:00",
+    "subject": "fix: count password length in characters and validate before recovery unlock"
+  },
+  {
+    "hash": "cf09430",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T15:03:39+01:00",
+    "subject": "chore: enforce formatting in CI and ignore format commit in blame"
+  },
+  {
+    "hash": "dc0466f",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T15:03:10+01:00",
+    "subject": "style: format Rust and frontend sources"
+  },
+  {
+    "hash": "348b769",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T14:56:38+01:00",
+    "subject": "ci: add Windows GitHub Actions workflow"
+  },
+  {
+    "hash": "7b61cc9",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T14:42:54+01:00",
+    "subject": "docs: add technical knowledge base and AI agent guidelines"
+  },
+  {
+    "hash": "1f09624",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T13:57:01+01:00",
+    "subject": "feat: show individual news and commit timestamps in beta 1.1.4"
+  },
+  {
     "hash": "1eb20b7",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T06:20:56+01:00",
