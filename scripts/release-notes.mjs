@@ -26,9 +26,7 @@ try {
   const range = previous && compare(previous, version) < 0;
   entries = NEWS_ENTRIES.filter((e) => {
     const v = e.version.replace(/^Beta\s+/, '');
-    return range
-      ? compare(v, previous) > 0 && compare(v, version) <= 0
-      : compare(v, version) === 0;
+    return range ? compare(v, previous) > 0 && compare(v, version) <= 0 : compare(v, version) === 0;
   });
 } catch (error) {
   console.error(`Novità non leggibili, note generiche: ${error.message}`);
