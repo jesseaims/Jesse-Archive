@@ -93,11 +93,27 @@ Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inatt
 
 [.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
-## Rilasci automatici
+## Pubblicazione delle release
 
-[.github/workflows/release.yml](../.github/workflows/release.yml) gira a ogni push su `main`. Se la versione di `package.json` non ha ancora una release (tag `vX.Y.Z`), su `windows-latest` installa Inno Setup (Chocolatey), esegue `npm ci` e `Build-Setup-EXE.ps1 -SkipNpmInstall` (stessi test e stesso MSI + Inno della build locale) e pubblica una release normale "Latest" intitolata **Beta X.Y.Z**, con l'unico asset `JesseArchive-Setup.exe` (nome invariato). Le note sono generate da [scripts/release-notes.mjs](../scripts/release-notes.mjs) con le voci News di tutte le versioni successive all'ultima release pubblicata. Un merge che non cambia versione termina subito senza pubblicare.
+Le release si compilano **su questo PC** e si pubblicano con [Publish-Release.ps1](../Publish-Release.ps1), dalla root del repository, con JesseArchive chiuso:
 
-Regole: ogni aggiornamento destinato agli utenti porta il bump di versione e la voce News nella stessa PR; non creare a mano tag `v*` o release (il workflow salterebbe la versione). Il setup pubblicato è compilato da GitHub, non è il file provato in locale, e non è firmato. Il repository è pubblico (dal 17 novembre 2026): codice, storia, release e asset sono visibili e scaricabili da chiunque; i runner standard di GitHub Actions sono gratuiti per i repository pubblici. Non è presente un file di licenza, quindi il codice è consultabile ma non concesso in riuso. Le PR da fork eseguono solo `ci.yml` con token in sola lettura; `release.yml` parte unicamente da push su `main`.
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Publish-Release.ps1 -SkipNpmInstall
+```
+
+Lo script:
+
+1. Verifica GitHub CLI autenticato (cerca anche in `Program Files\GitHub CLI`, non serve nel PATH), branch `main` uguale a `origin/main` e senza modifiche, versione allineata in `package.json`, `tauri.conf.json`, `Cargo.toml` e `JesseArchive-Setup.iss`, voce News `Beta X.Y.Z` presente, release e tag `vX.Y.Z` non esistenti.
+2. Esegue `Build-Setup-EXE.ps1` in un processo separato: un exit code diverso da 0 interrompe tutto senza pubblicare.
+3. Ripristina `src/commits.generated.json` riscritto dalla build, quindi `main` resta invariato.
+4. Controlla che il setup sia della versione corrente, successivo all'avvio della build e di dimensione plausibile, e ne calcola lo SHA-256.
+5. Chiede conferma (salvo `-Yes`), crea la release "Beta X.Y.Z" segnata Latest con tag `vX.Y.Z` sul commit compilato, l'unico asset `JesseArchive-Setup.exe` e le note di [scripts/release-notes.mjs](../scripts/release-notes.mjs) (voci News successive all'ultima release o a `-NotesSince`). Infine verifica che l'asset caricato abbia la stessa dimensione del file locale.
+
+Opzioni: `-DryRun` (solo controlli e anteprima delle note), `-SkipBuild` (pubblica il setup già presente se è della versione corrente), `-Draft` (release in bozza), `-NotesSince X.Y.Z`, `-Yes`.
+
+Regole: ogni aggiornamento per gli utenti porta il bump di versione e la voce News nella stessa PR; si pubblica solo dopo il merge, da `main`. Non creare a mano tag `v*` o release. Nessun workflow GitHub compila o pubblica il setup: `ci.yml` esegue solo i controlli. Il setup non è firmato. La prima release pubblicata è Beta 1.1.12 (17 novembre 2026).
+
+Il repository è pubblico (dal 17 novembre 2026): codice, storia, release e asset sono visibili e scaricabili da chiunque. Non è presente un file di licenza, quindi il codice è consultabile ma non concesso in riuso. Le PR da fork eseguono solo `ci.yml` con token in sola lettura.
 
 ## Setup Windows completo
 

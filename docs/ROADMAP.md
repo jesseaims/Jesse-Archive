@@ -47,7 +47,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
 | Ridurre debito di organizzazione | Formattazione uniforme applicata e verificata dalla CI; `core.rs`/`App.tsx` restano monolitici e il CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
 | Chiarire codice storico e contratti duplicati | Mantenere distinzione Python/Rust, `touch`/`show`, gruppi UI vs matching di sicurezza e sorgente JS vs copie generate |
-| Consolidare processo di release | CI presente (tipi, build frontend, test Rust/Node, host nativo) e release automatica del setup su GitHub al merge di una nuova versione; restano da valutare pin toolchain, clippy, firma e prove offline |
+| Consolidare processo di release | CI presente (tipi, build frontend, test Rust/Node, host nativo) e pubblicazione delle release dal PC di sviluppo con `Publish-Release.ps1` (prima release: Beta 1.1.12); restano da valutare pin toolchain, clippy, firma e prove offline |
 
 Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e background hanno ruoli di packaging, il client storico è separatamente avviabile. “Apparentemente duplicato” non autorizza la rimozione.
 
