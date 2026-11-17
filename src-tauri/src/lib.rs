@@ -58,7 +58,7 @@ async fn clear_secret_if_unchanged(expected: String) -> Result<(), String> {
                 .map_err(|e| format!("Impossibile accedere agli appunti: {e}"))?;
             let mut current = String::new();
             if formats::Unicode.read_clipboard(&mut current).is_ok() && current == expected {
-                formats::Unicode.write_clipboard("")
+                formats::Unicode.write_clipboard(String::new())
                     .map_err(|e| format!("Impossibile pulire gli appunti: {e}"))?;
             }
             Ok(())
