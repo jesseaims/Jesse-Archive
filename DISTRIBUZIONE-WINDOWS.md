@@ -1,3 +1,7 @@
+# NOTA: setup EXE definitivo alternativo a NSIS
+
+**Usa `Build-Setup-EXE.ps1` e leggi `SETUP-EXE-OFFLINE.md`.** NSIS sul PC di collaudo fallisce ancora con `NSISCOMCALL`. Il comando NSIS sottostante è conservato solo come riferimento storico.
+
 # JesseArchive — distribuzione Windows offline (v1.0.2)
 
 Questa cartella contiene i **sorgenti**, non un installer già compilato. Serve un PC Windows con Node.js, Rust/Cargo MSVC e Visual Studio C++ Build Tools **solo per compilare**.
