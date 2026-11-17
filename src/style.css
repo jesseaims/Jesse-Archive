@@ -70,3 +70,23 @@ input[type=password]::-webkit-credentials-auto-fill-button{visibility:hidden!imp
 @keyframes decision-card-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media (max-width:480px){.decision-card{padding:21px}.decision-actions{flex-direction:column-reverse}.decision-actions button{width:100%}}
 @media (prefers-reduced-motion:reduce){.decision-backdrop,.decision-card{animation:none}}
+
+/* JesseArchive v5.4: developer credit and password history workflow */
+.sidebar-head .sidebar-brand{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.sidebar-head .sidebar-brand>b{white-space:nowrap}
+.sidebar-head .sidebar-brand>small{display:block}
+.brand-credit{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;color:var(--ui-muted);font-size:10px;line-height:1.2;font-weight:500}
+.brand-credit svg{color:var(--ui-accent);flex:none}
+.brand-credit span:last-child{font-weight:700;color:var(--ui-text)}
+.password-assign{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:11px;padding:8px 10px;flex:none}
+.password-help{display:flex;align-items:flex-start;gap:9px;padding:16px 24px;color:var(--ui-muted);font-size:12px;border-top:1px solid var(--ui-border)}
+.password-help svg{flex:none;color:var(--ui-accent)}
+.password-link-modal{width:min(500px,100%)}
+.password-link-modal .modal-content p{font-size:13px;line-height:1.6;color:var(--ui-muted)}
+.password-link-source{display:flex;align-items:center;gap:12px;padding:13px;border-radius:10px;background:var(--ui-selected);color:var(--ui-accent)}
+.password-link-source>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.password-link-source strong{color:var(--ui-text);font-size:12px}
+.password-link-source small{color:var(--ui-muted);font-size:11px}
+.password-link-warning{display:flex;align-items:flex-start;gap:10px;color:var(--ui-muted);border:1px solid var(--ui-border);border-radius:10px;padding:12px;font-size:12px;line-height:1.6}
+.password-link-warning svg{color:#e7ad70;flex:none}
+@media(max-width:660px){.password-assign{font-size:10px;padding:7px}.password-link-modal .modal-content{padding:18px}}
