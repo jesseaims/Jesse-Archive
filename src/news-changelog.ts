@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'refresh-feedback-appearance',
+    addedAt: '2026-11-17T19:36:12+01:00',
+    version: 'Beta 1.1.8',
+    title: 'Pulsante Aggiorna con esito e nuova scheda Aspetto',
+    description:
+      'Il pulsante Aggiorna mostra cosa ha fatto: se ha trovato elementi nuovi, modificati o rimossi, oppure che era già tutto aggiornato, e in caso di problemi spiega cosa è andato storto. Temi e colori dell’app hanno ora una scheda dedicata, Aspetto, nelle Impostazioni.',
+    icon: 'palette',
+  },
+  {
     id: 'regroup-on-site-change',
     addedAt: '2026-11-17T19:23:50+01:00',
     version: 'Beta 1.1.7',

@@ -1,5 +1,23 @@
 [
   {
+    "hash": "4edb80b",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:36:29+01:00",
+    "subject": "chore: release beta 1.1.8"
+  },
+  {
+    "hash": "9ff47b1",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:36:07+01:00",
+    "subject": "feat: report the result of \"Aggiorna\" and move themes to an Aspetto panel"
+  },
+  {
+    "hash": "dab1b17",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T19:27:34+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.7 build"
+  },
+  {
     "hash": "81d8cf7",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T19:24:07+01:00",
