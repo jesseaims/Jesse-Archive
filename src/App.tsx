@@ -24,6 +24,7 @@ import {
   MoreHorizontal,
   Plus,
   RefreshCw,
+  Palette,
   Search,
   Settings as SettingsIcon,
   Shield,
@@ -389,7 +390,7 @@ type DialogAPI = {
     message: string,
     opts?: { title?: string; danger?: boolean; confirmLabel?: string },
   ) => Promise<boolean>;
-  showNotice: (message: string, title?: string) => Promise<void>;
+  showNotice: (message: string, title?: string, danger?: boolean) => Promise<void>;
   askText: (message: string, initial?: string) => Promise<string | null>;
 };
 
@@ -433,8 +434,8 @@ function useAppDialogs(): DialogAPI & {
     [request],
   );
   const showNotice = useCallback(
-    async (message: string, title = 'Informazione') => {
-      await request({ kind: 'notice', title, message, confirmLabel: 'Ho capito', danger: false });
+    async (message: string, title = 'Informazione', danger = false) => {
+      await request({ kind: 'notice', title, message, confirmLabel: 'Ho capito', danger });
     },
     [request],
   );
@@ -563,7 +564,8 @@ export default function App() {
     [mobileMenu, setMobileMenu] = useState(false),
     [appsList, setAppsList] = useState<{ name: string; path: string }[] | null>(null),
     [groupIcon, setGroupIcon] = useState(''),
-    [bulkFolder, setBulkFolder] = useState('');
+    [bulkFolder, setBulkFolder] = useState(''),
+    [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     if (!vault) applyPalette({ preset: 'night' });
   }, [!vault]);
@@ -621,6 +623,78 @@ export default function App() {
       setError(formatError(e));
     }
   }, []);
+  // "Aggiorna" button: reloads the vault from disk (merging cloud/conflict copies
+  // in the backend) and reports what happened in a themed popup.
+  const manualRefresh = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    const before = vault;
+    try {
+      const s = await api<Status>('status');
+      setStatus(s);
+      if (!s.unlocked) {
+        wipeSession();
+        await showNotice(
+          'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.',
+          'Vault bloccato',
+          true,
+        );
+        return;
+      }
+      const after = await api<State>('state');
+      setVault(after);
+      const key = (x: unknown) => JSON.stringify(x);
+      const old = new Map((before?.items || []).map((i) => [i.id, key(i)]));
+      const now = new Map(after.items.map((i) => [i.id, key(i)]));
+      let added = 0,
+        changed = 0,
+        removed = 0;
+      now.forEach((v, id) => {
+        if (!old.has(id)) added++;
+        else if (old.get(id) !== v) changed++;
+      });
+      old.forEach((_, id) => {
+        if (!now.has(id)) removed++;
+      });
+      const changes: string[] = [];
+      if (added) changes.push(`• ${added} ${added === 1 ? 'elemento nuovo' : 'elementi nuovi'}`);
+      if (changed)
+        changes.push(
+          `• ${changed} ${changed === 1 ? 'elemento modificato' : 'elementi modificati'}`,
+        );
+      if (removed)
+        changes.push(`• ${removed} ${removed === 1 ? 'elemento rimosso' : 'elementi rimossi'}`);
+      if (key(before?.folders || []) !== key(after.folders))
+        changes.push('• le cartelle sono cambiate');
+      if ((before?.passwords.length ?? 0) !== after.passwords.length)
+        changes.push('• lo storico delle password è cambiato');
+      const summary = changes.length
+        ? 'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):\n' +
+          changes.join('\n')
+        : 'Nessuna modifica trovata: i dati mostrati erano già aggiornati.';
+      await showNotice(
+        'Il vault è stato riletto dal file e confrontato con eventuali copie nella stessa cartella.\n\n' +
+          `${summary}\n\nFile: ${after.path}`,
+        'Aggiornamento completato',
+      );
+    } catch (e) {
+      const detail = formatError(e);
+      const locked = /Vault bloccato|Sessione scaduta/.test(detail);
+      if (locked) wipeSession();
+      await showNotice(
+        locked
+          ? 'La sessione è scaduta e il vault è stato bloccato, quindi non è stato possibile aggiornare i dati.\n\n' +
+              `Sblocca di nuovo il vault con la password principale.\n\nDettaglio: ${detail}`
+          : 'Non è stato possibile rileggere il vault dal file.\n\n' +
+              'Possibili cause: il file non è raggiungibile (cartella cloud non sincronizzata, disco scollegato, permessi), oppure è danneggiato. I dati già mostrati non sono stati modificati.\n\n' +
+              `Dettaglio: ${detail}`,
+        'Aggiornamento non riuscito',
+        true,
+      );
+    } finally {
+      setRefreshing(false);
+    }
+  };
   useEffect(() => {
     void refresh();
   }, [refresh]);
@@ -1164,8 +1238,15 @@ export default function App() {
               <Newspaper size={16} />
               News
             </button>
-            <button className="icon-button" title="Aggiorna" onClick={refresh}>
-              <RefreshCw size={18} />
+            <button
+              className="icon-button"
+              title="Aggiorna: rileggi il vault dal file"
+              aria-label="Aggiorna"
+              aria-busy={refreshing}
+              disabled={refreshing}
+              onClick={() => void manualRefresh()}
+            >
+              <RefreshCw size={18} className={refreshing ? 'spin' : undefined} />
             </button>
             <button className="avatar" title="Impostazioni" onClick={() => selectPage('settings')}>
               JA
@@ -2705,6 +2786,35 @@ function SettingsPage({
               />
               Scarica favicon dei siti (rete)
             </label>
+            <button
+              className="primary"
+              onClick={() =>
+                void mutate('settings', {
+                  autolock,
+                  clip,
+                  old_days: oldDays,
+                  logos,
+                })
+              }
+            >
+              Salva impostazioni
+            </button>
+            <button className="secondary" onClick={() => setDialog('master')}>
+              Modifica password principale
+            </button>
+            <button className="secondary" onClick={() => setDialog('recovery_new')}>
+              Rigenera codice di recupero
+            </button>
+          </div>
+        </section>
+        <section className="panel settings-panel">
+          <div className="panel-head">
+            <h2>
+              <Palette size={18} />
+              Aspetto
+            </h2>
+          </div>
+          <div className="form-stack">
             <label className="field">
               <span>Tema colore</span>
               <select value={preset} onChange={(e) => setPreset(e.target.value)}>
@@ -2756,22 +2866,14 @@ function SettingsPage({
             <button
               className="primary"
               onClick={() =>
-                void mutate('settings', {
-                  autolock,
-                  clip,
-                  old_days: oldDays,
-                  logos,
-                  theme: { preset, custom: customPalette },
-                })
+                void mutate(
+                  'settings',
+                  { theme: { preset, custom: customPalette } },
+                  'Aspetto salvato',
+                )
               }
             >
-              Salva impostazioni
-            </button>
-            <button className="secondary" onClick={() => setDialog('master')}>
-              Modifica password principale
-            </button>
-            <button className="secondary" onClick={() => setDialog('recovery_new')}>
-              Rigenera codice di recupero
+              Salva aspetto
             </button>
           </div>
         </section>
