@@ -35,3 +35,4 @@ hex = "0.4"
 
 [target.'cfg(windows)'.dependencies]
 clipboard-win = "5.4.1"
+winreg = "0.52"

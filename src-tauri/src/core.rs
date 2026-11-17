@@ -88,7 +88,7 @@ match name {
 "group_logo"=>{let key=s(&b,"key");let dom=key.strip_prefix("web:").unwrap_or("");let valid=regex::Regex::new(r"^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$").unwrap();if !valid.is_match(dom)||self.data["settings"]["logos"]==0{return Ok(json!({"found":false}))}let existing=self.data["groups"].get(key).cloned().unwrap_or(json!({"name":dom,"icon":"","src":"web","upd":now()}));if !s(&existing,"icon").is_empty()||now()-num(&existing,"tried")<604800.{return Ok(json!({"found":false}))}let url=format!("https://icons.duckduckgo.com/ip3/{dom}.ico");let got=reqwest::blocking::Client::builder().timeout(std::time::Duration::from_secs(6)).build().map_err(err)?.get(url).send();let mut g=existing;if let Ok(resp)=got {if resp.status().is_success(){let ct=resp.headers().get(reqwest::header::CONTENT_TYPE).and_then(|x|x.to_str().ok()).unwrap_or("image/x-icon").to_owned();if let Ok(bytes)=resp.bytes(){if bytes.len()>100 && bytes.len()<=200000 {g["icon"]=json!(format!("data:{};base64,{}",if ct.starts_with("image/"){ct.as_str()}else{"image/x-icon"},B64.encode(bytes)));}}}g["tried"]=json!(now());g["upd"]=json!(now());obj(&mut self.data,"groups").insert(key.to_owned(),g.clone());self.save()?;return Ok(json!({"found":!s(&g,"icon").is_empty(),"state":self.state()}))}Ok(json!({"found":false}))},
 "apps"=>Ok(json!({"apps":installed_apps()})),"app_icon"=>Ok(json!({"icon":app_icon(s(&b,"path"))?})),
 "prefs_set"=>{if let Some(c)=b.get("close_action").and_then(V::as_str){if c!="quit"&&c!="tray"{return Err("Preferenza non valida".into())}self.set_pref("close_action",json!(c))?}if let Some(a)=b.get("autostart"){autostart_set(a==true||a==1||a=="1")?}Ok(json!({"state":self.state()}))},
-"suggest"=>{let home=std::env::var("USERPROFILE").or_else(|_|std::env::var("HOME")).unwrap_or_default();let mut dirs=Vec::new();for n in ["OneDrive","Dropbox","iCloudDrive","Google Drive","My Drive","Nextcloud","pCloudDrive","Sync"] {let p=Path::new(&home).join(n);if p.is_dir(){dirs.push(p.to_string_lossy().to_string())}}for k in ["OneDrive","OneDriveConsumer"]{if let Ok(p)=std::env::var(k){if Path::new(&p).is_dir(){dirs.push(p)}}}dirs.sort();dirs.dedup();Ok(json!({"dirs":dirs}))},
+"suggest"=>Ok(json!({"dirs":discover_cloud_directories()})),
 "loc_use"=>{let folder=PathBuf::from(s(&b,"folder"));let c=[folder.join("jesse_archive.vault"),folder.join("JesseArchive").join("jesse_archive.vault")];let p=c.into_iter().find(|x|x.is_file()).ok_or("Nessun vault trovato nella cartella")?;self.secure_reset();self.path=p;self.persist_config()?;Ok(json!({"ok":1}))},
 "loc_move"=>{let folder=PathBuf::from(s(&b,"folder"));if !folder.is_dir(){return Err("La cartella non esiste".into())}let dest=if folder.file_name().and_then(|x|x.to_str())==Some("JesseArchive"){folder}else{folder.join("JesseArchive")};let next=dest.join("jesse_archive.vault");if next.exists(){return Err("La destinazione contiene già un vault".into())}self.save()?;fs::create_dir_all(&dest).map_err(err)?;fs::copy(&self.path,&next).map_err(err)?;let src_hash=sha2hash(&fs::read(&self.path).map_err(err)?);let dst_hash=sha2hash(&fs::read(&next).map_err(err)?);if src_hash!=dst_hash{return Err("Verifica della copia fallita; originale conservato".into())}let backup=self.path.with_extension("bak");if backup.exists(){let _=fs::copy(backup,dest.join("jesse_archive.bak"));}self.path=next;self.persist_config()?;self.signature=sig(&self.path);Ok(json!({"state":self.state()}))},
 _=>Err(format!("Comando sconosciuto: {name}"))
@@ -96,6 +96,67 @@ _=>Err(format!("Comando sconosciuto: {name}"))
 fn delete_ids(&mut self,ids:&HashSet<String>){for p in arr(&mut self.data,"passwords"){if ids.contains(s(p,"item_id")){p["orphan_of"]=p["item_title"].clone();p["item_id"]=V::Null;p["active"]=json!(false);p["upd"]=json!(now());}}for i in ids{obj(&mut self.data,"deleted").insert(i.clone(),json!(now()));}arr(&mut self.data,"items").retain(|x|!ids.contains(s(x,"id")));}
 }
 fn sha2hash(b:&[u8])->String {use sha2::Digest;hex::encode(sha2::Sha256::digest(b))}
+// Cartelle cloud locali: la ricerca non invia dati in rete e non modifica il vault.
+// Si evitano scansioni ricorsive dell'intero disco e chiamate a PowerShell/CMD.
+fn discover_cloud_directories()->Vec<String> {
+    let mut found: Vec<PathBuf> = Vec::new();
+    let add = |path: PathBuf, found: &mut Vec<PathBuf>| {
+        if path.is_dir() && !found.iter().any(|p| p.to_string_lossy().eq_ignore_ascii_case(&path.to_string_lossy())) {
+            found.push(path);
+        }
+    };
+    let home = std::env::var_os("USERPROFILE").or_else(||std::env::var_os("HOME"))
+        .map(PathBuf::from).unwrap_or_default();
+    if home.is_dir() {
+        // Include OneDrive - Personal, OneDrive - Azienda, e gli altri nomi locali più diffusi.
+        let names = ["OneDrive", "Dropbox", "Google Drive", "My Drive", "iCloudDrive", "iCloud Drive", "Nextcloud", "ownCloud", "pCloudDrive", "Sync", "MEGA", "MegaSync", "Box", "Box Sync", "Tresorit", "Proton Drive"];
+        for name in names { add(home.join(name), &mut found); }
+        if let Ok(entries) = fs::read_dir(&home) {
+            for entry in entries.flatten().take(256) {
+                let name = entry.file_name().to_string_lossy().to_lowercase();
+                if name.starts_with("onedrive - ") || name.starts_with("nextcloud - ") || name.starts_with("dropbox (") {
+                    add(entry.path(), &mut found);
+                }
+            }
+        }
+    }
+    for key in ["OneDrive", "OneDriveConsumer", "OneDriveCommercial", "Dropbox", "Nextcloud"] {
+        if let Some(path) = std::env::var_os(key) { add(PathBuf::from(path), &mut found); }
+    }
+    // Dropbox pubblica il percorso effettivo della cartella sincronizzata in info.json.
+    for env_name in ["APPDATA", "LOCALAPPDATA"] {
+        if let Some(root) = std::env::var_os(env_name) {
+            let info_path = PathBuf::from(root).join("Dropbox").join("info.json");
+            if let Ok(text) = fs::read_to_string(info_path) {
+                if let Ok(v) = serde_json::from_str::<V>(&text) {
+                    for kind in ["personal", "business"] {
+                        if let Some(path) = v.get(kind).and_then(|x|x.get("path")).and_then(V::as_str) {
+                            add(PathBuf::from(path), &mut found);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #[cfg(windows)]
+    {
+        use winreg::{enums::HKEY_CURRENT_USER, RegKey};
+        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+        // OneDrive può usare percorsi personalizzati, diversi da quelli sotto USERPROFILE.
+        if let Ok(accounts) = hkcu.open_subkey(r"Software\Microsoft\OneDrive\Accounts") {
+            for name in accounts.enum_keys().flatten() {
+                if let Ok(account) = accounts.open_subkey(&name) {
+                    if let Ok(path) = account.get_value::<String,_>("UserFolder") {
+                        add(PathBuf::from(path), &mut found);
+                    }
+                }
+            }
+        }
+    }
+    found.sort_by_key(|p| p.to_string_lossy().to_lowercase());
+    found.into_iter().map(|p| p.to_string_lossy().into_owned()).collect()
+}
+
 fn dirs_data()->PathBuf {#[cfg(windows)]{if let Ok(p)=std::env::var("LOCALAPPDATA"){return PathBuf::from(p)}}dirs_config()}
 fn dirs_config()->PathBuf {#[cfg(windows)]{if let Ok(p)=std::env::var("APPDATA"){return PathBuf::from(p)}}std::env::var("HOME").map(PathBuf::from).unwrap_or_else(|_|PathBuf::from("." )).join(".config")}
 fn merge_import(d:&mut V,pl:&V)->usize {let fs_remote:HashMap<String,String>=array(pl,"folders").iter().map(|f|(s(f,"id").to_string(),s(f,"name").to_string())).collect();for name in fs_remote.values(){if !array(d,"folders").iter().any(|f|s(f,"name")==name){arr(d,"folders").push(json!({"id":id(),"name":name,"upd":now()}))}}
