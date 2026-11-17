@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "JesseArchive · Inserimento rapido",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "Seleziona dal vault locale gli account per il sito corrente.",
   "permissions": [
     "nativeMessaging",

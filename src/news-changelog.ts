@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'zoom-typed-min-max',
+    addedAt: '2026-11-17T21:00:25+01:00',
+    version: 'Beta 1.1.12',
+    title: 'Zoom a scelta, minimo e massimo',
+    description:
+      'In Impostazioni → Aspetto puoi scrivere la percentuale di zoom che preferisci (da 50 a 200) e usare i due nuovi pulsanti per passare subito allo zoom minimo o massimo.',
+    icon: 'sparkles',
+  },
+  {
     id: 'interface-zoom',
     addedAt: '2026-11-17T20:50:56+01:00',
     version: 'Beta 1.1.11',
