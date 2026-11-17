@@ -46,6 +46,7 @@ L'interfaccia Tauri usa IPC nativo, non il server HTTP del vecchio client Python
 | [NewsPanel.tsx](../src/NewsPanel.tsx), [news-changelog.ts](../src/news-changelog.ts), [commits.generated.json](../src/commits.generated.json) | Novità curate, cronologia Git e timestamp per voce |
 | [api.ts](../src/api.ts), [types.ts](../src/types.ts) | Wrapper `invoke` e tipi frontend; non validano da soli dati esterni |
 | [theme.ts](../src/theme.ts), [style.css](../src/style.css) | Otto preset, palette personalizzata e stile responsive |
+| [zoom.rs](../src-tauri/src/zoom.rs), [zoom.ts](../src/zoom.ts) | Zoom dell'interfaccia: livelli 50–200%, comandi `zoom_get`/`zoom_change`, evento `zoom-changed`, applicato con `set_zoom` a tutte le finestre (la finestra rapida, non ridimensionabile, scala anche le dimensioni); scorciatoie e indicatore installati da `main.tsx` in ogni finestra |
 
 Non ci sono directory service/repository/domain separate: molte responsabilità risiedono nel monolite `core.rs`; molte schermate sono funzioni nello stesso `App.tsx`. Questa descrizione riguarda il codice reale e non un'architettura a livelli già realizzata.
 
@@ -104,7 +105,7 @@ Il JSON consente estensioni e compatibilità, ma molte funzioni assumono che arr
 
 Il relay usa 4 byte little-endian di lunghezza e un oggetto JSON UTF-8, massimo 262144 byte. Il primo frame TCP porta il token per avvio. Il listener autentica entro 3 secondi e poi mantiene la connessione; non c'è TLS. L'helper legge il descrittore da AppData, controlla gli identificatori ammessi negli argomenti e inoltra i frame. Non avvia automaticamente l'app se è chiusa. Vedere [SECURITY](SECURITY.md) per il modello di fiducia locale.
 
-Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
+Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
 
 ## Guida e risorse di distribuzione
 

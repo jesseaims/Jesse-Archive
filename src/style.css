@@ -2477,3 +2477,43 @@ input[type='password']::-webkit-credentials-auto-fill-button {
     animation: none;
   }
 }
+/* Transient zoom level badge (src/zoom.ts), shown in every window. */
+.zoom-indicator {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 8px);
+  z-index: 9999;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-modal, var(--ui-surface));
+  color: var(--ui-text);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+.zoom-indicator.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zoom-indicator {
+    transition: none;
+  }
+}
+.zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zoom-control strong {
+  min-width: 52px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}

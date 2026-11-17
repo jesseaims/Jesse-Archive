@@ -193,8 +193,8 @@ pub fn show(app: &tauri::AppHandle) -> Result<(), String> {
     .inner_size(640., 740.)
     .min_inner_size(520., 560.)
     .build()
-    .map_err(|e| e.to_string())?;
-    Ok(())
+    .map_err(|e| e.to_string())
+    .map(|window| crate::zoom::apply_to(&window, crate::zoom::current(app)))
 }
 #[cfg(test)]
 mod tests {

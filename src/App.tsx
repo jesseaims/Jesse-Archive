@@ -23,6 +23,8 @@ import {
   Menu,
   MoreHorizontal,
   Plus,
+  ZoomIn,
+  ZoomOut,
   RefreshCw,
   Palette,
   Search,
@@ -41,6 +43,7 @@ import {
 } from 'lucide-react';
 import { api, copyText, clearSecretIfUnchanged, picker, readFile, saveFile } from './api';
 import { paletteKeys, DEFAULT_CUSTOM, applyPalette } from './theme';
+import { changeZoom, getZoom } from './zoom';
 import { pickIconData } from './api';
 import {
   categories,
@@ -2764,7 +2767,19 @@ function SettingsPage({
     [suggestions, setSuggestions] = useState<string[]>([]),
     [cloudSearchStatus, setCloudSearchStatus] = useState(''),
     [cloudSearching, setCloudSearching] = useState(false),
-    [appVersion, setAppVersion] = useState('');
+    [appVersion, setAppVersion] = useState(''),
+    [zoom, setZoom] = useState(1);
+  // Interface zoom is a per-device preference, applied immediately (not part of
+  // "Salva aspetto"); keyboard shortcuts in any window keep this control in sync.
+  useEffect(() => {
+    void getZoom()
+      .then(setZoom)
+      .catch(() => {});
+    const stop = listen<number>('zoom-changed', (e) => setZoom(e.payload));
+    return () => {
+      void stop.then((fn) => fn());
+    };
+  }, []);
   useEffect(() => {
     let active = true;
     getVersion()
@@ -2860,6 +2875,45 @@ function SettingsPage({
             </h2>
           </div>
           <div className="form-stack">
+            <div className="field">
+              <span>Dimensione interfaccia</span>
+              <div className="zoom-control">
+                <button
+                  type="button"
+                  className="secondary"
+                  title="Riduci (Ctrl + − oppure Ctrl + F11)"
+                  aria-label="Riduci dimensione interfaccia"
+                  disabled={zoom <= 0.5}
+                  onClick={() => void changeZoom('out').then(setZoom)}
+                >
+                  <ZoomOut size={16} />
+                </button>
+                <strong aria-live="polite">{Math.round(zoom * 100)}%</strong>
+                <button
+                  type="button"
+                  className="secondary"
+                  title="Ingrandisci (Ctrl + + oppure Ctrl + F12)"
+                  aria-label="Ingrandisci dimensione interfaccia"
+                  disabled={zoom >= 2}
+                  onClick={() => void changeZoom('in').then(setZoom)}
+                >
+                  <ZoomIn size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={Math.abs(zoom - 1) < 0.001}
+                  onClick={() => void changeZoom('reset').then(setZoom)}
+                >
+                  100%
+                </button>
+              </div>
+              <p className="helper">
+                Si applica subito a tutte le finestre e viene ricordata su questo PC. Scorciatoie:
+                Ctrl + + / Ctrl + − (anche Ctrl + F12 / Ctrl + F11 o Ctrl + rotella), Ctrl + 0 per
+                tornare al 100%.
+              </p>
+            </div>
             <label className="field">
               <span>Tema colore</span>
               <select value={preset} onChange={(e) => setPreset(e.target.value)}>

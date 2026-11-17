@@ -422,13 +422,42 @@ pub struct Vault {
     rev: u64,
     fails: u32,
 }
+/// Device configuration (`%APPDATA%/JesseArchive/config.json`): not encrypted, not
+/// part of the vault; holds the vault path and per-device preferences.
+fn device_config_path() -> PathBuf {
+    dirs_config().join("JesseArchive").join("config.json")
+}
+fn read_config_key(path: &Path, k: &str) -> V {
+    fs::read_to_string(path)
+        .ok()
+        .and_then(|t| serde_json::from_str::<V>(&t).ok())
+        .and_then(|v| v.get(k).cloned())
+        .unwrap_or(V::Null)
+}
+fn write_config_key(path: &Path, k: &str, val: V) -> Res<()> {
+    let mut c = fs::read_to_string(path)
+        .ok()
+        .and_then(|t| serde_json::from_str::<V>(&t).ok())
+        .filter(V::is_object)
+        .unwrap_or(json!({}));
+    c[k] = val;
+    fs::create_dir_all(path.parent().ok_or("config path")?).map_err(err)?;
+    fs::write(path, serde_json::to_vec(&c).map_err(err)?).map_err(err)
+}
+/// Per-device preference that must work while the vault is locked (e.g. zoom).
+pub fn device_pref(k: &str) -> V {
+    read_config_key(&device_config_path(), k)
+}
+pub fn set_device_pref(k: &str, val: V) -> Res<()> {
+    write_config_key(&device_config_path(), k, val)
+}
 impl Vault {
     pub fn new() -> Self {
         let root = std::env::current_exe()
             .ok()
             .and_then(|x| x.parent().map(Path::to_path_buf))
             .unwrap_or_else(|| PathBuf::from("."));
-        let cfg = dirs_config().join("JesseArchive").join("config.json");
+        let cfg = device_config_path();
         let loc = fs::read_to_string(&cfg)
             .ok()
             .and_then(|x| serde_json::from_str::<V>(&x).ok())
@@ -499,20 +528,10 @@ impl Vault {
         fs::write(&self.config, serde_json::to_vec(&c).map_err(err)?).map_err(err)
     }
     fn pref(&self, k: &str) -> V {
-        fs::read_to_string(&self.config)
-            .ok()
-            .and_then(|t| serde_json::from_str::<V>(&t).ok())
-            .and_then(|v| v.get(k).cloned())
-            .unwrap_or(V::Null)
+        read_config_key(&self.config, k)
     }
     fn set_pref(&self, k: &str, val: V) -> Res<()> {
-        let mut c = fs::read_to_string(&self.config)
-            .ok()
-            .and_then(|t| serde_json::from_str::<V>(&t).ok())
-            .unwrap_or(json!({}));
-        c[k] = val;
-        fs::create_dir_all(self.config.parent().ok_or("config path")?).map_err(err)?;
-        fs::write(&self.config, serde_json::to_vec(&c).map_err(err)?).map_err(err)
+        write_config_key(&self.config, k, val)
     }
     fn read(&self, path: &Path) -> Res<(V, V)> {
         let h: V = serde_json::from_slice(&fs::read(path).map_err(err)?).map_err(err)?;

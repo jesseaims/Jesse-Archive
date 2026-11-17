@@ -4,6 +4,7 @@ mod browser_installer;
 mod browser_navigation;
 mod browser_protocol;
 mod core;
+mod zoom;
 use serde_json::Value;
 use std::sync::Mutex;
 use tauri::{Emitter, Manager};
@@ -236,6 +237,7 @@ pub fn run() {
             }
         }))
         .manage(AppState(Mutex::new(core::Vault::new())))
+        .manage(zoom::Zoom(Mutex::new(zoom::load())))
         .setup(|app| {
             browser::setup(app.handle())?;
             spawn_idle_lock(app.handle().clone());
@@ -273,6 +275,9 @@ pub fn run() {
             if std::env::args().any(|a| a == "--browser-setup") {
                 browser_installer::show(app.handle())?;
             }
+            // Saved zoom for this device, applied to the windows created so far
+            // (main, quick-fill and possibly the guide).
+            zoom::apply_all(app.handle(), zoom::current(app.handle()));
             if std::env::args().any(|a| a == "--background" || a == "--browser-setup") {
                 if let Some(w) = app.get_webview_window("main") {
                     let _ = w.hide();
@@ -327,7 +332,9 @@ pub fn run() {
             browser_installer::browser_setup_status,
             browser_installer::browser_setup_open,
             browser_installer::browser_setup_show,
-            browser_installer::browser_setup_finish
+            browser_installer::browser_setup_finish,
+            zoom::zoom_get,
+            zoom::zoom_change
         ])
         .run(tauri::generate_context!())
         .expect("Tauri application failed");
