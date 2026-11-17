@@ -20,7 +20,8 @@ Queste istruzioni valgono per Codex, Claude Code e qualsiasi altro agente che la
 
 ## Come intervenire
 
-- Preferire modifiche circoscritte; non riscrivere moduli interi, formattare tutto il repository, rimuovere funzionalità o modificare aree estranee alla richiesta.
+- Preferire modifiche circoscritte; non riscrivere moduli interi, rimuovere funzionalità o modificare aree estranee alla richiesta.
+- Formattazione: rustfmt (stile predefinito) e Prettier 3 (`.prettierrc.json`, ambito `src/`). Eseguire `npm run format` prima del commit; `npm run format:check` è un gate della CI. `browser-extension/` è escluso da Prettier perché le copie generate sono versionate. I commit di sola formattazione vanno aggiunti a `.git-blame-ignore-revs`.
 - Riutilizzare helper e componenti esistenti. Evitare logica duplicata e dipendenze senza una necessità concreta.
 - Conservare nomi di categorie, campi sconosciuti, wrapper crittografici, marker dei pacchetti e compatibilità del formato v1, salvo una modifica esplicitamente richiesta con migrazione e test appropriati.
 - Tenere distinti modello Rust/JSON e tipi TypeScript; verificare entrambi i lati quando cambia un contratto IPC.
@@ -50,6 +51,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -S
 ```
 
 Il test dell'host richiede il relativo EXE compilato; in sua assenza viene saltato. Il test Brave interattivo è ignorato di default e apre un profilo di prova: non abilitarlo indiscriminatamente. Il setup richiede l'app chiusa, tool Windows e Inno Setup. `npm run build` aggiorna `src/commits.generated.json`; la procedura completa rigenera anche manifest e copie dell'estensione. Non eseguirli in un incarico che vieta tali scritture.
+
+La CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) esegue tipi, build frontend, test Rust e Node su Windows a ogni push/PR verso `main`: ogni modifica deve lasciarla verde.
 
 Una build non sostituisce il collaudo di login, recupero, conflitti cloud, installazione e browser. Registrare esito, controlli saltati e motivi. Per modifiche soltanto documentali bastano controlli di riferimenti, coerenza e perimetro delle modifiche: non ricompilare l'app per abitudine.
 

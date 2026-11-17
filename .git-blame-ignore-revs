@@ -1,0 +1,5 @@
+# Mechanical formatting commits, ignored by `git blame`.
+# Local use: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: format Rust and frontend sources (rustfmt + Prettier)
+dc0466f6ef0b25e0d0590ddb97c71c48bb64325e

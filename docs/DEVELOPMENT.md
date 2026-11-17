@@ -6,6 +6,8 @@ Baseline `1f09624`, Beta 1.1.4, analisi del 17 novembre 2026. Leggere prima [AGE
 
 Il percorso di distribuzione completo è Windows x64 con Rust MSVC, Visual Studio Build Tools C++ e Windows SDK, Node/npm, WebView2 e Inno Setup 6 o 7. La build Tauri MSI usa gli strumenti WiX gestiti dalla CLI/cache: al primo utilizzo possono servire download. Non dichiarare offline l'ambiente di compilazione.
 
+Se il repository è stato creato da un altro account Windows (per esempio la sandbox di Codex), Git può rifiutarlo con "dubious ownership". La soluzione adottata è `git config --global --add safe.directory "<percorso del repository>"` per l'utente che sviluppa; non cambiare il proprietario della cartella, perché l'altro agente deve poter continuare a scriverci.
+
 Versioni osservate con comandi di sola lettura: `rustc 1.100.0`, `cargo 1.100.0`, Node `26.13.1`, npm `11.20.0`. Non sono versioni minime certificate: manca un pin `rust-toolchain`/`rust-version`, edizione Rust 2021 non significa MSRV 2021. `jsdom 31.0.1` richiede Node `^22.22.2 || ^24.15.0 || >=26.0.0`: una generica indicazione Node 18 è insufficiente per gli attuali test. Nessun campo `engines` impone il runtime in package.json.
 
 | Tecnologia | Risoluzione nei lockfile | Ruolo |
@@ -55,8 +57,11 @@ npm run test:browser
 cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 node --test tests/browser-host.test.mjs
 
-# Diagnostica statica: esiti e warning da valutare, non assunti puliti
-cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+# Formattazione (rustfmt + Prettier): applica / verifica
+npm run format
+npm run format:check
+
+# Diagnostica statica: warning da valutare, non assunti puliti
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets
 ```
 
@@ -83,6 +88,10 @@ Il test legge dati sintetici; non importare il modulo dell'app storica per prova
 La precedente esecuzione riportava 11 test libreria Rust e uno di protocollo nel binario helper, oltre ai 6+2 Node. Il protocollo è compilato anche nel binario: non contare il test duplicato come nuova area coperta. Esiste un test GUI Brave ignorato normalmente: apre finestre e usa un profilo dedicato. Prima di eseguirlo leggere `src-tauri/src/browser_navigation.rs`; non avviare indiscriminatamente tutti gli ignored test su una sessione utente. Il precedente controllo manuale della navigazione riguarda Brave soltanto.
 
 Mancano prove complete di concorrenza e durabilità, import malformati, inattività temporale, tutte le categorie CRUD, login reali su ogni browser, installazione/upgrade/disinstallazione in VM e offline su Windows pulito. Non aggiungere test che usino credenziali o vault personali.
+
+## Integrazione continua
+
+[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
 ## Setup Windows completo
 
@@ -113,7 +122,7 @@ La soglia di dimensione MSI è un'euristica, non prova che ogni dipendenza WebVi
 - `scripts/package-browser-extension.mjs` copia il background canonico nelle due directory, prepara manifest e identità Chromium. Preservare la chiave **pubblica** e l'identità esistenti: rigenerarle cambia il collegamento Native Messaging. Non introdurre chiavi private nel repository.
 - `src-tauri/resources/` e la configurazione browser merge sono artefatti ignorati. I profili dei test e gli output di compilazione non sono sorgenti.
 - La versione compare in package.json/Cargo/Tauri/Inno e nei manifest generati; lockfile e fallback UI vanno valutati se si modifica la versione. Non eseguire un bump per una richiesta soltanto documentale.
-- Non applicare formatter globali al codice compatto esistente durante una correzione locale. Nessun workflow CI o configurazione lint dedicata risulta versionato nella baseline; fmt/clippy non sono gate già certificati.
+- Il codice Rust e `src/` sono formattati (rustfmt predefinito, Prettier 3 con `.prettierrc.json`); la CI esegue `npm run format:check`. Il commit di formattazione iniziale è in `.git-blame-ignore-revs`: usare `git config blame.ignoreRevsFile .git-blame-ignore-revs` per un blame utile. `browser-extension/` e `legacy-python/` non sono formattati da Prettier. Clippy non è un gate certificato.
 
 ## Metodo di lavoro
 

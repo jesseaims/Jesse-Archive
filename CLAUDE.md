@@ -87,7 +87,7 @@ Percorso del vault: override `JESSE_ARCHIVE_VAULT`, poi configurazione dispositi
 
 ## G. Development Guidelines
 
-Applicare le regole di [AGENTS.md](AGENTS.md): interventi piccoli, nessuna modifica estranea, riuso degli helper, compatibilità v1, gestione esplicita degli errori e dipendenze motivate. Non eseguire un formatter sull'intero `core.rs` o `App.tsx` per accompagnare una modifica locale: l'attuale densità del codice è debito tecnico, non un'autorizzazione a riscriverlo.
+Applicare le regole di [AGENTS.md](AGENTS.md): interventi piccoli, nessuna modifica estranea, riuso degli helper, compatibilità v1, gestione esplicita degli errori e dipendenze motivate. Il codice è formattato con rustfmt (stile predefinito) e Prettier (`.prettierrc.json`): eseguire `npm run format` prima del commit; la CI rifiuta codice non formattato. La formattazione non autorizza a riorganizzare o riscrivere `core.rs`/`App.tsx`, che restano monolitici.
 
 Per Claude Code, ricercare prima il nome del comando in `src/App.tsx`/`src/api.ts` e nel match di `Vault::call`, oppure nei comandi `browser_*`. Seguire poi persistenza, test e UI chiamanti. Non trasferire automaticamente comportamenti Python nel Rust, né modificare le copie generate dell'estensione al posto della sorgente canonica.
 
@@ -106,6 +106,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -S
 ```
 
 La procedura completa è quella con MSI + Inno; `Build-Windows.ps1` e il comando Tauri diretto non includono da soli il confezionamento del componente browser. `npm ci` installa e può eseguire script di dipendenze; non è un controllo in sola lettura. Non eseguire `npm run build` durante un incarico strettamente documentale: il prebuild aggiorna uno snapshot versionato.
+
+La CI GitHub Actions (`.github/workflows/ci.yml`, Windows) esegue questi controlli, escluso il setup, a ogni push/PR verso `main` e deve restare verde.
 
 Il test dell'host può essere saltato quando manca il binario; non trasformare uno skip in un successo funzionale. Il test Brave con `--ignored` apre realmente una finestra e un profilo dedicato. Per prerequisiti, comandi diagnostici, effetti collaterali e prove ancora necessarie vedere [DEVELOPMENT](docs/DEVELOPMENT.md).
 

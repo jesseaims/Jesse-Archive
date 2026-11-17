@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "prebuild": "node scripts/generate-commits.mjs",
-    "test:browser": "node --test tests/browser-extension.test.mjs"
+    "test:browser": "node --test tests/browser-extension.test.mjs",
+    "format": "prettier --write src && cargo fmt --manifest-path src-tauri/Cargo.toml",
+    "format:check": "prettier --check src && cargo fmt --manifest-path src-tauri/Cargo.toml -- --check"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
@@ -23,6 +25,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^31.0.1",
+    "prettier": "3.10.1",
     "typescript": "~5.7.3",
     "vite": "^6.0.0"
   }
