@@ -53,7 +53,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Funzionalità | Stato effettivo e riferimenti |
 |---|---|
 | Creazione, sblocco, blocco, recupero, cambio master | Implementate in `core.rs`, usate da `App.tsx` e in parte `QuickFill.tsx`; scadenza per inattività su ogni comando e thread ogni 5 s |
-| Sei categorie, cartelle, preferiti, cestino e operazioni multiple | Implementate in `Vault::call`, `src/types.ts`, `App.tsx`; validazione degli import da rafforzare |
+| Sei categorie, cartelle, preferiti, cestino e operazioni multiple | Implementate in `Vault::call`, `src/types.ts`, `App.tsx`; import JSON/`.jshare` validati e atomici, nessuno schema completo dei campi |
 | Storico delle password e riassegnazione | Implementati con `link`, `pw_*`, `PasswordPage`; la UI riassegna agli account login |
 | Password, PIN, username, passphrase | Implementati con `generate`; passphrase a sillabe e stime di robustezza euristiche |
 | TOTP e salute password | Implementati in `core.rs`; TOTP fisso SHA-1/6 cifre/30 secondi |
