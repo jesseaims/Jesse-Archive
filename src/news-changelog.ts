@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'delete-accounts-and-groups',
+    addedAt: '2026-11-17T19:10:00+01:00',
+    version: 'Beta 1.1.6',
+    title: 'Eliminazione di account, gruppi ed elementi',
+    description:
+      'Ogni gruppo di account ha il pulsante «Elimina account» per il singolo account e un cestino per eliminare l’intero gruppo, con doppia conferma che elenca cosa verrà eliminato. Anche gli elementi delle altre categorie si eliminano con un clic e una conferma. Tutto finisce nel Cestino, da dove si può ripristinare.',
+    icon: 'wrench',
+  },
+  {
     id: 'session-hardening',
     addedAt: '2026-11-17T18:19:27+01:00',
     version: 'Beta 1.1.5',
