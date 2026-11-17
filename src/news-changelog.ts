@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'empty-trash',
+    addedAt: '2026-11-17T20:36:53+01:00',
+    version: 'Beta 1.1.10',
+    title: 'Svuota cestino',
+    description:
+      'Nella pagina Cestino il pulsante «Svuota cestino» elimina definitivamente tutti gli elementi in un colpo solo, dopo due conferme che mostrano cosa verrà eliminato.',
+    icon: 'wrench',
+  },
+  {
     id: 'settings-layout-installer-flow',
     addedAt: '2026-11-17T19:55:45+01:00',
     version: 'Beta 1.1.9',
