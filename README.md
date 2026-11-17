@@ -70,3 +70,7 @@ Le funzionalità di crittografia, dati, gruppi, sicurezza, esportazione, tema e 
 - Il controllo HIBP invia solo i primi 5 caratteri esadecimali dell'hash SHA-1 (k-anonymity).
 - Il download delle favicon viene richiesto esplicitamente; la UI non scarica risorse di terze parti al caricamento.
 - Può essere richiesto uno security audit prima dell'impiego in produzione.
+
+
+## Distribuzione finale offline
+Vedi `DISTRIBUZIONE-WINDOWS.md` e `Build-Distribuzione-Windows.ps1` per i bundle EXE/MSI con WebView2 offline.
