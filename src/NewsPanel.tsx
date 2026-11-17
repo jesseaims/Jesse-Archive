@@ -72,7 +72,7 @@ function EntryTimestamp({
 
 export default function NewsPanel({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('updates');
-  const [version, setVersion] = useState('1.1.9');
+  const [version, setVersion] = useState('1.1.10');
   const [query, setQuery] = useState('');
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
