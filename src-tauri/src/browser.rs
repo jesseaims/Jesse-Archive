@@ -9,6 +9,9 @@ use std::{
 use tauri::{Emitter, Manager};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut};
 
+/// Logical size of the quick-fill panel at 100% zoom (`zoom::apply_to` scales it).
+pub const QUICK_FILL_SIZE: (f64, f64) = (460., 540.);
+
 struct Session {
     client: String,
     request: String,
@@ -233,7 +236,7 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         tauri::WebviewUrl::App("index.html?quick-fill".into()),
     )
     .title("JesseArchive · Inserimento rapido")
-    .inner_size(460., 540.)
+    .inner_size(QUICK_FILL_SIZE.0, QUICK_FILL_SIZE.1)
     .resizable(false)
     .visible(false)
     .always_on_top(true)

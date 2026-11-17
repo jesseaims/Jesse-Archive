@@ -1,5 +1,47 @@
 [
   {
+    "hash": "c4030a1",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T21:00:42+01:00",
+    "subject": "chore: release beta 1.1.12"
+  },
+  {
+    "hash": "8e6b993",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T21:00:25+01:00",
+    "subject": "feat: typed zoom percentage and min/max zoom buttons in Aspetto"
+  },
+  {
+    "hash": "00baef6",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T20:53:59+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.11 build"
+  },
+  {
+    "hash": "62740e9",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T20:51:11+01:00",
+    "subject": "chore: release beta 1.1.11"
+  },
+  {
+    "hash": "0352d92",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T20:50:50+01:00",
+    "subject": "feat: interface zoom with keyboard, mouse and settings control"
+  },
+  {
+    "hash": "651e155",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T20:45:16+01:00",
+    "subject": "Merge pull request #7 from jesseaims/feat/empty-trash"
+  },
+  {
+    "hash": "13c7c29",
+    "date": "2026-11-17",
+    "timestamp": "2026-11-17T20:42:42+01:00",
+    "subject": "chore: refresh commit snapshot for beta 1.1.10 build"
+  },
+  {
     "hash": "5a86570",
     "date": "2026-11-17",
     "timestamp": "2026-11-17T20:37:07+01:00",

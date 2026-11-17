@@ -17,7 +17,7 @@ Ordine di risoluzione in `Vault::new`:
 3. `dati/jesse_archive.vault` accanto all'eseguibile, se esiste.
 4. Su Windows, `%LOCALAPPDATA%/JesseArchive/jesse_archive.vault`.
 
-La configurazione dispositivo è `%APPDATA%/JesseArchive/config.json`, con percorso del vault e preferenza `close_action`. L'avvio automatico è ricavato dal registro Windows, non da un campo cifrato del vault. Il fallback non Windows passa dalle funzioni `dirs_config`/`dirs_data`, ma la portabilità completa non è collaudata.
+La configurazione dispositivo è `%APPDATA%/JesseArchive/config.json`, con percorso del vault e preferenze `close_action` e `zoom` (fattore 0.5–2.0, letto anche a vault bloccato tramite `device_pref`). L'avvio automatico è ricavato dal registro Windows, non da un campo cifrato del vault. Il fallback non Windows passa dalle funzioni `dirs_config`/`dirs_data`, ma la portabilità completa non è collaudata.
 
 | Persistenza distinta | Contenuto e gestione |
 |---|---|

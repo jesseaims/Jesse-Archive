@@ -4,6 +4,8 @@ import App from './App';
 import QuickFill from './QuickFill';
 import BrowserInstaller from './BrowserInstaller';
 import './style.css';
+import { installZoomShortcuts } from './zoom';
+installZoomShortcuts();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {location.search.includes('browser-setup') ? (

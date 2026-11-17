@@ -26,7 +26,9 @@ if (-not $iscc) {
 Write-Host '==> Test + build MSI OFFLINE tramite Tauri' -ForegroundColor Cyan
 $oldPath = $env:Path
 $nodeDir = 'C:\Program Files\nodejs'
-if (Test-Path (Join-Path $nodeDir 'node.exe')) { $env:Path = "$nodeDir;$env:Path" }
+# Only when node is not already reachable: on CI runners the configured Node
+# version must not be shadowed by a different system-wide install.
+if (-not (Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $nodeDir 'node.exe'))) { $env:Path = "$nodeDir;$env:Path" }
 if (-not ($env:PATHEXT -split ';' | Where-Object { $_ -ieq '.EXE' })) {
     $env:PATHEXT = '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
 }

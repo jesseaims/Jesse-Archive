@@ -12,6 +12,24 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'zoom-typed-min-max',
+    addedAt: '2026-11-17T21:00:25+01:00',
+    version: 'Beta 1.1.12',
+    title: 'Zoom a scelta, minimo e massimo',
+    description:
+      'In Impostazioni → Aspetto puoi scrivere la percentuale di zoom che preferisci (da 50 a 200) e usare i due nuovi pulsanti per passare subito allo zoom minimo o massimo.',
+    icon: 'sparkles',
+  },
+  {
+    id: 'interface-zoom',
+    addedAt: '2026-11-17T20:50:56+01:00',
+    version: 'Beta 1.1.11',
+    title: 'Zoom dell’interfaccia',
+    description:
+      'Ingrandisci o riduci l’app con Ctrl + + e Ctrl + − (oppure Ctrl + F12 / Ctrl + F11 o Ctrl + rotella del mouse) e torna al 100% con Ctrl + 0. Lo trovi anche in Impostazioni → Aspetto: vale per tutte le finestre e viene ricordato su questo PC.',
+    icon: 'sparkles',
+  },
+  {
     id: 'empty-trash',
     addedAt: '2026-11-17T20:36:53+01:00',
     version: 'Beta 1.1.10',
