@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'customizable-dashboard',
+    addedAt: '2026-11-18T03:03:12+01:00',
+    version: 'Beta 1.1.17',
+    title: 'Dashboard personalizzabile',
+    description:
+      'La nuova Dashboard è il centro di controllo dell’app: punteggio di sicurezza, analisi delle password, panoramica del vault, preferiti, elementi recenti, note protette, azioni rapide, generatore, stato del backup e privacy. Con «Personalizza dashboard» aggiungi, rimuovi, trascini e ridimensioni i widget, scegli fra più layout e regoli le opzioni di ciascuno; tutto si salva da solo nel vault cifrato e nessun widget mostra le password.',
+    icon: 'sparkles',
+  },
+  {
     id: 'multilanguage',
     addedAt: '2026-11-18T02:14:17+01:00',
     version: 'Beta 1.1.16',

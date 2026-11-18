@@ -10,10 +10,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export function sourceKeys() {
   const keys = new Set();
-  const dir = path.join(root, 'src');
-  for (const name of fs.readdirSync(dir)) {
-    if (!/\.(tsx?|mts)$/.test(name) || name === 'i18n.ts') continue;
-    const file = path.join(dir, name);
+  // Every source file under src/ (subfolders too), except the translations themselves.
+  const files = fs
+    .readdirSync(path.join(root, 'src'), { recursive: true })
+    .map(String)
+    .filter((name) => /\.(tsx?|mts)$/.test(name) && !/^locales[\/]/.test(name) && name !== 'i18n.ts')
+    .map((name) => path.join(root, 'src', name));
+  for (const file of files) {
     const sf = ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     const visit = (node) => {
       if (
@@ -42,8 +45,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   const lang = process.argv[2];
   let missing = all;
   if (lang) {
-    const text = fs.readFileSync(path.join(root, 'src', 'locales', `${lang}.ts`), 'utf8');
-    missing = all.filter((k) => !text.includes(JSON.stringify(k)));
+    const file = pathToFileURL(path.join(root, 'src', 'locales', `${lang}.ts`)).href;
+    const { default: dictionary } = await import(file);
+    missing = all.filter((k) => typeof dictionary[k] !== 'string');
   }
   process.stdout.write(JSON.stringify(missing, null, 1) + '\n');
   console.error(`${missing.length} chiavi`);

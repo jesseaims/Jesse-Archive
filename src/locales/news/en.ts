@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'customizable-dashboard': [
+    'Customizable dashboard',
+    "The new Dashboard is the app's control center: security score, password audit, vault overview, favorites, recent items, secure notes, quick actions, generator, backup status and privacy. With “Customize dashboard” you add, remove, drag and resize widgets, choose between several layouts and adjust each widget's options; everything is saved automatically in the encrypted vault and no widget shows passwords.",
+  ],
   multilanguage: [
     'Jesse’s Archive speaks your language',
     'With the new “Language” button at the top right you can choose Italian, English, Spanish, French, German, Portuguese, Russian, Chinese, Japanese or Korean. The whole app switches at once, including the unlock screen, the browser mini window and the notification area menu; on first start the Windows language is used. The installer and the browser extension also follow the system language.',

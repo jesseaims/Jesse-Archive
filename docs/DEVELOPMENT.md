@@ -84,6 +84,7 @@ Il test legge dati sintetici; non importare il modulo dell'app storica per prova
 | Test inline `core.rs` | KDF, AES, fusione, TOTP, compatibilità fixture v1; `vault_tests` su un vault sintetico in una cartella temporanea (policy di lunghezza, recupero, import non validi, round trip export/import, ripristino dopo salvataggio fallito, `ensure_shape`, `bulk`/`delete` limitato agli elementi nel cestino) | Non coprono interamente CRUD o crash durante scrittura |
 | Test inline browser/protocollo/installer/navigation | Matching domini, framing, target fissi e input navigazione | Non certificano sei browser reali |
 | `tests/browser-extension.test.mjs` | Sei casi con mock API e jsdom, focus e compilazione DOM | Non sostituisce il motore browser, pagine reali, CAPTCHA o framework esterni |
+| `tests/dashboard.test.mjs`, `tests/dashboard-ui.test.mjs` (`npm run test:dashboard`) | Modello: configurazioni mancanti, danneggiate o vecchie, widget sconosciuti o non disponibili, operazioni sul layout, layout indipendenti e ripristino, punteggio, nessun segreto salvato. UI: la vera `Dashboard.tsx`, compilata con esbuild (dipendenza di Vite) e montata in jsdom con un vault sintetico e un backend Tauri simulato. Verifica dati reali, assenza di password e testo delle note, modalità personalizzazione, catalogo, spostamento, ridimensionamento, impostazioni, salvataggio automatico, drag & drop, layout, ripristino con conferma, persistenza dopo un nuovo avvio, aggiornamento quando cambiano i dati, configurazione danneggiata | jsdom non calcola il layout: resa grafica, animazioni e trascinamento col mouse vero vanno provati nell'app |
 | `tests/i18n.test.mjs` (`npm run test:i18n`) | Ogni chiave usata nel codice (`t`/`tRich`/`msg`, estratte con [scripts/i18n-keys.mjs](../scripts/i18n-keys.mjs)) e ogni messaggio di `src/locales/runtime-keys.mjs` è tradotto in tutte le lingue con gli stessi segnaposto; nessuna traduzione orfana; ogni voce News tradotta; stesse lingue in frontend e backend | Non verifica la qualità linguistica né i testi Rust non elencati in `runtime-keys.mjs` |
 | `tests/passkey-extension.test.mjs` | Sei casi: serializzazione delle opzioni WebAuthn, oggetti `PublicKeyCredential`, fallback, errori, abort, origine presa dal browser e disconnessione | Classi WebAuthn simulate: non sostituisce un collaudo su siti reali |
 | `passkey.rs` (test inline) | rpId e PSL, CBOR, `clientDataJSON`, registrazione con login verificato, validazione delle richieste; il test `--ignored` `dump_for_external_verifier` produce dati verificati anche con OpenSSL/Node | Nessun browser reale |
@@ -94,13 +95,21 @@ La precedente esecuzione riportava 11 test libreria Rust e uno di protocollo nel
 
 Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inattività nell'app reale, tutte le categorie CRUD, login reali su ogni browser, installazione/upgrade/disinstallazione in VM e offline su Windows pulito. Non aggiungere test che usino credenziali o vault personali.
 
+## Aggiungere un widget alla Dashboard
+
+1. Aggiungi il tipo e la specifica in `src/dashboard/model.ts`: categoria, dimensioni, disponibilità, opzioni predefinite e `normalize`.
+2. Aggiungi la definizione in `WIDGETS` (`src/dashboard/widgets.tsx`): nome e descrizione con `msg()`, icona, componente, impostazioni ed eventuale `refresh`.
+3. Traduci i testi nuovi in tutte le lingue.
+
+Il componente centrale non cambia. Un widget deve usare i dati e i comandi già esistenti, senza mostrare segreti, e non deve chiamare da solo comandi che aggiornano l'attività del vault: quelli nuovi di sola lettura vanno aggiunti all'elenco passivo in `Vault::call`.
+
 ## Traduzioni
 
 Ogni testo visibile nell'interfaccia passa da `t('…')`, `tRich('…', {…})` o `msg('…')` (vedi `src/i18n.ts`), con il testo italiano come chiave e le traduzioni in tutti i file `src/locales/<lingua>.ts`; i messaggi mostrati che arrivano dal backend Rust o dall'estensione vanno elencati in `src/locales/runtime-keys.mjs`, e ogni nuova voce News va tradotta in `src/locales/news/<lingua>.ts`. `npm run test:i18n` (gate della CI) fallisce se manca una traduzione o se i segnaposto `{nome}` non coincidono. `node scripts/i18n-keys.mjs <lingua>` elenca le chiavi ancora mancanti in una lingua. Le lingue sono definite in `src/i18n.ts` (`LANGUAGES`) e in `src-tauri/src/i18n.rs` (`LANGS`, etichette native); aggiungerne una richiede anche il file `src/locales/<lingua>.ts`, le News, il `_locales` dell'estensione e la voce `[Languages]`/`[CustomMessages]` dell'installer.
 
 ## Integrazione continua
 
-[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, `npm run test:i18n`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
+[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, `npm run test:i18n`, `npm run test:dashboard`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
 ## Pubblicazione delle release
 

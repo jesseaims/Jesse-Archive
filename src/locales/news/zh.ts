@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'customizable-dashboard': [
+    '可自定义的仪表板',
+    '新的仪表板是应用的控制中心：安全评分、密码分析、保险库概览、收藏、最近的项目、安全笔记、快捷操作、生成器、备份状态和隐私。通过“自定义仪表板”可以添加、移除、拖动和调整小组件大小，在多个布局之间切换并调整每个小组件的选项；所有内容都会自动保存在加密保险库中，任何小组件都不会显示密码。',
+  ],
   multilanguage: [
     'Jesse’s Archive 支持你的语言',
     '通过右上角新的“语言”按钮，可以在意大利语、英语、西班牙语、法语、德语、葡萄牙语、俄语、中文、日语和韩语之间选择。整个应用会立即切换，包括解锁界面、浏览器小窗口和通知区域菜单；首次启动时使用 Windows 的语言。安装程序和浏览器扩展也会跟随系统语言。',

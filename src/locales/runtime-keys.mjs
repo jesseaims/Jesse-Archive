@@ -58,6 +58,7 @@ export const RUNTIME_KEYS = [
   'Verifica della copia fallita; originale conservato',
   'Solo Windows',
   'Comando sconosciuto: {name}',
+  'Configurazione della dashboard non valida',
   // lib.rs: files, clipboard, internal errors
   'Errore interno: il vault è stato bloccato per sicurezza. Sbloccalo di nuovo.',
   'Formato immagine non supportato',

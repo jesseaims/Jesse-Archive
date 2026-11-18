@@ -55,6 +55,9 @@ jobs:
       - name: Translations complete in every language
         run: npm run test:i18n
 
+      - name: Dashboard (model and UI in jsdom)
+        run: npm run test:dashboard
+
       - name: Build native messaging host
         run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 
