@@ -161,7 +161,7 @@ async function setup({ locked = false, settings = {}, recent = [] } = {}) {
     await flush(5);
   };
   const key = async (k, mods = {}, target) => {
-    const el = target ?? input() ?? $('.quick-search');
+    const el = target ?? input() ?? $('.qs-window');
     await H.act(async () =>
       el.dispatchEvent(
         new w.KeyboardEvent('keydown', {
@@ -389,7 +389,7 @@ test('starts locked: nothing from the vault is shown', async () => {
   assert.ok(!d.text().includes('Epic'));
   assert.equal(d.count('quick_search_copy'), 0);
   // Keyboard actions do nothing while locked.
-  await d.key('c', { ctrlKey: true }, d.$('.quick-search'));
-  await d.key('Enter', {}, d.$('.quick-search'));
+  await d.key('c', { ctrlKey: true }, d.$('.qs-window'));
+  await d.key('Enter', {}, d.$('.qs-window'));
   assert.equal(d.count('quick_search_copy'), 0);
 });

@@ -3364,7 +3364,7 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 }
 
 /* Global Quick Search: undecorated launcher window (src/quick-search/QuickSearch.tsx). */
-.quick-search {
+.qs-window {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -3406,7 +3406,7 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 .qs-field:focus-within {
   border-color: var(--ui-accent);
 }
-.quick-search .qs-field input {
+.qs-window .qs-field input {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -3669,10 +3669,7 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 .qs-locked button {
   width: min(320px, 100%);
 }
-/* A normal one-line field (`.quick-search input` of the quick-fill window would
-   stretch it to fill this column). */
-.quick-search .qs-locked input {
-  flex: none;
+.qs-window .qs-locked input {
   height: 42px;
   padding: 0 12px;
   border: 1px solid var(--ui-border);
@@ -3706,7 +3703,7 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   gap: 8px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .quick-search {
+  .qs-window {
     animation: none;
   }
 }

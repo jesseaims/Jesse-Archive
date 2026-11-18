@@ -491,7 +491,7 @@ export default function QuickSearch() {
   }
 
   return (
-    <main className="quick-search" onKeyDown={onKeyDown}>
+    <main className="qs-window" onKeyDown={onKeyDown}>
       <header className="qs-head">
         <label className="qs-field">
           <Search size={20} />
