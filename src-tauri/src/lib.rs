@@ -4,6 +4,7 @@ mod browser_installer;
 mod browser_navigation;
 mod browser_protocol;
 mod core;
+mod updater;
 mod zoom;
 use serde_json::Value;
 use std::sync::Mutex;
@@ -334,7 +335,11 @@ pub fn run() {
             browser_installer::browser_setup_show,
             browser_installer::browser_setup_finish,
             zoom::zoom_get,
-            zoom::zoom_change
+            zoom::zoom_change,
+            updater::update_settings,
+            updater::update_set_auto,
+            updater::update_check,
+            updater::update_install
         ])
         .run(tauri::generate_context!())
         .expect("Tauri application failed");

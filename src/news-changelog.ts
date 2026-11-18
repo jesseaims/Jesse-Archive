@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'auto-update',
+    addedAt: '2026-11-18T00:45:49+01:00',
+    version: 'Beta 1.1.13',
+    title: 'Aggiornamenti automatici',
+    description:
+      'L’app controlla le nuove versioni all’avvio e una volta al giorno e ti chiede se installarle: con «Aggiorna ora» scarica il setup, ne verifica la firma digitale dell’autore e si riapre aggiornata. In Impostazioni → Aggiornamenti puoi cercarle a mano o disattivare il controllo automatico.',
+    icon: 'package',
+  },
+  {
     id: 'zoom-typed-min-max',
     addedAt: '2026-11-17T21:00:25+01:00',
     version: 'Beta 1.1.12',

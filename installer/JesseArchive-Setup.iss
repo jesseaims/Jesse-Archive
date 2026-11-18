@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.1.12"
+﻿#define AppVersion "1.1.13"
 #define AppName "Jesse's Archive"
 
 [Setup]
@@ -37,6 +37,9 @@ Source: "payload\JesseArchive.msi"; Flags: dontcopy noencryption
 Filename: "{code:GetInstalledApp}"; Parameters: "--browser-setup"; Description: "Configura le estensioni dei browser (collegamento automatico e caricamento guidato)"; Flags: postinstall nowait skipifsilent runasoriginaluser
 ; Must stay right after the browser entry: NextButtonClick refers to it as RunList item 1.
 Filename: "{code:GetInstalledApp}"; Description: "Avvia {#AppName} al termine dell'installazione"; Flags: postinstall nowait skipifsilent runasoriginaluser
+; Automatic update (/SILENT from the app): reopen the app once the MSI has finished.
+; Not a postinstall entry, so it is not part of the RunList above.
+Filename: "{code:GetInstalledApp}"; Flags: nowait runasoriginaluser; Check: WizardSilent
 
 [Code]
 var
@@ -61,7 +64,11 @@ begin
       'I dati del vault rimangono separati dalla cartella applicativa.',
     False, '');
   InstallDirPage.Add('');
-  InstallDirPage.Values[0] := ExpandConstant('{autopf}\Jesse''s Archive');
+  { The automatic updater passes /INSTALLDIR="<current program folder>" so a silent
+    update replaces the existing installation instead of the default folder. }
+  InstallDirPage.Values[0] := Trim(ExpandConstant('{param:INSTALLDIR|}'));
+  if (InstallDirPage.Values[0] = '') or (Pos('"', InstallDirPage.Values[0]) > 0) then
+    InstallDirPage.Values[0] := ExpandConstant('{autopf}\Jesse''s Archive');
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;

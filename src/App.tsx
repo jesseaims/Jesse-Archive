@@ -58,6 +58,7 @@ import {
 import { Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
+import { UpdateProgress, UpdateSettings, useAutoUpdate } from './Updater';
 
 type Dict = Record<string, unknown>;
 type Dialog =
@@ -992,6 +993,7 @@ export default function App() {
       return;
     await mutate('import', { text }, 'Importazione effettuata');
   };
+  useAutoUpdate(!!vault, { askConfirm, showNotice });
   if (!status)
     return (
       <div className="auth-screen">
@@ -1616,6 +1618,7 @@ export default function App() {
           {page === 'settings' && (
             <SettingsPage
               askConfirm={askConfirm}
+              showNotice={showNotice}
               askText={askText}
               vault={vault}
               mutate={mutate}
@@ -2051,6 +2054,7 @@ export default function App() {
         />
       )}
       {newsOpen && <NewsPanel onClose={() => setNewsOpen(false)} />}
+      <UpdateProgress />
     </div>
   );
 }
@@ -2734,6 +2738,7 @@ function Risk({
 }
 function SettingsPage({
   askConfirm,
+  showNotice,
   askText,
   vault,
   mutate,
@@ -2744,6 +2749,7 @@ function SettingsPage({
   selectPage,
 }: {
   askConfirm: DialogAPI['askConfirm'];
+  showNotice: DialogAPI['showNotice'];
   askText: DialogAPI['askText'];
   vault: State;
   mutate: (n: string, b?: Dict, m?: string) => Promise<unknown>;
@@ -3203,6 +3209,7 @@ function SettingsPage({
             <p>La chiusura nell'area di notifica blocca il vault.</p>
           </div>
         </section>
+        <UpdateSettings askConfirm={askConfirm} showNotice={showNotice} />
         <section className="panel settings-panel">
           <div className="panel-head">
             <h2>

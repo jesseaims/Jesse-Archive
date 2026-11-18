@@ -193,23 +193,50 @@ try {
     $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
     Write-Host ("Setup: {0:N1} MB, creato {1}, SHA-256 {2}" -f ($file.Length / 1MB), $file.LastWriteTime, $hash)
 
+    # --- Firma per l'aggiornamento automatico ------------------------------------
+    # The installed apps accept only installers whose signed manifest matches the
+    # public key embedded in them (src-tauri\update-public-key.txt).
+    Step 'Firma per l''aggiornamento automatico'
+    $sigFile = "$exe.sig"
+    $keyFile = Join-Path $env:APPDATA 'JesseArchive-Release\update-signing-key.dpapi'
+    if (-not (Test-Path -LiteralPath $keyFile)) {
+        throw "Chiave di firma degli aggiornamenti assente ($keyFile): ripristinala con scripts\Update-SigningKey.ps1 -Restore <backup>."
+    }
+    Add-Type -AssemblyName System.Security
+    $pemBytes = [System.Security.Cryptography.ProtectedData]::Unprotect([IO.File]::ReadAllBytes($keyFile), $null, 'CurrentUser')
+    $ErrorActionPreference = 'Continue'
+    try {
+        [System.Text.Encoding]::ASCII.GetString($pemBytes) | node scripts/update-signature.mjs sign $exe $version $sigFile 2>&1 |
+            ForEach-Object { "$_" } | Write-Host
+        $signExit = $LASTEXITCODE
+    } finally {
+        [Array]::Clear($pemBytes, 0, $pemBytes.Length)
+        $ErrorActionPreference = 'Stop'
+    }
+    if ($signExit -ne 0) { throw 'Firma dell''aggiornamento non riuscita.' }
+    Native 'Verifica della firma' { node scripts/update-signature.mjs verify $exe $sigFile src-tauri/update-public-key.txt }
+
     # --- Pubblicazione --------------------------------------------------------
     if (-not $Yes) {
         $answer = Read-Host "Pubblicare JesseArchive-Setup.exe come 'Beta $version' su GitHub? (s/N)"
         if ($answer -notmatch '^(s|si|sì|y|yes)$') { Write-Host 'Pubblicazione annullata.' -ForegroundColor Yellow; exit 1 }
     }
     Step "Pubblicazione della release $tag"
-    $releaseArgs = @('release', 'create', $tag, $exe, '--title', "Beta $version", '--notes-file', $notesFile, '--target', $sha)
+    $releaseArgs = @('release', 'create', $tag, $exe, $sigFile, '--title', "Beta $version", '--notes-file', $notesFile, '--target', $sha)
     if ($Draft) { $releaseArgs += '--draft' } else { $releaseArgs += '--latest' }
     Native 'gh release create' { & $gh @releaseArgs }
 
     $asset = & $gh release view $tag --json assets,url --jq '{url: .url, assets: [.assets[] | {name: .name, size: .size}]}' | ConvertFrom-Json
     $uploaded = $asset.assets | Where-Object { $_.name -eq 'JesseArchive-Setup.exe' }
+    $uploadedSig = $asset.assets | Where-Object { $_.name -eq 'JesseArchive-Setup.exe.sig' }
     if (-not $uploaded -or [int64]$uploaded.size -ne $file.Length) {
         throw "Release creata ma l'asset caricato non corrisponde al file locale: controlla $($asset.url)"
     }
+    if (-not $uploadedSig -or [int64]$uploadedSig.size -ne (Get-Item $sigFile).Length) {
+        throw "Release creata ma la firma per l'aggiornamento automatico non risulta caricata: controlla $($asset.url)"
+    }
     Write-Host "`nPubblicata: $($asset.url)" -ForegroundColor Green
-    Write-Host "Asset: JesseArchive-Setup.exe ($($file.Length) byte, SHA-256 $hash)" -ForegroundColor Green
+    Write-Host "Asset: JesseArchive-Setup.exe ($($file.Length) byte, SHA-256 $hash) + JesseArchive-Setup.exe.sig" -ForegroundColor Green
 } finally {
     # Released explicitly too: the desktop shortcut keeps its window (-NoExit) open.
     $mutex.ReleaseMutex()
