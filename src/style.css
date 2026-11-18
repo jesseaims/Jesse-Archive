@@ -3383,20 +3383,40 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 .qs-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 12px;
+  padding: 14px;
   border-bottom: 1px solid var(--ui-border);
   color: var(--ui-muted);
 }
-.qs-head input {
+/* The search bar: the whole field (icon, scope chip, text) is one rounded box. */
+.qs-field {
   flex: 1;
   min-width: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-input);
+  cursor: text;
+  transition: border-color 0.15s;
+}
+.qs-field:focus-within {
+  border-color: var(--ui-accent);
+}
+.quick-search .qs-field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
   border: 0;
   outline: 0;
   background: transparent;
   color: var(--ui-text);
   font: inherit;
-  font-size: 17px;
+  font-size: 18px;
 }
 .qs-head input::placeholder {
   color: var(--ui-muted);
@@ -3648,6 +3668,15 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 .qs-locked input,
 .qs-locked button {
   width: min(320px, 100%);
+}
+/* A normal one-line field (`.quick-search input` of the quick-fill window would
+   stretch it to fill this column). */
+.quick-search .qs-locked input {
+  flex: none;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
 }
 .qs-foot {
   display: flex;

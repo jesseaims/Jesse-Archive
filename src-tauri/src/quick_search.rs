@@ -22,7 +22,7 @@ use zeroize::Zeroizing;
 
 pub const LABEL: &str = "quick-search";
 /// Logical size at 100% zoom (`zoom::apply_to` scales it).
-pub const SIZE: (f64, f64) = (720., 500.);
+pub const SIZE: (f64, f64) = (760., 520.);
 pub const DEFAULT_SHORTCUT: &str = "Ctrl+Shift+Space";
 const PREF: &str = "quick_search";
 /// Same limit as the backend and the Dashboard widget; the window shows fewer.

@@ -493,33 +493,35 @@ export default function QuickSearch() {
   return (
     <main className="quick-search" onKeyDown={onKeyDown}>
       <header className="qs-head">
-        <Search size={19} />
-        {favoritesOnly && (
-          <button
-            type="button"
-            className="qs-scope"
-            title={t('Cerca in tutto il vault')}
-            onClick={() => {
-              setFavoritesOnly(false);
-              input.current?.focus();
-            }}
-          >
-            <Star size={13} />
-            {t('Preferiti')}
-            <X size={13} />
-          </button>
-        )}
-        <input
-          ref={input}
-          autoFocus
-          disabled={!unlocked}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={unlocked ? t('Cerca account, siti, email…') : t('Vault bloccato')}
-          aria-label={t('Ricerca rapida')}
-          autoComplete="off"
-          spellCheck={false}
-        />
+        <label className="qs-field">
+          <Search size={20} />
+          {favoritesOnly && (
+            <button
+              type="button"
+              className="qs-scope"
+              title={t('Cerca in tutto il vault')}
+              onClick={() => {
+                setFavoritesOnly(false);
+                input.current?.focus();
+              }}
+            >
+              <Star size={13} />
+              {t('Preferiti')}
+              <X size={13} />
+            </button>
+          )}
+          <input
+            ref={input}
+            autoFocus
+            disabled={!unlocked}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={unlocked ? t('Cerca account, siti, email…') : t('Vault bloccato')}
+            aria-label={t('Ricerca rapida')}
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </label>
         <span className={`qs-status ${unlocked ? 'open' : 'closed'}`}>
           {unlocked ? t('Sbloccato') : t('Bloccato')}
         </span>
