@@ -10,6 +10,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
 - Guida locale e registrazione host per Chrome, Edge, Brave, Opera, Vivaldi e Firefox; pacchetti delle estensioni locali.
 - Aggiornamento automatico verificato con firma Ed25519 (dalla Beta 1.1.13); controllo disattivabile e installazione solo su conferma.
+- Interfaccia in dieci lingue (dalla Beta 1.1.16), con installer ed estensione tradotti.
 - News e commit con data/ora per voce; setup MSI incorporato in EXE Inno; suite Rust/Node e fixture Python.
 
 “Presente” non certifica la compatibilità universale né implica un collaudo aggiornato. Questa attività ha soltanto analizzato e documentato.
@@ -62,6 +63,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 - Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.
 
 - Passkey WebAuthn su siti reali (per esempio webauthn.io, GitHub, Google) in Chromium e Firefox ≥ 128: registrazione, accesso, fallback, abort, siti che richiedono attestazione o algoritmi diversi da ES256.
+- Revisione delle traduzioni da parte di madrelingua e resa grafica dei testi più lunghi (tedesco, russo) e dei caratteri CJK nelle finestre strette; lingue da destra a sinistra non supportate.
 - Aggiornamento automatico end-to-end: dalla 1.1.13 installata alla prima release successiva firmata (download, verifica, UAC, installazione silenziosa nella cartella personalizzata e riapertura).
 
 ## Mantenimento dello stato

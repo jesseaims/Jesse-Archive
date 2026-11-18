@@ -8,7 +8,7 @@ Baseline analizzata: **Beta 1.1.4**, commit `1f09624`, revisione documentale del
 
 **JesseArchive**, denominato anche **Jesse's Archive** nell'interfaccia e nei bundle, è un password manager desktop orientato a Windows. Archivia account, note e altre informazioni sensibili in un file locale cifrato. Il prodotto non richiede un account online proprio e non offre un servizio cloud gestito dal progetto.
 
-Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e React/TypeScript per l'interfaccia italiana. Esiste una copia Python storica per confronto e compatibilità. La filosofia da preservare è: dati locali, compatibilità del vault v1, cambiamenti limitati allo scopo, operazioni sui dati esplicite e test su fixture sintetiche. La dicitura Beta non costituisce una certificazione di sicurezza.
+Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e React/TypeScript per l'interfaccia, scritta in italiano e tradotta in nove lingue (`src/i18n.ts`, `src/locales/`). Esiste una copia Python storica per confronto e compatibilità. La filosofia da preservare è: dati locali, compatibilità del vault v1, cambiamenti limitati allo scopo, operazioni sui dati esplicite e test su fixture sintetiche. La dicitura Beta non costituisce una certificazione di sicurezza.
 
 ## B. Project Architecture
 
@@ -63,6 +63,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Esportazione/importazione e pacchetti cifrati | Implementati in `core.rs` e Settings; export JSON/CSV in chiaro, `.jshare` cifrato; selezione fine non completamente esposta nella UI |
 | Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
 | Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
+| Lingua dell'interfaccia | Implementata: pulsante «Lingua», dieci lingue, preferenza `lang` del dispositivo, tray/titoli/messaggi del backend, News, installer ed estensione tradotti; `npm run test:i18n` verifica la completezza |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo |
 | Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali |
 | Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
@@ -90,6 +91,8 @@ Percorso del vault: override `JESSE_ARCHIVE_VAULT`, poi configurazione dispositi
 `atomic_write` usa temporaneo, sincronizzazione del file, copia `.bak` e sostituzione con percorso di rollback Windows. `loc_move` copia e verifica SHA-256, conservando l'originale. `pull`/`merge_data` fondono per timestamp e tombstone; non sono un database transazionale. Import JSON, CSV e `.jshare` hanno comportamenti diversi: leggere [DATABASE](docs/DATABASE.md) prima di intervenire.
 
 ## G. Development Guidelines
+
+Ogni testo visibile nell'interfaccia passa da `t('…')`, `tRich('…', {…})` o `msg('…')` (vedi `src/i18n.ts`), con il testo italiano come chiave e le traduzioni in tutti i file `src/locales/<lingua>.ts`; i messaggi mostrati che arrivano dal backend Rust o dall'estensione vanno elencati in `src/locales/runtime-keys.mjs`, e ogni nuova voce News va tradotta in `src/locales/news/<lingua>.ts`. `npm run test:i18n` (gate della CI) fallisce se manca una traduzione o se i segnaposto `{nome}` non coincidono.
 
 Applicare le regole di [AGENTS.md](AGENTS.md): interventi piccoli, nessuna modifica estranea, riuso degli helper, compatibilità v1, gestione esplicita degli errori e dipendenze motivate. Il codice è formattato con rustfmt (stile predefinito) e Prettier (`.prettierrc.json`): eseguire `npm run format` prima del commit; la CI rifiuta codice non formattato. La formattazione non autorizza a riorganizzare o riscrivere `core.rs`/`App.tsx`, che restano monolitici.
 

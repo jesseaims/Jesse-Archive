@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · 빠른 입력",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "로컬 보관함에서 현재 사이트의 계정을 선택합니다.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "이 필드에서 JesseArchive 열기",
+    "description": "Toolbar button tooltip"
+  }
+}

@@ -5,15 +5,25 @@ import QuickFill from './QuickFill';
 import BrowserInstaller from './BrowserInstaller';
 import './style.css';
 import { installZoomShortcuts } from './zoom';
+import { initLanguage, useLanguage } from './i18n';
 installZoomShortcuts();
-createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    {location.search.includes('browser-setup') ? (
-      <BrowserInstaller />
-    ) : location.search.includes('quick-fill') ? (
-      <QuickFill />
-    ) : (
-      <App />
-    )}
-  </React.StrictMode>,
+
+// The window root re-renders the whole tree when the language changes.
+function Root() {
+  useLanguage();
+  return location.search.includes('browser-setup') ? (
+    <BrowserInstaller />
+  ) : location.search.includes('quick-fill') ? (
+    <QuickFill />
+  ) : (
+    <App />
+  );
+}
+
+void initLanguage().finally(() =>
+  createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <Root />
+    </React.StrictMode>,
+  ),
 );

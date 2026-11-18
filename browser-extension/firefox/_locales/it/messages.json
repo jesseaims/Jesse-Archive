@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · Inserimento rapido",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Seleziona dal vault locale gli account per il sito corrente.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "Apri JesseArchive per questo campo",
+    "description": "Toolbar button tooltip"
+  }
+}

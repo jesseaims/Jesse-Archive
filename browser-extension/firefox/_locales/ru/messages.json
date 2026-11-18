@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · Быстрое заполнение",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Выбирайте учётные записи для текущего сайта из локального хранилища.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "Открыть JesseArchive для этого поля",
+    "description": "Toolbar button tooltip"
+  }
+}

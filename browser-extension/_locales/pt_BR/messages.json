@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · Preenchimento rápido",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Escolha no seu cofre local as contas do site atual.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "Abrir o JesseArchive para este campo",
+    "description": "Toolbar button tooltip"
+  }
+}

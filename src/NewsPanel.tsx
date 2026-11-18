@@ -1,3 +1,5 @@
+import { getLanguage, locale, t } from './i18n';
+import { localizedNews } from './locales/news';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getVersion } from '@tauri-apps/api/app';
 import {
@@ -37,7 +39,7 @@ function italianDate(value: string) {
   const parsed = new Date(`${value}T12:00:00`);
   return Number.isNaN(parsed.valueOf())
     ? value
-    : parsed.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+    : parsed.toLocaleDateString(locale(), { day: 'numeric', month: 'long', year: 'numeric' });
 }
 function EntryTimestamp({
   timestamp,
@@ -51,7 +53,7 @@ function EntryTimestamp({
   const parsed = timestamp ? new Date(timestamp) : null;
   const valid = parsed !== null && !Number.isNaN(parsed.valueOf());
   const label = valid
-    ? parsed.toLocaleString('it-IT', {
+    ? parsed.toLocaleString(locale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -59,10 +61,10 @@ function EntryTimestamp({
         minute: '2-digit',
         hourCycle: 'h23',
       })
-    : `${date ? italianDate(date) + ' · ' : ''}Ora non disponibile`;
+    : `${date ? italianDate(date) + ' · ' : ''}${t('Ora non disponibile')}`;
   const title = valid
-    ? `${source === 'git' ? 'Prima registrazione della novità in Git' : 'Data di registrazione'}: ${parsed.toLocaleString('it-IT', { timeZoneName: 'short' })}`
-    : 'Il timestamp completo non è disponibile per questa voce';
+    ? `${source === 'git' ? t('Prima registrazione della novità in Git') : t('Data di registrazione')}: ${parsed.toLocaleString(locale(), { timeZoneName: 'short' })}`
+    : t('Il timestamp completo non è disponibile per questa voce');
   return (
     <time className="news-timestamp" dateTime={valid ? timestamp : date} title={title}>
       {label}
@@ -72,7 +74,7 @@ function EntryTimestamp({
 
 export default function NewsPanel({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('updates');
-  const [version, setVersion] = useState('1.1.15');
+  const [version, setVersion] = useState('1.1.16');
   const [query, setQuery] = useState('');
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -91,14 +93,17 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
     document.addEventListener('keydown', onEscape, true);
     return () => document.removeEventListener('keydown', onEscape, true);
   }, [onClose]);
+  const lang = getLanguage();
+  // Search the text in the language shown (lang is a dependency on purpose).
   const updates = useMemo(
     () =>
-      NEWS_ENTRIES.filter((n) =>
-        `${n.version} ${n.title} ${n.description}`
+      NEWS_ENTRIES.filter((n) => {
+        const text = localizedNews(n);
+        return `${n.version} ${text.title} ${text.description}`
           .toLowerCase()
-          .includes(query.toLowerCase().trim()),
-      ),
-    [query],
+          .includes(query.toLowerCase().trim());
+      }),
+    [query, lang],
   );
   const commits = useMemo(
     () =>
@@ -119,23 +124,26 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
         <div className="news-heading">
           <div className="news-heading-copy">
             <h2 id="news-title">
-              Novità di JesseArchive <span className="news-version">Beta {version}</span>
+              {t('Novità di JesseArchive')}{' '}
+              <span className="news-version">
+                {t('Beta')} {version}
+              </span>
             </h2>
-            <p>Tutte le evoluzioni del tuo archivio sicuro</p>
+            <p>{t('Tutte le evoluzioni del tuo archivio sicuro')}</p>
           </div>
           <button
             ref={closeRef}
             className="news-close"
             type="button"
-            title="Chiudi"
-            aria-label="Chiudi novità"
+            title={t('Chiudi')}
+            aria-label={t('Chiudi novità')}
             onClick={onClose}
           >
             <X size={19} />
           </button>
         </div>
         <div className="news-toolbar">
-          <div className="news-tabs" role="tablist" aria-label="Sezioni novità">
+          <div className="news-tabs" role="tablist" aria-label={t('Sezioni novità')}>
             <button
               type="button"
               role="tab"
@@ -149,7 +157,7 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
               }}
             >
               <Newspaper size={15} />
-              Novità
+              {t('Novità')}
             </button>
             <button
               type="button"
@@ -164,16 +172,16 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
               }}
             >
               <GitCommitHorizontal size={15} />
-              Commit <span className="news-tab-count">{gitCommits.length}</span>
+              {t('Commit')} <span className="news-tab-count">{gitCommits.length}</span>
             </button>
           </div>
           <label className="news-search">
             <Search size={15} />
             <input
-              aria-label={`Cerca tra ${tab === 'updates' ? 'le novità' : 'i commit'}`}
+              aria-label={tab === 'updates' ? t('Cerca tra le novità') : t('Cerca tra i commit')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Cerca…"
+              placeholder={t('Cerca…')}
             />
           </label>
         </div>
@@ -189,6 +197,7 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
             <div className="news-updates">
               {updates.map((entry, index) => {
                 const Icon = icons[entry.icon];
+                const text = localizedNews(entry);
                 return (
                   <article className="news-entry" key={entry.id}>
                     <div className="news-entry-symbol">
@@ -196,26 +205,29 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
                     </div>
                     <div className="news-entry-copy">
                       <div className="news-entry-title">
-                        <h3>{entry.title}</h3>
+                        <h3>{text.title}</h3>
                         <span className="news-entry-tag">{entry.version}</span>
                       </div>
-                      <p>{entry.description}</p>
+                      <p>{text.description}</p>
                     </div>
-                    {index === 0 && !query && <span className="news-new-tag">Ultima modifica</span>}
+                    {index === 0 && !query && (
+                      <span className="news-new-tag">{t('Ultima modifica')}</span>
+                    )}
                     <EntryTimestamp timestamp={entry.addedAt} source={entry.dateSource} />
                   </article>
                 );
               })}
               {updates.length === 0 && (
-                <div className="news-empty">Nessuna novità corrisponde alla ricerca.</div>
+                <div className="news-empty">{t('Nessuna novità corrisponde alla ricerca.')}</div>
               )}
             </div>
           ) : (
             <div className="news-commits">
               <p className="news-git-note">
                 <Code2 size={14} />
-                Cronologia ricostruita dagli archivi di sviluppo; i commit più recenti vengono
-                aggiornati da Git durante la build.
+                {t(
+                  'Cronologia ricostruita dagli archivi di sviluppo; i commit più recenti vengono aggiornati da Git durante la build.',
+                )}
               </p>
               {commits.map((commit) => {
                 const showDate = commit.date !== lastDate;
@@ -248,17 +260,17 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
                 );
               })}
               {commits.length === 0 && (
-                <div className="news-empty">Nessun commit corrisponde alla ricerca.</div>
+                <div className="news-empty">{t('Nessun commit corrisponde alla ricerca.')}</div>
               )}
             </div>
           )}
         </div>
         <div className="news-footer">
           <span>
-            <Archive size={13} /> Jesse's Archive
+            <Archive size={13} /> {t("Jesse's Archive")}
           </span>
           <span>
-            <Check size={13} /> Cronologia locale · Nessuna connessione richiesta
+            <Check size={13} /> {t('Cronologia locale · Nessuna connessione richiesta')}
           </span>
         </div>
       </section>

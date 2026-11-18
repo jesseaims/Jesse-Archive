@@ -189,7 +189,7 @@ pub fn show(app: &tauri::AppHandle) -> Result<(), String> {
         "browser-setup",
         tauri::WebviewUrl::App("index.html?browser-setup".into()),
     )
-    .title("JesseArchive · Configura i browser")
+    .title(crate::i18n::native(&crate::i18n::current())[4])
     .inner_size(640., 740.)
     .min_inner_size(520., 560.)
     .build()

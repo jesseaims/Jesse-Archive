@@ -1,3 +1,4 @@
+import { locale, msg, t, translateMessage } from './i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { listen } from '@tauri-apps/api/event';
@@ -58,6 +59,7 @@ import {
 import { Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
+import LanguageMenu from './LanguageMenu';
 import { UpdateProgress, UpdateSettings, useAutoUpdate } from './Updater';
 
 type Dict = Record<string, unknown>;
@@ -73,25 +75,25 @@ const icons = {
   crypto: Archive,
 };
 const sectionLabels: Record<string, string> = {
-  all: 'Tutti gli elementi',
-  favorites: 'Preferiti',
-  passwords: 'Archivio password',
-  security: 'Centro sicurezza',
-  generator: 'Generatore',
-  trash: 'Cestino',
-  settings: 'Impostazioni',
-  groups: 'Gruppi',
-  login: 'Account',
-  passkey: 'Passkey',
-  note: 'Note protette',
-  card: 'Carte',
-  personal: 'Identità',
-  crypto: 'Asset crypto',
-  shared: 'Condivisi',
+  all: msg('Tutti gli elementi'),
+  favorites: msg('Preferiti'),
+  passwords: msg('Archivio password'),
+  security: msg('Centro sicurezza'),
+  generator: msg('Generatore'),
+  trash: msg('Cestino'),
+  settings: msg('Impostazioni'),
+  groups: msg('Gruppi'),
+  login: msg('Account'),
+  passkey: msg('Passkey'),
+  note: msg('Note protette'),
+  card: msg('Carte'),
+  personal: msg('Identità'),
+  crypto: msg('Asset crypto'),
+  shared: msg('Condivisi'),
 };
 function date(n?: number) {
   return n
-    ? new Date(n * 1000).toLocaleDateString('it-IT', {
+    ? new Date(n * 1000).toLocaleDateString(locale(), {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
@@ -150,7 +152,7 @@ function Field({
           <button
             className="icon-button"
             type="button"
-            title={visible ? 'Nascondi' : 'Mostra'}
+            title={visible ? t('Nascondi') : t('Mostra')}
             onClick={() => setVisible(!visible)}
           >
             {visible ? <EyeOff size={17} /> : <Eye size={17} />}
@@ -266,15 +268,13 @@ function AccountGroups({
               <GroupLogo icon={g?.icon} groupKey={key} name={label} />
               <div className="group-title">
                 <strong>{label}</strong>
-                <small>
-                  {rows.length} {rows.length === 1 ? 'account' : 'account'}
-                </small>
+                <small>{t('{n} account', { n: rows.length })}</small>
               </div>
               <button
                 type="button"
                 className="icon-button danger group-delete"
-                title={"Elimina l'intero gruppo " + label}
-                aria-label={"Elimina l'intero gruppo " + label}
+                title={t("Elimina l'intero gruppo {name}", { name: label })}
+                aria-label={t("Elimina l'intero gruppo {name}", { name: label })}
                 onClick={() => void onDeleteGroup(key, label)}
               >
                 <Trash2 size={16} />
@@ -285,11 +285,11 @@ function AccountGroups({
                 {it.title}
               </button>
               <div className="group-credential">
-                <span>Utente</span>
-                <strong title={it.f.username || ''}>{it.f.username || 'Non impostato'}</strong>
+                <span>{t('Utente')}</span>
+                <strong title={it.f.username || ''}>{it.f.username || t('Non impostato')}</strong>
                 {it.f.username && (
                   <button
-                    title="Copia utente"
+                    title={t('Copia utente')}
                     className="icon-button"
                     onClick={() => void copy(it.f.username)}
                   >
@@ -298,20 +298,24 @@ function AccountGroups({
                 )}
               </div>
               <div className="group-credential">
-                <span>Password</span>
+                <span>{t('Password')}</span>
                 <strong
                   className="group-password"
-                  title={revealed[key + ':' + it.id] ? 'Password visibile' : 'Password nascosta'}
+                  title={
+                    revealed[key + ':' + it.id] ? t('Password visibile') : t('Password nascosta')
+                  }
                 >
-                  {revealed[key + ':' + it.id] ? it.f.password || 'Non impostata' : '••••••••••'}
+                  {revealed[key + ':' + it.id] ? it.f.password || t('Non impostata') : '••••••••••'}
                 </strong>
                 {it.f.password && (
                   <>
                     <button
                       type="button"
-                      title={revealed[key + ':' + it.id] ? 'Nascondi password' : 'Mostra password'}
+                      title={
+                        revealed[key + ':' + it.id] ? t('Nascondi password') : t('Mostra password')
+                      }
                       aria-label={
-                        revealed[key + ':' + it.id] ? 'Nascondi password' : 'Mostra password'
+                        revealed[key + ':' + it.id] ? t('Nascondi password') : t('Mostra password')
                       }
                       aria-pressed={!!revealed[key + ':' + it.id]}
                       className="icon-button group-reveal"
@@ -322,8 +326,8 @@ function AccountGroups({
                       {revealed[key + ':' + it.id] ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                     <button
-                      title="Copia password"
-                      aria-label="Copia password"
+                      title={t('Copia password')}
+                      aria-label={t('Copia password')}
                       className="icon-button"
                       onClick={() => void copy(it.f.password)}
                     >
@@ -336,19 +340,19 @@ function AccountGroups({
                 <button
                   type="button"
                   className="secondary group-delete-account"
-                  title={"Elimina solo l'account " + it.title}
+                  title={t("Elimina solo l'account {name}", { name: it.title })}
                   onClick={() => void onDeleteAccount(it)}
                 >
-                  <Trash2 size={14} /> Elimina account
+                  <Trash2 size={14} /> {t('Elimina account')}
                 </button>
                 <button className="group-edit secondary" onClick={() => openItem(it)}>
-                  Apri account <ArrowRight size={14} />
+                  {t('Apri account')} <ArrowRight size={14} />
                 </button>
               </div>
             </div>
             <div className="account-group-foot">
               <button
-                aria-label={'Account precedente ' + label}
+                aria-label={t('Account precedente {name}', { name: label })}
                 disabled={index === 0}
                 className="icon-button"
                 onClick={() => {
@@ -362,7 +366,7 @@ function AccountGroups({
                 {index + 1} / {rows.length}
               </span>
               <button
-                aria-label={'Account successivo ' + label}
+                aria-label={t('Account successivo {name}', { name: label })}
                 disabled={index >= rows.length - 1}
                 className="icon-button"
                 onClick={() => {
@@ -430,16 +434,16 @@ function useAppDialogs(): DialogAPI & {
     ) =>
       (await request({
         kind: 'confirm',
-        title: opts.title || 'Conferma operazione',
+        title: opts.title || t('Conferma operazione'),
         message,
-        confirmLabel: opts.confirmLabel || 'Conferma',
+        confirmLabel: opts.confirmLabel || t('Conferma'),
         danger: !!opts.danger,
       })) === true,
     [request],
   );
   const showNotice = useCallback(
-    async (message: string, title = 'Informazione', danger = false) => {
-      await request({ kind: 'notice', title, message, confirmLabel: 'Ho capito', danger });
+    async (message: string, title = t('Informazione'), danger = false) => {
+      await request({ kind: 'notice', title, message, confirmLabel: t('Ho capito'), danger });
     },
     [request],
   );
@@ -447,9 +451,9 @@ function useAppDialogs(): DialogAPI & {
     async (message: string, initial = '') => {
       const result = await request({
         kind: 'text',
-        title: 'Modifica nome',
+        title: t('Modifica nome'),
         message,
-        confirmLabel: 'Salva',
+        confirmLabel: t('Salva'),
         danger: false,
         initial,
       });
@@ -494,8 +498,8 @@ function DecisionModal({
           </span>
           <button
             className="decision-close"
-            title="Annulla"
-            aria-label="Chiudi dialogo"
+            title={t('Annulla')}
+            aria-label={t('Chiudi dialogo')}
             onClick={() => resolve(false)}
           >
             <X size={18} />
@@ -525,7 +529,7 @@ function DecisionModal({
               autoFocus={decision.kind === 'confirm'}
               onClick={() => resolve(false)}
             >
-              Annulla
+              {t('Annulla')}
             </button>
           )}
           <button
@@ -606,7 +610,7 @@ export default function App() {
       } catch (e) {
         const message = formatError(e);
         if (/Vault bloccato|Sessione scaduta/.test(message)) wipeSession();
-        setError(message);
+        setError(translateMessage(message));
         return undefined;
       } finally {
         setBusy(false);
@@ -624,7 +628,7 @@ export default function App() {
         setVault(null);
       }
     } catch (e) {
-      setError(formatError(e));
+      setError(translateMessage(formatError(e)));
     }
   }, []);
   // "Aggiorna" button: reloads the vault from disk (merging cloud/conflict copies
@@ -639,8 +643,10 @@ export default function App() {
       if (!s.unlocked) {
         wipeSession();
         await showNotice(
-          'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.',
-          'Vault bloccato',
+          t(
+            'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.',
+          ),
+          t('Vault bloccato'),
           true,
         );
         return;
@@ -661,38 +667,54 @@ export default function App() {
         if (!now.has(id)) removed++;
       });
       const changes: string[] = [];
-      if (added) changes.push(`• ${added} ${added === 1 ? 'elemento nuovo' : 'elementi nuovi'}`);
-      if (changed)
-        changes.push(
-          `• ${changed} ${changed === 1 ? 'elemento modificato' : 'elementi modificati'}`,
-        );
-      if (removed)
-        changes.push(`• ${removed} ${removed === 1 ? 'elemento rimosso' : 'elementi rimossi'}`);
+      // Neutral "label: n" wording avoids plural forms that differ between languages.
+      if (added) changes.push('• ' + t('Elementi nuovi: {n}', { n: added }));
+      if (changed) changes.push('• ' + t('Elementi modificati: {n}', { n: changed }));
+      if (removed) changes.push('• ' + t('Elementi rimossi: {n}', { n: removed }));
       if (key(before?.folders || []) !== key(after.folders))
-        changes.push('• le cartelle sono cambiate');
+        changes.push('• ' + t('le cartelle sono cambiate'));
       if ((before?.passwords.length ?? 0) !== after.passwords.length)
-        changes.push('• lo storico delle password è cambiato');
+        changes.push('• ' + t('lo storico delle password è cambiato'));
       const summary = changes.length
-        ? 'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):\n' +
+        ? t(
+            'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):',
+          ) +
+          '\n' +
           changes.join('\n')
-        : 'Nessuna modifica trovata: i dati mostrati erano già aggiornati.';
+        : t('Nessuna modifica trovata: i dati mostrati erano già aggiornati.');
       await showNotice(
-        'Il vault è stato riletto dal file e confrontato con eventuali copie nella stessa cartella.\n\n' +
-          `${summary}\n\nFile: ${after.path}`,
-        'Aggiornamento completato',
+        t(
+          'Il vault è stato riletto dal file e confrontato con eventuali copie nella stessa cartella.',
+        ) +
+          '\n\n' +
+          summary +
+          '\n\n' +
+          t('File: {path}', { path: after.path }),
+        t('Aggiornamento completato'),
       );
     } catch (e) {
-      const detail = formatError(e);
-      const locked = /Vault bloccato|Sessione scaduta/.test(detail);
+      const raw = formatError(e);
+      // Backend messages are Italian: detect on the raw text, show the translation.
+      const locked = /Vault bloccato|Sessione scaduta/.test(raw);
+      const detail = translateMessage(raw);
       if (locked) wipeSession();
       await showNotice(
         locked
-          ? 'La sessione è scaduta e il vault è stato bloccato, quindi non è stato possibile aggiornare i dati.\n\n' +
-              `Sblocca di nuovo il vault con la password principale.\n\nDettaglio: ${detail}`
-          : 'Non è stato possibile rileggere il vault dal file.\n\n' +
-              'Possibili cause: il file non è raggiungibile (cartella cloud non sincronizzata, disco scollegato, permessi), oppure è danneggiato. I dati già mostrati non sono stati modificati.\n\n' +
-              `Dettaglio: ${detail}`,
-        'Aggiornamento non riuscito',
+          ? t(
+              'La sessione è scaduta e il vault è stato bloccato, quindi non è stato possibile aggiornare i dati.',
+            ) +
+              '\n\n' +
+              t('Sblocca di nuovo il vault con la password principale.') +
+              '\n\n' +
+              t('Dettaglio: {detail}', { detail })
+          : t('Non è stato possibile rileggere il vault dal file.') +
+              '\n\n' +
+              t(
+                'Possibili cause: il file non è raggiungibile (cartella cloud non sincronizzata, disco scollegato, permessi), oppure è danneggiato. I dati già mostrati non sono stati modificati.',
+              ) +
+              '\n\n' +
+              t('Dettaglio: {detail}', { detail }),
+        t('Aggiornamento non riuscito'),
         true,
       );
     } finally {
@@ -726,9 +748,9 @@ export default function App() {
     if (!unlocked) return;
     let lastTouch = Date.now();
     const onActivity = () => {
-      const t = Date.now();
-      if (t - lastTouch < 30000) return;
-      lastTouch = t;
+      const now = Date.now();
+      if (now - lastTouch < 30000) return;
+      lastTouch = now;
       void api('touch').catch(() => {});
     };
     const events = ['keydown', 'pointerdown', 'wheel'] as const;
@@ -753,7 +775,7 @@ export default function App() {
     });
     return () => stop?.();
   }, [refresh, wipeSession]);
-  const mutate = async (name: string, body: Dict = {}, message = 'Modifiche salvate') => {
+  const mutate = async (name: string, body: Dict = {}, message = t('Modifiche salvate')) => {
     const r = await run<{ state?: State; [key: string]: unknown }>(name, body);
     if (r) {
       if (r.state) setVault(r.state);
@@ -765,14 +787,14 @@ export default function App() {
   const copy = async (text: string) => {
     try {
       await copyText(text);
-      notify('Copiato negli appunti');
+      notify(t('Copiato negli appunti'));
       const ttl = vault?.settings.clip ?? 30;
       if (ttl > 0)
         window.setTimeout(() => {
           void clearSecretIfUnchanged(text);
         }, ttl * 1000);
     } catch (e) {
-      setError(formatError(e));
+      setError(translateMessage(formatError(e)));
     }
   };
   const lock = async () => {
@@ -824,19 +846,24 @@ export default function App() {
     const isAccount = it.type === 'login';
     const detail = isAccount && it.f?.username ? ` (${it.f.username})` : '';
     const ok = await askConfirm(
-      `Spostare nel cestino ${isAccount ? "l'account" : "l'elemento"} "${it.title}"${detail}?\n\n` +
-        'Gli altri elementi non vengono toccati. Potrai ripristinarlo dalla sezione Cestino.',
+      (isAccount
+        ? t('Spostare nel cestino l\'account "{name}"{detail}?', { name: it.title, detail })
+        : t('Spostare nel cestino l\'elemento "{name}"{detail}?', { name: it.title, detail })) +
+        '\n\n' +
+        t('Gli altri elementi non vengono toccati. Potrai ripristinarlo dalla sezione Cestino.'),
       {
-        title: isAccount ? 'Elimina account' : `Elimina ${categories[it.type].label.toLowerCase()}`,
+        title: isAccount
+          ? t('Elimina account')
+          : t('Elimina: {category}', { category: t(categories[it.type].label) }),
         danger: true,
-        confirmLabel: 'Sposta nel cestino',
+        confirmLabel: t('Sposta nel cestino'),
       },
     );
     if (ok)
       await mutate(
         'trash',
         { id: it.id },
-        isAccount ? 'Account spostato nel cestino' : 'Elemento spostato nel cestino',
+        isAccount ? t('Account spostato nel cestino') : t('Elemento spostato nel cestino'),
       );
   };
   const deleteGroup = async (key: string, label: string) => {
@@ -850,28 +877,42 @@ export default function App() {
       .slice(0, 8)
       .map((i) => `• ${i.title}${i.f?.username ? ` (${i.f.username})` : ''}`)
       .join('\n');
-    const more = members.length > 8 ? `\n…e altri ${members.length - 8}` : '';
+    const more = members.length > 8 ? '\n' + t('…e altri {n}', { n: members.length - 8 }) : '';
     const n = members.length;
     const first = await askConfirm(
-      `Stai per eliminare l'INTERO gruppo "${label}", non un singolo account.\n\n` +
-        `Verranno spostati nel cestino tutti i ${n} account del gruppo:\n${shown}${more}`,
-      { title: `Eliminare il gruppo ${label}?`, danger: true, confirmLabel: 'Continua' },
+      t('Stai per eliminare l\'INTERO gruppo "{name}", non un singolo account.', { name: label }) +
+        '\n\n' +
+        t('Account del gruppo che verranno spostati nel cestino: {n}', { n }) +
+        '\n' +
+        shown +
+        more,
+      {
+        title: t('Eliminare il gruppo {name}?', { name: label }),
+        danger: true,
+        confirmLabel: t('Continua'),
+      },
     );
     if (!first) return;
     const second = await askConfirm(
-      `Ultima conferma: tutti i ${n} account di "${label}" verranno spostati nel cestino insieme.\n\n` +
-        'Se volevi eliminare un solo account, premi Annulla e usa "Elimina account" dentro il gruppo.',
+      t(
+        'Ultima conferma: tutti gli account di "{name}" ({n}) verranno spostati nel cestino insieme.',
+        { name: label, n },
+      ) +
+        '\n\n' +
+        t(
+          'Se volevi eliminare un solo account, premi Annulla e usa "Elimina account" dentro il gruppo.',
+        ),
       {
-        title: 'Conferma eliminazione del gruppo',
+        title: t('Conferma eliminazione del gruppo'),
         danger: true,
-        confirmLabel: `Elimina il gruppo (${n} account)`,
+        confirmLabel: t('Elimina il gruppo ({n} account)', { n }),
       },
     );
     if (!second) return;
     await mutate(
       'bulk',
       { ids: members.map((i) => i.id), op: 'trash' },
-      `Gruppo ${label} spostato nel cestino`,
+      t('Gruppo {name} spostato nel cestino', { name: label }),
     );
   };
   // "Svuota cestino": permanent deletion of exactly the trashed items listed in the
@@ -884,29 +925,38 @@ export default function App() {
     if (n === 0) return;
     const shown = trashed
       .slice(0, 8)
-      .map((i) => `• ${i.title} (${categories[i.type].label})`)
+      .map((i) => `• ${i.title} (${t(categories[i.type].label)})`)
       .join('\n');
-    const more = n > 8 ? `\n…e altri ${n - 8}` : '';
+    const more = n > 8 ? '\n' + t('…e altri {n}', { n: n - 8 }) : '';
     const first = await askConfirm(
-      `Stai per svuotare il cestino: ${n === 1 ? "l'elemento" : `tutti i ${n} elementi`} verranno eliminati DEFINITIVAMENTE e non potranno più essere ripristinati.\n\n` +
-        `${shown}${more}`,
-      { title: 'Svuotare il cestino?', danger: true, confirmLabel: 'Continua' },
+      t(
+        'Stai per svuotare il cestino: gli elementi ({n}) verranno eliminati DEFINITIVAMENTE e non potranno più essere ripristinati.',
+        { n },
+      ) +
+        '\n\n' +
+        shown +
+        more,
+      { title: t('Svuotare il cestino?'), danger: true, confirmLabel: t('Continua') },
     );
     if (!first) return;
     const second = await askConfirm(
-      `Ultima conferma: ${n === 1 ? '1 elemento verrà eliminato' : `${n} elementi verranno eliminati`} per sempre dal vault.\n\n` +
-        'Le password collegate restano nello storico della pagina Password come non associate. ' +
-        'Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
+      t('Ultima conferma: elementi da eliminare per sempre dal vault: {n}.', { n }) +
+        '\n\n' +
+        t(
+          'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
+        ),
       {
-        title: 'Conferma svuotamento del cestino',
+        title: t('Conferma svuotamento del cestino'),
         danger: true,
-        confirmLabel: `Elimina definitivamente (${n})`,
+        confirmLabel: t('Elimina definitivamente ({n})', { n }),
       },
     );
     if (!second) return;
-    await mutate('bulk', { ids: trashed.map((i) => i.id), op: 'delete' }, 'Cestino svuotato').then(
-      () => setMulti([]),
-    );
+    await mutate(
+      'bulk',
+      { ids: trashed.map((i) => i.id), op: 'delete' },
+      t('Cestino svuotato'),
+    ).then(() => setMulti([]));
   };
   const openItem = (it?: Item, type: Category = 'login') => {
     setDraft(it ? structuredClone(it) : itemBase(type));
@@ -929,7 +979,7 @@ export default function App() {
   };
   const saveItem = async () => {
     if (!draft.title.trim()) {
-      setError('Inserisci un nome per l’elemento');
+      setError(t('Inserisci un nome per l’elemento'));
       return;
     }
     // Recomputed on every save: changing the site (or the title of app/other
@@ -959,7 +1009,7 @@ export default function App() {
           icon,
         }
       : undefined;
-    const r = await mutate('item', { ...draft, group }, 'Account salvato');
+    const r = await mutate('item', { ...draft, group }, t('Account salvato'));
     if (r) {
       setDialog(null);
       if (groupKey.startsWith('web:') && vault?.settings.logos !== 0 && !groupIcon) {
@@ -975,10 +1025,10 @@ export default function App() {
     const r = await run<{ text: string }>('export', { format });
     if (r) {
       const success = await saveFile(`jesse-archive-export.${format}`, r.text).catch((e) => {
-        setError(formatError(e));
+        setError(translateMessage(formatError(e)));
         return false;
       });
-      if (success) notify('Esportazione completata. ATTENZIONE: file non cifrato.');
+      if (success) notify(t('Esportazione completata. ATTENZIONE: file non cifrato.'));
     }
   };
   const importData = async () => {
@@ -992,12 +1042,12 @@ export default function App() {
     }
     if (
       !(await askConfirm(
-        'Importare i dati nel vault? Verrà creato un backup prima della scrittura.',
-        { title: 'Importa dati nel vault' },
+        t('Importare i dati nel vault? Verrà creato un backup prima della scrittura.'),
+        { title: t('Importa dati nel vault') },
       ))
     )
       return;
-    await mutate('import', { text }, 'Importazione effettuata');
+    await mutate('import', { text }, t('Importazione effettuata'));
   };
   useAutoUpdate(!!vault, { askConfirm, showNotice });
   if (!status)
@@ -1005,10 +1055,10 @@ export default function App() {
       <div className="auth-screen">
         <div className="auth-card">
           <span className="brand-icon">
-            <img src="/jesse-logo.png" alt="Jesse Archive" />
+            <img src="/jesse-logo.png" alt={t('Jesse Archive')} />
           </span>
-          <h1>Jesse's Archive</h1>
-          <p>Caricamento del vault locale…</p>
+          <h1>{t("Jesse's Archive")}</h1>
+          <p>{t('Caricamento del vault locale…')}</p>
           {error && <div className="alert">{error}</div>}
         </div>
       </div>
@@ -1016,18 +1066,21 @@ export default function App() {
   if (!vault)
     return (
       <div className="auth-screen">
+        <div className="auth-language">
+          <LanguageMenu />
+        </div>
         <div className="orb orb-a" />
         <div className="orb orb-b" />
         <div className="auth-card">
           <span className="brand-icon">
-            <img src="/jesse-logo.png" alt="Jesse Archive" />
+            <img src="/jesse-logo.png" alt={t('Jesse Archive')} />
           </span>
-          <div className="eyebrow">JESSE'S ARCHIVE</div>
-          <h1>{status.exists ? 'Bentornato.' : 'Il tuo spazio sicuro.'}</h1>
+          <div className="eyebrow">{t("JESSE'S ARCHIVE")}</div>
+          <h1>{status.exists ? t('Bentornato.') : t('Il tuo spazio sicuro.')}</h1>
           <p>
             {status.exists
-              ? 'Sblocca il tuo archivio cifrato per accedere ai dati.'
-              : 'Crea il tuo vault locale con cifratura AES-256-GCM.'}
+              ? t('Sblocca il tuo archivio cifrato per accedere ai dati.')
+              : t('Crea il tuo vault locale con cifratura AES-256-GCM.')}
           </p>
           <form
             onSubmit={async (e) => {
@@ -1056,15 +1109,15 @@ export default function App() {
             }}
           >
             <Field
-              label={recovery ? 'Codice di recupero' : 'Password principale'}
+              label={recovery ? t('Codice di recupero') : t('Password principale')}
               value={recovery || password}
               onChange={(v) => (recovery ? setRecovery(v) : setPassword(v))}
               secret={!recovery}
-              placeholder="Inserisci la tua password"
+              placeholder={t('Inserisci la tua password')}
             />
             {recovery && (
               <Field
-                label="Nuova password principale (facoltativa)"
+                label={t('Nuova password principale (facoltativa)')}
                 value={recoveryNew}
                 onChange={setRecoveryNew}
                 secret
@@ -1072,7 +1125,11 @@ export default function App() {
             )}
             <button className="primary wide" disabled={busy} type="submit">
               <Lock size={17} />
-              {busy ? 'Elaborazione…' : status.exists ? 'Sblocca il vault' : 'Crea vault cifrato'}
+              {busy
+                ? t('Elaborazione…')
+                : status.exists
+                  ? t('Sblocca il vault')
+                  : t('Crea vault cifrato')}
               <ArrowRight size={17} />
             </button>
           </form>
@@ -1089,7 +1146,7 @@ export default function App() {
                 }
               }}
             >
-              {recovery ? 'Torna alla password' : 'Usa il codice di recupero'}
+              {recovery ? t('Torna alla password') : t('Usa il codice di recupero')}
             </button>
           )}
           <button
@@ -1104,44 +1161,46 @@ export default function App() {
             }}
           >
             <Folder size={16} />
-            Collega vault esistente
+            {t('Collega vault esistente')}
           </button>
-          <span className="vault-location">Vault locale · {status.path}</span>
+          <span className="vault-location">
+            {t('Vault locale ·')} {status.path}
+          </span>
           {error && <div className="alert">{error}</div>}
           {viewRecovery && (
             <div className="recovery-panel">
-              <strong>Salva ora il codice di recupero</strong>
-              <p>È l'unico modo per recuperare il vault senza la password.</p>
+              <strong>{t('Salva ora il codice di recupero')}</strong>
+              <p>{t("È l'unico modo per recuperare il vault senza la password.")}</p>
               <code>{viewRecovery}</code>
               <button className="secondary" onClick={() => copy(viewRecovery)}>
-                Copia codice
+                {t('Copia codice')}
               </button>
               <button className="primary" onClick={() => setViewRecovery('')}>
-                Ho conservato il codice
+                {t('Ho conservato il codice')}
               </button>
             </div>
           )}
           {!status.exists && (
             <div className="auth-footnote">
-              Nessuna sincronizzazione online automatica. I dati rimangono nel file locale.
+              {t('Nessuna sincronizzazione online automatica. I dati rimangono nel file locale.')}
             </div>
           )}
         </div>
       </div>
     );
-  const folderName = vault.folders.find((f) => f.id === folderId)?.name || 'Cartella';
+  const folderName = vault.folders.find((f) => f.id === folderId)?.name || t('Cartella');
   return (
     <div className="shell">
       <aside className={`sidebar ${mobileMenu ? 'mobile-show' : ''}`}>
         <div className="sidebar-head">
           <span className="brand-icon small">
-            <img src="/jesse-logo.png" alt="Jesse Archive" />
+            <img src="/jesse-logo.png" alt={t('Jesse Archive')} />
           </span>
           <div className="sidebar-brand">
-            <b>Jesse's Archive</b>
-            <small>SECURE VAULT</small>
+            <b>{t("Jesse's Archive")}</b>
+            <small>{t('SECURE VAULT')}</small>
             <div className="brand-credit">
-              <span>Made by</span>
+              <span>{t('Made by')}</span>
               <Instagram size={12} aria-hidden="true" />
               <span>samu.vaccc</span>
             </div>
@@ -1150,60 +1209,60 @@ export default function App() {
             <X size={20} />
           </button>
         </div>
-        <div className="sidebar-label">WORKSPACE</div>
+        <div className="sidebar-label">{t('WORKSPACE')}</div>
         <nav>
           <Nav
             active={page === 'all'}
             icon={LayoutGrid}
-            title="Tutti gli elementi"
+            title={t('Tutti gli elementi')}
             onClick={() => selectPage('all')}
             count={vault.items.filter((i) => !i.trashed).length}
           />
           <Nav
             active={page === 'favorites'}
             icon={Star}
-            title="Preferiti"
+            title={t('Preferiti')}
             onClick={() => selectPage('favorites')}
           />
           <Nav
             active={page === 'passwords'}
             icon={KeyRound}
-            title="Archivio password"
+            title={t('Archivio password')}
             onClick={() => selectPage('passwords')}
           />
           <Nav
             active={page === 'groups'}
             icon={Cloud}
-            title="Gruppi e accessi"
+            title={t('Gruppi e accessi')}
             onClick={() => selectPage('groups')}
           />
         </nav>
-        <div className="sidebar-label">CATEGORIE</div>
+        <div className="sidebar-label">{t('CATEGORIE')}</div>
         <nav>
-          {(['login', 'passkey', 'note', 'card', 'personal', 'crypto'] as const).map((t) => {
-            const Icon = icons[t];
+          {(['login', 'passkey', 'note', 'card', 'personal', 'crypto'] as const).map((cat) => {
+            const Icon = icons[cat];
             return (
               <Nav
-                key={t}
-                active={page === t}
+                key={cat}
+                active={page === cat}
                 icon={Icon}
-                title={sectionLabels[t]}
-                onClick={() => selectPage(t)}
+                title={t(sectionLabels[cat])}
+                onClick={() => selectPage(cat)}
               />
             );
           })}
           <Nav
             active={page === 'shared'}
             icon={Cloud}
-            title="Elementi condivisi"
+            title={t('Elementi condivisi')}
             onClick={() => selectPage('shared')}
           />
         </nav>
         <div className="sidebar-label folders-label">
-          CARTELLE{' '}
+          {t('CARTELLE')}{' '}
           <button
             className="icon-button"
-            title="Nuova cartella"
+            title={t('Nuova cartella')}
             onClick={() => {
               setFolderDraft({ id: '', name: '' });
               setDialog('folder');
@@ -1223,40 +1282,40 @@ export default function App() {
             />
           ))}
         </nav>
-        <div className="sidebar-label">STRUMENTI</div>
+        <div className="sidebar-label">{t('STRUMENTI')}</div>
         <nav>
           <Nav
             active={page === 'security'}
             icon={ShieldCheck}
-            title="Centro sicurezza"
+            title={t('Centro sicurezza')}
             onClick={() => selectPage('security')}
           />
           <Nav
             active={page === 'generator'}
             icon={Shuffle}
-            title="Generatore"
+            title={t('Generatore')}
             onClick={() => selectPage('generator')}
           />
           <Nav
             active={page === 'trash'}
             icon={Trash2}
-            title="Cestino"
+            title={t('Cestino')}
             onClick={() => selectPage('trash')}
           />
           <Nav
             active={page === 'settings'}
             icon={SettingsIcon}
-            title="Impostazioni"
+            title={t('Impostazioni')}
             onClick={() => selectPage('settings')}
           />
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-safe">
             <span className="safe-dot" />
-            Vault sbloccato <span className="safe-status">AES-256</span>
+            {t('Vault sbloccato')} <span className="safe-status">{t('AES-256')}</span>
           </div>
           <button className="nav-item" onClick={lock}>
-            <LogOut size={18} /> Blocca archivio
+            <LogOut size={18} /> {t('Blocca archivio')}
           </button>
         </div>
       </aside>
@@ -1266,34 +1325,39 @@ export default function App() {
             <Menu size={22} />
           </button>
           <div className="breadcrumb">
-            IL TUO ARCHIVIO <span>/</span>{' '}
-            <strong>{page === 'folder' ? folderName : sectionLabels[page]}</strong>
+            {t('IL TUO ARCHIVIO')} <span>/</span>{' '}
+            <strong>{page === 'folder' ? folderName : t(sectionLabels[page])}</strong>
           </div>
           <div className="top-actions">
             <span className="desktop-only sync-label">
               <span className="safe-dot" />
-              Protetto localmente
+              {t('Protetto localmente')}
             </span>
             <button
               type="button"
               className="news-trigger"
-              title="Novità e cronologia commit"
+              title={t('Novità e cronologia commit')}
               onClick={() => setNewsOpen(true)}
             >
               <Newspaper size={16} />
-              News
+              {t('News')}
             </button>
             <button
               className="icon-button"
-              title="Aggiorna: rileggi il vault dal file"
-              aria-label="Aggiorna"
+              title={t('Aggiorna: rileggi il vault dal file')}
+              aria-label={t('Aggiorna')}
               aria-busy={refreshing}
               disabled={refreshing}
               onClick={() => void manualRefresh()}
             >
               <RefreshCw size={18} className={refreshing ? 'spin' : undefined} />
             </button>
-            <button className="avatar" title="Impostazioni" onClick={() => selectPage('settings')}>
+            <LanguageMenu />
+            <button
+              className="avatar"
+              title={t('Impostazioni')}
+              onClick={() => selectPage('settings')}
+            >
               JA
             </button>
           </div>
@@ -1315,41 +1379,41 @@ export default function App() {
             <>
               <div className="heading-row">
                 <div>
-                  <div className="eyebrow">PASSWORD MANAGEMENT</div>
-                  <h1>{page === 'folder' ? folderName : sectionLabels[page]}</h1>
-                  <p>Organizza i tuoi dati sensibili in uno spazio privato e cifrato.</p>
+                  <div className="eyebrow">{t('PASSWORD MANAGEMENT')}</div>
+                  <h1>{page === 'folder' ? folderName : t(sectionLabels[page])}</h1>
+                  <p>{t('Organizza i tuoi dati sensibili in uno spazio privato e cifrato.')}</p>
                 </div>
                 <button className="primary" onClick={openNewItem}>
                   <Plus size={18} />
-                  Nuovo elemento
+                  {t('Nuovo elemento')}
                 </button>
               </div>
               <div className="stats-grid">
                 <Stat
                   icon={KeyRound}
-                  title="Account"
+                  title={t('Account')}
                   value={vault.items.filter((i) => i.type === 'login' && !i.trashed).length}
                 />
                 <Stat
                   icon={Wallet}
-                  title="Carte"
+                  title={t('Carte')}
                   value={vault.items.filter((i) => i.type === 'card' && !i.trashed).length}
                 />
                 <Stat
                   icon={FileKey}
-                  title="Note protette"
+                  title={t('Note protette')}
                   value={vault.items.filter((i) => i.type === 'note' && !i.trashed).length}
                 />
                 <Stat
                   icon={Star}
-                  title="Preferiti"
+                  title={t('Preferiti')}
                   value={vault.items.filter((i) => i.fav && !i.trashed).length}
                 />
               </div>
               <div className="panel">
                 <div className="panel-head">
                   <h2>
-                    {page === 'trash' ? 'Elementi eliminati' : 'La tua raccolta'}{' '}
+                    {page === 'trash' ? t('Elementi eliminati') : t('La tua raccolta')}{' '}
                     <span className="counter">{filtered.length}</span>
                   </h2>
                   <div className="toolbar">
@@ -1357,17 +1421,17 @@ export default function App() {
                       <button
                         className="secondary danger-soft"
                         disabled={!vault.items.some((i) => i.trashed)}
-                        title="Elimina definitivamente tutti gli elementi nel cestino"
+                        title={t('Elimina definitivamente tutti gli elementi nel cestino')}
                         onClick={() => void emptyTrash()}
                       >
                         <Trash2 size={16} />
-                        Svuota cestino
+                        {t('Svuota cestino')}
                       </button>
                     )}
                     <div className="search-box">
                       <Search size={17} />
                       <input
-                        placeholder="Cerca nel vault..."
+                        placeholder={t('Cerca nel vault...')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
@@ -1379,7 +1443,7 @@ export default function App() {
                 </div>
                 {multi.length > 0 && (
                   <div className="bulkbar">
-                    <strong>{multi.length} selezionati</strong>
+                    <strong>{t('Selezionati: {n}', { n: multi.length })}</strong>
                     <button
                       onClick={() =>
                         void mutate('bulk', {
@@ -1388,18 +1452,18 @@ export default function App() {
                         }).then(() => setMulti([]))
                       }
                     >
-                      {page === 'trash' ? 'Ripristina' : 'Nel cestino'}
+                      {page === 'trash' ? t('Ripristina') : t('Nel cestino')}
                     </button>
                     {page === 'trash' && (
                       <button
                         onClick={async () => {
                           if (
                             await askConfirm(
-                              'Eliminare definitivamente gli elementi selezionati?',
+                              t('Eliminare definitivamente gli elementi selezionati?'),
                               {
-                                title: 'Eliminazione definitiva',
+                                title: t('Eliminazione definitiva'),
                                 danger: true,
-                                confirmLabel: 'Elimina definitivamente',
+                                confirmLabel: t('Elimina definitivamente'),
                               },
                             )
                           )
@@ -1408,13 +1472,13 @@ export default function App() {
                             );
                         }}
                       >
-                        Elimina
+                        {t('Elimina')}
                       </button>
                     )}
                     {page !== 'trash' && (
                       <>
                         <select value={bulkFolder} onChange={(e) => setBulkFolder(e.target.value)}>
-                          <option value="">Sposta in...</option>
+                          <option value="">{t('Sposta in...')}</option>
                           {vault.folders.map((f) => (
                             <option key={f.id} value={f.id}>
                               {f.name}
@@ -1434,11 +1498,11 @@ export default function App() {
                             })
                           }
                         >
-                          Sposta
+                          {t('Sposta')}
                         </button>
                       </>
                     )}
-                    <button onClick={() => setMulti([])}>Annulla</button>
+                    <button onClick={() => setMulti([])}>{t('Annulla')}</button>
                   </div>
                 )}
                 {(page === 'all' || page === 'login') && (
@@ -1459,7 +1523,7 @@ export default function App() {
                       return (
                         <div className="item-row" key={it.id}>
                           <input
-                            aria-label="Seleziona"
+                            aria-label={t('Seleziona')}
                             type="checkbox"
                             checked={multi.includes(it.id)}
                             onChange={(e) =>
@@ -1475,16 +1539,16 @@ export default function App() {
                             <strong>{it.title}</strong>
                             <span>
                               {it.type === 'login'
-                                ? it.f?.username || it.f?.url || 'Account'
-                                : categories[it.type].label}
-                              {it.shared ? ' · Condiviso' : ''}
+                                ? it.f?.username || it.f?.url || t('Account')
+                                : t(categories[it.type].label)}
+                              {it.shared ? t(' · Condiviso') : ''}
                             </span>
                           </button>
                           <div className="item-date">{date(it.updated || it.created)}</div>
                           {page !== 'trash' && (
                             <button
                               className={`icon-button favorite ${it.fav ? 'on' : ''}`}
-                              title="Preferito"
+                              title={t('Preferito')}
                               onClick={() => void mutate('item', { ...it, fav: !it.fav })}
                             >
                               <Star size={18} fill={it.fav ? 'currentColor' : 'none'} />
@@ -1494,21 +1558,24 @@ export default function App() {
                             <>
                               <button
                                 className="icon-button"
-                                title="Ripristina"
+                                title={t('Ripristina')}
                                 onClick={() => void mutate('trash', { id: it.id, restore: true })}
                               >
                                 <RefreshCw size={18} />
                               </button>
                               <button
                                 className="icon-button danger"
-                                title="Elimina definitivamente"
+                                title={t('Elimina definitivamente')}
                                 onClick={async () => {
                                   if (
-                                    await askConfirm('Eliminare definitivamente questo elemento?', {
-                                      title: 'Eliminazione definitiva',
-                                      danger: true,
-                                      confirmLabel: 'Elimina definitivamente',
-                                    })
+                                    await askConfirm(
+                                      t('Eliminare definitivamente questo elemento?'),
+                                      {
+                                        title: t('Eliminazione definitiva'),
+                                        danger: true,
+                                        confirmLabel: t('Elimina definitivamente'),
+                                      },
+                                    )
                                   )
                                     await mutate('delete', { id: it.id });
                                 }}
@@ -1539,11 +1606,11 @@ export default function App() {
                       <div>
                         <Archive size={30} />
                       </div>
-                      <h3>Nessun elemento trovato</h3>
-                      <p>Prova a cambiare ricerca oppure aggiungi il tuo primo elemento.</p>
+                      <h3>{t('Nessun elemento trovato')}</h3>
+                      <p>{t('Prova a cambiare ricerca oppure aggiungi il tuo primo elemento.')}</p>
                       <button className="secondary" onClick={openNewItem}>
                         <Plus size={16} />
-                        Crea elemento
+                        {t('Crea elemento')}
                       </button>
                     </div>
                   )}
@@ -1571,14 +1638,14 @@ export default function App() {
             <>
               <div className="heading-row">
                 <div>
-                  <div className="eyebrow">ORGANIZZAZIONE</div>
-                  <h1>Gruppi e applicazioni</h1>
-                  <p>Raggruppa gli account in base al sito o all'applicazione.</p>
+                  <div className="eyebrow">{t('ORGANIZZAZIONE')}</div>
+                  <h1>{t('Gruppi e applicazioni')}</h1>
+                  <p>{t("Raggruppa gli account in base al sito o all'applicazione.")}</p>
                 </div>
               </div>
               <div className="panel">
                 <div className="panel-head">
-                  <h2>Gruppi personalizzati</h2>
+                  <h2>{t('Gruppi personalizzati')}</h2>
                 </div>
                 {Object.entries(vault.groups || {}).map(([key, g]) => (
                   <div className="item-row" key={key}>
@@ -1589,8 +1656,9 @@ export default function App() {
                       <strong>{g.name || key}</strong>
                       <span>
                         {key} ·{' '}
-                        {vault.items.filter((i) => !i.trashed && groupFor(i) === key).length}{' '}
-                        account
+                        {t('{n} account', {
+                          n: vault.items.filter((i) => !i.trashed && groupFor(i) === key).length,
+                        })}
                       </span>
                     </div>
                     <button
@@ -1600,12 +1668,12 @@ export default function App() {
                         setDialog('group');
                       }}
                     >
-                      Modifica
+                      {t('Modifica')}
                     </button>
                     <button
                       className="icon-button"
-                      title="Cerca logo online"
-                      onClick={() => void mutate('group_logo', { key }, 'Logo aggiornato')}
+                      title={t('Cerca logo online')}
+                      onClick={() => void mutate('group_logo', { key }, t('Logo aggiornato'))}
                     >
                       <RefreshCw size={17} />
                     </button>
@@ -1614,8 +1682,8 @@ export default function App() {
                 {!Object.keys(vault.groups || {}).length && (
                   <div className="empty">
                     <Cloud size={28} />
-                    <h3>Nessun gruppo presente</h3>
-                    <p>Puoi assegnare un gruppo nell'editor di un accesso.</p>
+                    <h3>{t('Nessun gruppo presente')}</h3>
+                    <p>{t("Puoi assegnare un gruppo nell'editor di un accesso.")}</p>
                   </div>
                 )}
               </div>
@@ -1662,23 +1730,27 @@ export default function App() {
           <div className="modal">
             <div className="modal-head">
               <h2>
-                {
+                {t(
                   (
                     {
-                      item: draft.id ? 'Modifica elemento' : 'Nuovo elemento',
-                      folder: 'Cartella',
-                      share: 'Condivisione cifrata',
-                      import: 'Importa pacchetto cifrato',
-                      recover: 'Codice di recupero',
-                      master: 'Cambia password principale',
-                      recovery_new: 'Nuovo codice di recupero',
-                      group: 'Modifica gruppo',
+                      item: draft.id ? msg('Modifica elemento') : msg('Nuovo elemento'),
+                      folder: msg('Cartella'),
+                      share: msg('Condivisione cifrata'),
+                      import: msg('Importa pacchetto cifrato'),
+                      recover: msg('Codice di recupero'),
+                      master: msg('Cambia password principale'),
+                      recovery_new: msg('Nuovo codice di recupero'),
+                      group: msg('Modifica gruppo'),
                     } as Record<Exclude<Dialog, null>, string>
-                  )[dialog]
-                }
+                  )[dialog],
+                )}
               </h2>
               {dialog !== 'recover' && (
-                <button className="icon-button" onClick={() => setDialog(null)} aria-label="Chiudi">
+                <button
+                  className="icon-button"
+                  onClick={() => setDialog(null)}
+                  aria-label={t('Chiudi')}
+                >
                   <X size={20} />
                 </button>
               )}
@@ -1687,7 +1759,7 @@ export default function App() {
               {dialog === 'item' && (
                 <>
                   <label className="field">
-                    <span>Categoria</span>
+                    <span>{t('Categoria')}</span>
                     <select
                       value={draft.type}
                       // A WebAuthn passkey keeps its private key in f.webauthn: changing the
@@ -1695,7 +1767,7 @@ export default function App() {
                       disabled={!!draft.f?.webauthn}
                       title={
                         draft.f?.webauthn
-                          ? 'Passkey WebAuthn: categoria non modificabile'
+                          ? t('Passkey WebAuthn: categoria non modificabile')
                           : undefined
                       }
                       onChange={(e) =>
@@ -1704,24 +1776,24 @@ export default function App() {
                     >
                       {Object.entries(categories).map(([k, c]) => (
                         <option key={k} value={k}>
-                          {c.label}
+                          {t(c.label)}
                         </option>
                       ))}
                     </select>
                   </label>
                   <Field
-                    label="Titolo"
+                    label={t('Titolo')}
                     value={draft.title}
                     onChange={(v) => setDraft((x) => ({ ...x, title: v }))}
-                    placeholder="es. Account principale"
+                    placeholder={t('es. Account principale')}
                   />
                   <label className="field">
-                    <span>Cartella</span>
+                    <span>{t('Cartella')}</span>
                     <select
                       value={draft.folder || ''}
                       onChange={(e) => setDraft((x) => ({ ...x, folder: e.target.value || null }))}
                     >
-                      <option value="">Nessuna cartella</option>
+                      <option value="">{t('Nessuna cartella')}</option>
                       {vault.folders.map((f) => (
                         <option key={f.id} value={f.id}>
                           {f.name}
@@ -1732,7 +1804,7 @@ export default function App() {
                   {categories[draft.type].fields.map((k) => (
                     <div className="field-with-copy" key={k}>
                       <Field
-                        label={labels[k] || k}
+                        label={t(labels[k] || k)}
                         secret={['password', 'pin', 'cvv', 'seed', 'credential', 'number'].includes(
                           k,
                         )}
@@ -1742,7 +1814,7 @@ export default function App() {
                       {draft.f?.[k] && (
                         <button
                           className="icon-button"
-                          title="Copia"
+                          title={t('Copia')}
                           onClick={() => copy(draft.f[k])}
                         >
                           <Copy size={17} />
@@ -1753,7 +1825,7 @@ export default function App() {
                   {draft.type === 'login' && (
                     <>
                       <label className="field">
-                        <span>Tipo di account</span>
+                        <span>{t('Tipo di account')}</span>
                         <select
                           value={
                             draft.src ||
@@ -1769,28 +1841,30 @@ export default function App() {
                             setGroupIcon('');
                           }}
                         >
-                          <option value="web">Sito web / Email</option>
-                          <option value="app">Applicazione</option>
-                          <option value="other">Altro</option>
+                          <option value="web">{t('Sito web / Email')}</option>
+                          <option value="app">{t('Applicazione')}</option>
+                          <option value="other">{t('Altro')}</option>
                         </select>
                       </label>
                       {(draft.src || 'web') === 'web' && (
                         <p className="helper">
-                          Inserisci l'URL del sito o un indirizzo email: gli accessi allo stesso
-                          dominio verranno raggruppati e sarà cercato il logo del sito, se attivato
-                          nelle impostazioni.
+                          {t(
+                            "Inserisci l'URL del sito o un indirizzo email: gli accessi allo stesso dominio verranno raggruppati e sarà cercato il logo del sito, se attivato nelle impostazioni.",
+                          )}
                         </p>
                       )}
                       {(draft.src || 'web') === 'app' && (
                         <p className="helper">
-                          Seleziona un'app installata oppure inserisci il suo nome come titolo
-                          dell'account. Puoi assegnare un logo dal PC.
+                          {t(
+                            "Seleziona un'app installata oppure inserisci il suo nome come titolo dell'account. Puoi assegnare un logo dal PC.",
+                          )}
                         </p>
                       )}
                       {(draft.src || 'web') === 'other' && (
                         <p className="helper">
-                          Gli account con lo stesso titolo saranno raccolti in un gruppo. Scegli
-                          un'immagine dal PC come logo.
+                          {t(
+                            "Gli account con lo stesso titolo saranno raccolti in un gruppo. Scegli un'immagine dal PC come logo.",
+                          )}
                         </p>
                       )}
                       {(draft.src || 'web') !== 'web' && (
@@ -1805,12 +1879,12 @@ export default function App() {
                                 setError('');
                               }
                             } catch (e) {
-                              setError(formatError(e));
+                              setError(translateMessage(formatError(e)));
                             }
                           }}
                         >
                           <Upload size={16} />
-                          Seleziona logo dal PC
+                          {t('Seleziona logo dal PC')}
                         </button>
                       )}
                       {groupIcon && (
@@ -1820,10 +1894,12 @@ export default function App() {
                             groupKey={draft.gk || ''}
                             name={draft.title}
                           />
-                          <span>Logo selezionato, verrà salvato nel vault cifrato</span>
+                          <span>{t('Logo selezionato, verrà salvato nel vault cifrato')}</span>
                         </div>
                       )}
-                      <div className="helper">Gruppo associato: {savedGroupKey(draft)}</div>
+                      <div className="helper">
+                        {t('Gruppo associato:')} {savedGroupKey(draft)}
+                      </div>
                       {(draft.src || 'web') === 'app' && (
                         <button
                           className="secondary"
@@ -1833,7 +1909,7 @@ export default function App() {
                           }}
                         >
                           <Folder size={16} />
-                          Associa applicazione installata
+                          {t('Associa applicazione installata')}
                         </button>
                       )}
                       {appsList && (
@@ -1860,7 +1936,7 @@ export default function App() {
                               </button>
                             ))
                           ) : (
-                            <span>Nessuna applicazione individuata</span>
+                            <span>{t('Nessuna applicazione individuata')}</span>
                           )}
                         </div>
                       )}
@@ -1871,16 +1947,19 @@ export default function App() {
                             const r = await run<{ code: string; left: number }>('totp', {
                               id: draft.id,
                             });
-                            if (r) notify(`Codice TOTP: ${r.code} · ${r.left}s`);
+                            if (r)
+                              notify(
+                                t('Codice TOTP: {code} · {left}s', { code: r.code, left: r.left }),
+                              );
                           }}
                         >
-                          Genera codice TOTP
+                          {t('Genera codice TOTP')}
                         </button>
                       )}
                     </>
                   )}
                   <Field
-                    label="Note"
+                    label={t('Note')}
                     value={draft.notes || ''}
                     onChange={(v) => setDraft((x) => ({ ...x, notes: v }))}
                     textarea
@@ -1891,13 +1970,13 @@ export default function App() {
                       checked={!!draft.fav}
                       onChange={(e) => setDraft((x) => ({ ...x, fav: e.target.checked }))}
                     />
-                    Aggiungi ai preferiti
+                    {t('Aggiungi ai preferiti')}
                   </label>
                 </>
               )}
               {dialog === 'folder' && (
                 <Field
-                  label="Nome cartella"
+                  label={t('Nome cartella')}
                   value={folderDraft.name}
                   onChange={(v) => setFolderDraft((x) => ({ ...x, name: v }))}
                 />
@@ -1905,7 +1984,7 @@ export default function App() {
               {dialog === 'group' && (
                 <>
                   <Field
-                    label="Nome gruppo"
+                    label={t('Nome gruppo')}
                     value={groupDraft.name}
                     onChange={(v) => setGroupDraft((x) => ({ ...x, name: v }))}
                   />
@@ -1922,18 +2001,18 @@ export default function App() {
                           const icon = await pickIconData();
                           if (icon) setGroupDraft((x) => ({ ...x, icon }));
                         } catch (e) {
-                          setError(formatError(e));
+                          setError(translateMessage(formatError(e)));
                         }
                       }}
                     >
-                      Scegli immagine
+                      {t('Scegli immagine')}
                     </button>
                   </div>
                 </>
               )}
               {dialog === 'share' && (
                 <Field
-                  label="Passphrase di condivisione (minimo 8 caratteri)"
+                  label={t('Passphrase di condivisione (minimo 8 caratteri)')}
                   value={sharePass}
                   onChange={setSharePass}
                   secret
@@ -1942,22 +2021,23 @@ export default function App() {
               {dialog === 'import' && (
                 <>
                   <p>
-                    Il contenuto verrà decifrato e unito al tuo vault. Usa la passphrase che ha
-                    protetto il file.
+                    {t(
+                      'Il contenuto verrà decifrato e unito al tuo vault. Usa la passphrase che ha protetto il file.',
+                    )}
                   </p>
-                  <Field label="Passphrase" value={sharePass} onChange={setSharePass} secret />
+                  <Field label={t('Passphrase')} value={sharePass} onChange={setSharePass} secret />
                 </>
               )}
               {dialog === 'master' && (
                 <>
                   <Field
-                    label="Password principale attuale"
+                    label={t('Password principale attuale')}
                     value={password}
                     onChange={setPassword}
                     secret
                   />
                   <Field
-                    label="Nuova password principale"
+                    label={t('Nuova password principale')}
                     value={recoveryNew}
                     onChange={setRecoveryNew}
                     secret
@@ -1966,7 +2046,7 @@ export default function App() {
               )}
               {dialog === 'recovery_new' && (
                 <Field
-                  label="Conferma password principale"
+                  label={t('Conferma password principale')}
                   value={password}
                   onChange={setPassword}
                   secret
@@ -1974,10 +2054,10 @@ export default function App() {
               )}
               {dialog === 'recover' && (
                 <div className="recovery-panel">
-                  <p>Conserva questo codice offline. Non sarà più visualizzato.</p>
+                  <p>{t('Conserva questo codice offline. Non sarà più visualizzato.')}</p>
                   <code>{viewRecovery}</code>
                   <button className="secondary" onClick={() => copy(viewRecovery)}>
-                    <Copy size={16} /> Copia
+                    <Copy size={16} /> {t('Copia')}
                   </button>
                 </div>
               )}
@@ -1985,7 +2065,7 @@ export default function App() {
             <div className="modal-foot">
               {dialog !== 'recover' && (
                 <button className="secondary" onClick={() => setDialog(null)}>
-                  Annulla
+                  {t('Annulla')}
                 </button>
               )}
               <button
@@ -1995,7 +2075,7 @@ export default function App() {
                   if (dialog === 'recover') {
                     setViewRecovery('');
                     setDialog(null);
-                    notify('Codice di recupero confermato');
+                    notify(t('Codice di recupero confermato'));
                     return;
                   }
                   let r;
@@ -2004,15 +2084,15 @@ export default function App() {
                     return;
                   }
                   if (dialog === 'folder')
-                    r = await mutate('folder', folderDraft, 'Cartella salvata');
+                    r = await mutate('folder', folderDraft, t('Cartella salvata'));
                   if (dialog === 'group')
-                    r = await mutate('group_edit', groupDraft, 'Gruppo aggiornato');
+                    r = await mutate('group_edit', groupDraft, t('Gruppo aggiornato'));
                   if (dialog === 'master') {
                     r = await run('master', { old: password, new: recoveryNew });
                     if (r) {
                       setPassword('');
                       setRecoveryNew('');
-                      notify('Password principale aggiornata');
+                      notify(t('Password principale aggiornata'));
                     }
                   }
                   if (dialog === 'recovery_new') {
@@ -2031,14 +2111,14 @@ export default function App() {
                     });
                     if (r) {
                       await saveFile('jesse-archive-share.jshare', r.data);
-                      notify('Pacchetto cifrato creato');
+                      notify(t('Pacchetto cifrato creato'));
                     }
                   }
                   if (dialog === 'import') {
                     r = await mutate(
                       'unpack',
                       { passphrase: sharePass, data: shareImport },
-                      'Pacchetto importato',
+                      t('Pacchetto importato'),
                     );
                   }
                   if (r) {
@@ -2050,10 +2130,10 @@ export default function App() {
               >
                 <Check size={17} />
                 {dialog === 'recover'
-                  ? 'Ho salvato il codice'
+                  ? t('Ho salvato il codice')
                   : dialog === 'share'
-                    ? 'Esporta pacchetto'
-                    : 'Conferma'}
+                    ? t('Esporta pacchetto')
+                    : t('Conferma')}
               </button>
             </div>
           </div>
@@ -2155,8 +2235,10 @@ function PasswordPage({
   const beginLink = async (pid: string) => {
     if (!eligible.length) {
       await showNotice(
-        'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.',
-        'Nessun account disponibile',
+        t(
+          'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.',
+        ),
+        t('Nessun account disponibile'),
       );
       return;
     }
@@ -2168,14 +2250,17 @@ function PasswordPage({
     setLinking(true);
     try {
       const confirmed = await askConfirm(
-        `Impostare la password selezionata come password attuale di «${target.title}»? Questa operazione modifica la credenziale salvata in JesseArchive, NON la password sul sito o nell'app. La precedente password rimarrà nello storico.`,
-        { title: 'Sostituire la password dell’account?', confirmLabel: 'Imposta password' },
+        t(
+          "Impostare la password selezionata come password attuale di «{name}»? Questa operazione modifica la credenziale salvata in JesseArchive, NON la password sul sito o nell'app. La precedente password rimarrà nello storico.",
+          { name: target.title },
+        ),
+        { title: t('Sostituire la password dell’account?'), confirmLabel: t('Imposta password') },
       );
       if (!confirmed) return;
       const result = await mutate(
         'pw_link',
         { pid: source.id, item_id: target.id },
-        'Password attiva aggiornata',
+        t('Password attiva aggiornata'),
       );
       if (result) {
         setLinkPid(null);
@@ -2189,18 +2274,19 @@ function PasswordPage({
     <>
       <div className="heading-row">
         <div>
-          <div className="eyebrow">PASSWORD HISTORY</div>
-          <h1>Archivio password</h1>
+          <div className="eyebrow">{t('PASSWORD HISTORY')}</div>
+          <h1>{t('Archivio password')}</h1>
           <p>
-            Qui trovi le password attuali, quelle precedenti e quelle salvate manualmente. Se vuoi
-            riutilizzarne una in un account, premi «Usa per account» accanto alla password.
+            {t(
+              'Qui trovi le password attuali, quelle precedenti e quelle salvate manualmente. Se vuoi riutilizzarne una in un account, premi «Usa per account» accanto alla password.',
+            )}
           </p>
         </div>
       </div>
       <div className="panel">
         <div className="panel-head">
           <h2>
-            Le tue password <span className="counter">{list.length}</span>
+            {t('Le tue password')} <span className="counter">{list.length}</span>
           </h2>
           {selected.length > 0 && (
             <button
@@ -2208,11 +2294,13 @@ function PasswordPage({
               onClick={async () => {
                 if (
                   await askConfirm(
-                    `Eliminare ${selected.length} password non attive selezionate?`,
+                    t('Eliminare le password non attive selezionate ({n})?', {
+                      n: selected.length,
+                    }),
                     {
-                      title: 'Elimina password dallo storico',
+                      title: t('Elimina password dallo storico'),
                       danger: true,
-                      confirmLabel: 'Elimina selezionate',
+                      confirmLabel: t('Elimina selezionate'),
                     },
                   )
                 ) {
@@ -2222,13 +2310,13 @@ function PasswordPage({
               }}
             >
               <Trash2 size={16} />
-              Elimina selezionate ({selected.length})
+              {t('Elimina selezionate ({n})', { n: selected.length })}
             </button>
           )}
           <div className="search-box">
             <Search size={16} />
             <input
-              placeholder="Cerca..."
+              placeholder={t('Cerca...')}
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             />
@@ -2236,13 +2324,13 @@ function PasswordPage({
         </div>
         <div className="inline-form">
           <input
-            placeholder="Nuova password da salvare"
+            placeholder={t('Nuova password da salvare')}
             type="password"
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
           <input
-            placeholder="Etichetta (facoltativa)"
+            placeholder={t('Etichetta (facoltativa)')}
             value={label}
             onChange={(e) => setLabel(e.target.value)}
           />
@@ -2258,14 +2346,14 @@ function PasswordPage({
               }
             }}
           >
-            Salva
+            {t('Salva')}
           </button>
         </div>
         {list.map((p: Password) => (
           <div className="item-row" key={p.id}>
             <input
               type="checkbox"
-              aria-label="Seleziona password"
+              aria-label={t('Seleziona password')}
               checked={selected.includes(p.id)}
               onChange={(e) =>
                 setSelected((ids) =>
@@ -2277,13 +2365,13 @@ function PasswordPage({
               <KeyRound size={18} />
             </div>
             <div className="item-body static">
-              <strong>{p.item_title || p.label || 'Password salvata'}</strong>
+              <strong>{p.item_title || p.label || t('Password salvata')}</strong>
               <span>
                 {p.active
-                  ? 'Password attuale'
+                  ? t('Password attuale')
                   : p.item_id
-                    ? 'Password precedente'
-                    : 'Password non collegata'}{' '}
+                    ? t('Password precedente')
+                    : t('Password non collegata')}{' '}
                 · {date(p.created)}
               </span>
             </div>
@@ -2291,8 +2379,8 @@ function PasswordPage({
               {showSecrets.includes(p.id) ? p.value : '••••••••••••'}
             </code>
             <button
-              title="Mostra/Nascondi"
-              aria-label="Mostra o nascondi password"
+              title={t('Mostra/Nascondi')}
+              aria-label={t('Mostra o nascondi password')}
               className="icon-button"
               onClick={() =>
                 setShowSecrets((x) =>
@@ -2302,13 +2390,13 @@ function PasswordPage({
             >
               {showSecrets.includes(p.id) ? <EyeOff size={17} /> : <Eye size={17} />}
             </button>
-            <button title="Copia" className="icon-button" onClick={() => copy(p.value)}>
+            <button title={t('Copia')} className="icon-button" onClick={() => copy(p.value)}>
               <Copy size={17} />
             </button>
             {p.item_id ? (
               <button
                 className="icon-button"
-                title="Apri elemento"
+                title={t('Apri elemento')}
                 onClick={() => openItem(vault.items.find((i) => i.id === p.item_id))}
               >
                 <ArrowRight size={17} />
@@ -2316,13 +2404,13 @@ function PasswordPage({
             ) : (
               <button
                 className="icon-button danger"
-                title="Elimina"
+                title={t('Elimina')}
                 onClick={async () => {
                   if (
-                    await askConfirm('Eliminare questa password?', {
-                      title: 'Elimina password',
+                    await askConfirm(t('Eliminare questa password?'), {
+                      title: t('Elimina password'),
                       danger: true,
-                      confirmLabel: 'Elimina password',
+                      confirmLabel: t('Elimina password'),
                     })
                   )
                     await mutate('pw_del', { pid: p.id });
@@ -2334,21 +2422,22 @@ function PasswordPage({
             {!p.active && (
               <button
                 className="secondary password-assign"
-                title="Scegli l’account in cui usare questa password"
+                title={t('Scegli l’account in cui usare questa password')}
                 onClick={() => void beginLink(p.id)}
               >
                 <ArrowRight size={15} />
-                Usa per account
+                {t('Usa per account')}
               </button>
             )}
           </div>
         ))}
-        {!list.length && <div className="empty">Nessuna password in archivio.</div>}
+        {!list.length && <div className="empty">{t('Nessuna password in archivio.')}</div>}
         <div className="password-help">
           <ShieldCheck size={17} />
           <span>
-            Questa funzione modifica soltanto la password salvata nel vault: non cambia la password
-            sul sito web o nell'applicazione esterna.
+            {t(
+              "Questa funzione modifica soltanto la password salvata nel vault: non cambia la password sul sito web o nell'applicazione esterna.",
+            )}
           </span>
         </div>
       </div>
@@ -2362,10 +2451,10 @@ function PasswordPage({
             aria-describedby="password-link-description"
           >
             <div className="modal-head">
-              <h2 id="password-link-title">Usa una password dello storico</h2>
+              <h2 id="password-link-title">{t('Usa una password dello storico')}</h2>
               <button
                 className="icon-button"
-                aria-label="Chiudi"
+                aria-label={t('Chiudi')}
                 onClick={closeLink}
                 disabled={linking}
               >
@@ -2374,23 +2463,24 @@ function PasswordPage({
             </div>
             <div className="modal-content">
               <p id="password-link-description">
-                Scegli l'account del vault in cui vuoi impostare questa password. La password
-                attuale di quell'account verrà sostituita, ma resterà nello storico.
+                {t(
+                  "Scegli l'account del vault in cui vuoi impostare questa password. La password attuale di quell'account verrà sostituita, ma resterà nello storico.",
+                )}
               </p>
               <div className="password-link-source">
                 <KeyRound size={18} />
                 <div>
-                  <strong>Password selezionata</strong>
+                  <strong>{t('Password selezionata')}</strong>
                   <small>
-                    {source.item_title || source.label || 'Password salvata'} ·{' '}
+                    {source.item_title || source.label || t('Password salvata')} ·{' '}
                     {date(source.created)}
                   </small>
                 </div>
               </div>
               <label className="field">
-                <span>Account da aggiornare</span>
+                <span>{t('Account da aggiornare')}</span>
                 <select autoFocus value={targetId} onChange={(e) => setTargetId(e.target.value)}>
-                  <option value="">Seleziona un account...</option>
+                  <option value="">{t('Seleziona un account...')}</option>
                   {eligible.map((i) => (
                     <option key={i.id} value={i.id}>
                       {i.title}
@@ -2402,21 +2492,22 @@ function PasswordPage({
               <div className="password-link-warning">
                 <ShieldAlert size={18} />
                 <span>
-                  Attenzione: JesseArchive aggiornerà soltanto la credenziale locale. Se la password
-                  del sito è diversa, dovrai aggiornarla anche sul sito.
+                  {t(
+                    'Attenzione: JesseArchive aggiornerà soltanto la credenziale locale. Se la password del sito è diversa, dovrai aggiornarla anche sul sito.',
+                  )}
                 </span>
               </div>
             </div>
             <div className="modal-foot">
               <button className="secondary" disabled={linking} onClick={closeLink}>
-                Annulla
+                {t('Annulla')}
               </button>
               <button
                 className="primary"
                 disabled={!targetId || linking}
                 onClick={() => void applyLink()}
               >
-                {linking ? 'Aggiornamento...' : 'Continua'}
+                {linking ? t('Aggiornamento...') : t('Continua')}
               </button>
             </div>
           </section>
@@ -2467,33 +2558,35 @@ function GeneratorPage({
     <>
       <div className="heading-row">
         <div>
-          <div className="eyebrow">CRYPTOGRAPHIC GENERATOR</div>
-          <h1>Generatore sicuro</h1>
-          <p>Password, passphrase, PIN e username casuali.</p>
+          <div className="eyebrow">{t('CRYPTOGRAPHIC GENERATOR')}</div>
+          <h1>{t('Generatore sicuro')}</h1>
+          <p>{t('Password, passphrase, PIN e username casuali.')}</p>
         </div>
         <button className="primary generator-generate-button" onClick={generate}>
           <Shuffle size={21} />
-          Genera
+          {t('Genera')}
         </button>
       </div>
       <div className="two-cols">
         <section className="panel settings-panel">
           <div className="panel-head">
-            <h2>Opzioni</h2>
+            <h2>{t('Opzioni')}</h2>
           </div>
           <div className="form-stack">
             <label className="field">
-              <span>Modalità</span>
+              <span>{t('Modalità')}</span>
               <select value={mode} onChange={(e) => setMode(e.target.value)}>
-                <option value="password">Password</option>
-                <option value="passphrase">Passphrase</option>
-                <option value="pin">PIN</option>
-                <option value="username">Username</option>
+                <option value="password">{t('Password')}</option>
+                <option value="passphrase">{t('Passphrase')}</option>
+                <option value="pin">{t('PIN')}</option>
+                <option value="username">{t('Username')}</option>
               </select>
             </label>
             {['password', 'pin'].includes(mode) && (
               <label className="field">
-                <span>Lunghezza {length}</span>
+                <span>
+                  {t('Lunghezza')} {length}
+                </span>
                 <input
                   type="range"
                   min={4}
@@ -2505,7 +2598,7 @@ function GeneratorPage({
             )}
             {mode === 'passphrase' && (
               <label className="field">
-                <span>Numero di parole</span>
+                <span>{t('Numero di parole')}</span>
                 <input
                   type="number"
                   value={words}
@@ -2516,7 +2609,7 @@ function GeneratorPage({
               </label>
             )}
             <label className="field">
-              <span>Numero risultati</span>
+              <span>{t('Numero risultati')}</span>
               <input
                 type="number"
                 min={1}
@@ -2527,7 +2620,7 @@ function GeneratorPage({
             </label>
             {mode === 'password' && (
               <>
-                <Field label="Simboli utilizzabili" value={symset} onChange={setSymset} />
+                <Field label={t('Simboli utilizzabili')} value={symset} onChange={setSymset} />
                 {(
                   [
                     'lower',
@@ -2545,17 +2638,17 @@ function GeneratorPage({
                       checked={flags[k]}
                       onChange={(e) => setFlags((f) => ({ ...f, [k]: e.target.checked }))}
                     />
-                    {
+                    {t(
                       {
-                        lower: 'Minuscole',
-                        upper: 'Maiuscole',
-                        digits: 'Numeri',
-                        symbols: 'Simboli',
-                        ambiguous: 'Escludi caratteri ambigui',
-                        unique: 'Caratteri unici',
-                        start_letter: 'Inizia con una lettera',
-                      }[k]
-                    }
+                        lower: msg('Minuscole'),
+                        upper: msg('Maiuscole'),
+                        digits: msg('Numeri'),
+                        symbols: msg('Simboli'),
+                        ambiguous: msg('Escludi caratteri ambigui'),
+                        unique: msg('Caratteri unici'),
+                        start_letter: msg('Inizia con una lettera'),
+                      }[k],
+                    )}
                   </label>
                 ))}
               </>
@@ -2568,28 +2661,30 @@ function GeneratorPage({
                     checked={flags[k]}
                     onChange={(e) => setFlags((f) => ({ ...f, [k]: e.target.checked }))}
                   />
-                  {k === 'cap' ? 'Iniziali maiuscole' : 'Aggiungi numero'}
+                  {k === 'cap' ? t('Iniziali maiuscole') : t('Aggiungi numero')}
                 </label>
               ))}
           </div>
         </section>
         <section className="panel settings-panel">
           <div className="panel-head">
-            <h2>Risultati</h2>
+            <h2>{t('Risultati')}</h2>
           </div>
           {results.length ? (
             results.map((r, i) => (
               <div className="generated-row" key={i}>
                 <div>
                   <code>{r.value}</code>
-                  <small>{r.bits} bit stimati</small>
+                  <small>
+                    {r.bits} {t('bit stimati')}
+                  </small>
                 </div>
                 <div className="inline-actions">
-                  <button title="Copia" className="icon-button" onClick={() => copy(r.value)}>
+                  <button title={t('Copia')} className="icon-button" onClick={() => copy(r.value)}>
                     <Copy size={17} />
                   </button>
                   <button
-                    title="Salva nello storico"
+                    title={t('Salva nello storico')}
                     className="icon-button"
                     onClick={() => void mutate('pw_save', { value: r.value, source: 'generated' })}
                   >
@@ -2601,8 +2696,8 @@ function GeneratorPage({
           ) : (
             <div className="empty">
               <Zap size={25} />
-              <h3>Pronto a generare</h3>
-              <p>Configura le opzioni e crea le nuove credenziali.</p>
+              <h3>{t('Pronto a generare')}</h3>
+              <p>{t('Configura le opzioni e crea le nuove credenziali.')}</p>
             </div>
           )}
         </section>
@@ -2640,9 +2735,9 @@ function SecurityPage({
     <>
       <div className="heading-row">
         <div>
-          <div className="eyebrow">VAULT HEALTH</div>
-          <h1>Centro sicurezza</h1>
-          <p>Analizza password deboli, riutilizzate e datate.</p>
+          <div className="eyebrow">{t('VAULT HEALTH')}</div>
+          <h1>{t('Centro sicurezza')}</h1>
+          <p>{t('Analizza password deboli, riutilizzate e datate.')}</p>
         </div>
         <button
           className="secondary"
@@ -2653,49 +2748,62 @@ function SecurityPage({
           }
         >
           <RefreshCw size={17} />
-          Ricalcola
+          {t('Ricalcola')}
         </button>
       </div>
       <div className="stats-grid">
-        <Stat icon={ShieldCheck} title="Punteggio" value={health?.score ?? 0} />
-        <Stat icon={KeyRound} title="Attive" value={health?.total ?? 0} />
-        <Stat icon={ShieldAlert} title="Deboli" value={health?.weak.length ?? 0} />
-        <Stat icon={RefreshCw} title="Da aggiornare" value={health?.old.length ?? 0} />
+        <Stat icon={ShieldCheck} title={t('Punteggio')} value={health?.score ?? 0} />
+        <Stat icon={KeyRound} title={t('Attive')} value={health?.total ?? 0} />
+        <Stat icon={ShieldAlert} title={t('Deboli')} value={health?.weak.length ?? 0} />
+        <Stat icon={RefreshCw} title={t('Da aggiornare')} value={health?.old.length ?? 0} />
       </div>
       <div className="two-cols">
         <section className="panel settings-panel">
           <div className="panel-head">
-            <h2>Rischi rilevati</h2>
+            <h2>{t('Rischi rilevati')}</h2>
           </div>
           {health && (
             <div className="security-stack">
-              <Risk title="Password deboli" items={health.weak} vault={vault} openItem={openItem} />
               <Risk
-                title="Password riutilizzate"
+                title={t('Password deboli')}
+                items={health.weak}
+                vault={vault}
+                openItem={openItem}
+              />
+              <Risk
+                title={t('Password riutilizzate')}
                 items={health.reused.flat()}
                 vault={vault}
                 openItem={openItem}
               />
-              <Risk title="Password datate" items={health.old} vault={vault} openItem={openItem} />
+              <Risk
+                title={t('Password datate')}
+                items={health.old}
+                vault={vault}
+                openItem={openItem}
+              />
             </div>
           )}
         </section>
         <section className="panel settings-panel">
           <div className="panel-head">
-            <h2>Verifica violazioni</h2>
+            <h2>{t('Verifica violazioni')}</h2>
           </div>
           <div className="form-stack">
             <p>
-              Controllo tramite Pwned Passwords: viene inviato solo un prefisso dell'hash SHA-1, non
-              la password completa.
+              {t(
+                "Controllo tramite Pwned Passwords: viene inviato solo un prefisso dell'hash SHA-1, non la password completa.",
+              )}
             </p>
             <button
               className="secondary"
               onClick={async () => {
                 if (
                   await askConfirm(
-                    'Controllare online le password attive? Verranno inviate soltanto le prime cinque cifre esadecimali dell’hash SHA-1 di ogni password.',
-                    { title: 'Verifica account compromessi', confirmLabel: 'Avvia verifica' },
+                    t(
+                      'Controllare online le password attive? Verranno inviate soltanto le prime cinque cifre esadecimali dell’hash SHA-1 di ogni password.',
+                    ),
+                    { title: t('Verifica account compromessi'), confirmLabel: t('Avvia verifica') },
                   )
                 ) {
                   const r = await run<{ results: typeof breaches }>('breach');
@@ -2704,13 +2812,15 @@ function SecurityPage({
               }}
             >
               <Shield size={17} />
-              Verifica account compromessi
+              {t('Verifica account compromessi')}
             </button>
             {breaches?.map((b, i) => (
               <div className="risk-row" key={i}>
                 <strong>{b.title}</strong>
                 <span className={b.count > 0 ? 'bad' : 'good'}>
-                  {b.count > 0 ? `${b.count} segnalazioni` : 'Nessuna corrispondenza'}
+                  {b.count > 0
+                    ? t('Segnalazioni: {n}', { n: b.count })
+                    : t('Nessuna corrispondenza')}
                 </span>
               </div>
             ))}
@@ -2746,7 +2856,7 @@ function Risk({
           <ArrowRight size={15} />
         </button>
       ))}
-      {!items.length && <p className="good">Nessun problema rilevato</p>}
+      {!items.length && <p className="good">{t('Nessun problema rilevato')}</p>}
     </div>
   );
 }
@@ -2836,9 +2946,9 @@ function SettingsPage({
     <>
       <div className="heading-row">
         <div>
-          <div className="eyebrow">PREFERENCES</div>
-          <h1>Impostazioni</h1>
-          <p>Gestisci sicurezza, dati, aspetto e integrazioni.</p>
+          <div className="eyebrow">{t('PREFERENCES')}</div>
+          <h1>{t('Impostazioni')}</h1>
+          <p>{t('Gestisci sicurezza, dati, aspetto e integrazioni.')}</p>
         </div>
       </div>
       <div className="settings-grid">
@@ -2846,12 +2956,12 @@ function SettingsPage({
           <div className="panel-head">
             <h2>
               <Lock size={18} />
-              Protezione
+              {t('Protezione')}
             </h2>
           </div>
           <div className="form-stack">
             <label className="field">
-              <span>Blocco automatico (minuti, 0 = disattivato)</span>
+              <span>{t('Blocco automatico (minuti, 0 = disattivato)')}</span>
               <input
                 type="number"
                 min={0}
@@ -2860,7 +2970,7 @@ function SettingsPage({
               />
             </label>
             <label className="field">
-              <span>Pulizia appunti dopo (secondi, 0 = disattivata)</span>
+              <span>{t('Pulizia appunti dopo (secondi, 0 = disattivata)')}</span>
               <input
                 type="number"
                 min={0}
@@ -2869,7 +2979,7 @@ function SettingsPage({
               />
             </label>
             <label className="field">
-              <span>Segnala password vecchie dopo (giorni)</span>
+              <span>{t('Segnala password vecchie dopo (giorni)')}</span>
               <input
                 type="number"
                 min={0}
@@ -2883,7 +2993,7 @@ function SettingsPage({
                 checked={!!logos}
                 onChange={(e) => setLogos(e.target.checked ? 1 : 0)}
               />
-              Scarica favicon dei siti (rete)
+              {t('Scarica favicon dei siti (rete)')}
             </label>
             <button
               className="primary"
@@ -2896,13 +3006,13 @@ function SettingsPage({
                 })
               }
             >
-              Salva impostazioni
+              {t('Salva impostazioni')}
             </button>
             <button className="secondary" onClick={() => setDialog('master')}>
-              Modifica password principale
+              {t('Modifica password principale')}
             </button>
             <button className="secondary" onClick={() => setDialog('recovery_new')}>
-              Rigenera codice di recupero
+              {t('Rigenera codice di recupero')}
             </button>
           </div>
         </section>
@@ -2910,18 +3020,18 @@ function SettingsPage({
           <div className="panel-head">
             <h2>
               <Palette size={18} />
-              Aspetto
+              {t('Aspetto')}
             </h2>
           </div>
           <div className="form-stack">
             <div className="field">
-              <span>Dimensione interfaccia</span>
+              <span>{t('Dimensione interfaccia')}</span>
               <div className="zoom-control">
                 <button
                   type="button"
                   className="secondary"
-                  title={`Zoom minimo (${ZOOM_MIN}%)`}
-                  aria-label={`Imposta lo zoom al minimo, ${ZOOM_MIN}%`}
+                  title={t('Zoom minimo ({n}%)', { n: ZOOM_MIN })}
+                  aria-label={t('Imposta lo zoom al minimo, {n}%', { n: ZOOM_MIN })}
                   disabled={zoom <= ZOOM_MIN / 100}
                   onClick={() => void changeZoom('set', ZOOM_MIN / 100).then(setZoom)}
                 >
@@ -2935,21 +3045,24 @@ function SettingsPage({
                 <button
                   type="button"
                   className="secondary"
-                  title="Riduci (Ctrl + − oppure Ctrl + F11)"
-                  aria-label="Riduci dimensione interfaccia"
+                  title={t('Riduci (Ctrl + − oppure Ctrl + F11)')}
+                  aria-label={t('Riduci dimensione interfaccia')}
                   disabled={zoom <= ZOOM_MIN / 100}
                   onClick={() => void changeZoom('out').then(setZoom)}
                 >
                   <ZoomOut size={16} />
                 </button>
-                <label className="zoom-input" title="Scrivi la percentuale e premi Invio">
+                <label className="zoom-input" title={t('Scrivi la percentuale e premi Invio')}>
                   <input
                     type="number"
                     inputMode="numeric"
                     min={ZOOM_MIN}
                     max={ZOOM_MAX}
                     step={1}
-                    aria-label={`Zoom in percentuale, da ${ZOOM_MIN} a ${ZOOM_MAX}`}
+                    aria-label={t('Zoom in percentuale, da {min} a {max}', {
+                      min: ZOOM_MIN,
+                      max: ZOOM_MAX,
+                    })}
                     value={zoomDraft}
                     onChange={(e) => setZoomDraft(e.target.value)}
                     onBlur={applyZoomDraft}
@@ -2967,8 +3080,8 @@ function SettingsPage({
                 <button
                   type="button"
                   className="secondary"
-                  title="Ingrandisci (Ctrl + + oppure Ctrl + F12)"
-                  aria-label="Ingrandisci dimensione interfaccia"
+                  title={t('Ingrandisci (Ctrl + + oppure Ctrl + F12)')}
+                  aria-label={t('Ingrandisci dimensione interfaccia')}
                   disabled={zoom >= ZOOM_MAX / 100}
                   onClick={() => void changeZoom('in').then(setZoom)}
                 >
@@ -2977,8 +3090,8 @@ function SettingsPage({
                 <button
                   type="button"
                   className="secondary"
-                  title={`Zoom massimo (${ZOOM_MAX}%)`}
-                  aria-label={`Imposta lo zoom al massimo, ${ZOOM_MAX}%`}
+                  title={t('Zoom massimo ({n}%)', { n: ZOOM_MAX })}
+                  aria-label={t('Imposta lo zoom al massimo, {n}%', { n: ZOOM_MAX })}
                   disabled={zoom >= ZOOM_MAX / 100}
                   onClick={() => void changeZoom('set', ZOOM_MAX / 100).then(setZoom)}
                 >
@@ -2991,25 +3104,25 @@ function SettingsPage({
                 </button>
               </div>
               <p className="helper">
-                Scrivi una percentuale da {ZOOM_MIN} a {ZOOM_MAX} e premi Invio, oppure usa i
-                pulsanti. Si applica subito a tutte le finestre e viene ricordata su questo PC.
-                Scorciatoie: Ctrl + + / Ctrl + − (anche Ctrl + F12 / Ctrl + F11 o Ctrl + rotella),
-                Ctrl + 0 per tornare al 100%.
+                {t(
+                  'Scrivi una percentuale da {min} a {max} e premi Invio, oppure usa i pulsanti. Si applica subito a tutte le finestre e viene ricordata su questo PC. Scorciatoie: Ctrl + + / Ctrl + − (anche Ctrl + F12 / Ctrl + F11 o Ctrl + rotella), Ctrl + 0 per tornare al 100%.',
+                  { min: ZOOM_MIN, max: ZOOM_MAX },
+                )}
               </p>
             </div>
             <label className="field">
-              <span>Tema colore</span>
+              <span>{t('Tema colore')}</span>
               <select value={preset} onChange={(e) => setPreset(e.target.value)}>
                 {Object.entries({
-                  amethyst: 'Ametista',
-                  night: 'Notte',
-                  ocean: 'Oceano',
-                  forest: 'Foresta',
-                  sunset: 'Tramonto',
-                  rose: 'Rosa',
-                  graphite: 'Grafite',
-                  mint: 'Menta scuro',
-                  custom: 'Personalizzato',
+                  amethyst: t('Ametista'),
+                  night: t('Notte'),
+                  ocean: t('Oceano'),
+                  forest: t('Foresta'),
+                  sunset: t('Tramonto'),
+                  rose: t('Rosa'),
+                  graphite: t('Grafite'),
+                  mint: t('Menta scuro'),
+                  custom: t('Personalizzato'),
                 }).map(([k, v]) => (
                   <option value={k} key={k}>
                     {v}
@@ -3020,13 +3133,14 @@ function SettingsPage({
             {preset === 'custom' && (
               <>
                 <p className="helper">
-                  Personalizza tutti i colori dell'interfaccia. Le modifiche vengono applicate dopo
-                  il salvataggio.
+                  {t(
+                    "Personalizza tutti i colori dell'interfaccia. Le modifiche vengono applicate dopo il salvataggio.",
+                  )}
                 </p>
                 <div className="theme-editor">
                   {paletteKeys.map(([k, label]) => (
                     <label className="color-row" key={k}>
-                      <span>{label}</span>
+                      <span>{t(label)}</span>
                       <input
                         type="color"
                         value={customPalette[k] || DEFAULT_CUSTOM[k]}
@@ -3041,7 +3155,7 @@ function SettingsPage({
                   className="secondary"
                   onClick={() => setCustomPalette({ ...DEFAULT_CUSTOM })}
                 >
-                  Ripristina colori predefiniti
+                  {t('Ripristina colori predefiniti')}
                 </button>
               </>
             )}
@@ -3051,11 +3165,11 @@ function SettingsPage({
                 void mutate(
                   'settings',
                   { theme: { preset, custom: customPalette } },
-                  'Aspetto salvato',
+                  t('Aspetto salvato'),
                 )
               }
             >
-              Salva aspetto
+              {t('Salva aspetto')}
             </button>
           </div>
         </section>
@@ -3063,35 +3177,36 @@ function SettingsPage({
           <div className="panel-head">
             <h2>
               <ArrowDownToLine size={18} />
-              Dati e backup
+              {t('Dati e backup')}
             </h2>
           </div>
           <div className="form-stack">
             <p className="sensitive-warning">
-              Attenzione: le esportazioni JSON e CSV contengono segreti in chiaro. Non salvarle in
-              percorsi pubblici.
+              {t(
+                'Attenzione: le esportazioni JSON e CSV contengono segreti in chiaro. Non salvarle in percorsi pubblici.',
+              )}
             </p>
             <div className="split-actions">
               <button className="secondary" onClick={() => void exportData('json')}>
                 <Download size={16} />
-                Esporta JSON
+                {t('Esporta JSON')}
               </button>
               <button className="secondary" onClick={() => void exportData('csv')}>
                 <Download size={16} />
-                Esporta CSV
+                {t('Esporta CSV')}
               </button>
             </div>
             <button className="secondary" onClick={() => void importData()}>
               <Upload size={16} />
-              Importa CSV / JSON / .jshare
+              {t('Importa CSV / JSON / .jshare')}
             </button>
             <button className="secondary" onClick={() => setDialog('share')}>
               <ShieldCheck size={16} />
-              Esporta pacchetto cifrato
+              {t('Esporta pacchetto cifrato')}
             </button>
             <div className="divider" />
             <div className="path-info">
-              <strong>Posizione vault</strong>
+              <strong>{t('Posizione vault')}</strong>
               <code>{vault.path}</code>
             </div>
             <button
@@ -3100,12 +3215,12 @@ function SettingsPage({
               onClick={async () => {
                 setCloudSearching(true);
                 setSuggestions([]);
-                setCloudSearchStatus('Ricerca delle cartelle cloud configurate sul computer…');
+                setCloudSearchStatus(t('Ricerca delle cartelle cloud configurate sul computer…'));
                 try {
                   const r = await run<{ dirs: string[] }>('suggest');
                   if (!r) {
                     setCloudSearchStatus(
-                      'Ricerca non riuscita. Puoi scegliere manualmente una cartella.',
+                      t('Ricerca non riuscita. Puoi scegliere manualmente una cartella.'),
                     );
                     return;
                   }
@@ -3113,8 +3228,13 @@ function SettingsPage({
                   setSuggestions(dirs);
                   setCloudSearchStatus(
                     dirs.length
-                      ? `${dirs.length} ${dirs.length === 1 ? 'cartella trovata' : 'cartelle trovate'}. Seleziona una destinazione per copiare il vault.`
-                      : 'Nessuna cartella cloud locale rilevata. Puoi selezionarla manualmente con «Copia vault in cartella / cloud».',
+                      ? t(
+                          'Cartelle cloud trovate: {n}. Seleziona una destinazione per copiare il vault.',
+                          { n: dirs.length },
+                        )
+                      : t(
+                          'Nessuna cartella cloud locale rilevata. Puoi selezionarla manualmente con «Copia vault in cartella / cloud».',
+                        ),
                   );
                 } finally {
                   setCloudSearching(false);
@@ -3122,7 +3242,7 @@ function SettingsPage({
               }}
             >
               <Search size={16} />
-              {cloudSearching ? 'Ricerca in corso…' : 'Cerca cartelle cloud locali'}
+              {cloudSearching ? t('Ricerca in corso…') : t('Cerca cartelle cloud locali')}
             </button>
             {cloudSearchStatus && (
               <p className="cloud-search-status" role="status" aria-live="polite">
@@ -3137,12 +3257,12 @@ function SettingsPage({
                     title={path}
                     onClick={async () => {
                       if (
-                        await askConfirm(`Copiare il vault in ${path}?`, {
-                          title: 'Copia vault',
-                          confirmLabel: 'Copia vault',
+                        await askConfirm(t('Copiare il vault in {path}?', { path }), {
+                          title: t('Copia vault'),
+                          confirmLabel: t('Copia vault'),
                         })
                       )
-                        await mutate('loc_move', { folder: path }, 'Vault copiato');
+                        await mutate('loc_move', { folder: path }, t('Vault copiato'));
                     }}
                   >
                     {path}
@@ -3157,15 +3277,17 @@ function SettingsPage({
                 if (
                   p &&
                   (await askConfirm(
-                    'Copiare il vault nella cartella selezionata? L’originale non viene eliminato.',
-                    { title: 'Copia vault', confirmLabel: 'Copia vault' },
+                    t(
+                      'Copiare il vault nella cartella selezionata? L’originale non viene eliminato.',
+                    ),
+                    { title: t('Copia vault'), confirmLabel: t('Copia vault') },
                   ))
                 )
-                  await mutate('loc_move', { folder: p }, 'Vault copiato e collegato');
+                  await mutate('loc_move', { folder: p }, t('Vault copiato e collegato'));
               }}
             >
               <Cloud size={16} />
-              Copia vault in cartella / cloud
+              {t('Copia vault in cartella / cloud')}
             </button>
             <button
               className="secondary"
@@ -3174,8 +3296,8 @@ function SettingsPage({
                 if (
                   p &&
                   (await askConfirm(
-                    'Bloccare il vault corrente e collegare quello nella cartella selezionata?',
-                    { title: 'Collega vault', confirmLabel: 'Collega vault' },
+                    t('Bloccare il vault corrente e collegare quello nella cartella selezionata?'),
+                    { title: t('Collega vault'), confirmLabel: t('Collega vault') },
                   ))
                 ) {
                   const r = await run('loc_use', { folder: p });
@@ -3184,7 +3306,7 @@ function SettingsPage({
               }}
             >
               <Folder size={16} />
-              Collega vault esistente
+              {t('Collega vault esistente')}
             </button>
           </div>
         </section>
@@ -3192,21 +3314,21 @@ function SettingsPage({
           <div className="panel-head">
             <h2>
               <SettingsIcon size={18} />
-              Desktop
+              {t('Desktop')}
             </h2>
           </div>
           <BrowserSettings />
           <div className="form-stack">
             <label className="field">
-              <span>Alla chiusura della finestra</span>
+              <span>{t('Alla chiusura della finestra')}</span>
               <select value={close} onChange={(e) => setClose(e.target.value as 'quit' | 'tray')}>
-                <option value="quit">Esci dall'applicazione</option>
-                <option value="tray">Nascondi nell'area di notifica</option>
+                <option value="quit">{t("Esci dall'applicazione")}</option>
+                <option value="tray">{t("Nascondi nell'area di notifica")}</option>
               </select>
             </label>
             <label className="check-line">
               <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} />
-              Avvia con Windows
+              {t('Avvia con Windows')}
             </label>
             <button
               className="primary"
@@ -3214,13 +3336,13 @@ function SettingsPage({
                 void mutate(
                   'prefs_set',
                   { close_action: close, autostart: auto },
-                  'Preferenze Windows salvate',
+                  t('Preferenze Windows salvate'),
                 )
               }
             >
-              Salva preferenze
+              {t('Salva preferenze')}
             </button>
-            <p>La chiusura nell'area di notifica blocca il vault.</p>
+            <p>{t("La chiusura nell'area di notifica blocca il vault.")}</p>
           </div>
         </section>
         <UpdateSettings askConfirm={askConfirm} showNotice={showNotice} />
@@ -3228,7 +3350,7 @@ function SettingsPage({
           <div className="panel-head">
             <h2>
               <FolderPlus size={18} />
-              Cartelle
+              {t('Cartelle')}
             </h2>
           </div>
           <div className="form-stack">
@@ -3238,9 +3360,9 @@ function SettingsPage({
                 <span>{f.name}</span>
                 <button
                   className="icon-button"
-                  title="Rinomina"
+                  title={t('Rinomina')}
                   onClick={async () => {
-                    const n = await askText('Nuovo nome della cartella', f.name);
+                    const n = await askText(t('Nuovo nome della cartella'), f.name);
                     if (n?.trim()) await mutate('folder', { id: f.id, name: n.trim() });
                   }}
                 >
@@ -3251,11 +3373,13 @@ function SettingsPage({
                   onClick={async () => {
                     if (
                       await askConfirm(
-                        `Eliminare la cartella ${f.name}? Gli elementi resteranno nel vault.`,
+                        t('Eliminare la cartella {name}? Gli elementi resteranno nel vault.', {
+                          name: f.name,
+                        }),
                         {
-                          title: 'Elimina cartella',
+                          title: t('Elimina cartella'),
                           danger: true,
-                          confirmLabel: 'Elimina cartella',
+                          confirmLabel: t('Elimina cartella'),
                         },
                       )
                     )
@@ -3268,14 +3392,16 @@ function SettingsPage({
             ))}
             <button className="secondary" onClick={() => selectPage('all')}>
               <LayoutGrid size={16} />
-              Vai agli elementi
+              {t('Vai agli elementi')}
             </button>
           </div>
         </section>
       </div>
       <div className="settings-footer">
-        <span>Jesse's Archive · Tauri 2 + Rust · Vault AES-256-GCM v1</span>
-        <span className="app-version">Version: Beta {appVersion || '…'}</span>
+        <span>{t("Jesse's Archive · Tauri 2 + Rust · Vault AES-256-GCM v1")}</span>
+        <span className="app-version">
+          {t('Version: Beta')} {appVersion || '…'}
+        </span>
       </div>
     </>
   );

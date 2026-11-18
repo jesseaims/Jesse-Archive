@@ -1,7 +1,7 @@
 {
   "name": "jesse-archive-tauri",
   "private": true,
-  "version": "1.1.15",
+  "version": "1.1.16",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "tauri": "tauri",
     "prebuild": "node scripts/generate-commits.mjs",
     "test:browser": "node --test tests/browser-extension.test.mjs tests/passkey-extension.test.mjs",
+    "test:i18n": "node --test tests/i18n.test.mjs",
     "format": "prettier --write src && cargo fmt --manifest-path src-tauri/Cargo.toml",
     "format:check": "prettier --check src && cargo fmt --manifest-path src-tauri/Cargo.toml -- --check"
   },

@@ -1,19 +1,20 @@
+import { msg } from './i18n';
 /** Complete visual palette. Values are stored inside the encrypted vault settings. */
 export const paletteKeys = [
-  ['accent', 'Colore principale'],
-  ['accentText', 'Testo sui pulsanti'],
-  ['background', 'Sfondo generale'],
-  ['sidebar', 'Barra laterale'],
-  ['surface', 'Riquadri e schede'],
-  ['modal', 'Finestre e dialoghi'],
-  ['input', 'Campi di inserimento'],
-  ['topbar', 'Barra superiore'],
-  ['border', 'Bordi e divisori'],
-  ['text', 'Testo principale'],
-  ['muted', 'Testo secondario'],
-  ['hover', 'Elementi al passaggio'],
-  ['selected', 'Voce selezionata'],
-  ['scroll', 'Barra di scorrimento'],
+  ['accent', msg('Colore principale')],
+  ['accentText', msg('Testo sui pulsanti')],
+  ['background', msg('Sfondo generale')],
+  ['sidebar', msg('Barra laterale')],
+  ['surface', msg('Riquadri e schede')],
+  ['modal', msg('Finestre e dialoghi')],
+  ['input', msg('Campi di inserimento')],
+  ['topbar', msg('Barra superiore')],
+  ['border', msg('Bordi e divisori')],
+  ['text', msg('Testo principale')],
+  ['muted', msg('Testo secondario')],
+  ['hover', msg('Elementi al passaggio')],
+  ['selected', msg('Voce selezionata')],
+  ['scroll', msg('Barra di scorrimento')],
 ] as const;
 export type PaletteKey = (typeof paletteKeys)[number][0];
 export type Palette = Record<PaletteKey, string>;

@@ -52,6 +52,9 @@ jobs:
       - name: Browser extension tests
         run: npm run test:browser
 
+      - name: Translations complete in every language
+        run: npm run test:i18n
+
       - name: Build native messaging host
         run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 

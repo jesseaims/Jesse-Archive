@@ -1,3 +1,4 @@
+import { msg } from './i18n';
 export type Category = 'login' | 'card' | 'note' | 'personal' | 'passkey' | 'crypto';
 export type Item = {
   id: string;
@@ -71,39 +72,47 @@ export type Page =
   | 'crypto'
   | 'shared';
 export const categories: Record<Category, { label: string; fields: string[]; secret?: string }> = {
-  login: { label: 'Account', fields: ['url', 'username', 'password', 'totp'], secret: 'password' },
-  card: { label: 'Carta', fields: ['holder', 'number', 'expiry', 'cvv', 'pin'], secret: 'pin' },
-  note: { label: 'Nota protetta', fields: [] },
+  login: {
+    label: msg('Account'),
+    fields: ['url', 'username', 'password', 'totp'],
+    secret: 'password',
+  },
+  card: {
+    label: msg('Carta'),
+    fields: ['holder', 'number', 'expiry', 'cvv', 'pin'],
+    secret: 'pin',
+  },
+  note: { label: msg('Nota protetta'), fields: [] },
   personal: {
-    label: 'Identità',
+    label: msg('Identità'),
     fields: ['fullname', 'email', 'phone', 'address', 'city', 'zip', 'country', 'birthday'],
   },
-  passkey: { label: 'Passkey', fields: ['url', 'username', 'credential'] },
+  passkey: { label: msg('Passkey'), fields: ['url', 'username', 'credential'] },
   crypto: {
-    label: 'Wallet crypto',
+    label: msg('Wallet crypto'),
     fields: ['platform', 'address', 'seed', 'password'],
     secret: 'password',
   },
 };
 export const labels: Record<string, string> = {
-  url: 'Sito web / URL',
-  username: 'Nome utente',
-  password: 'Password',
-  totp: 'Codice TOTP (secret)',
-  holder: 'Titolare',
-  number: 'Numero carta',
-  expiry: 'Scadenza',
-  cvv: 'CVV',
-  pin: 'PIN',
-  fullname: 'Nome completo',
-  email: 'Email',
-  phone: 'Telefono',
-  address: 'Indirizzo',
-  city: 'Città',
-  zip: 'CAP',
-  country: 'Paese',
-  birthday: 'Data di nascita',
-  credential: 'Credenziale salvata',
-  platform: 'Piattaforma',
-  seed: 'Seed phrase',
+  url: msg('Sito web / URL'),
+  username: msg('Nome utente'),
+  password: msg('Password'),
+  totp: msg('Codice TOTP (secret)'),
+  holder: msg('Titolare'),
+  number: msg('Numero carta'),
+  expiry: msg('Scadenza'),
+  cvv: msg('CVV'),
+  pin: msg('PIN'),
+  fullname: msg('Nome completo'),
+  email: msg('Email'),
+  phone: msg('Telefono'),
+  address: msg('Indirizzo'),
+  city: msg('Città'),
+  zip: msg('CAP'),
+  country: msg('Paese'),
+  birthday: msg('Data di nascita'),
+  credential: msg('Credenziale salvata'),
+  platform: msg('Piattaforma'),
+  seed: msg('Seed phrase'),
 };

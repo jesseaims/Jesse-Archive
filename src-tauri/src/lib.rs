@@ -4,6 +4,7 @@ mod browser_installer;
 mod browser_navigation;
 mod browser_protocol;
 mod core;
+mod i18n;
 mod passkey;
 mod updater;
 mod zoom;
@@ -246,10 +247,12 @@ pub fn run() {
             spawn_idle_lock(app.handle().clone());
             use tauri::menu::{Menu, MenuItem};
             use tauri::tray::TrayIconBuilder;
-            let show = MenuItem::with_id(app, "show", "Apri Jesse's Archive", true, None::<&str>)?;
-            let lock = MenuItem::with_id(app, "lock", "Blocca il vault", true, None::<&str>)?;
-            let quit = MenuItem::with_id(app, "quit", "Esci", true, None::<&str>)?;
+            let labels = i18n::native(&i18n::current());
+            let show = MenuItem::with_id(app, "show", labels[0], true, None::<&str>)?;
+            let lock = MenuItem::with_id(app, "lock", labels[1], true, None::<&str>)?;
+            let quit = MenuItem::with_id(app, "quit", labels[2], true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&show, &lock, &quit])?;
+            app.manage(i18n::Tray([show.clone(), lock.clone(), quit.clone()]));
             let mut tray =
                 TrayIconBuilder::new()
                     .menu(&menu)
@@ -338,6 +341,8 @@ pub fn run() {
             browser_installer::browser_setup_finish,
             zoom::zoom_get,
             zoom::zoom_change,
+            i18n::language_get,
+            i18n::language_set,
             updater::update_settings,
             updater::update_set_auto,
             updater::update_check,

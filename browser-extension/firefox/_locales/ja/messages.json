@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · クイック入力",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "ローカルの保管庫から現在のサイトのアカウントを選択します。",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "この欄で JesseArchive を開く",
+    "description": "Toolbar button tooltip"
+  }
+}

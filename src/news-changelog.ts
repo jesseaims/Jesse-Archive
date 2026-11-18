@@ -10,7 +10,20 @@ export type NewsEntry = {
   icon: 'sparkles' | 'shield' | 'palette' | 'folder' | 'package' | 'wrench' | 'key' | 'cloud';
 };
 
+/** Title and description of each entry in another language, by entry id
+ * (src/locales/news/<lang>.ts); Italian is the text below. */
+export type NewsTranslations = Record<string, [title: string, description: string]>;
+
 export const NEWS_ENTRIES: NewsEntry[] = [
+  {
+    id: 'multilanguage',
+    addedAt: '2026-11-18T02:14:17+01:00',
+    version: 'Beta 1.1.16',
+    title: 'Jesse’s Archive parla la tua lingua',
+    description:
+      'Con il nuovo pulsante «Lingua» in alto a destra scegli fra italiano, inglese, spagnolo, francese, tedesco, portoghese, russo, cinese, giapponese e coreano. Tutta l’app cambia subito, comprese la schermata di sblocco, la mini finestra del browser e il menu nell’area di notifica; al primo avvio viene usata la lingua di Windows. Anche l’installer e l’estensione del browser seguono la lingua del sistema.',
+    icon: 'sparkles',
+  },
   {
     id: 'installer-logo',
     addedAt: '2026-11-18T01:31:43+01:00',
