@@ -31,19 +31,56 @@ const now = Math.floor(Date.now() / 1000);
 
 function vault(extra = {}) {
   const items = [
-    { id: 'l1', type: 'login', title: 'Banca', fav: true, created: now - 9 * day, updated: now - 9 * day, f: { password: SECRETS[0], username: 'mario' } },
-    { id: 'l2', type: 'login', title: 'Email', fav: true, created: now - 2 * day, updated: now - day, f: { password: SECRETS[1] } },
+    {
+      id: 'l1',
+      type: 'login',
+      title: 'Banca',
+      fav: true,
+      created: now - 9 * day,
+      updated: now - 9 * day,
+      f: { password: SECRETS[0], username: 'mario' },
+    },
+    {
+      id: 'l2',
+      type: 'login',
+      title: 'Email',
+      fav: true,
+      created: now - 2 * day,
+      updated: now - day,
+      f: { password: SECRETS[1] },
+    },
     { id: 'l3', type: 'login', title: 'Forum', created: now - 5 * day, f: {} },
-    { id: 'n1', type: 'note', title: 'Nota privata', notes: SECRETS[2], created: now - 3 * day, updated: now - 3 * day, f: {} },
+    {
+      id: 'n1',
+      type: 'note',
+      title: 'Nota privata',
+      notes: SECRETS[2],
+      created: now - 3 * day,
+      updated: now - 3 * day,
+      f: {},
+    },
     { id: 'p1', type: 'personal', title: 'Documento identità', created: now - 4 * day, f: {} },
     { id: 'c1', type: 'card', title: 'Carta', created: now - 6 * day, f: {} },
     { id: 'x1', type: 'login', title: 'Cestinato', trashed: now, created: now, f: {} },
   ];
-  return { items, passwords: [{ id: 'pw1' }, { id: 'pw2' }], folders: [{ id: 'f1', name: 'Lavoro' }], settings: {}, path: 'C:/vault/jesse_archive.vault', synced_at: now - 60, prefs: {}, ...extra };
+  return {
+    items,
+    passwords: [{ id: 'pw1' }, { id: 'pw2' }],
+    folders: [{ id: 'f1', name: 'Lavoro' }],
+    settings: {},
+    path: 'C:/vault/jesse_archive.vault',
+    synced_at: now - 60,
+    prefs: {},
+    ...extra,
+  };
 }
 
 async function setup({ stored, confirm = true } = {}) {
-  const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost/', runScripts: 'outside-only', pretendToBeVisual: true });
+  const dom = new JSDOM('<div id="root"></div>', {
+    url: 'http://localhost/',
+    runScripts: 'outside-only',
+    pretendToBeVisual: true,
+  });
   const w = dom.window;
   windows.push(w);
   // React's scheduler needs setImmediate or MessageChannel (both missing in jsdom);
@@ -72,9 +109,22 @@ async function setup({ stored, confirm = true } = {}) {
       if (cmd !== 'api') throw new Error(`unexpected ${cmd}`);
       const { name, body } = args;
       if (name === 'health')
-        return { weak: [{ item_id: 'l2' }], reused: [], old: [{ item_id: 'l1' }], total: 3, score: 33 };
+        return {
+          weak: [{ item_id: 'l2' }],
+          reused: [],
+          old: [{ item_id: 'l1' }],
+          total: 3,
+          score: 33,
+        };
       if (name === 'backup_info')
-        return { path: state.path, folder: 'C:/vault', modified: now - 30, bak_exists: true, bak_modified: now - 90, synced_at: now - 60 };
+        return {
+          path: state.path,
+          folder: 'C:/vault',
+          modified: now - 30,
+          bak_exists: true,
+          bak_modified: now - 90,
+          synced_at: now - 60,
+        };
       if (name === 'generate') return { results: [{ value: 'Gen-Pass-Sintetica-123', bits: 96 }] };
       if (name === 'settings') {
         state = { ...state, settings: { ...state.settings, dashboard: body.dashboard } };
@@ -110,9 +160,14 @@ async function setup({ stored, confirm = true } = {}) {
   const $$ = (sel) => [...w.document.querySelectorAll(sel)];
   const text = () => w.document.body.textContent;
   const button = (label, root = w.document) =>
-    [...root.querySelectorAll('button')].find((b) => b.textContent.trim() === label || b.getAttribute('aria-label') === label);
+    [...root.querySelectorAll('button')].find(
+      (b) => b.textContent.trim() === label || b.getAttribute('aria-label') === label,
+    );
   // Item rows show the title plus a detail line.
-  const row = (title, root) => [...root.querySelectorAll('.dash-row')].find((b) => b.querySelector('strong')?.textContent === title);
+  const row = (title, root) =>
+    [...root.querySelectorAll('.dash-row')].find(
+      (b) => b.querySelector('strong')?.textContent === title,
+    );
   const click = async (el) => {
     assert.ok(el, 'element to click not found');
     await H.act(async () => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })));
@@ -120,7 +175,25 @@ async function setup({ stored, confirm = true } = {}) {
   };
   const widgets = () => $$('.dash-widget').map((s) => s.getAttribute('aria-label'));
   const widget = (title) => $$('.dash-widget').find((s) => s.getAttribute('aria-label') === title);
-  return { w, H, calls, opened, pages, props, state: () => state, flush, $, $$, text, button, row, click, widgets, widget, close: () => dom.window.close() };
+  return {
+    w,
+    H,
+    calls,
+    opened,
+    pages,
+    props,
+    state: () => state,
+    flush,
+    $,
+    $$,
+    text,
+    button,
+    row,
+    click,
+    widgets,
+    widget,
+    close: () => dom.window.close(),
+  };
 }
 
 test('the default dashboard shows real data and never passwords or note text', async () => {
@@ -173,10 +246,14 @@ test('customize: remove, add from the catalog, move, resize, configure; saved au
   // Add the generator from the catalog; an unavailable widget cannot be added.
   await d.click(d.button('Aggiungi widget'));
   const catalog = d.$('.dash-catalog');
-  const documents = [...catalog.querySelectorAll('.dash-catalog-item')].find((x) => x.textContent.includes('Documenti'));
+  const documents = [...catalog.querySelectorAll('.dash-catalog-item')].find((x) =>
+    x.textContent.includes('Documenti'),
+  );
   assert.ok(documents.classList.contains('unavailable'));
   assert.ok(!documents.querySelector('button'), 'no Add button for an unavailable widget');
-  const generatorRow = [...catalog.querySelectorAll('.dash-catalog-item')].find((x) => x.textContent.includes('Generatore di password'));
+  const generatorRow = [...catalog.querySelectorAll('.dash-catalog-item')].find((x) =>
+    x.textContent.includes('Generatore di password'),
+  );
   await d.click(d.button('Aggiungi', generatorRow));
   await d.click(d.button('Chiudi', catalog));
   assert.equal(d.widgets().at(-1), 'Generatore di password');
@@ -215,7 +292,11 @@ test('customize: remove, add from the catalog, move, resize, configure; saved au
   // The generator uses the backend generator and shows the value.
   await d.click(d.button('Genera', gen()));
   assert.match(gen().textContent, /Gen-Pass-Sintetica-123/);
-  assert.ok(d.calls.some((c) => c[0] === 'api' && c[1].name === 'generate' && c[1].body.mode === 'passphrase'));
+  assert.ok(
+    d.calls.some(
+      (c) => c[0] === 'api' && c[1].name === 'generate' && c[1].body.mode === 'passphrase',
+    ),
+  );
   await d.H.unmount();
   d.close();
 });
@@ -224,12 +305,19 @@ test('drag and drop reorders widgets', async () => {
   const d = await setup();
   await d.click(d.button('Personalizza dashboard'));
   const before = d.widgets();
+  let dragImage = null;
   const fire = async (el, type) => {
     const ev = new d.w.Event(type, { bubbles: true, cancelable: true });
-    Object.defineProperty(ev, 'dataTransfer', { value: { setData() {}, effectAllowed: '' } });
+    const dataTransfer = {
+      setData() {},
+      setDragImage: (img) => (dragImage = img),
+      effectAllowed: '',
+    };
+    Object.defineProperty(ev, 'dataTransfer', { value: dataTransfer });
     await d.H.act(async () => el.dispatchEvent(ev));
   };
   await fire(d.widget(before[3]).querySelector('.dash-handle'), 'dragstart');
+  assert.equal(dragImage, d.widget(before[3]), 'the whole card is the drag image');
   await fire(d.widget(before[0]), 'dragover');
   await fire(d.widget(before[0]), 'drop');
   await d.flush();
@@ -246,7 +334,12 @@ test('layouts, reset with confirmation and persistence across restarts', async (
     select.dispatchEvent(new d.w.Event('change', { bubbles: true }));
   });
   await d.flush();
-  assert.deepEqual(d.widgets(), ['Punteggio di sicurezza', 'Analisi di sicurezza', 'Privacy', 'Stato del backup']);
+  assert.deepEqual(d.widgets(), [
+    'Punteggio di sicurezza',
+    'Analisi di sicurezza',
+    'Privacy',
+    'Stato del backup',
+  ]);
   assert.match(d.widget('Privacy').textContent, /Telemetria.*Assente/);
   // Customize the security layout, then reset it (confirmed).
   await d.click(d.button('Personalizza dashboard'));
@@ -260,10 +353,19 @@ test('layouts, reset with confirmation and persistence across restarts', async (
 
   // "Restart": a new dashboard reads the saved configuration.
   const again = await setup({ stored: saved });
-  assert.deepEqual(again.widgets(), ['Punteggio di sicurezza', 'Analisi di sicurezza', 'Stato del backup']);
+  assert.deepEqual(again.widgets(), [
+    'Punteggio di sicurezza',
+    'Analisi di sicurezza',
+    'Stato del backup',
+  ]);
   await again.click(again.button('Personalizza dashboard'));
   await again.click(again.button('Ripristina layout'));
-  assert.deepEqual(again.widgets(), ['Punteggio di sicurezza', 'Analisi di sicurezza', 'Privacy', 'Stato del backup']);
+  assert.deepEqual(again.widgets(), [
+    'Punteggio di sicurezza',
+    'Analisi di sicurezza',
+    'Privacy',
+    'Stato del backup',
+  ]);
   await again.H.unmount();
   again.close();
 
@@ -281,19 +383,31 @@ test('widgets update when the vault changes, without reloading the app', async (
   assert.match(d.widget('Panoramica del vault').textContent, /6Elementi nel vault/);
   const healthCalls = d.calls.filter((c) => c[1]?.name === 'health').length;
   const next = d.state();
-  next.items = [...next.items, { id: 'l4', type: 'login', title: 'Nuovo', fav: true, created: now, f: {} }];
+  next.items = [
+    ...next.items,
+    { id: 'l4', type: 'login', title: 'Nuovo', fav: true, created: now, f: {} },
+  ];
   await d.H.update({ ...d.props(), vault: { ...next, items: next.items } });
   await d.flush();
   assert.match(d.widget('Panoramica del vault').textContent, /7Elementi nel vault/);
   assert.match(d.widget('Preferiti').textContent, /Nuovo/);
-  assert.equal(d.widget('Aggiunti di recente').querySelector('.dash-row strong').textContent, 'Nuovo', 'newest item listed first');
-  assert.ok(d.calls.filter((c) => c[1]?.name === 'health').length > healthCalls, 'security data reloaded');
+  assert.equal(
+    d.widget('Aggiunti di recente').querySelector('.dash-row strong').textContent,
+    'Nuovo',
+    'newest item listed first',
+  );
+  assert.ok(
+    d.calls.filter((c) => c[1]?.name === 'health').length > healthCalls,
+    'security data reloaded',
+  );
   await d.H.unmount();
   d.close();
 });
 
 test('a damaged stored configuration still opens a working dashboard', async () => {
-  const d = await setup({ stored: { version: 99, active: 'nope', layouts: { default: { widgets: [{ type: '???' }] } } } });
+  const d = await setup({
+    stored: { version: 99, active: 'nope', layouts: { default: { widgets: [{ type: '???' }] } } },
+  });
   assert.equal(d.widgets().length, 0);
   assert.match(d.text(), /La dashboard è vuota/);
   await d.click(d.button('Aggiungi widget'));

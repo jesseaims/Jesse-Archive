@@ -5,6 +5,16 @@ const m = await import(new URL('../src/dashboard/model.ts', import.meta.url).hre
 const plain = (v) => JSON.parse(JSON.stringify(v));
 const types = (config) => m.activeLayout(config).widgets.map((w) => w.type);
 
+test('the main window lets the page handle drag and drop', async () => {
+  // With Tauri's file drop handler on (the default), WebView2 on Windows blocks HTML5
+  // drag and drop inside the page and widgets cannot be moved.
+  const { readFile } = await import('node:fs/promises');
+  const conf = JSON.parse(
+    await readFile(new URL('../src-tauri/tauri.conf.json', import.meta.url), 'utf8'),
+  );
+  assert.equal(conf.app.windows[0].dragDropEnabled, false);
+});
+
 test('missing, damaged or foreign configurations fall back to a valid dashboard', () => {
   for (const raw of [undefined, null, 'x', 42, [], { layouts: 'x' }, { active: 'nope' }]) {
     const config = m.normalizeDashboard(raw);
@@ -25,7 +35,11 @@ test('normalization drops unknown or unavailable widgets, duplicates and bad opt
           { type: 'favorites', size: 'm' },
           { type: 'teleporter', size: 'm' },
           { type: 'documents', size: 'm' },
-          { type: 'quick-actions', collapsed: true, config: { actions: ['lock', 'format-disk', 'lock', 'generate'] } },
+          {
+            type: 'quick-actions',
+            collapsed: true,
+            config: { actions: ['lock', 'format-disk', 'lock', 'generate'] },
+          },
           'garbage',
         ],
       },
@@ -42,7 +56,9 @@ test('normalization drops unknown or unavailable widgets, duplicates and bad opt
 });
 
 test('older single-layout shape is migrated without losing widgets', () => {
-  const config = m.normalizeDashboard({ widgets: [{ type: 'generator', size: 'l' }, { type: 'privacy' }] });
+  const config = m.normalizeDashboard({
+    widgets: [{ type: 'generator', size: 'l' }, { type: 'privacy' }],
+  });
   assert.equal(config.active, 'default');
   assert.deepEqual(types(config), ['generator', 'privacy']);
   assert.equal(m.activeLayout(config).widgets[0].size, 'l');
@@ -80,9 +96,16 @@ test('each layout keeps its own customization; reset goes back to the preset', (
   c = m.switchLayout(c, 'security');
   assert.ok(types(c).includes('generator'), 'security customization kept');
   c = m.resetLayout(c);
-  assert.deepEqual(types(c), m.presetLayout('security').widgets.map((w) => w.type));
+  assert.deepEqual(
+    types(c),
+    m.presetLayout('security').widgets.map((w) => w.type),
+  );
   c = m.switchLayout(c, 'custom');
-  assert.deepEqual(types(c), m.presetLayout('security').widgets.map((w) => w.type), 'custom starts from the current layout');
+  assert.deepEqual(
+    types(c),
+    m.presetLayout('security').widgets.map((w) => w.type),
+    'custom starts from the current layout',
+  );
   // A full round trip through JSON (what the vault stores) is stable.
   assert.deepEqual(plain(m.normalizeDashboard(plain(c))), plain(c));
 });

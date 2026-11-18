@@ -283,6 +283,9 @@ export default function Dashboard(props: Props) {
                 onDragStart: (e: DragEvent) => {
                   e.dataTransfer.effectAllowed = 'move';
                   e.dataTransfer.setData('text/plain', w.type);
+                  // Drag the whole card, not just the small handle icon.
+                  const card = (e.currentTarget as HTMLElement).closest('.dash-widget');
+                  if (card) e.dataTransfer.setDragImage(card, 24, 24);
                   setDragFrom(index);
                 },
                 onDragEnd: () => {

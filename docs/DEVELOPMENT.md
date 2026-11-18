@@ -103,6 +103,8 @@ Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inatt
 
 Il componente centrale non cambia. Un widget deve usare i dati e i comandi già esistenti, senza mostrare segreti, e non deve chiamare da solo comandi che aggiornano l'attività del vault: quelli nuovi di sola lettura vanno aggiunti all'elenco passivo in `Vault::call`.
 
+Il trascinamento usa il drag & drop HTML5. Funziona solo perché la finestra principale ha `"dragDropEnabled": false` in `tauri.conf.json`: con il gestore di rilascio dei file di Tauri attivo (il default), WebView2 su Windows blocca il trascinamento nella pagina e mostra il cursore di divieto. jsdom non riproduce questo comportamento, quindi la regola è verificata da `tests/dashboard.test.mjs`. Se in futuro servisse il rilascio di file nella finestra, il riordino dei widget andrebbe riscritto con eventi pointer.
+
 ## Traduzioni
 
 Ogni testo visibile nell'interfaccia passa da `t('…')`, `tRich('…', {…})` o `msg('…')` (vedi `src/i18n.ts`), con il testo italiano come chiave e le traduzioni in tutti i file `src/locales/<lingua>.ts`; i messaggi mostrati che arrivano dal backend Rust o dall'estensione vanno elencati in `src/locales/runtime-keys.mjs`, e ogni nuova voce News va tradotta in `src/locales/news/<lingua>.ts`. `npm run test:i18n` (gate della CI) fallisce se manca una traduzione o se i segnaposto `{nome}` non coincidono. `node scripts/i18n-keys.mjs <lingua>` elenca le chiavi ancora mancanti in una lingua. Le lingue sono definite in `src/i18n.ts` (`LANGUAGES`) e in `src-tauri/src/i18n.rs` (`LANGS`, etichette native); aggiungerne una richiede anche il file `src/locales/<lingua>.ts`, le News, il `_locales` dell'estensione e la voce `[Languages]`/`[CustomMessages]` dell'installer.
