@@ -666,8 +666,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Générer un mot de passe',
   'Generatore di password': 'Générateur de mots de passe',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, au démarrage et une fois par jour',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Les éléments ouverts pendant cette session, sans enregistrer d’historique.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Les derniers éléments ouverts, y compris depuis la recherche rapide.',
   'Gli elementi che apri compariranno qui.': 'Les éléments que vous ouvrez apparaîtront ici.',
   'Gli ultimi elementi creati.': 'Les derniers éléments créés.',
   Grande: 'Grand',
@@ -756,8 +756,8 @@ const dictionary: Dictionary = {
   Sistema: 'Système',
   'Solo nel file locale cifrato, nessun account online':
     'Uniquement dans le fichier local chiffré, sans compte en ligne',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Pour cette session uniquement : rien n’est enregistré et la liste est vidée au verrouillage.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Enregistrés dans le coffre chiffré et partagés avec la recherche rapide : seulement lesquels, jamais les mots de passe.',
   'Solo su richiesta, con prefisso dell’hash':
     'Uniquement à la demande, avec un préfixe du hachage',
   'Sposta dopo': 'Déplacer après',
@@ -778,6 +778,51 @@ const dictionary: Dictionary = {
     'Évaluation globale de vos mots de passe, avec les problèmes détectés.',
   Vault: 'Coffre',
   Visualizzazione: 'Affichage',
+  Apri: 'Ouvrir',
+  'Apri Jesse’s Archive': 'Ouvrir Jesse’s Archive',
+  'Apri la dashboard': 'Ouvrir le tableau de bord',
+  'Apri nel vault': 'Ouvrir dans le coffre',
+  'Apri sito': 'Ouvrir le site',
+  'Attiva la ricerca rapida globale': 'Activer la recherche rapide globale',
+  Azioni: 'Actions',
+  Bloccato: 'Verrouillé',
+  'Caricamento…': 'Chargement…',
+  'Cerca account, siti, email…': 'Rechercher comptes, sites, e-mails…',
+  'Cerca anche per categoria e cartella': 'Rechercher aussi par catégorie et dossier',
+  'Cerca in tutto il vault': 'Rechercher dans tout le coffre',
+  'Cerca nei preferiti': 'Rechercher dans les favoris',
+  'Cerca per nome, username, email o sito.': 'Recherchez par nom, identifiant, e-mail ou site.',
+  'Chiudi la finestra dopo un’azione': 'Fermer la fenêtre après une action',
+  'Copia username': 'Copier l’identifiant',
+  'Impostazioni salvate': 'Paramètres enregistrés',
+  'Mostra gli elementi usati di recente': 'Afficher les éléments utilisés récemment',
+  'Mostra i preferiti quando la ricerca è vuota':
+    'Afficher les favoris quand la recherche est vide',
+  'Nessun preferito.': 'Aucun favori.',
+  'Nessun risultato per «{q}»': 'Aucun résultat pour «{q}»',
+  'Password copiata': 'Mot de passe copié',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Mot de passe copié : le presse-papiers sera vidé dans {n} s',
+  'Premi Invio per vedere gli account.': 'Appuyez sur Entrée pour voir les comptes.',
+  'Ricerca rapida': 'Recherche rapide',
+  'Ricerca rapida globale': 'Recherche rapide globale',
+  'Ripristina predefinita': 'Rétablir la valeur par défaut',
+  Sblocca: 'Déverrouiller',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Déverrouillez le coffre pour rechercher parmi vos comptes.',
+  Sbloccato: 'Déverrouillé',
+  'Scorciatoia attiva: {shortcut}': 'Raccourci actif : {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Raccourci par défaut rétabli',
+  'Scorciatoia salvata': 'Raccourci enregistré',
+  Sito: 'Site',
+  'Sito aperto nel browser': 'Site ouvert dans le navigateur',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Une fenêtre de recherche qui s’ouvre avec un raccourci depuis n’importe quelle application, même quand Jesse’s Archive est réduit ou dans la zone de notification. Elle ne fonctionne que lorsque le coffre est déverrouillé.',
+  'Username copiato': 'Identifiant copié',
+  'Elenco degli usati di recente cancellato': 'Liste des éléments récents effacée',
+  'Cancella gli usati di recente': 'Effacer les éléments récents',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Les éléments utilisés récemment sont enregistrés dans le coffre chiffré (seulement lesquels, jamais les mots de passe), sont conservés après un redémarrage et sont les mêmes que dans le widget «Utilisés récemment» du tableau de bord. Pour que la recherche rapide soit toujours prête, activez «Démarrer avec Windows» dans la section Bureau.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Coffre verrouillé',
@@ -938,6 +983,27 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Une autre version a été publiée : recherchez à nouveau les mises à jour.',
   'Aggiornamento interrotto.': 'Mise à jour interrompue.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    'Raccourci non valide. Exemple : Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    'Utilisez au moins Ctrl, Alt ou Win dans le raccourci',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Cette combinaison est déjà utilisée par Windows ou par les applications',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Raccourci déjà utilisé par le remplissage dans le navigateur : choisissez-en un autre',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Raccourci déjà pris par une autre application : choisissez-en un autre',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Raccourci déjà utilisé par la recherche rapide : choisissez-en un autre',
+  'Nessuno username o email per questo elemento': 'Aucun identifiant ni e-mail pour cet élément',
+  'Nessuna password salvata per questo elemento': 'Aucun mot de passe enregistré pour cet élément',
+  'Operazione non disponibile per questo elemento': 'Opération non disponible pour cet élément',
+  'Operazione non disponibile': 'Opération non disponible',
+  'Indirizzo del sito non valido': 'Adresse du site non valide',
+  'Impossibile aprire il sito nel browser': 'Impossible d’ouvrir le site dans le navigateur',
+  'Apertura dei siti disponibile nella build Windows':
+    'L’ouverture des sites est disponible dans la version Windows',
+  'Elenco degli usati di recente non valido': 'Liste des éléments récents non valide',
 };
 
 export default dictionary;

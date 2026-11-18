@@ -58,6 +58,9 @@ jobs:
       - name: Dashboard (model and UI in jsdom)
         run: npm run test:dashboard
 
+      - name: Quick Search (engine and window in jsdom)
+        run: npm run test:quick-search
+
       - name: Build native messaging host
         run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 

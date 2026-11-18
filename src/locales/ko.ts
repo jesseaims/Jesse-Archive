@@ -650,8 +650,8 @@ const dictionary: Dictionary = {
   'Genera password': '비밀번호 생성',
   'Generatore di password': '비밀번호 생성기',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, 시작할 때와 하루에 한 번',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    '이번 세션에서 연 항목입니다. 기록은 저장하지 않습니다.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    '빠른 검색에서 연 항목을 포함해 최근에 연 항목입니다.',
   'Gli elementi che apri compariranno qui.': '연 항목이 여기에 표시됩니다.',
   'Gli ultimi elementi creati.': '최근에 만든 항목.',
   Grande: '크게',
@@ -737,8 +737,8 @@ const dictionary: Dictionary = {
   Sistema: '시스템',
   'Solo nel file locale cifrato, nessun account online':
     '로컬 암호화 파일에만 저장, 온라인 계정 없음',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    '이번 세션에만 해당: 아무것도 저장되지 않으며 잠그면 목록이 지워집니다.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    '암호화된 보관함에 저장되며 빠른 검색과 공유됩니다(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음).',
   'Solo su richiesta, con prefisso dell’hash': '요청할 때만, 해시 앞부분으로',
   'Sposta dopo': '뒤로 이동',
   'Sposta giù': '아래로 이동',
@@ -758,6 +758,49 @@ const dictionary: Dictionary = {
     '비밀번호의 종합 평가와 발견된 문제.',
   Vault: '보관함',
   Visualizzazione: '표시 방식',
+  Apri: '열기',
+  'Apri Jesse’s Archive': 'Jesse’s Archive 열기',
+  'Apri la dashboard': '대시보드 열기',
+  'Apri nel vault': '보관함에서 열기',
+  'Apri sito': '사이트 열기',
+  'Attiva la ricerca rapida globale': '전역 빠른 검색 사용',
+  Azioni: '작업',
+  Bloccato: '잠김',
+  'Caricamento…': '불러오는 중…',
+  'Cerca account, siti, email…': '계정, 사이트, 이메일 검색…',
+  'Cerca anche per categoria e cartella': '카테고리와 폴더로도 검색',
+  'Cerca in tutto il vault': '보관함 전체에서 검색',
+  'Cerca nei preferiti': '즐겨찾기에서 검색',
+  'Cerca per nome, username, email o sito.': '이름, 사용자 이름, 이메일 또는 사이트로 검색하세요.',
+  'Chiudi la finestra dopo un’azione': '작업 후 창 닫기',
+  'Copia username': '사용자 이름 복사',
+  'Impostazioni salvate': '설정을 저장했습니다',
+  'Mostra gli elementi usati di recente': '최근 사용한 항목 표시',
+  'Mostra i preferiti quando la ricerca è vuota': '검색어가 비어 있을 때 즐겨찾기 표시',
+  'Nessun preferito.': '즐겨찾기가 없습니다.',
+  'Nessun risultato per «{q}»': '«{q}»에 대한 결과가 없습니다',
+  'Password copiata': '비밀번호를 복사했습니다',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    '비밀번호를 복사했습니다: 클립보드는 {n}초 후에 비워집니다',
+  'Premi Invio per vedere gli account.': 'Enter 키를 눌러 계정을 확인하세요.',
+  'Ricerca rapida': '빠른 검색',
+  'Ricerca rapida globale': '전역 빠른 검색',
+  'Ripristina predefinita': '기본값으로 복원',
+  Sblocca: '잠금 해제',
+  'Sblocca il vault per cercare tra i tuoi account.': '보관함 잠금을 해제하고 계정을 검색하세요.',
+  Sbloccato: '잠금 해제됨',
+  'Scorciatoia attiva: {shortcut}': '활성 단축키: {shortcut}',
+  'Scorciatoia predefinita ripristinata': '기본 단축키를 복원했습니다',
+  'Scorciatoia salvata': '단축키를 저장했습니다',
+  Sito: '사이트',
+  'Sito aperto nel browser': '브라우저에서 사이트를 열었습니다',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    '어떤 앱에서든 단축키로 여는 검색 창입니다. Jesse’s Archive가 최소화되어 있거나 알림 영역에 있어도 사용할 수 있습니다. 보관함 잠금이 해제된 상태에서만 작동합니다.',
+  'Username copiato': '사용자 이름을 복사했습니다',
+  'Elenco degli usati di recente cancellato': '최근 사용 목록을 지웠습니다',
+  'Cancella gli usati di recente': '최근 사용 지우기',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '최근 사용한 항목은 암호화된 보관함에 저장되며(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음) 다시 시작한 후에도 유지되고, 대시보드의 «최근 사용» 위젯과 같습니다. 빠른 검색을 항상 사용할 수 있게 하려면 데스크톱 섹션에서 «Windows와 함께 시작»을 켜세요.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '보관함 잠김',
@@ -914,6 +957,26 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     '다른 버전이 게시되었습니다: 업데이트를 다시 확인하세요.',
   'Aggiornamento interrotto.': '업데이트가 중단되었습니다.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space': '잘못된 단축키입니다. 예: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    '단축키에 Ctrl, Alt 또는 Win을 하나 이상 사용하세요',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    '이 조합은 이미 Windows 또는 앱에서 사용 중입니다',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    '브라우저 채우기에서 이미 사용 중인 단축키입니다: 다른 단축키를 선택하세요',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    '다른 앱에서 이미 사용 중인 단축키입니다: 다른 단축키를 선택하세요',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    '빠른 검색에서 이미 사용 중인 단축키입니다: 다른 단축키를 선택하세요',
+  'Nessuno username o email per questo elemento': '이 항목에는 사용자 이름이나 이메일이 없습니다',
+  'Nessuna password salvata per questo elemento': '이 항목에 저장된 비밀번호가 없습니다',
+  'Operazione non disponibile per questo elemento': '이 항목에서는 사용할 수 없는 작업입니다',
+  'Operazione non disponibile': '사용할 수 없는 작업입니다',
+  'Indirizzo del sito non valido': '사이트 주소가 올바르지 않습니다',
+  'Impossibile aprire il sito nel browser': '브라우저에서 사이트를 열 수 없습니다',
+  'Apertura dei siti disponibile nella build Windows':
+    '사이트 열기는 Windows 버전에서 사용할 수 있습니다',
+  'Elenco degli usati di recente non valido': '최근 사용 목록이 올바르지 않습니다',
 };
 
 export default dictionary;

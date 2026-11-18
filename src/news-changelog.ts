@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'global-quick-search',
+    addedAt: '2026-11-18T19:00:00+01:00',
+    version: 'Beta 1.1.19',
+    title: 'Ricerca rapida globale',
+    description:
+      'Premi Ctrl+Shift+Space da qualsiasi applicazione, anche con Jesse’s Archive nell’area di notifica, per aprire una finestra di ricerca compatta: trovi gli account per nome, username, email o sito, con gli account dello stesso servizio raggruppati, e copi username o password, mostri la password per qualche secondo, apri il sito o apri l’elemento nel vault, tutto da tastiera. Funziona solo con il vault sbloccato, le password vengono copiate senza passare dalla finestra e gli appunti si svuotano come sempre. Scorciatoia e opzioni sono in Impostazioni → Ricerca rapida globale.',
+    icon: 'sparkles',
+  },
+  {
     id: 'window-state',
     addedAt: '2026-11-18T16:40:00+01:00',
     version: 'Beta 1.1.18',

@@ -429,7 +429,9 @@ function RecentUsed({ ctx, instance }: WidgetProps) {
         <Empty>{t('Gli elementi che apri compariranno qui.')}</Empty>
       )}
       <small className="dash-note">
-        {t('Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.')}
+        {t(
+          'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.',
+        )}
       </small>
     </>
   );
@@ -899,7 +901,7 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
   'recent-used': {
     type: 'recent-used',
     name: msg('Usati di recente'),
-    description: msg('Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.'),
+    description: msg('Gli ultimi elementi aperti, anche dalla ricerca rapida.'),
     icon: History,
     Component: RecentUsed,
     Settings: (p) => <MaxSetting {...p} label={t('Numero di elementi')} />,

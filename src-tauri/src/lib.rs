@@ -3,9 +3,11 @@ mod browser_installer;
 #[cfg(windows)]
 mod browser_navigation;
 mod browser_protocol;
+mod clipboard;
 mod core;
 mod i18n;
 mod passkey;
+mod quick_search;
 mod updater;
 mod window_state;
 mod zoom;
@@ -172,56 +174,29 @@ fn save_file(name: String, text: String) -> Result<bool, String> {
 // Copy and expiration are executed on a blocking worker, not on the webview UI thread.
 #[tauri::command]
 async fn copy_secret(text: String) -> Result<(), String> {
-    #[cfg(windows)]
-    {
-        return tauri::async_runtime::spawn_blocking(move || {
-            clipboard_win::set_clipboard(clipboard_win::formats::Unicode, text.as_str())
-                .map_err(|e| format!("Impossibile copiare negli appunti: {e}"))
-        })
+    tauri::async_runtime::spawn_blocking(move || clipboard::set(&text))
         .await
-        .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?;
-    }
-    #[cfg(not(windows))]
-    {
-        let _ = text;
-        Err("Clipboard disponibile nella build Windows".into())
-    }
+        .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?
 }
 
 #[tauri::command]
 async fn clear_secret_if_unchanged(expected: String) -> Result<(), String> {
-    #[cfg(windows)]
-    {
-        return tauri::async_runtime::spawn_blocking(move || {
-            use clipboard_win::{formats, Clipboard, Getter, Setter};
-            // The clipboard must remain open for the entire compare-and-clear
-            // operation, preventing a separate app changing it between calls.
-            let _guard = Clipboard::new_attempts(10)
-                .map_err(|e| format!("Impossibile accedere agli appunti: {e}"))?;
-            let mut current = String::new();
-            if formats::Unicode.read_clipboard(&mut current).is_ok() && current == expected {
-                formats::Unicode
-                    .write_clipboard(&String::new())
-                    .map_err(|e| format!("Impossibile pulire gli appunti: {e}"))?;
-            }
-            Ok(())
-        })
+    tauri::async_runtime::spawn_blocking(move || clipboard::clear_if_unchanged(&expected))
         .await
-        .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?;
-    }
-    #[cfg(not(windows))]
-    {
-        let _ = expected;
-        Ok(())
-    }
+        .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?
 }
 
 pub fn run() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|app, _, event| {
-                    if event.state() == tauri_plugin_global_shortcut::ShortcutState::Pressed {
+                .with_handler(|app, shortcut, event| {
+                    if event.state() != tauri_plugin_global_shortcut::ShortcutState::Pressed {
+                        return;
+                    }
+                    if quick_search::handles(app, shortcut) {
+                        quick_search::toggle(app);
+                    } else {
                         browser::request(app);
                     }
                 })
@@ -243,6 +218,7 @@ pub fn run() {
         .manage(passkey::Passkeys(Mutex::new(None)))
         .setup(|app| {
             browser::setup(app.handle())?;
+            quick_search::setup(app.handle())?;
             spawn_idle_lock(app.handle().clone());
             use tauri::menu::{Menu, MenuItem};
             use tauri::tray::TrayIconBuilder;
@@ -297,6 +273,20 @@ pub fn run() {
                 if let Some(w) = win.app_handle().get_webview_window("main") {
                     window_state::track(win.app_handle(), &w);
                 }
+            }
+            if win.label() == quick_search::LABEL {
+                // A launcher: it goes away when it loses focus or is closed (Alt+F4).
+                match event {
+                    tauri::WindowEvent::Focused(false) => {
+                        quick_search::focus_lost(win.app_handle())
+                    }
+                    tauri::WindowEvent::CloseRequested { api, .. } => {
+                        api.prevent_close();
+                        quick_search::hide(win.app_handle());
+                    }
+                    _ => (),
+                }
+                return;
             }
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 let app = win.app_handle();
@@ -360,7 +350,16 @@ pub fn run() {
             passkey::passkey_fallback,
             passkey::passkey_cancel,
             passkey::passkey_settings,
-            passkey::passkey_set_enabled
+            passkey::passkey_set_enabled,
+            quick_search::quick_search_data,
+            quick_search::quick_search_copy,
+            quick_search::quick_search_reveal,
+            quick_search::quick_search_open_url,
+            quick_search::quick_search_open,
+            quick_search::quick_search_hide,
+            quick_search::quick_search_clear_recent,
+            quick_search::quick_search_settings,
+            quick_search::quick_search_configure
         ])
         .build(tauri::generate_context!())
         .expect("Tauri application failed")

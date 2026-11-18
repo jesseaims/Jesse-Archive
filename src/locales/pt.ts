@@ -664,8 +664,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Gerar senha',
   'Generatore di password': 'Gerador de senhas',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, ao iniciar e uma vez por dia',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Os itens abertos nesta sessão, sem salvar nenhum histórico.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Os últimos itens abertos, também a partir da pesquisa rápida.',
   'Gli elementi che apri compariranno qui.': 'Os itens que você abrir aparecerão aqui.',
   'Gli ultimi elementi creati.': 'Os últimos itens criados.',
   Grande: 'Grande',
@@ -754,8 +754,8 @@ const dictionary: Dictionary = {
   Sistema: 'Sistema',
   'Solo nel file locale cifrato, nessun account online':
     'Somente no arquivo local criptografado, sem conta on-line',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Somente nesta sessão: nada é salvo e a lista é limpa ao bloquear.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Guardados no cofre cifrado e partilhados com a pesquisa rápida: apenas quais itens, nunca as senhas.',
   'Solo su richiesta, con prefisso dell’hash': 'Somente sob demanda, com um prefixo do hash',
   'Sposta dopo': 'Mover para depois',
   'Sposta giù': 'Mover para baixo',
@@ -775,6 +775,51 @@ const dictionary: Dictionary = {
     'Avaliação geral das suas senhas, com os problemas encontrados.',
   Vault: 'Cofre',
   Visualizzazione: 'Exibição',
+  Apri: 'Abrir',
+  'Apri Jesse’s Archive': 'Abrir o Jesse’s Archive',
+  'Apri la dashboard': 'Abrir o painel',
+  'Apri nel vault': 'Abrir no cofre',
+  'Apri sito': 'Abrir site',
+  'Attiva la ricerca rapida globale': 'Ativar a pesquisa rápida global',
+  Azioni: 'Ações',
+  Bloccato: 'Bloqueado',
+  'Caricamento…': 'Carregando…',
+  'Cerca account, siti, email…': 'Pesquisar contas, sites, e-mails…',
+  'Cerca anche per categoria e cartella': 'Pesquisar também por categoria e pasta',
+  'Cerca in tutto il vault': 'Pesquisar em todo o cofre',
+  'Cerca nei preferiti': 'Pesquisar nos favoritos',
+  'Cerca per nome, username, email o sito.': 'Pesquise por nome, usuário, e-mail ou site.',
+  'Chiudi la finestra dopo un’azione': 'Fechar a janela após uma ação',
+  'Copia username': 'Copiar usuário',
+  'Impostazioni salvate': 'Configurações salvas',
+  'Mostra gli elementi usati di recente': 'Mostrar os itens usados recentemente',
+  'Mostra i preferiti quando la ricerca è vuota':
+    'Mostrar os favoritos quando a pesquisa está vazia',
+  'Nessun preferito.': 'Nenhum favorito.',
+  'Nessun risultato per «{q}»': 'Nenhum resultado para «{q}»',
+  'Password copiata': 'Senha copiada',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Senha copiada: a área de transferência será limpa em {n} s',
+  'Premi Invio per vedere gli account.': 'Pressione Enter para ver as contas.',
+  'Ricerca rapida': 'Pesquisa rápida',
+  'Ricerca rapida globale': 'Pesquisa rápida global',
+  'Ripristina predefinita': 'Restaurar padrão',
+  Sblocca: 'Desbloquear',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Desbloqueie o cofre para pesquisar suas contas.',
+  Sbloccato: 'Desbloqueado',
+  'Scorciatoia attiva: {shortcut}': 'Atalho ativo: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Atalho padrão restaurado',
+  'Scorciatoia salvata': 'Atalho salvo',
+  Sito: 'Site',
+  'Sito aperto nel browser': 'Site aberto no navegador',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Uma janela de pesquisa que abre com um atalho em qualquer aplicativo, mesmo com o Jesse’s Archive minimizado ou na área de notificação. Funciona apenas com o cofre desbloqueado.',
+  'Username copiato': 'Usuário copiado',
+  'Elenco degli usati di recente cancellato': 'Lista de usados recentemente apagada',
+  'Cancella gli usati di recente': 'Apagar usados recentemente',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Os itens usados recentemente são guardados no cofre cifrado (apenas quais itens, nunca as senhas), mantêm-se após reiniciar e são os mesmos do widget «Usados recentemente» do painel. Para ter a pesquisa rápida sempre pronta, ative «Iniciar com o Windows» na secção Ambiente de trabalho.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Cofre bloqueado',
@@ -936,6 +981,25 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Outra versão foi publicada: procure atualizações novamente.',
   'Aggiornamento interrotto.': 'Atualização interrompida.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space': 'Atalho inválido. Exemplo: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia': 'Use pelo menos Ctrl, Alt ou Win no atalho',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Esta combinação já é usada pelo Windows ou pelos aplicativos',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Atalho já usado pelo preenchimento no navegador: escolha outro',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Atalho já ocupado por outro aplicativo: escolha outro',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Atalho já usado pela pesquisa rápida: escolha outro',
+  'Nessuno username o email per questo elemento': 'Nenhum usuário ou e-mail para este item',
+  'Nessuna password salvata per questo elemento': 'Nenhuma senha salva para este item',
+  'Operazione non disponibile per questo elemento': 'Operação indisponível para este item',
+  'Operazione non disponibile': 'Operação indisponível',
+  'Indirizzo del sito non valido': 'Endereço do site inválido',
+  'Impossibile aprire il sito nel browser': 'Não foi possível abrir o site no navegador',
+  'Apertura dei siti disponibile nella build Windows':
+    'A abertura de sites está disponível na versão para Windows',
+  'Elenco degli usati di recente non valido': 'Lista de usados recentemente inválida',
 };
 
 export default dictionary;

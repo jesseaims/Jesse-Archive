@@ -630,8 +630,8 @@ const dictionary: Dictionary = {
   'Genera password': '生成密码',
   'Generatore di password': '密码生成器',
   'GitHub, all’avvio e una volta al giorno': 'GitHub，启动时及每天一次',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    '本次会话中打开过的项目，不保存任何历史记录。',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    '最近打开的项目，包括通过快速搜索打开的。',
   'Gli elementi che apri compariranno qui.': '你打开的项目会显示在这里。',
   'Gli ultimi elementi creati.': '最近创建的项目。',
   Grande: '大',
@@ -715,8 +715,8 @@ const dictionary: Dictionary = {
   Sicurezza: '安全',
   Sistema: '系统',
   'Solo nel file locale cifrato, nessun account online': '仅保存在本地加密文件中，无在线账户',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    '仅限本次会话：不会保存任何内容，锁定时清空列表。',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    '保存在加密保险库中，并与快速搜索共享：仅记录是哪些项目，绝不包含密码。',
   'Solo su richiesta, con prefisso dell’hash': '仅在请求时，使用哈希前缀',
   'Sposta dopo': '向后移动',
   'Sposta giù': '下移',
@@ -736,6 +736,48 @@ const dictionary: Dictionary = {
     '密码的总体评估及发现的问题。',
   Vault: '保险库',
   Visualizzazione: '显示方式',
+  Apri: '打开',
+  'Apri Jesse’s Archive': '打开 Jesse’s Archive',
+  'Apri la dashboard': '打开仪表板',
+  'Apri nel vault': '在保管库中打开',
+  'Apri sito': '打开网站',
+  'Attiva la ricerca rapida globale': '启用全局快速搜索',
+  Azioni: '操作',
+  Bloccato: '已锁定',
+  'Caricamento…': '正在加载…',
+  'Cerca account, siti, email…': '搜索帐户、网站、邮箱…',
+  'Cerca anche per categoria e cartella': '也按类别和文件夹搜索',
+  'Cerca in tutto il vault': '搜索整个保管库',
+  'Cerca nei preferiti': '在收藏中搜索',
+  'Cerca per nome, username, email o sito.': '按名称、用户名、邮箱或网站搜索。',
+  'Chiudi la finestra dopo un’azione': '执行操作后关闭窗口',
+  'Copia username': '复制用户名',
+  'Impostazioni salvate': '设置已保存',
+  'Mostra gli elementi usati di recente': '显示最近使用的项目',
+  'Mostra i preferiti quando la ricerca è vuota': '搜索为空时显示收藏',
+  'Nessun preferito.': '没有收藏。',
+  'Nessun risultato per «{q}»': '没有“{q}”的结果',
+  'Password copiata': '密码已复制',
+  'Password copiata: gli appunti si svuotano tra {n} s': '密码已复制：剪贴板将在 {n} 秒后清空',
+  'Premi Invio per vedere gli account.': '按 Enter 查看帐户。',
+  'Ricerca rapida': '快速搜索',
+  'Ricerca rapida globale': '全局快速搜索',
+  'Ripristina predefinita': '恢复默认值',
+  Sblocca: '解锁',
+  'Sblocca il vault per cercare tra i tuoi account.': '解锁保管库以搜索你的帐户。',
+  Sbloccato: '已解锁',
+  'Scorciatoia attiva: {shortcut}': '当前快捷键：{shortcut}',
+  'Scorciatoia predefinita ripristinata': '已恢复默认快捷键',
+  'Scorciatoia salvata': '快捷键已保存',
+  Sito: '网站',
+  'Sito aperto nel browser': '已在浏览器中打开网站',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    '一个可在任何应用程序中用快捷键打开的搜索窗口，即使 Jesse’s Archive 已最小化或位于通知区域。仅在保管库解锁时可用。',
+  'Username copiato': '用户名已复制',
+  'Elenco degli usati di recente cancellato': '最近使用列表已清除',
+  'Cancella gli usati di recente': '清除最近使用',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近使用的项目保存在加密保险库中（仅记录是哪些项目，绝不包含密码），重启后仍会保留，并与仪表板的“最近使用”小组件相同。若要让快速搜索随时可用，请在“桌面”部分开启“随 Windows 启动”。',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保险库已锁定',
@@ -879,6 +921,24 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     '已发布其他版本：请重新检查更新。',
   'Aggiornamento interrotto.': '更新已中断。',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space': '快捷键无效。示例：Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia': '快捷键中至少要使用 Ctrl、Alt 或 Win',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    '此组合已被 Windows 或应用程序使用',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    '该快捷键已被浏览器填充使用：请选择其他快捷键',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    '该快捷键已被其他应用程序占用：请选择其他快捷键',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    '该快捷键已被快速搜索使用：请选择其他快捷键',
+  'Nessuno username o email per questo elemento': '此项目没有用户名或邮箱',
+  'Nessuna password salvata per questo elemento': '此项目没有保存密码',
+  'Operazione non disponibile per questo elemento': '此项目不支持该操作',
+  'Operazione non disponibile': '操作不可用',
+  'Indirizzo del sito non valido': '网站地址无效',
+  'Impossibile aprire il sito nel browser': '无法在浏览器中打开网站',
+  'Apertura dei siti disponibile nella build Windows': '打开网站功能仅在 Windows 版本中可用',
+  'Elenco degli usati di recente non valido': '最近使用列表无效',
 };
 
 export default dictionary;

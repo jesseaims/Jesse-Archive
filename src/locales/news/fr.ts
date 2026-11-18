@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'Recherche rapide globale',
+    'Appuyez sur Ctrl+Shift+Space depuis n’importe quelle application, même avec Jesse’s Archive dans la zone de notification, pour ouvrir une fenêtre de recherche compacte : trouvez des comptes par nom, identifiant, e-mail ou site, avec les comptes d’un même service regroupés, puis copiez l’identifiant ou le mot de passe, affichez le mot de passe quelques secondes, ouvrez le site ou l’élément dans le coffre, entièrement au clavier. Elle ne fonctionne que coffre déverrouillé, les mots de passe sont copiés sans passer par la fenêtre et le presse-papiers est vidé comme d’habitude. Raccourci et options : Paramètres → Recherche rapide globale.',
+  ],
   'window-state': [
     'La fenêtre se souvient de sa taille et de sa position',
     'Jesse’s Archive se rouvre tel que vous l’avez laissé : en plein écran, agrandi ou avec la taille et la position choisies, même après un passage par la zone de notification. Si l’écran sur lequel il se trouvait n’est plus branché, la fenêtre s’ouvre au centre de l’écran disponible.',

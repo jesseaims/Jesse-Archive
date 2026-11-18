@@ -38,6 +38,8 @@ export type Settings = {
   theme?: { preset: string; custom?: Record<string, string> };
   /** Dashboard layout (src/dashboard/model.ts); normalized when read. */
   dashboard?: unknown;
+  /** Recently used item ids, newest first (Dashboard and Global Quick Search). */
+  recent?: string[];
 };
 export type State = {
   items: Item[];

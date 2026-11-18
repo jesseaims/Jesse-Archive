@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    '전역 빠른 검색',
+    '어떤 앱에서든 Ctrl+Shift+Space를 누르면(Jesse’s Archive가 알림 영역에 있어도) 작은 검색 창이 열립니다. 이름, 사용자 이름, 이메일 또는 사이트로 계정을 찾고, 같은 서비스의 계정은 묶어서 보여 줍니다. 사용자 이름이나 비밀번호 복사, 몇 초간 비밀번호 표시, 사이트 열기, 보관함에서 항목 열기까지 모두 키보드로 할 수 있습니다. 보관함 잠금이 해제된 상태에서만 작동하며, 비밀번호는 창을 거치지 않고 복사되고 클립보드는 평소처럼 비워집니다. 단축키와 옵션은 설정 → 전역 빠른 검색에 있습니다.',
+  ],
   'window-state': [
     '창 크기와 위치 기억',
     'Jesse’s Archive는 닫을 때의 상태로 다시 열립니다. 전체 화면, 최대화 또는 선택한 크기와 위치 그대로이며, 트레이를 거친 뒤에도 마찬가지입니다. 원래 있던 화면이 더 이상 연결되어 있지 않으면 사용 가능한 화면의 가운데에 열립니다.',

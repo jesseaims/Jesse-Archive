@@ -1,7 +1,7 @@
 {
   "name": "jesse-archive-tauri",
   "private": true,
-  "version": "1.1.18",
+  "version": "1.1.19",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
     "test:browser": "node --test tests/browser-extension.test.mjs tests/passkey-extension.test.mjs",
     "test:i18n": "node --test tests/i18n.test.mjs",
     "test:dashboard": "node --test tests/dashboard.test.mjs tests/dashboard-ui.test.mjs",
+    "test:quick-search": "node --test tests/quick-search.test.mjs tests/quick-search-ui.test.mjs",
     "format": "prettier --write src && cargo fmt --manifest-path src-tauri/Cargo.toml",
     "format:check": "prettier --check src && cargo fmt --manifest-path src-tauri/Cargo.toml -- --check"
   },

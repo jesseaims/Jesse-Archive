@@ -662,8 +662,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Создать пароль',
   'Generatore di password': 'Генератор паролей',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, при запуске и раз в день',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Элементы, открытые в этом сеансе, без сохранения истории.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Последние открытые элементы, в том числе из быстрого поиска.',
   'Gli elementi che apri compariranno qui.': 'Здесь появятся открытые вами элементы.',
   'Gli ultimi elementi creati.': 'Последние созданные элементы.',
   Grande: 'Большой',
@@ -751,8 +751,8 @@ const dictionary: Dictionary = {
   Sistema: 'Система',
   'Solo nel file locale cifrato, nessun account online':
     'Только в локальном зашифрованном файле, без онлайн-аккаунта',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Только для этого сеанса: ничего не сохраняется, список очищается при блокировке.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Сохраняются в зашифрованном хранилище и общие с быстрым поиском: только какие элементы, никогда пароли.',
   'Solo su richiesta, con prefisso dell’hash': 'Только по запросу, с префиксом хеша',
   'Sposta dopo': 'Переместить дальше',
   'Sposta giù': 'Вниз',
@@ -772,6 +772,51 @@ const dictionary: Dictionary = {
     'Общая оценка ваших паролей с найденными проблемами.',
   Vault: 'Хранилище',
   Visualizzazione: 'Вид',
+  Apri: 'Открыть',
+  'Apri Jesse’s Archive': 'Открыть Jesse’s Archive',
+  'Apri la dashboard': 'Открыть панель',
+  'Apri nel vault': 'Открыть в хранилище',
+  'Apri sito': 'Открыть сайт',
+  'Attiva la ricerca rapida globale': 'Включить глобальный быстрый поиск',
+  Azioni: 'Действия',
+  Bloccato: 'Заблокировано',
+  'Caricamento…': 'Загрузка…',
+  'Cerca account, siti, email…': 'Поиск учётных записей, сайтов, адресов почты…',
+  'Cerca anche per categoria e cartella': 'Искать также по категории и папке',
+  'Cerca in tutto il vault': 'Искать во всём хранилище',
+  'Cerca nei preferiti': 'Искать в избранном',
+  'Cerca per nome, username, email o sito.':
+    'Ищите по названию, имени пользователя, почте или сайту.',
+  'Chiudi la finestra dopo un’azione': 'Закрывать окно после действия',
+  'Copia username': 'Копировать имя пользователя',
+  'Impostazioni salvate': 'Настройки сохранены',
+  'Mostra gli elementi usati di recente': 'Показывать недавно использованные элементы',
+  'Mostra i preferiti quando la ricerca è vuota': 'Показывать избранное, когда строка поиска пуста',
+  'Nessun preferito.': 'Нет избранного.',
+  'Nessun risultato per «{q}»': 'Нет результатов для «{q}»',
+  'Password copiata': 'Пароль скопирован',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Пароль скопирован: буфер обмена очистится через {n} с',
+  'Premi Invio per vedere gli account.': 'Нажмите Enter, чтобы увидеть учётные записи.',
+  'Ricerca rapida': 'Быстрый поиск',
+  'Ricerca rapida globale': 'Глобальный быстрый поиск',
+  'Ripristina predefinita': 'Восстановить по умолчанию',
+  Sblocca: 'Разблокировать',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Разблокируйте хранилище, чтобы искать по учётным записям.',
+  Sbloccato: 'Разблокировано',
+  'Scorciatoia attiva: {shortcut}': 'Активное сочетание: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Сочетание по умолчанию восстановлено',
+  'Scorciatoia salvata': 'Сочетание клавиш сохранено',
+  Sito: 'Сайт',
+  'Sito aperto nel browser': 'Сайт открыт в браузере',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Окно поиска, которое открывается сочетанием клавиш из любого приложения, даже когда Jesse’s Archive свёрнут или находится в области уведомлений. Работает только при разблокированном хранилище.',
+  'Username copiato': 'Имя пользователя скопировано',
+  'Elenco degli usati di recente cancellato': 'Список недавно использованных очищен',
+  'Cancella gli usati di recente': 'Очистить недавно использованные',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Недавно использованные элементы сохраняются в зашифрованном хранилище (только какие элементы, никогда пароли), сохраняются после перезапуска и совпадают с виджетом «Недавно использованные» на панели. Чтобы быстрый поиск всегда был готов, включите «Запускать вместе с Windows» в разделе «Рабочий стол».',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Хранилище заблокировано',
@@ -931,6 +976,28 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Опубликована другая версия: проверьте обновления снова.',
   'Aggiornamento interrotto.': 'Обновление прервано.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    'Недопустимое сочетание. Пример: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    'Используйте в сочетании хотя бы Ctrl, Alt или Win',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Это сочетание уже используется Windows или приложениями',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Сочетание уже используется заполнением в браузере: выберите другое',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Сочетание уже занято другим приложением: выберите другое',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Сочетание уже используется быстрым поиском: выберите другое',
+  'Nessuno username o email per questo elemento':
+    'Для этого элемента нет имени пользователя или почты',
+  'Nessuna password salvata per questo elemento': 'Для этого элемента не сохранён пароль',
+  'Operazione non disponibile per questo elemento': 'Операция недоступна для этого элемента',
+  'Operazione non disponibile': 'Операция недоступна',
+  'Indirizzo del sito non valido': 'Недопустимый адрес сайта',
+  'Impossibile aprire il sito nel browser': 'Не удалось открыть сайт в браузере',
+  'Apertura dei siti disponibile nella build Windows':
+    'Открытие сайтов доступно в версии для Windows',
+  'Elenco degli usati di recente non valido': 'Недопустимый список недавно использованных',
 };
 
 export default dictionary;

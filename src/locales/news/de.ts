@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'Globale Schnellsuche',
+    'Drücken Sie Ctrl+Shift+Space in jeder Anwendung, auch wenn Jesse’s Archive im Infobereich ist, um ein kompaktes Suchfenster zu öffnen: Finden Sie Konten nach Name, Benutzername, E-Mail oder Website, mit den Konten desselben Dienstes gruppiert, und kopieren Sie Benutzername oder Passwort, zeigen Sie das Passwort einige Sekunden an, öffnen Sie die Website oder den Eintrag im Tresor – alles per Tastatur. Sie funktioniert nur bei entsperrtem Tresor, Passwörter werden kopiert, ohne durch das Fenster zu gehen, und die Zwischenablage wird wie gewohnt geleert. Tastenkürzel und Optionen finden Sie unter Einstellungen → Globale Schnellsuche.',
+  ],
   'window-state': [
     'Das Fenster merkt sich Größe und Position',
     'Jesse’s Archive öffnet sich so, wie Sie es verlassen haben: im Vollbild, maximiert oder mit der gewählten Größe und Position, auch nach dem Umweg über den Infobereich. Ist der Bildschirm, auf dem es lag, nicht mehr angeschlossen, öffnet sich das Fenster in der Mitte des verfügbaren.',

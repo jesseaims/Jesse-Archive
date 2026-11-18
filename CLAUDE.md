@@ -23,11 +23,12 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `src-tauri/src/browser_protocol.rs`, `src-tauri/src/bin/jesse_browser_host.rs` | Framing JSON e relay tra Native Messaging e socket loopback |
 | `src-tauri/src/browser_installer.rs`, `src-tauri/src/browser_navigation.rs` | Rilevamento browser e guida Windows con navigazione controllata via Win32 |
 | `src/QuickFill.tsx`, `src/BrowserInstaller.tsx`, `src/BrowserSettings.tsx` | Mini finestra, guida di configurazione e relative impostazioni |
+| `src-tauri/src/quick_search.rs`, `src-tauri/src/clipboard.rs`, `src/quick-search/` | Ricerca rapida globale: scorciatoia, finestra `quick-search`, solo metadati alla webview, copia nel backend; motore di ricerca puro in `engine.ts` |
 | `browser-extension/background.js` | Contesto della pagina e riempimento dei campi; sorgente delle copie Chromium/Firefox |
 | `scripts/`, `installer/`, script PowerShell in root | Generazione metadati e pacchetti; MSI Tauri incorporato nell'EXE Inno |
 | `legacy-python/` | Applicazione precedente indipendente; non chiamata dal client Rust |
 
-Finestre Tauri: `main`, `quick-fill`, `browser-setup`. Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
+Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup` (tutte in `capabilities/default.json`). Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
 
 ## C. Technology Stack
 
@@ -63,6 +64,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Esportazione/importazione e pacchetti cifrati | Implementati in `core.rs` e Settings; export JSON/CSV in chiaro, `.jshare` cifrato; selezione fine non completamente esposta nella UI |
 | Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
 | Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
+| Ricerca rapida globale | Implementata: Ctrl+Shift+Space (personalizzabile), finestra `quick-search`, ricerca per nome/username/email/dominio con errori di battitura, account raggruppati per servizio, copia/mostra password, apri sito o vault, tastiera completa; solo metadati nella finestra, usati di recente salvati nel vault cifrato (solo id), nessuna cronologia delle ricerche; `npm run test:quick-search` |
 | Dashboard personalizzabile | Implementata in `src/dashboard/`: registro dei widget, layout multipli, drag & drop nativo, salvataggio automatico in `settings.dashboard`; `health`/`backup_info` passivi; `npm run test:dashboard` |
 | Lingua dell'interfaccia | Implementata: pulsante «Lingua», dieci lingue, preferenza `lang` del dispositivo, tray/titoli/messaggi del backend, News, installer ed estensione tradotti; `npm run test:i18n` verifica la completezza |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo; dimensione, posizione e stato massimizzato della finestra ricordati per dispositivo (`window_state.rs`) |

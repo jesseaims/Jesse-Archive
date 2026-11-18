@@ -56,7 +56,7 @@ Limiti: il blocco può ritardare fino a circa 5 secondi, o di più se un comando
 
 Non risultano `mlock`/`VirtualLock`, memoria non paginabile, integrazione DPAPI/keyring, protezioni contro dump o cancellazione verificabile della memoria JavaScript. La DEK protetta non rende automaticamente sicuro tutto il processo.
 
-[lib.rs](../src-tauri/src/lib.rs) usa clipboard Windows nativa, su worker, senza PowerShell. `clear_secret_if_unchanged` apre gli appunti, confronta e svuota sotto lo stesso guard se il contenuto coincide ancora. Il timer è però avviato dal frontend e mantiene il valore atteso in una closure. La chiusura del processo, la sospensione, i gestori di cronologia e altre applicazioni impediscono di garantire una pulizia globale. Il percorso copiato dalla guida browser usa la stessa API di copia ma non è una credenziale.
+[lib.rs](../src-tauri/src/lib.rs) usa clipboard Windows nativa, su worker, senza PowerShell. `clipboard::set` (usato da `copy_secret` e dalla ricerca rapida) aggiunge i formati `ExcludeClipboardContentFromMonitorProcessing`, `CanIncludeInClipboardHistory` = 0 e `CanUploadToCloudClipboard` = 0, così Windows non salva la copia nella cronologia degli appunti (Win+V) né la sincronizza nel cloud; i gestori di appunti di terze parti possono ignorarli. `clear_secret_if_unchanged` apre gli appunti, confronta e svuota (`EmptyClipboard`, non un testo vuoto) sotto lo stesso guard se il contenuto coincide ancora. Il timer è però avviato dal frontend e mantiene il valore atteso in una closure. La chiusura del processo, la sospensione, i gestori di cronologia e altre applicazioni impediscono di garantire una pulizia globale. Il percorso copiato dalla guida browser usa la stessa API di copia ma non è una credenziale.
 
 ## IPC Tauri e file
 
@@ -125,12 +125,23 @@ Limiti:
 - il file scaricato in `%TEMP%` non è protetto da processi malevoli dello stesso utente fra la verifica e l'avvio;
 - il setup non ha Authenticode, quindi l'avviso di Windows dipende dalla reputazione SmartScreen.
 
+### Ricerca rapida globale
+
+- **Nessuna sessione propria:** ogni comando passa da `Vault::call`, quindi valgono gli stessi controlli di sblocco e scadenza; lo sblocco dalla finestra usa il comando `unlock` della finestra principale. Con il vault bloccato `quick_search_data` restituisce solo `unlocked: false` e le impostazioni.
+- **Solo metadati nella finestra:** titolo, username o email, URL, piattaforma crypto, categoria, cartella, preferito, nome e logo del gruppo (`metadata` in `quick_search.rs`). Mai password, TOTP, numeri di carta, CVV, PIN, seed, credenziali passkey o testo delle note; test `quick_search::tests::metadata_never_contains_secrets_or_notes`. L'indice di ricerca esiste solo nella memoria della finestra e viene scartato quando si nasconde o il vault si blocca.
+- **Password:** copiate nel backend (`quick_search_copy`) senza passare dalla webview; gli appunti si svuotano dopo il ritardo del vault (`settings.clip`) solo se contengono ancora quel valore (`clipboard::clear_if_unchanged`), e la copia in attesa è in `Zeroizing`. «Mostra password» è l'unico caso in cui una password arriva alla finestra: su richiesta esplicita, nascosta dopo 15 s, al cambio di selezione, alla chiusura e al blocco. Come per la finestra principale, la memoria JavaScript non è cancellata in modo verificabile e i JSON letti nel backend non sono azzerati.
+- **Blocco:** su `vault-locked` la finestra scarta risultati e password mostrata e passa allo stato bloccato; gli usati di recente restano salvati nel vault cifrato e la finestra li riceve di nuovo solo dopo lo sblocco. Copiare, mostrare o aprire conta come attività (`touch`); cercare no, perché `browser_state` è passivo.
+- **Usati di recente e ricerche:** le ricerche non vengono mai salvate né inviate al backend per essere ricordate (nessuna cronologia). Gli usati di recente sono al massimo 12 id di elementi in `settings.recent` (condivisi con il widget della Dashboard), dentro il payload cifrato del vault, mai password o altri campi; il backend accetta solo un elenco di stringhe brevi. Viaggiano con le impostazioni nella fusione delle copie (`settings_upd`), quindi chi apre il vault su un altro dispositivo vede gli stessi elementi recenti. Si cancellano con «Cancella gli usati di recente»; disattivando l'opzione la ricerca rapida smette di mostrarli e di aggiungerne.
+- **Siti:** si aprono solo indirizzi http/https validi (`site_url`), quindi non `file:`, `javascript:` o protocolli di altre applicazioni.
+- **Scorciatoia:** registrata con `RegisterHotKey` tramite il plugin, senza hook di tastiera né polling; rifiutate le combinazioni senza Ctrl/Alt/Win e quelle di sistema (Ctrl+C/V…, Alt+Tab, Alt+F4, Ctrl+Alt+Canc, Win+L).
+- **Rete e log:** nessuna richiesta di rete, telemetria o log delle ricerche; nessuna notifica con credenziali.
+
 ### Dashboard
 
 - **Cosa mostrano i widget:** solo dati già presenti nello stato sbloccato della UI (titoli, categorie, date, conteggi) e i risultati di `health`/`backup_info`. Nessun widget mostra password, valori TOTP o testo delle note.
 - **Generatore:** il widget usa il comando `generate` del backend; il valore resta nello stato del componente e viene copiato con il normale `copy_secret`, quindi gli appunti si puliscono come al solito.
 - **Configurazione:** il layout si salva cifrato nel vault, senza segreti (`tests/dashboard.test.mjs` lo verifica).
-- **Dati solo di sessione:** «Usati di recente» e i risultati della verifica violazioni restano in memoria e si azzerano al blocco.
+- **Dati solo di sessione:** i risultati della verifica violazioni restano in memoria e si azzerano al blocco. «Usati di recente» (dalla Beta 1.1.19) è invece salvato nel vault cifrato come elenco di id, senza altri dati.
 - **Rete:** nessuna telemetria e nessuna richiesta di rete aggiunta. Il widget Privacy legge soltanto le impostazioni locali.
 
 ## Persistenza, backup e anti-tampering

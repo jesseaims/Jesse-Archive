@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import QuickFill from './QuickFill';
 import BrowserInstaller from './BrowserInstaller';
+import QuickSearch from './quick-search/QuickSearch';
 import './style.css';
 import { installZoomShortcuts } from './zoom';
 import { initLanguage, useLanguage } from './i18n';
@@ -15,6 +16,8 @@ function Root() {
     <BrowserInstaller />
   ) : location.search.includes('quick-fill') ? (
     <QuickFill />
+  ) : location.search.includes('quick-search') ? (
+    <QuickSearch />
   ) : (
     <App />
   );
