@@ -64,7 +64,7 @@ const METADATA = {
   ],
 };
 
-async function setup({ locked = false, settings = {}, recent = [] } = {}) {
+async function setup({ locked = false, settings = {}, recent = [], holdData = false } = {}) {
   const dom = new JSDOM('<div id="root"></div>', {
     url: 'http://localhost/?quick-search',
     runScripts: 'outside-only',
@@ -107,6 +107,9 @@ async function setup({ locked = false, settings = {}, recent = [] } = {}) {
         case 'plugin:event|unlisten':
           return null;
         case 'quick_search_data':
+          // A real backend answers a moment later, after the shown event: with
+          // holdData the answer waits for state.release().
+          if (holdData) await new Promise((r) => (state.release = r));
           return state.locked
             ? { unlocked: false, settings: { ...SETTINGS, ...settings } }
             : {
@@ -230,6 +233,21 @@ test('opens with the search field ready: favorites and quick actions, no secrets
   assert.equal(d.rows()[0].sub, 'due@posta.test', 'the favorite account');
   assert.ok(d.rows().some((r) => r.text === 'Genera password'));
   assert.ok(!d.text().includes(PASSWORD));
+});
+
+test('the search field takes the focus once the data arrives', async () => {
+  const d = await setup({ holdData: true });
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  // Hidden (the page drops the data, the field is disabled), then shown again.
+  await d.emit('quick-search-hidden');
+  await d.emit('quick-search-shown');
+  // Still loading: the field cannot take the focus yet.
+  assert.notEqual(d.w.document.activeElement, d.input());
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  assert.equal(d.input().disabled, false);
+  assert.equal(d.w.document.activeElement, d.input(), 'typing goes to the field at once');
 });
 
 test('recently used items saved in the vault are listed when the search is empty', async () => {

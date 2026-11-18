@@ -56,7 +56,7 @@ Limiti: il blocco può ritardare fino a circa 5 secondi, o di più se un comando
 
 Non risultano `mlock`/`VirtualLock`, memoria non paginabile, integrazione DPAPI/keyring, protezioni contro dump o cancellazione verificabile della memoria JavaScript. La DEK protetta non rende automaticamente sicuro tutto il processo.
 
-[lib.rs](../src-tauri/src/lib.rs) usa clipboard Windows nativa, su worker, senza PowerShell. `clear_secret_if_unchanged` apre gli appunti, confronta e svuota sotto lo stesso guard se il contenuto coincide ancora. Il timer è però avviato dal frontend e mantiene il valore atteso in una closure. La chiusura del processo, la sospensione, i gestori di cronologia e altre applicazioni impediscono di garantire una pulizia globale. Il percorso copiato dalla guida browser usa la stessa API di copia ma non è una credenziale.
+[lib.rs](../src-tauri/src/lib.rs) usa clipboard Windows nativa, su worker, senza PowerShell. `clipboard::set` (usato da `copy_secret` e dalla ricerca rapida) aggiunge i formati `ExcludeClipboardContentFromMonitorProcessing`, `CanIncludeInClipboardHistory` = 0 e `CanUploadToCloudClipboard` = 0, così Windows non salva la copia nella cronologia degli appunti (Win+V) né la sincronizza nel cloud; i gestori di appunti di terze parti possono ignorarli. `clear_secret_if_unchanged` apre gli appunti, confronta e svuota (`EmptyClipboard`, non un testo vuoto) sotto lo stesso guard se il contenuto coincide ancora. Il timer è però avviato dal frontend e mantiene il valore atteso in una closure. La chiusura del processo, la sospensione, i gestori di cronologia e altre applicazioni impediscono di garantire una pulizia globale. Il percorso copiato dalla guida browser usa la stessa API di copia ma non è una credenziale.
 
 ## IPC Tauri e file
 

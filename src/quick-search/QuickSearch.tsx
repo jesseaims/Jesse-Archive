@@ -93,6 +93,7 @@ export default function QuickSearch() {
   const input = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const shown = useRef(false);
+  const wantFocus = useRef(false);
   const revealTimer = useRef<number | undefined>(undefined);
   const deferred = useDeferredValue(query);
 
@@ -138,8 +139,9 @@ export default function QuickSearch() {
       listen('quick-search-shown', () => {
         shown.current = true;
         setLoading(true);
+        // Focused once loaded (effect below): until then the field is disabled.
+        wantFocus.current = true;
         void load();
-        focusInput();
       }),
       listen('quick-search-hidden', () => {
         shown.current = false;
@@ -170,6 +172,11 @@ export default function QuickSearch() {
 
   const settings = payload?.settings;
   const unlocked = !!payload?.unlocked;
+  useEffect(() => {
+    if (!wantFocus.current || !payload) return;
+    wantFocus.current = false;
+    focusInput();
+  }, [payload]);
   const index = useMemo(
     () =>
       unlocked && payload?.items

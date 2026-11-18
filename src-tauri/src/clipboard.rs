@@ -3,12 +3,27 @@
 //! passwords never reach its webview.
 use zeroize::Zeroizing;
 
-/// Puts text on the clipboard (Unicode).
+/// Puts text on the clipboard (Unicode), marked so that Windows keeps it out of the
+/// clipboard history (Win+V) and of the cloud clipboard sync. These are the standard
+/// formats Windows reads; third-party clipboard managers may ignore them.
 pub fn set(text: &str) -> Result<(), String> {
     #[cfg(windows)]
     {
-        clipboard_win::set_clipboard(clipboard_win::formats::Unicode, text)
-            .map_err(|e| format!("Impossibile copiare negli appunti: {e}"))
+        use clipboard_win::{raw, Clipboard};
+        let _guard = Clipboard::new_attempts(10)
+            .map_err(|e| format!("Impossibile accedere agli appunti: {e}"))?;
+        raw::set_string(text).map_err(|e| format!("Impossibile copiare negli appunti: {e}"))?;
+        let no = 0u32.to_ne_bytes();
+        for name in [
+            "ExcludeClipboardContentFromMonitorProcessing",
+            "CanIncludeInClipboardHistory",
+            "CanUploadToCloudClipboard",
+        ] {
+            if let Some(format) = raw::register_format(name) {
+                let _ = raw::set_without_clear(format.get(), &no);
+            }
+        }
+        Ok(())
     }
     #[cfg(not(windows))]
     {
@@ -22,16 +37,15 @@ pub fn set(text: &str) -> Result<(), String> {
 pub fn clear_if_unchanged(expected: &str) -> Result<(), String> {
     #[cfg(windows)]
     {
-        use clipboard_win::{formats, Clipboard, Getter, Setter};
+        use clipboard_win::{formats, raw, Clipboard, Getter};
         // The clipboard must remain open for the entire compare-and-clear
         // operation, preventing a separate app changing it between calls.
         let _guard = Clipboard::new_attempts(10)
             .map_err(|e| format!("Impossibile accedere agli appunti: {e}"))?;
         let mut current = Zeroizing::new(String::new());
         if formats::Unicode.read_clipboard(&mut *current).is_ok() && *current == expected {
-            formats::Unicode
-                .write_clipboard(&String::new())
-                .map_err(|e| format!("Impossibile pulire gli appunti: {e}"))?;
+            // Emptied, not replaced by an empty text (which would be a new entry).
+            raw::empty().map_err(|e| format!("Impossibile pulire gli appunti: {e}"))?;
         }
         Ok(())
     }
