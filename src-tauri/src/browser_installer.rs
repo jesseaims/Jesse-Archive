@@ -168,12 +168,9 @@ pub async fn browser_setup_show(app: tauri::AppHandle) -> Result<(), String> {
 /// visible window.
 #[tauri::command]
 pub fn browser_setup_finish(app: tauri::AppHandle) -> Result<(), String> {
-    let main = app
-        .get_webview_window("main")
+    app.get_webview_window("main")
         .ok_or("Finestra principale non disponibile")?;
-    main.unminimize().map_err(|e| e.to_string())?;
-    main.show().map_err(|e| e.to_string())?;
-    main.set_focus().map_err(|e| e.to_string())?;
+    crate::window_state::show_main(&app);
     if let Some(guide) = app.get_webview_window("browser-setup") {
         guide.hide().map_err(|e| e.to_string())?;
     }

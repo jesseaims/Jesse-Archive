@@ -65,7 +65,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
 | Dashboard personalizzabile | Implementata in `src/dashboard/`: registro dei widget, layout multipli, drag & drop nativo, salvataggio automatico in `settings.dashboard`; `health`/`backup_info` passivi; `npm run test:dashboard` |
 | Lingua dell'interfaccia | Implementata: pulsante «Lingua», dieci lingue, preferenza `lang` del dispositivo, tray/titoli/messaggi del backend, News, installer ed estensione tradotti; `npm run test:i18n` verifica la completezza |
-| Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo |
+| Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo; dimensione, posizione e stato massimizzato della finestra ricordati per dispositivo (`window_state.rs`) |
 | Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali |
 | Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
 | Guida estensioni | Implementata; caricamento iniziale ancora manuale, Firefox locale temporaneo |

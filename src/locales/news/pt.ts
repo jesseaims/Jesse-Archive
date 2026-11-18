@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    'A janela lembra o tamanho e a posição',
+    'O Jesse’s Archive reabre como você o deixou: em tela cheia, maximizado ou com o tamanho e a posição que escolheu, mesmo depois de passar pela bandeja do sistema. Se a tela em que estava não estiver mais conectada, a janela abre no centro da tela disponível.',
+  ],
   'customizable-dashboard': [
     'Painel personalizável',
     'O novo Painel é a central de controle do aplicativo: pontuação de segurança, análise de senhas, visão geral do cofre, favoritos, itens recentes, notas protegidas, ações rápidas, gerador, status do backup e privacidade. Com “Personalizar painel” você adiciona, remove, arrasta e redimensiona os widgets, escolhe entre vários layouts e ajusta as opções de cada um; tudo é salvo automaticamente no cofre criptografado e nenhum widget mostra senhas.',

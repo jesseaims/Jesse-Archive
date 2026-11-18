@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    'Das Fenster merkt sich Größe und Position',
+    'Jesse’s Archive öffnet sich so, wie Sie es verlassen haben: im Vollbild, maximiert oder mit der gewählten Größe und Position, auch nach dem Umweg über den Infobereich. Ist der Bildschirm, auf dem es lag, nicht mehr angeschlossen, öffnet sich das Fenster in der Mitte des verfügbaren.',
+  ],
   'customizable-dashboard': [
     'Anpassbares Dashboard',
     'Das neue Dashboard ist das Kontrollzentrum der App: Sicherheitswert, Passwortanalyse, Tresor-Übersicht, Favoriten, letzte Elemente, sichere Notizen, Schnellaktionen, Generator, Sicherungsstatus und Datenschutz. Mit „Dashboard anpassen“ fügst du Widgets hinzu, entfernst, verschiebst und vergrößerst sie, wählst zwischen mehreren Layouts und stellst die Optionen jedes Widgets ein; alles wird automatisch im verschlüsselten Tresor gespeichert, und kein Widget zeigt Passwörter an.',

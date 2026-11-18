@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    'La ventana recuerda su tamaño y posición',
+    'Jesse’s Archive se vuelve a abrir como lo dejaste: a pantalla completa, maximizado o con el tamaño y la posición que habías elegido, incluso después de pasar por la bandeja del sistema. Si la pantalla en la que estaba ya no está conectada, la ventana se abre en el centro de la disponible.',
+  ],
   'customizable-dashboard': [
     'Panel personalizable',
     'El nuevo Panel es el centro de control de la aplicación: puntuación de seguridad, análisis de contraseñas, resumen de la bóveda, favoritos, elementos recientes, notas protegidas, acciones rápidas, generador, estado de la copia de seguridad y privacidad. Con «Personalizar panel» añades, quitas, arrastras y cambias el tamaño de los widgets, eliges entre varios diseños y ajustas las opciones de cada uno; todo se guarda solo en la bóveda cifrada y ningún widget muestra contraseñas.',
