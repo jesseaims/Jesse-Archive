@@ -655,7 +655,9 @@ impl Vault {
         if !open.contains(&name) && !self.unlocked() {
             return Err("Vault bloccato".into());
         }
-        if !["ping", "status", "browser_state"].contains(&name) {
+        // Read-only commands a screen may call by itself (dashboard widgets, polling)
+        // must not postpone the inactivity lock.
+        if !["ping", "status", "browser_state", "health", "backup_info"].contains(&name) {
             self.last = now()
         }
         match name {
@@ -993,6 +995,27 @@ impl Vault {
                 Ok(json!({"state":self.state(),"count":dead.len(),"skipped":ids.len()-dead.len()}))
             }
             "generate" => Ok(json!({"results":generate(&b)?})),
+            // Backup status for the dashboard: the rolling `.bak` written by
+            // atomic_write before every save, and the last merge with cloud copies.
+            "backup_info" => {
+                let modified = |p: &Path| -> V {
+                    fs::metadata(p)
+                        .and_then(|m| m.modified())
+                        .ok()
+                        .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+                        .map(|d| json!(d.as_secs_f64()))
+                        .unwrap_or(V::Null)
+                };
+                let bak = self.path.with_extension("bak");
+                Ok(json!({
+                    "path": self.path.to_string_lossy(),
+                    "folder": self.path.parent().map(|p| p.to_string_lossy().to_string()),
+                    "modified": modified(&self.path),
+                    "bak_exists": bak.exists(),
+                    "bak_modified": modified(&bak),
+                    "synced_at": self.last_sync,
+                }))
+            }
             "health" => Ok(health(&self.data)),
             "totp" => {
                 let it = self.find(s(&b, "id"))?;
@@ -1010,6 +1033,14 @@ impl Vault {
                     if t.is_object() {
                         self.data["settings"]["theme"] = t.clone()
                     }
+                }
+                // Dashboard layout (widget types, sizes, options; no secrets). The UI
+                // normalizes it; here only the shape and size are bounded.
+                if let Some(d) = b.get("dashboard") {
+                    if !d.is_object() || d.to_string().len() > 32 * 1024 {
+                        return Err("Configurazione della dashboard non valida".into());
+                    }
+                    self.data["settings"]["dashboard"] = d.clone()
                 }
                 self.data["settings_upd"] = json!(now());
                 self.save()?;
@@ -2309,6 +2340,47 @@ mod vault_tests {
             .iter()
             .any(|p| s(p, "value") == "pw-sintetica-gone" && p["item_id"].is_null()));
         assert!(v.data["deleted"].get(&gone).is_some());
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn dashboard_layout_is_stored_in_vault_settings_with_bounds() {
+        let (mut v, dir) = unlocked_vault();
+        let layout = json!({"version": 1, "active": "default", "layouts": {}});
+        v.call("settings", json!({"dashboard": layout})).unwrap();
+        assert_eq!(v.data["settings"]["dashboard"], layout);
+        // Other settings are untouched; invalid or oversized layouts are refused.
+        assert!(v.call("settings", json!({"dashboard": "x"})).is_err());
+        let huge = json!({"pad": "x".repeat(40 * 1024)});
+        assert!(v.call("settings", json!({"dashboard": huge})).is_err());
+        assert_eq!(v.data["settings"]["dashboard"], layout);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn backup_info_and_health_are_read_only_and_passive() {
+        let (mut v, dir) = unlocked_vault();
+        v.call(
+            "item",
+            json!({"type": "login", "title": "a", "f": {"password": "pw-sintetica-1"}}),
+        )
+        .unwrap();
+        v.call(
+            "item",
+            json!({"type": "login", "title": "b", "f": {"password": "pw-sintetica-2"}}),
+        )
+        .unwrap();
+        let info = v.call("backup_info", json!({})).unwrap();
+        assert!(info["modified"].as_f64().is_some());
+        assert_eq!(
+            info["bak_exists"], true,
+            "the second save keeps the previous file"
+        );
+        assert!(info["bak_modified"].as_f64().is_some());
+        assert!(info.get("data").is_none() && !info.to_string().contains("pw-sintetica"));
+        // Widgets refreshing by themselves must not keep the vault unlocked.
+        v.last = now() - 4. * 60.;
+        v.call("backup_info", json!({})).unwrap();
+        v.call("health", json!({})).unwrap();
+        assert!(now() - v.last > 3. * 60.);
         fs::remove_dir_all(dir).unwrap();
     }
 }

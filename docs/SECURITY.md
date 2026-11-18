@@ -45,7 +45,7 @@ Il controllo dell'inattività è `Vault::expire_if_idle` (`settings.autolock` in
 
 - Viene eseguito all'inizio di **ogni** comando di `Vault::call`, inclusi `ping` e `status`, che in quel caso rispondono `unlocked: false`; i comandi protetti rispondono "Sessione scaduta". I comandi aperti sono `status`, `create`, `unlock`, `ping`, `suggest`, `loc_use`, `show`.
 - Un thread di `lib.rs` (`spawn_idle_lock`) lo esegue ogni 5 secondi con `try_lock`, quindi il blocco avviene anche senza chiamate dalla UI (finestra nascosta o bloccata); se il vault è occupato da un comando lungo riprova al giro successivo.
-- Attività: i comandi aggiornano `last`, tranne `ping`, `status` e `browser_state`. La finestra principale invia `touch` su tastiera, clic e rotella, al massimo una volta ogni 30 secondi, così leggere o scorrere conta come attività mentre il polling no.
+- Attività: i comandi aggiornano `last`, tranne `ping`, `status`, `browser_state` e i comandi di sola lettura `health` e `backup_info`, che la Dashboard richiama da sola quando cambiano i dati. Un widget che si aggiorna non può quindi rinviare il blocco automatico; test `vault_tests::backup_info_and_health_are_read_only_and_passive`. La finestra principale invia `touch` su tastiera, clic e rotella, al massimo una volta ogni 30 secondi, così leggere o scorrere conta come attività mentre il polling no.
 - Ogni passaggio da sbloccato a bloccato, rilevato da `api` o dal thread, emette `vault-locked`. `App.tsx` risponde con `wipeSession`, che azzera vault, editor (`draft`), campi di password e recupero, dialoghi, selezioni e segreti mostrati; le pagine figlie che contengono segreti vengono smontate. Lo stesso avviene se `run` riceve "Vault bloccato" o "Sessione scaduta" e se il ping trova il vault bloccato.
 
 Limiti: il blocco può ritardare fino a circa 5 secondi, o di più se un comando lungo tiene il vault; azzerare lo stato React non garantisce la cancellazione della memoria JavaScript (garbage collector, copie nel motore della webview); appunti già copiati seguono il proprio timer. Test: `vault_tests::idle_expiry_locks_on_every_command` e `touch_extends_and_zero_disables_autolock`.
@@ -124,6 +124,14 @@ Limiti:
 - non c'è rotazione della chiave: una chiave persa richiede un'installazione manuale con una chiave nuova;
 - il file scaricato in `%TEMP%` non è protetto da processi malevoli dello stesso utente fra la verifica e l'avvio;
 - il setup non ha Authenticode, quindi l'avviso di Windows dipende dalla reputazione SmartScreen.
+
+### Dashboard
+
+- **Cosa mostrano i widget:** solo dati già presenti nello stato sbloccato della UI (titoli, categorie, date, conteggi) e i risultati di `health`/`backup_info`. Nessun widget mostra password, valori TOTP o testo delle note.
+- **Generatore:** il widget usa il comando `generate` del backend; il valore resta nello stato del componente e viene copiato con il normale `copy_secret`, quindi gli appunti si puliscono come al solito.
+- **Configurazione:** il layout si salva cifrato nel vault, senza segreti (`tests/dashboard.test.mjs` lo verifica).
+- **Dati solo di sessione:** «Usati di recente» e i risultati della verifica violazioni restano in memoria e si azzerano al blocco.
+- **Rete:** nessuna telemetria e nessuna richiesta di rete aggiunta. Il widget Privacy legge soltanto le impostazioni locali.
 
 ## Persistenza, backup e anti-tampering
 

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'customizable-dashboard': [
+    'Painel personalizável',
+    'O novo Painel é a central de controle do aplicativo: pontuação de segurança, análise de senhas, visão geral do cofre, favoritos, itens recentes, notas protegidas, ações rápidas, gerador, status do backup e privacidade. Com “Personalizar painel” você adiciona, remove, arrasta e redimensiona os widgets, escolhe entre vários layouts e ajusta as opções de cada um; tudo é salvo automaticamente no cofre criptografado e nenhum widget mostra senhas.',
+  ],
   multilanguage: [
     'O Jesse’s Archive fala o seu idioma',
     'Com o novo botão “Idioma” no canto superior direito, você escolhe entre italiano, inglês, espanhol, francês, alemão, português, russo, chinês, japonês e coreano. O aplicativo inteiro muda na hora, incluindo a tela de desbloqueio, a minijanela do navegador e o menu da área de notificação; na primeira inicialização é usado o idioma do Windows. O instalador e a extensão do navegador também seguem o idioma do sistema.',

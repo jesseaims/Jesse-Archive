@@ -56,7 +56,7 @@ I blob `wrap`, `rwrap`, `data` usano lo stesso encoding `Base64(nonce || ciphert
 | `folders[]` | `id`, `name`, `upd` |
 | `groups` | Mappa per chiave di presentazione; valori `name`, `icon`, `src`, `upd`, eventuale `tried` per i download |
 | `deleted` | Mappa ID → timestamp di eliminazione, condivisa tra collezioni |
-| `settings` | `autolock`, `clip`, `old_days`, eventuali `logos`, `theme` |
+| `settings` | `autolock`, `clip`, `old_days`, eventuali `logos`, `theme`, `dashboard` |
 | `settings_upd` | Timestamp per la scelta delle impostazioni durante il merge |
 
 `id()` produce 6 byte casuali codificati esadecimali, non un UUID completo. Non risultano vincoli formali di unicità tra tutte le collezioni, integrità referenziale a livello storage o indici persistenti.
@@ -139,6 +139,8 @@ La UI principale importa i file `.jshare` tramite `unpack`; altre estensioni son
 Prima del merge, `validate_import` controlla l'intero payload JSON/`.jshare` e lo **rifiuta tutto** al primo record non valido, indicandone il numero: radice oggetto; `folders`/`items`/`passwords` elenchi; cartelle con `name` stringa; elementi oggetto con `id` non vuoto, `type` tra le sei categorie, `title` stringa o assente, `f` oggetto o assente; password oggetto con `id` non vuoto e `value` stringa. Le proprietà sconosciute dei record validi sono conservate. Un testo che inizia con `{` o `[` è trattato come JSON, il resto come CSV. Non è uno schema completo dei campi di ogni categoria (per esempio formati di data o URL). Vedere SEC-05 in [SECURITY](SECURITY.md).
 
 ## Compatibilità e modifiche future
+
+`settings.dashboard` (dalla Beta 1.1.17) contiene il layout della Dashboard: `{version: 1, active, layouts: {default|minimal|security|productivity|custom: {widgets: [{type, size, collapsed, config, x, y}]}}}`, con `x` colonna (0–3) e `y` riga della griglia. Contiene solo tipi di widget, dimensioni, posizioni e opzioni, compresi gli id delle note fissate, e mai segreti. Il backend accetta solo un oggetto di massimo 32 KB; la UI lo normalizza a ogni lettura, scartando widget, dimensioni e opzioni sconosciuti e mettendo nel primo spazio libero i widget senza posizione (configurazioni salvate prima delle posizioni), fuori dalla griglia o sovrapposti, così le versioni vecchie o danneggiate non bloccano la schermata. Viaggia con le altre impostazioni nella fusione delle copie (`settings_upd`).
 
 Allo sblocco e su ogni copia letta da `pull`, `ensure_shape` aggiunge le collezioni mancanti (`items`, `passwords`, `folders`, `deleted`, `settings_upd`) e rifiuta tipi errati (collezioni che non sono elenchi di oggetti, `deleted`/`groups`/`settings` non oggetti) invece di lasciare che il core vada in panic più tardi; una copia di conflitto rifiutata viene ignorata come le altre copie illeggibili. Non esiste una pipeline generale di migrazione. La fixture certifica una corrispondenza tra scrypt/AES e un payload sintetico Python v1, non la portabilità completa di ogni vault storico.
 

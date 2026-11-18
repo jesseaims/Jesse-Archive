@@ -18,6 +18,7 @@ import {
   FolderPlus,
   Instagram,
   KeyRound,
+  LayoutDashboard,
   LayoutGrid,
   Lock,
   LogOut,
@@ -60,6 +61,8 @@ import { Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
 import LanguageMenu from './LanguageMenu';
+import Dashboard from './dashboard/Dashboard';
+import type { BreachResult, DashboardConfig } from './dashboard/model';
 import { UpdateProgress, UpdateSettings, useAutoUpdate } from './Updater';
 
 type Dict = Record<string, unknown>;
@@ -75,6 +78,7 @@ const icons = {
   crypto: Archive,
 };
 const sectionLabels: Record<string, string> = {
+  dashboard: msg('Dashboard'),
   all: msg('Tutti gli elementi'),
   favorites: msg('Preferiti'),
   passwords: msg('Archivio password'),
@@ -549,9 +553,12 @@ function DecisionModal({
 export default function App() {
   const { askConfirm, showNotice, askText, decision, resolve: resolveDecision } = useAppDialogs();
   const [newsOpen, setNewsOpen] = useState(false);
+  // Session-only data shared with the dashboard: never saved, cleared on lock.
+  const [recentIds, setRecentIds] = useState<string[]>([]),
+    [breaches, setBreaches] = useState<BreachResult[] | null>(null);
   const [status, setStatus] = useState<Status | null>(null),
     [vault, setVault] = useState<State | null>(null),
-    [page, setPage] = useState<Page>('all'),
+    [page, setPage] = useState<Page>('dashboard'),
     [folderId, setFolderId] = useState(''),
     [search, setSearch] = useState(''),
     [password, setPassword] = useState(''),
@@ -585,6 +592,8 @@ export default function App() {
   // Child pages holding secrets unmount because they render only with a vault.
   const wipeSession = useCallback(() => {
     setVault(null);
+    setRecentIds([]);
+    setBreaches(null);
     setPassword('');
     setRecovery('');
     setRecoveryNew('');
@@ -784,6 +793,11 @@ export default function App() {
     }
     return r;
   };
+  // Dashboard layout: saved in the encrypted vault settings (no toast: it saves often).
+  const saveDashboard = async (dashboard: DashboardConfig) => {
+    const r = await api<{ state: State }>('settings', { dashboard });
+    setVault(r.state);
+  };
   const copy = async (text: string) => {
     try {
       await copyText(text);
@@ -959,6 +973,9 @@ export default function App() {
     ).then(() => setMulti([]));
   };
   const openItem = (it?: Item, type: Category = 'login') => {
+    // "Usati di recente" (dashboard): ids of items opened in this session only,
+    // kept in memory and cleared on lock; nothing is saved.
+    if (it?.id) setRecentIds((ids) => [it.id, ...ids.filter((id) => id !== it.id)].slice(0, 20));
     setDraft(it ? structuredClone(it) : itemBase(type));
     setGroupIcon('');
     setAppsList(null);
@@ -1212,6 +1229,12 @@ export default function App() {
         <div className="sidebar-label">{t('WORKSPACE')}</div>
         <nav>
           <Nav
+            active={page === 'dashboard'}
+            icon={LayoutDashboard}
+            title={t('Dashboard')}
+            onClick={() => selectPage('dashboard')}
+          />
+          <Nav
             active={page === 'all'}
             icon={LayoutGrid}
             title={t('Tutti gli elementi')}
@@ -1431,6 +1454,7 @@ export default function App() {
                     <div className="search-box">
                       <Search size={17} />
                       <input
+                        id="vault-search"
                         placeholder={t('Cerca nel vault...')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -1618,6 +1642,23 @@ export default function App() {
               </div>
             </>
           ) : null}
+          {page === 'dashboard' && (
+            <Dashboard
+              vault={vault}
+              breaches={breaches}
+              recentIds={recentIds}
+              openItem={openItem}
+              selectPage={selectPage}
+              focusSearch={() => {
+                selectPage('all');
+                window.setTimeout(() => document.getElementById('vault-search')?.focus(), 0);
+              }}
+              copy={copy}
+              lock={() => void lock()}
+              askConfirm={askConfirm}
+              saveDashboard={saveDashboard}
+            />
+          )}
           {page === 'passwords' && (
             <PasswordPage
               askConfirm={askConfirm}
@@ -1632,7 +1673,14 @@ export default function App() {
           )}
           {page === 'generator' && <GeneratorPage copy={copy} run={run} mutate={mutate} />}
           {page === 'security' && (
-            <SecurityPage askConfirm={askConfirm} vault={vault} run={run} openItem={openItem} />
+            <SecurityPage
+              askConfirm={askConfirm}
+              vault={vault}
+              run={run}
+              openItem={openItem}
+              breaches={breaches}
+              setBreaches={setBreaches}
+            />
           )}
           {page === 'groups' && (
             <>
@@ -2710,22 +2758,23 @@ function SecurityPage({
   vault,
   run,
   openItem,
+  breaches,
+  setBreaches,
 }: {
   askConfirm: DialogAPI['askConfirm'];
   vault: State;
   run: <T>(name: string, body?: Dict) => Promise<T | undefined>;
   openItem: (it?: Item, type?: Category) => void;
+  breaches: BreachResult[] | null;
+  setBreaches: (b: BreachResult[] | null) => void;
 }) {
   const [health, setHealth] = useState<{
-      weak: { item_id: string; title: string; bits: number }[];
-      reused: { item_id: string; title: string }[][];
-      old: { item_id: string; title: string }[];
-      total: number;
-      score: number;
-    } | null>(null),
-    [breaches, setBreaches] = useState<{ item_id: string; title: string; count: number }[] | null>(
-      null,
-    );
+    weak: { item_id: string; title: string; bits: number }[];
+    reused: { item_id: string; title: string }[][];
+    old: { item_id: string; title: string }[];
+    total: number;
+    score: number;
+  } | null>(null);
   useEffect(() => {
     void run<typeof health>('health').then((r) => {
       if (r) setHealth(r);

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'customizable-dashboard': [
+    'Panel personalizable',
+    'El nuevo Panel es el centro de control de la aplicación: puntuación de seguridad, análisis de contraseñas, resumen de la bóveda, favoritos, elementos recientes, notas protegidas, acciones rápidas, generador, estado de la copia de seguridad y privacidad. Con «Personalizar panel» añades, quitas, arrastras y cambias el tamaño de los widgets, eliges entre varios diseños y ajustas las opciones de cada uno; todo se guarda solo en la bóveda cifrada y ningún widget muestra contraseñas.',
+  ],
   multilanguage: [
     'Jesse’s Archive habla tu idioma',
     'Con el nuevo botón «Idioma» arriba a la derecha puedes elegir italiano, inglés, español, francés, alemán, portugués, ruso, chino, japonés o coreano. Toda la aplicación cambia al instante, incluidas la pantalla de desbloqueo, la miniventana del navegador y el menú del área de notificación; en el primer inicio se usa el idioma de Windows. El instalador y la extensión del navegador también siguen el idioma del sistema.',

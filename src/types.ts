@@ -36,6 +36,8 @@ export type Settings = {
   old_days?: number;
   logos?: number;
   theme?: { preset: string; custom?: Record<string, string> };
+  /** Dashboard layout (src/dashboard/model.ts); normalized when read. */
+  dashboard?: unknown;
 };
 export type State = {
   items: Item[];
@@ -55,6 +57,7 @@ export type State = {
 };
 export type Status = { exists: boolean; unlocked: boolean; path: string };
 export type Page =
+  | 'dashboard'
   | 'all'
   | 'favorites'
   | 'passwords'

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'customizable-dashboard': [
+    'Tableau de bord personnalisable',
+    'Le nouveau tableau de bord est le centre de contrôle de l’application : score de sécurité, analyse des mots de passe, aperçu du coffre, favoris, éléments récents, notes sécurisées, actions rapides, générateur, état de la sauvegarde et confidentialité. Avec « Personnaliser le tableau de bord », ajoutez, retirez, déplacez et redimensionnez les widgets, choisissez parmi plusieurs dispositions et réglez les options de chacun ; tout s’enregistre automatiquement dans le coffre chiffré et aucun widget n’affiche de mot de passe.',
+  ],
   multilanguage: [
     'Jesse’s Archive parle votre langue',
     'Avec le nouveau bouton « Langue » en haut à droite, choisissez entre l’italien, l’anglais, l’espagnol, le français, l’allemand, le portugais, le russe, le chinois, le japonais et le coréen. Toute l’application change aussitôt, y compris l’écran de déverrouillage, la mini-fenêtre du navigateur et le menu de la zone de notification ; au premier démarrage, la langue de Windows est utilisée. Le programme d’installation et l’extension du navigateur suivent aussi la langue du système.',
