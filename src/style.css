@@ -3465,7 +3465,7 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-columns: minmax(0, 1fr) 290px;
 }
 .qs-list {
   overflow-y: auto;
