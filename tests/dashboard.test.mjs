@@ -224,3 +224,17 @@ test('the stored configuration never contains vault secrets', () => {
   assert.ok(json.includes('note-id-1'));
   assert.ok(!json.includes('top secret') && !json.includes('hunter2'));
 });
+
+test('dragging near or beyond an edge scrolls that way, faster closer to it', () => {
+  const step = (y) => m.autoScrollStep(y, 100, 900); // scroll area from y=100 to y=900
+  assert.equal(step(500), 0, 'middle: no scrolling');
+  assert.equal(step(185), 0, 'just outside the edge band');
+  assert.ok(step(170) < 0 && step(110) < step(170), 'near the top: up, faster closer');
+  assert.ok(step(830) > 0 && step(890) > step(830), 'near the bottom: down, faster closer');
+  assert.equal(step(20), -m.AUTO_SCROLL_MAX, 'above the area (app header): full speed up');
+  assert.equal(step(2000), m.AUTO_SCROLL_MAX);
+  assert.equal(m.autoScrollStep(NaN, 100, 900), 0);
+  assert.equal(m.autoScrollStep(150, 100, 100), 0, 'empty area');
+  // A short area keeps a middle band where nothing scrolls.
+  assert.equal(m.autoScrollStep(200, 100, 300), 0);
+});

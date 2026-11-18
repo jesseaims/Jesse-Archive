@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties, DragEvent } from 'react';
+import type { CSSProperties, DragEvent, RefObject } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -22,6 +22,7 @@ import { msg, t, translateMessage } from '../i18n';
 import {
   activeLayout,
   addWidget,
+  autoScrollStep,
   LAYOUT_IDS,
   byPosition,
   GRID_COLS,
@@ -197,6 +198,8 @@ export default function Dashboard(props: Props) {
     setDragFrom(null);
     setDropAt(null);
   };
+  const gridRef = useRef<HTMLDivElement>(null);
+  useDragAutoScroll(dragFrom !== null, gridRef);
   const reset = async () => {
     setMenuFor(null);
     if (
@@ -296,6 +299,7 @@ export default function Dashboard(props: Props) {
         </div>
       ) : (
         <div
+          ref={gridRef}
           className="dash-grid"
           style={{ '--rows': rows + (editing ? 1 : 0) } as CSSProperties}
           onDragOver={(e) => {
@@ -402,6 +406,53 @@ const NARROW_QUERY = '(max-width: 1180px)';
 
 const cellStyle = (at: { x: number; y: number }, w: WidgetInstance) =>
   ({ '--x': at.x + 1, '--y': at.y + 1, '--w': WIDTH[w.size] }) as CSSProperties;
+
+/** Nearest ancestor that actually scrolls vertically (the app's content area). */
+function scrollParent(el: HTMLElement | null): HTMLElement | null {
+  for (let node = el?.parentElement ?? null; node; node = node.parentElement) {
+    const overflow = getComputedStyle(node).overflowY;
+    if ((overflow === 'auto' || overflow === 'scroll') && node.scrollHeight > node.clientHeight)
+      return node;
+  }
+  return (document.scrollingElement as HTMLElement | null) ?? null;
+}
+
+/**
+ * While a widget is dragged, scrolls the content area when the pointer is near its top
+ * or bottom edge, or beyond it. WebView2 ignores the mouse wheel during a native drag
+ * and its own edge scrolling is unreliable, so widgets out of view could not be reached.
+ */
+function useDragAutoScroll(active: boolean, gridRef: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    if (!active || typeof requestAnimationFrame !== 'function') return;
+    const scroller = scrollParent(gridRef.current);
+    if (!scroller) return;
+    let y = NaN;
+    let seen = 0;
+    let frame = 0;
+    const onOver = (e: globalThis.DragEvent) => {
+      y = e.clientY;
+      seen = performance.now();
+    };
+    const tick = () => {
+      // dragover fires every ~50 ms while the pointer is in the window, even when it
+      // is still: a stale position means it left the window, so stop scrolling.
+      if (performance.now() - seen < 250) {
+        const root = scroller === document.scrollingElement;
+        const r = root ? { top: 0, bottom: window.innerHeight } : scroller.getBoundingClientRect();
+        const step = autoScrollStep(y, r.top, r.bottom);
+        if (step) scroller.scrollTop += step;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    document.addEventListener('dragover', onOver);
+    frame = requestAnimationFrame(tick);
+    return () => {
+      document.removeEventListener('dragover', onOver);
+      cancelAnimationFrame(frame);
+    };
+  }, [active, gridRef]);
+}
 
 function useNarrow() {
   const query = typeof window.matchMedia === 'function' ? window.matchMedia(NARROW_QUERY) : null;

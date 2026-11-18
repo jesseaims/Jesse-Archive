@@ -564,3 +564,25 @@ export function scoreLevel(score: number, total: number): ScoreLevel {
   if (score >= 40) return 'fair';
   return 'critical';
 }
+
+// --- Scrolling while dragging --------------------------------------------------------
+
+/** Distance from the scroll area's edge (px) where dragging starts to scroll. */
+export const AUTO_SCROLL_EDGE = 80;
+/** Fastest scroll per animation frame (px). */
+export const AUTO_SCROLL_MAX = 22;
+
+/**
+ * Pixels to scroll this frame for a pointer at `y` while dragging over an area from
+ * `top` to `bottom` (viewport coordinates). WebView2 blocks the mouse wheel during a
+ * native drag, so this is the only way to reach widgets out of view: negative scrolls
+ * up, positive down, faster closer to the edge or beyond it (over the app header).
+ */
+export function autoScrollStep(y: number, top: number, bottom: number): number {
+  if (!Number.isFinite(y) || !(bottom > top)) return 0;
+  const edge = Math.min(AUTO_SCROLL_EDGE, (bottom - top) / 4);
+  const depth = y < top + edge ? y - (top + edge) : y > bottom - edge ? y - (bottom - edge) : 0;
+  if (!depth) return 0;
+  const speed = Math.min(AUTO_SCROLL_MAX, Math.ceil((Math.abs(depth) / edge) * AUTO_SCROLL_MAX));
+  return Math.sign(depth) * speed;
+}
