@@ -126,6 +126,7 @@ export default function QuickSearch() {
   }, []);
   const focusInput = () =>
     window.setTimeout(() => {
+      window.focus();
       input.current?.focus();
       input.current?.select();
     }, 0);
@@ -153,7 +154,15 @@ export default function QuickSearch() {
         if (shown.current) void load();
       }),
     ];
+    // Back to this window (Alt+Tab, a click on it): typing goes to the search field.
+    const onFocus = () => {
+      const active = document.activeElement;
+      if (!active || active === document.body || active.classList.contains('qs-window'))
+        input.current?.focus();
+    };
+    window.addEventListener('focus', onFocus);
     return () => {
+      window.removeEventListener('focus', onFocus);
       listeners.forEach((p) => void p.then((fn) => fn()));
       window.clearTimeout(revealTimer.current);
     };
@@ -446,6 +455,9 @@ export default function QuickSearch() {
                   aria-selected={i === current}
                   className={`qs-row ${i === current ? 'active' : ''} ${r.kind === 'account' && r.nested ? 'nested' : ''}`}
                   onMouseMove={() => i !== current && setSelected(i)}
+                  // Selecting with the mouse leaves the focus in the search field, so
+                  // Enter, Ctrl+C and the other keys keep working.
+                  onMouseDown={(e) => e.preventDefault()}
                   // An account is selected by a click and used by a double click (or
                   // the buttons on the right); the other rows act on a click.
                   onClick={() => {
@@ -491,7 +503,9 @@ export default function QuickSearch() {
   }
 
   return (
-    <main className="qs-window" onKeyDown={onKeyDown}>
+    // tabIndex: a click on a non-focusable part keeps the keyboard in the window
+    // (otherwise it moves to <body>, outside this handler).
+    <main className="qs-window" tabIndex={-1} onKeyDown={onKeyDown}>
       <header className="qs-head">
         <label className="qs-field">
           <Search size={20} />

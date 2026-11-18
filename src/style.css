@@ -3374,6 +3374,9 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   border: 1px solid var(--ui-border);
   animation: qs-in 0.14s ease-out;
 }
+.qs-window:focus {
+  outline: none;
+}
 @keyframes qs-in {
   from {
     opacity: 0;

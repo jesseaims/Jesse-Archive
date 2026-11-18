@@ -300,6 +300,20 @@ test('keyboard: arrows, Enter copies the password, Ctrl+C, Ctrl+Shift+C, Alt/Ctr
   assert.equal(d.count('quick_search_hide'), hides + 1, 'Esc closes');
 });
 
+test('selecting with the mouse keeps the keyboard in the window', async () => {
+  const d = await setup();
+  await d.emit('quick-search-shown');
+  await d.type('banca');
+  const row = d.$('.qs-row');
+  const down = new d.w.MouseEvent('mousedown', { bubbles: true, cancelable: true });
+  row.dispatchEvent(down);
+  assert.ok(down.defaultPrevented, 'the search field does not lose the focus');
+  // A click on a non-focusable part focuses the window itself, where the keys are read.
+  assert.equal(d.$('.qs-window').tabIndex, -1);
+  await d.key('C', { ctrlKey: true, shiftKey: true }, d.$('.qs-window'));
+  assert.deepEqual(d.last('quick_search_copy'), { id: 'b1', field: 'password' });
+});
+
 test('close after an action, quick actions and favorites-only search', async () => {
   const d = await setup();
   await d.emit('quick-search-shown');

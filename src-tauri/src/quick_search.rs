@@ -238,6 +238,9 @@ pub fn toggle(app: &AppHandle) {
     let _ = w.show();
     let _ = w.unminimize();
     let _ = w.set_focus();
+    // Bringing the window to the front does not give the keyboard to WebView2:
+    // focus the webview too, so the search field takes typing right away.
+    let _ = AsRef::<tauri::Webview>::as_ref(&w).set_focus();
     let _ = app.emit_to(LABEL, "quick-search-shown", ());
 }
 
@@ -399,7 +402,11 @@ fn remember_item(app: &AppHandle, id: &str) {
     };
     if let Some(next) = next_recent(&recent_ids(&data), id) {
         drop(data);
-        let _ = vault.call("settings", json!({ "recent": next }));
+        if vault.call("settings", json!({ "recent": next })).is_ok() {
+            drop(vault);
+            // The main window (Dashboard widget) reloads the vault state.
+            let _ = app.emit("vault-changed", ());
+        }
     }
 }
 
@@ -586,6 +593,8 @@ pub fn quick_search_clear_recent(app: AppHandle) -> Result<(), String> {
         return Err("Vault bloccato".into());
     }
     vault.call("settings", json!({ "recent": [] }))?;
+    drop(vault);
+    let _ = app.emit("vault-changed", ());
     Ok(())
 }
 
