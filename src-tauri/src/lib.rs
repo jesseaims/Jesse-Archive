@@ -4,6 +4,7 @@ mod browser_installer;
 mod browser_navigation;
 mod browser_protocol;
 mod core;
+mod passkey;
 mod updater;
 mod zoom;
 use serde_json::Value;
@@ -239,6 +240,7 @@ pub fn run() {
         }))
         .manage(AppState(Mutex::new(core::Vault::new())))
         .manage(zoom::Zoom(Mutex::new(zoom::load())))
+        .manage(passkey::Passkeys(Mutex::new(None)))
         .setup(|app| {
             browser::setup(app.handle())?;
             spawn_idle_lock(app.handle().clone());
@@ -339,7 +341,13 @@ pub fn run() {
             updater::update_settings,
             updater::update_set_auto,
             updater::update_check,
-            updater::update_install
+            updater::update_install,
+            passkey::passkey_state,
+            passkey::passkey_approve,
+            passkey::passkey_fallback,
+            passkey::passkey_cancel,
+            passkey::passkey_settings,
+            passkey::passkey_set_enabled
         ])
         .run(tauri::generate_context!())
         .expect("Tauri application failed");

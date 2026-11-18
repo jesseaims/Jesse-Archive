@@ -1,12 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { FormEvent } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import { KeyRound, Lock, Search, ShieldCheck, X, ArrowRight } from 'lucide-react';
+import {
+  Fingerprint,
+  KeyRound,
+  Lock,
+  Search,
+  ShieldCheck,
+  Smartphone,
+  X,
+  ArrowRight,
+} from 'lucide-react';
 import { api } from './api';
 import { applyPalette } from './theme';
 type Account = { id: string; title: string; username: string };
 type Snapshot = { available: boolean; unlocked?: boolean; domain?: string; accounts?: Account[] };
+// WebAuthn request from a site (src-tauri/src/passkey.rs).
+type Passkey = {
+  active: boolean;
+  op?: 'create' | 'get';
+  rpId?: string;
+  rpName?: string;
+  userName?: string;
+  userDisplay?: string;
+  unlocked?: boolean;
+  candidates?: Account[];
+  existing?: boolean;
+};
 export default function QuickFill() {
+  const [passkey, setPasskey] = useState<Passkey>({ active: false });
   const [state, setState] = useState<Snapshot>({ available: false }),
     [password, setPassword] = useState(''),
     [query, setQuery] = useState(''),
@@ -19,10 +42,25 @@ export default function QuickFill() {
   const refresh = useCallback(async () => {
     try {
       setState(await invoke<Snapshot>('browser_accounts'));
+      setPasskey(await invoke<Passkey>('passkey_state'));
     } catch (e) {
       setError(String(e));
     }
   }, []);
+  const passkeyAction = async (command: string, args: Record<string, unknown> = {}) => {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      await invoke(command, args);
+      setPasskey({ active: false });
+    } catch (e) {
+      setError(String(e));
+      void refresh();
+    } finally {
+      setBusy(false);
+    }
+  };
   const cancel = useCallback(() => {
     active.current = false;
     clearTimeout(timer.current);
@@ -76,6 +114,14 @@ export default function QuickFill() {
         setPassword('');
         void refresh();
       }),
+      listen('passkey-changed', () => {
+        setPassword('');
+        setError('');
+        setNotice('');
+        setBusy(false);
+        setSelected(0);
+        void refresh();
+      }),
     ];
     const interval = setInterval(() => {
       if (active.current) void refresh();
@@ -88,6 +134,159 @@ export default function QuickFill() {
       clearTimeout(timer.current);
     };
   }, [refresh, cancel]);
+  const unlock = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      await api('unlock', { password });
+      setPassword('');
+      await refresh();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const unlockForm = (
+    <form className="quick-unlock" onSubmit={unlock}>
+      <Lock size={28} />
+      <h2>Sblocca il vault</h2>
+      <p>La password principale rimane nell’app.</p>
+      <input
+        key={passkey.active ? passkey.rpId : state.domain}
+        autoFocus
+        type="password"
+        autoComplete="off"
+        aria-label="Password principale"
+        placeholder="Password principale"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button className="primary wide" disabled={busy || !password}>
+        {busy ? 'Sblocco…' : 'Sblocca e continua'}
+        <ArrowRight size={17} />
+      </button>
+    </form>
+  );
+  // Built here, returned after the last hook below (hooks must keep their order).
+  const passkeyView = (() => {
+    if (!passkey.active) return null;
+    const candidates = passkey.candidates || [];
+    const pick = Math.min(selected, Math.max(0, candidates.length - 1));
+    const account = passkey.userName || passkey.userDisplay || 'account senza nome';
+    return (
+      <main
+        className="quick-fill"
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            void passkeyAction('passkey_cancel');
+          }
+          if (passkey.unlocked && passkey.op === 'get' && e.key === 'ArrowDown') {
+            e.preventDefault();
+            setSelected((pick + 1) % Math.max(1, candidates.length));
+          }
+          if (passkey.unlocked && passkey.op === 'get' && e.key === 'ArrowUp') {
+            e.preventDefault();
+            setSelected((pick + candidates.length - 1) % Math.max(1, candidates.length));
+          }
+        }}
+      >
+        <header className="quick-heading">
+          <span className="quick-emblem">
+            <Fingerprint size={23} />
+          </span>
+          <div>
+            <strong>JesseArchive</strong>
+            <small>{passkey.op === 'create' ? 'Nuova passkey' : 'Accesso con passkey'}</small>
+          </div>
+          <button
+            className="icon-button"
+            aria-label="Annulla"
+            onClick={() => void passkeyAction('passkey_cancel')}
+          >
+            <X size={19} />
+          </button>
+        </header>
+        <div className="quick-domain">
+          <ShieldCheck size={16} />
+          <strong>{passkey.rpId}</strong>
+          <span>HTTPS</span>
+        </div>
+        {!passkey.unlocked ? (
+          unlockForm
+        ) : passkey.op === 'create' ? (
+          <div className="quick-message">
+            <Fingerprint size={32} />
+            <h2>Salvare una passkey?</h2>
+            <p>
+              {passkey.rpName || passkey.rpId} chiede di creare una passkey per{' '}
+              <strong>{account}</strong>. Verrà salvata cifrata nel vault di Jesse’s Archive.
+            </p>
+            {passkey.existing && (
+              <p className="quick-error">
+                Per questo account esiste già una passkey in Jesse’s Archive.
+              </p>
+            )}
+            <button
+              className="primary wide"
+              autoFocus
+              disabled={busy}
+              onClick={() => void passkeyAction('passkey_approve')}
+            >
+              Salva in Jesse’s Archive
+              <ArrowRight size={17} />
+            </button>
+          </div>
+        ) : (
+          <div className="quick-accounts" role="listbox" aria-label="Passkey per il sito">
+            {candidates.map((a, i) => (
+              <button
+                key={a.id}
+                role="option"
+                aria-selected={i === pick}
+                autoFocus={i === pick}
+                disabled={busy}
+                className={`quick-account ${i === pick ? 'selected' : ''}`}
+                onMouseEnter={() => setSelected(i)}
+                onClick={() => void passkeyAction('passkey_approve', { id: a.id })}
+              >
+                <span className="quick-emblem">
+                  <Fingerprint size={18} />
+                </span>
+                <span>
+                  <strong>{a.title}</strong>
+                  <small>{a.username || 'Account senza nome'}</small>
+                </span>
+                <ArrowRight size={16} />
+              </button>
+            ))}
+            {!candidates.length && (
+              <p className="quick-empty">Nessuna passkey di Jesse’s Archive per questo sito.</p>
+            )}
+          </div>
+        )}
+        <button
+          className="secondary wide"
+          disabled={busy}
+          onClick={() => void passkeyAction('passkey_fallback')}
+        >
+          <Smartphone size={16} />
+          Usa un altro dispositivo (telefono, Windows Hello…)
+        </button>
+        {error && (
+          <p className="quick-error" role="alert">
+            {error}
+          </p>
+        )}
+        <footer className="quick-footer">
+          <span>{busy ? 'Elaborazione…' : 'Invio Conferma · Esc Annulla'}</span>
+          <small>Ogni uso richiede la tua conferma</small>
+        </footer>
+      </main>
+    );
+  })();
   const accounts = (state.accounts || []).filter((a) =>
     `${a.title} ${a.username}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
   );
@@ -95,6 +294,7 @@ export default function QuickFill() {
   useEffect(() => {
     document.querySelector('.quick-account.selected')?.scrollIntoView({ block: 'nearest' });
   }, [index]);
+  if (passkeyView) return passkeyView;
   const fill = async (account: Account) => {
     if (busy) return;
     setBusy(true);
@@ -168,41 +368,7 @@ export default function QuickFill() {
           </p>
         </div>
       ) : !state.unlocked ? (
-        <form
-          className="quick-unlock"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setBusy(true);
-            setError('');
-            try {
-              await api('unlock', { password });
-              setPassword('');
-              await refresh();
-            } catch (err) {
-              setError(String(err));
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          <Lock size={28} />
-          <h2>Sblocca il vault</h2>
-          <p>La password principale rimane nell’app.</p>
-          <input
-            key={state.domain}
-            autoFocus
-            type="password"
-            autoComplete="off"
-            aria-label="Password principale"
-            placeholder="Password principale"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="primary wide" disabled={busy || !password}>
-            {busy ? 'Sblocco…' : 'Sblocca e continua'}
-            <ArrowRight size={17} />
-          </button>
-        </form>
+        unlockForm
       ) : (
         <>
           <label className="quick-search">

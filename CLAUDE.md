@@ -41,6 +41,7 @@ Finestre Tauri: `main`, `quick-fill`, `browser-setup`. Il frontend sceglie il co
 | `hmac`, `sha1`, `sha2`, `data-encoding` | TOTP, verifica Pwned Passwords e hash della copia del vault |
 | `url`, `psl`, `csv`, `reqwest` | URL/PSL offline, import/export e richieste HTTP opzionali |
 | `ed25519-dalek` | Verifica della firma degli aggiornamenti automatici (`updater.rs`) |
+| `p256` | Passkey WebAuthn ES256 (`passkey.rs`) |
 | `rfd`, `clipboard-win`, `winreg`, `windows-sys` | Dialoghi e integrazione Windows |
 | Node.js/npm, Cargo MSVC, WiX/Tauri, Inno Setup | Toolchain e distribuzione Windows con WebView2 offline |
 | Node test runner, jsdom, fixture Python | Test dell'estensione, relay nativo e compatibilità crittografica |
@@ -63,11 +64,12 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
 | Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo |
-| Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali; niente WebAuthn |
+| Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali |
+| Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
 | Guida estensioni | Implementata; caricamento iniziale ancora manuale, Firefox locale temporaneo |
 | News e commit offline con orari individuali | Implementati in `NewsPanel.tsx`, changelog e snapshot generato |
 
-Non esiste una roadmap approvata per biometria, WebAuthn o servizi cloud: sono assenze rilevate, non impegni di sviluppo.
+Non esiste una roadmap approvata per biometria, provider passkey di sistema o servizi cloud: sono assenze rilevate, non impegni di sviluppo.
 
 ## E. Security Architecture
 

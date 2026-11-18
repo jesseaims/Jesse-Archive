@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'webauthn-passkeys',
+    addedAt: '2026-11-18T01:01:38+01:00',
+    version: 'Beta 1.1.14',
+    title: 'Passkey nei siti web',
+    description:
+      'Quando un sito propone una passkey, Jesse’s Archive apre la mini finestra: puoi salvarla nel vault cifrato e usarla per accedere, oppure scegliere «Usa un altro dispositivo» per telefono o Windows Hello. Ogni uso richiede la tua conferma. Ricarica l’estensione nel browser dopo l’aggiornamento; su Firefox serve la versione 128 o successiva. Si disattiva in Impostazioni → Desktop.',
+    icon: 'key',
+  },
+  {
     id: 'auto-update',
     addedAt: '2026-11-18T00:45:49+01:00',
     version: 'Beta 1.1.13',

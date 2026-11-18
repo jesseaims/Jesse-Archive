@@ -10,11 +10,53 @@ function connect() {
   port.onDisconnect.addListener(() => {
     void api.runtime.lastError;
     port = null; target = null;
+    // App closed or host missing: the browser handles pending passkey requests.
+    for (const request of [...passkeys.keys()]) finishPasskey(request, {action:'fallback'});
     clearTimeout(retry); retry = setTimeout(connect, 10000);
   });
 }
+/* WebAuthn requests from passkey-bridge.js. The origin comes from the browser
+ * (sender), only for HTTPS top-level frames; the page cannot choose it. */
+const passkeys = new Map();
+function finishPasskey(request, result) {
+  const pending = passkeys.get(request);
+  if (!pending) return;
+  passkeys.delete(request);
+  clearTimeout(pending.timer);
+  // The browser's own dialog (fallback) and the page need the window focused again.
+  api.tabs.get(pending.tabId).then(tab => api.windows.update(tab.windowId, {focused: true})).catch(() => {})
+    .finally(() => pending.respond(result));
+}
+function onPasskeyMessage(message, sender, respond) {
+  if (message?.kind !== 'passkey' || sender.id !== api.runtime.id) return false;
+  const url = sender.url || '';
+  if (!sender.tab?.id || sender.frameId !== 0 || !url.startsWith('https://')) { respond({action:'fallback'}); return false; }
+  if (message.op === 'cancel') {
+    for (const [request, pending] of passkeys) {
+      if (pending.tabId === sender.tab.id && pending.pageRequest === message.pageRequest) {
+        send({kind:'passkey-cancel', request});
+        passkeys.delete(request); clearTimeout(pending.timer);
+      }
+    }
+    return false;
+  }
+  if (message.op !== 'create' && message.op !== 'get') { respond({action:'fallback'}); return false; }
+  connect();
+  if (!port) { respond({action:'fallback'}); return false; }
+  const request = crypto.randomUUID();
+  const timeout = Math.min(Math.max(Number(message.timeout) || 300000, 30000), 600000);
+  const timer = setTimeout(() => {
+    send({kind:'passkey-cancel', request});
+    finishPasskey(request, {action:'error', name:'NotAllowedError', message:'Tempo scaduto.'});
+  }, timeout);
+  passkeys.set(request, {respond, timer, tabId: sender.tab.id, pageRequest: message.pageRequest});
+  send({kind:'passkey', request, op: message.op, origin: new URL(url).origin, options: message.options});
+  return true;
+}
+api.runtime.onMessage.addListener(onPasskeyMessage);
 function send(message) { port?.postMessage(message); }
 async function receive(message) {
+  if (message.kind === 'passkey-result') { finishPasskey(message.request, message.result); return; }
   if (message.kind === 'context') {
     const win = await api.windows.getLastFocused();
     if (!win.focused) return;

@@ -6,7 +6,7 @@ const source=readFileSync(new URL('../browser-extension/background.js',import.me
 function page(html,url='https://example.com/login') {
  const dom=new JSDOM(html,{url,runScripts:'outside-only'});
  const w=dom.window;
- w.chrome={runtime:{connectNative:()=>({onMessage:{addListener(){}},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}}},action:{onClicked:{addListener(){}}}};
+ w.chrome={runtime:{connectNative:()=>({onMessage:{addListener(){}},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
  w.HTMLInputElement.prototype.getClientRects=function(){return this.hidden?[]:[{}]};
  w.document.hasFocus=()=>true;
  w.eval(source+'\n globalThis.testFill=fillFields;globalThis.testCapture=captureContext;globalThis.receiveTest=receive;globalThis.testTarget=value=>{target=value};globalThis.testTransport=value=>{port=value};');

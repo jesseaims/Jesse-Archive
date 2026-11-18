@@ -10,11 +10,13 @@ if (!existsSync(keyFile)) {
 const key=readFileSync(keyFile,'utf8').trim();
 const id=[...createHash('sha256').update(Buffer.from(key,'base64')).digest().subarray(0,16)].map(b=>String.fromCharCode(97+(b>>4),97+(b&15))).join('');
 writeFileSync(new URL('chromium-id.txt',root),id+'\n');
-const shared={manifest_version:3,name:'JesseArchive · Inserimento rapido',version:'1.1.13',description:'Seleziona dal vault locale gli account per il sito corrente.',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],action:{default_title:'Apri JesseArchive per questo campo'}};
+const shared={manifest_version:3,name:'JesseArchive · Inserimento rapido',version:'1.1.14',description:'Seleziona dal vault locale gli account per il sito corrente.',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],action:{default_title:'Apri JesseArchive per questo campo'},
+  // Passkeys (WebAuthn): page hook in the MAIN world + isolated bridge, top frame of HTTPS pages.
+  content_scripts:[{matches:['https://*/*'],js:['passkey-page.js'],run_at:'document_start',world:'MAIN'},{matches:['https://*/*'],js:['passkey-bridge.js'],run_at:'document_start'}]};
 for (const browser of ['chromium','firefox']) {
   const dir=new URL(browser+'/',root); mkdirSync(dir,{recursive:true});
-  const manifest=browser==='chromium'?{...shared,key,background:{service_worker:'background.js'}}:{...shared,background:{scripts:['background.js']},browser_specific_settings:{gecko:{id:'browser@jessearchive.local',strict_min_version:'115.0',data_collection_permissions:{required:['none']}}}};
+  const manifest=browser==='chromium'?{...shared,key,background:{service_worker:'background.js'}}:{...shared,background:{scripts:['background.js']},browser_specific_settings:{gecko:{id:'browser@jessearchive.local',strict_min_version:'128.0',data_collection_permissions:{required:['none']}}}};
   writeFileSync(new URL('manifest.json',dir),JSON.stringify(manifest,null,2)+'\n');
-  copyFileSync(new URL('background.js',root),new URL('background.js',dir));
+  for (const file of ['background.js','passkey-page.js','passkey-bridge.js']) copyFileSync(new URL(file,root),new URL(file,dir));
 }
 console.log(`Browser extensions prepared. Chromium ID: ${id}`);

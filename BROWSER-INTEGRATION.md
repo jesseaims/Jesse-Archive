@@ -25,9 +25,27 @@ Il pulsante nella barra strumenti dell'estensione apre lo stesso pannello, ma pe
 - Nei login su più schermate compila prima lo username; continua sul sito, seleziona il campo password e richiama il pannello per scegliere nuovamente l'account.
 - Le richieste scadono dopo due minuti. Un cambio di URL, scheda o modulo richiede una nuova richiesta.
 
+## Passkey
+
+Dalla Beta 1.1.14, quando un sito HTTPS propone di creare una passkey o di accedere con una passkey, si apre la mini finestra di Jesse's Archive:
+
+- **Salva in Jesse's Archive:** crea la passkey e la conserva cifrata nel vault, come scheda Passkey.
+- **Scegli una passkey:** accedi con una passkey già salvata per quel sito.
+- **Usa un altro dispositivo:** il browser mostra la sua finestra (telefono, Windows Hello, chiave di sicurezza).
+
+Esc o la X annullano. Se il vault è sbloccato e non contiene passkey per il sito, l'accesso passa direttamente al browser.
+
+Limiti:
+- Dopo l'aggiornamento ricarica l'estensione (o riavvia il browser).
+- Su Firefox serve la versione 128 o successiva.
+- Le passkey proposte automaticamente nei campi di accesso (autofill) restano gestite dal browser.
+- Gli iframe non sono supportati, e nemmeno gli algoritmi diversi da ES256.
+
+Per disattivare la funzione: Impostazioni → Desktop → «Usa Jesse's Archive per le passkey dei siti».
+
 ## Limiti e verifica
 
-Sono esclusi HTTP, pagine interne del browser, iframe con origine diversa dalla pagina principale, campi non modificabili e moduli ambigui con più password o password nuova. L'integrazione non implementa WebAuthn/passkey, CAPTCHA, MFA o un login automatico. Le pagine che bloccano le estensioni e alcuni controlli personalizzati richiedono la copia manuale dall'app.
+Sono esclusi HTTP, pagine interne del browser, iframe con origine diversa dalla pagina principale, campi non modificabili e moduli ambigui con più password o password nuova. L'integrazione non implementa CAPTCHA, MFA o un login automatico. Le pagine che bloccano le estensioni e alcuni controlli personalizzati richiedono la copia manuale dall'app.
 
 Il codice usa le API WebExtensions per Chromium e Firefox. La compatibilità effettiva deve essere verificata nelle versioni installate dei sei browser: la compilazione non sostituisce questo collaudo.
 

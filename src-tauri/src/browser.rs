@@ -99,7 +99,7 @@ fn same_account_site(saved: &str, target: &str) -> bool {
         _ => false,
     }
 }
-fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Result<(), String> {
+pub(crate) fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Result<(), String> {
     let bridge = app.state::<Bridge>();
     let stream = bridge
         .clients
@@ -140,11 +140,20 @@ pub fn request(app: &tauri::AppHandle) {
         }
     });
 }
-fn show(app: &tauri::AppHandle) {
+pub(crate) fn show(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("quick-fill") {
         let _ = window.center();
         let _ = window.show();
         let _ = window.set_focus();
+    }
+}
+/// Hides the panel unless a credential-fill session still needs it.
+pub(crate) fn hide(app: &tauri::AppHandle) {
+    if app.state::<Bridge>().session.lock().unwrap().is_some() {
+        return;
+    }
+    if let Some(window) = app.get_webview_window("quick-fill") {
+        let _ = window.hide();
     }
 }
 fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
@@ -182,6 +191,11 @@ fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
             drop(pending);
             show(app);
             let _ = app.emit_to("quick-fill", "browser-changed", ());
+        }
+        // WebAuthn requests from the extension's page bridge (see passkey.rs).
+        "passkey" => crate::passkey::request(app, client, &message),
+        "passkey-cancel" => {
+            crate::passkey::aborted(app, client, message["request"].as_str().or(Some("")))
         }
         "filled" => {
             let bridge = app.state::<Bridge>();
@@ -277,6 +291,8 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                     *session = None;
                     let _ = app.emit_to("quick-fill", "browser-changed", ());
                 }
+                drop(session);
+                crate::passkey::aborted(&app, &id, None);
             });
         }
     });
@@ -375,6 +391,8 @@ pub fn browser_cancel(app: tauri::AppHandle) {
     let b = app.state::<Bridge>();
     *b.session.lock().unwrap() = None;
     *b.request.lock().unwrap() = None;
+    // Closing the panel also refuses a pending passkey request.
+    crate::passkey::cancel(&app);
     let _ = app.emit_to("quick-fill", "browser-dismissed", ());
     if let Some(w) = app.get_webview_window("quick-fill") {
         let _ = w.hide();

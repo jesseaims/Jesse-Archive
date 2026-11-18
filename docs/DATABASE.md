@@ -71,7 +71,7 @@ Il metodo `state` clona il payload e aggiunge `path`, `synced_at`, `prefs` per l
 | `card` | `holder`, `number`, `expiry`, `cvv`, `pin` | `pin` |
 | `note` | Nessun campo strutturato; testo in `notes` | Nessuno |
 | `personal` | `fullname`, `email`, `phone`, `address`, `city`, `zip`, `country`, `birthday` | Nessuno |
-| `passkey` | `url`, `username`, `credential` | Nessuno; archivio di stringhe, non WebAuthn |
+| `passkey` | `url`, `username`, `credential`; per le passkey WebAuthn anche `webauthn` (nascosto) | Nessun campo `secret`. `webauthn` è JSON `{v:1, alg:-7, rp_id, cred_id, user_handle, key}`, con valori base64url e `key` = scalare privato P-256. Escluso dalla ricerca e dal CSV, incluso nell'export JSON in chiaro. |
 | `crypto` | `platform`, `address`, `seed`, `password` | `password` |
 
 `gk` e `src` raggruppano visivamente account web/app/altro. La ricerca rapida usa il sito in `f.url`, non l'etichetta del gruppo, e non deduce un dominio autorizzato dalla sola email dello username.

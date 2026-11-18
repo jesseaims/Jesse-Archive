@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.1.13"
+﻿#define AppVersion "1.1.14"
 #define AppName "Jesse's Archive"
 
 [Setup]
