@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.1.14"
+﻿#define AppVersion "1.1.15"
 #define AppName "Jesse's Archive"
 
 [Setup]
@@ -10,7 +10,9 @@ OutputBaseFilename=JesseArchive-Setup
 SetupIconFile=..\src-tauri\icon.ico
 WizardStyle=modern
 WizardImageFile=..\src-tauri\installer-assets\nsis-sidebar.bmp
-WizardSmallImageFile=..\src-tauri\installer-assets\nsis-header.bmp
+; Square logo for the top-right corner, one bitmap per DPI scale (100%..250%):
+; Inno picks the closest size, so the image is never squeezed out of shape.
+WizardSmallImageFile=..\src-tauri\installer-assets\inno-small-55x55.bmp,..\src-tauri\installer-assets\inno-small-64x68.bmp,..\src-tauri\installer-assets\inno-small-69x69.bmp,..\src-tauri\installer-assets\inno-small-83x80.bmp,..\src-tauri\installer-assets\inno-small-92x97.bmp,..\src-tauri\installer-assets\inno-small-110x106.bmp,..\src-tauri\installer-assets\inno-small-119x123.bmp,..\src-tauri\installer-assets\inno-small-138x140.bmp
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=admin

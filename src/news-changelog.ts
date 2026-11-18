@@ -12,6 +12,15 @@ export type NewsEntry = {
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'installer-logo',
+    addedAt: '2026-11-18T01:31:43+01:00',
+    version: 'Beta 1.1.15',
+    title: 'Logo dell’installer sistemato',
+    description:
+      'Nell’installazione il logo in alto a destra non appare più schiacciato: ora è il logo dell’app, nitido e nelle giuste proporzioni anche con lo schermo ingrandito.',
+    icon: 'palette',
+  },
+  {
     id: 'webauthn-passkeys',
     addedAt: '2026-11-18T01:01:38+01:00',
     version: 'Beta 1.1.14',
