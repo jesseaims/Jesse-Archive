@@ -230,7 +230,7 @@ pub fn toggle(app: &AppHandle) {
     let Some(w) = window(app) else {
         return;
     };
-    if w.is_visible().unwrap_or(false) && w.is_focused().unwrap_or(false) {
+    if w.is_visible().unwrap_or(false) && in_front(&w) {
         hide(app);
         return;
     }
@@ -242,6 +242,34 @@ pub fn toggle(app: &AppHandle) {
     // focus the webview too, so the search field takes typing right away.
     let _ = AsRef::<tauri::Webview>::as_ref(&w).set_focus();
     let _ = app.emit_to(LABEL, "quick-search-shown", ());
+}
+
+/// True when the window is the one in front. Not `is_focused`: that turns false when
+/// the keyboard moves from the window to its own webview.
+#[cfg(windows)]
+fn in_front(w: &WebviewWindow) -> bool {
+    use windows_sys::Win32::UI::WindowsAndMessaging::GetForegroundWindow;
+    // SAFETY: no arguments; returns the foreground window handle or null.
+    let front = unsafe { GetForegroundWindow() };
+    w.hwnd().is_ok_and(|h| h.0 as isize == front as isize)
+}
+#[cfg(not(windows))]
+fn in_front(w: &WebviewWindow) -> bool {
+    w.is_focused().unwrap_or(false)
+}
+
+/// The window reported a focus loss. Focusing the webview inside it also reports
+/// one, so it hides only if another window is really in front a moment later.
+pub fn focus_lost(app: &AppHandle) {
+    let app = app.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(120));
+        if let Some(w) = window(&app) {
+            if !in_front(&w) {
+                hide(&app);
+            }
+        }
+    });
 }
 
 /// Hides the window; the page drops results and any revealed password.

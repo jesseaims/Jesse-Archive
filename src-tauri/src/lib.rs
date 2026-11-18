@@ -277,7 +277,9 @@ pub fn run() {
             if win.label() == quick_search::LABEL {
                 // A launcher: it goes away when it loses focus or is closed (Alt+F4).
                 match event {
-                    tauri::WindowEvent::Focused(false) => quick_search::hide(win.app_handle()),
+                    tauri::WindowEvent::Focused(false) => {
+                        quick_search::focus_lost(win.app_handle())
+                    }
                     tauri::WindowEvent::CloseRequested { api, .. } => {
                         api.prevent_close();
                         quick_search::hide(win.app_handle());
