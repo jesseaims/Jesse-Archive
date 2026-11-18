@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    '全局快速搜索',
+    '在任何应用程序中按 Ctrl+Shift+Space（即使 Jesse’s Archive 位于通知区域），即可打开紧凑的搜索窗口：按名称、用户名、邮箱或网站查找帐户，同一服务的帐户会分组显示；然后复制用户名或密码、显示密码几秒钟、打开网站或在保管库中打开项目，全部可用键盘完成。仅在保管库解锁时可用，密码复制时不会经过该窗口，剪贴板照常清空。快捷键和选项位于“设置 → 全局快速搜索”。',
+  ],
   'window-state': [
     '窗口会记住大小和位置',
     'Jesse’s Archive 会以你离开时的样子重新打开：全屏、最大化，或保持你选择的大小和位置，即使经过系统托盘也是如此。如果原来所在的屏幕已断开，窗口会在可用屏幕的中央打开。',

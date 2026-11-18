@@ -125,6 +125,17 @@ Limiti:
 - il file scaricato in `%TEMP%` non è protetto da processi malevoli dello stesso utente fra la verifica e l'avvio;
 - il setup non ha Authenticode, quindi l'avviso di Windows dipende dalla reputazione SmartScreen.
 
+### Ricerca rapida globale
+
+- **Nessuna sessione propria:** ogni comando passa da `Vault::call`, quindi valgono gli stessi controlli di sblocco e scadenza; lo sblocco dalla finestra usa il comando `unlock` della finestra principale. Con il vault bloccato `quick_search_data` restituisce solo `unlocked: false` e le impostazioni.
+- **Solo metadati nella finestra:** titolo, username o email, URL, piattaforma crypto, categoria, cartella, preferito, nome e logo del gruppo (`metadata` in `quick_search.rs`). Mai password, TOTP, numeri di carta, CVV, PIN, seed, credenziali passkey o testo delle note; test `quick_search::tests::metadata_never_contains_secrets_or_notes`. L'indice di ricerca esiste solo nella memoria della finestra e viene scartato quando si nasconde o il vault si blocca.
+- **Password:** copiate nel backend (`quick_search_copy`) senza passare dalla webview; gli appunti si svuotano dopo il ritardo del vault (`settings.clip`) solo se contengono ancora quel valore (`clipboard::clear_if_unchanged`), e la copia in attesa è in `Zeroizing`. «Mostra password» è l'unico caso in cui una password arriva alla finestra: su richiesta esplicita, nascosta dopo 15 s, al cambio di selezione, alla chiusura e al blocco. Come per la finestra principale, la memoria JavaScript non è cancellata in modo verificabile e i JSON letti nel backend non sono azzerati.
+- **Blocco:** su `vault-locked` la finestra scarta risultati e password mostrata e passa allo stato bloccato; il backend svuota cronologia e usati di recente. Copiare, mostrare o aprire conta come attività (`touch`); cercare no, perché `browser_state` è passivo.
+- **Cronologia e recenti:** facoltativi (cronologia disattivata per impostazione predefinita), solo in memoria, massimo 8 voci, mai password; si cancellano al blocco, disattivandoli o con «Cancella la cronologia delle ricerche».
+- **Siti:** si aprono solo indirizzi http/https validi (`site_url`), quindi non `file:`, `javascript:` o protocolli di altre applicazioni.
+- **Scorciatoia:** registrata con `RegisterHotKey` tramite il plugin, senza hook di tastiera né polling; rifiutate le combinazioni senza Ctrl/Alt/Win e quelle di sistema (Ctrl+C/V…, Alt+Tab, Alt+F4, Ctrl+Alt+Canc, Win+L).
+- **Rete e log:** nessuna richiesta di rete, telemetria o log delle ricerche; nessuna notifica con credenziali.
+
 ### Dashboard
 
 - **Cosa mostrano i widget:** solo dati già presenti nello stato sbloccato della UI (titoli, categorie, date, conteggi) e i risultati di `health`/`backup_info`. Nessun widget mostra password, valori TOTP o testo delle note.

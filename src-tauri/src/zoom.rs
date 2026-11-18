@@ -47,8 +47,12 @@ pub fn current(app: &AppHandle) -> f64 {
 /// size follows the zoom to keep the whole panel visible.
 pub fn apply_to(window: &WebviewWindow, factor: f64) {
     let _ = window.set_zoom(factor);
-    if window.label() == "quick-fill" {
-        let (w, h) = crate::browser::QUICK_FILL_SIZE;
+    let fixed = match window.label() {
+        "quick-fill" => Some(crate::browser::QUICK_FILL_SIZE),
+        crate::quick_search::LABEL => Some(crate::quick_search::SIZE),
+        _ => None,
+    };
+    if let Some((w, h)) = fixed {
         let _ = window.set_size(LogicalSize::new(w * factor, h * factor));
     }
 }

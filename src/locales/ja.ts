@@ -765,6 +765,52 @@ const dictionary: Dictionary = {
     'パスワードの総合評価と検出された問題。',
   Vault: '保管庫',
   Visualizzazione: '表示',
+  Apri: '開く',
+  'Apri Jesse’s Archive': 'Jesse’s Archive を開く',
+  'Apri la dashboard': 'ダッシュボードを開く',
+  'Apri nel vault': '保管庫で開く',
+  'Apri sito': 'サイトを開く',
+  'Attiva la ricerca rapida globale': 'グローバル クイック検索を有効にする',
+  Azioni: 'アクション',
+  Bloccato: 'ロック中',
+  'Cancella la cronologia delle ricerche': '検索履歴を消去',
+  'Caricamento…': '読み込み中…',
+  'Cerca account, siti, email…': 'アカウント、サイト、メールを検索…',
+  'Cerca anche per categoria e cartella': 'カテゴリとフォルダーでも検索する',
+  'Cerca in tutto il vault': '保管庫全体を検索',
+  'Cerca nei preferiti': 'お気に入りを検索',
+  'Cerca per nome, username, email o sito.': '名前、ユーザー名、メール、サイトで検索します。',
+  'Chiudi la finestra dopo un’azione': '操作の後にウィンドウを閉じる',
+  'Copia username': 'ユーザー名をコピー',
+  'Cronologia delle ricerche cancellata': '検索履歴を消去しました',
+  'Impostazioni salvate': '設定を保存しました',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近の検索と最近使った項目はメモリにのみ保持され、保管庫がロックされると消去されます。常に使えるようにするには、「デスクトップ」セクションで「Windows と同時に起動」をオンにしてください。',
+  'Mostra gli elementi usati di recente': '最近使った項目を表示',
+  'Mostra i preferiti quando la ricerca è vuota': '検索が空のときにお気に入りを表示',
+  'Nessun preferito.': 'お気に入りはありません。',
+  'Nessun risultato per «{q}»': '「{q}」の結果はありません',
+  'Password copiata': 'パスワードをコピーしました',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'パスワードをコピーしました: クリップボードは {n} 秒後に消去されます',
+  'Premi Invio per vedere gli account.': 'Enter キーでアカウントを表示します。',
+  'Ricerca rapida': 'クイック検索',
+  'Ricerca rapida globale': 'グローバル クイック検索',
+  'Ricerche recenti': '最近の検索',
+  'Ricorda le ricerche recenti': '最近の検索を記憶する',
+  'Ripristina predefinita': '既定に戻す',
+  Sblocca: 'ロック解除',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    '保管庫のロックを解除してアカウントを検索します。',
+  Sbloccato: 'ロック解除済み',
+  'Scorciatoia attiva: {shortcut}': '有効なショートカット: {shortcut}',
+  'Scorciatoia predefinita ripristinata': '既定のショートカットに戻しました',
+  'Scorciatoia salvata': 'ショートカットを保存しました',
+  Sito: 'サイト',
+  'Sito aperto nel browser': 'ブラウザーでサイトを開きました',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'どのアプリからでもショートカットで開ける検索ウィンドウです。Jesse’s Archive が最小化されていても、通知領域にあっても使えます。保管庫のロック解除中のみ動作します。',
+  'Username copiato': 'ユーザー名をコピーしました',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保管庫はロックされています',
@@ -926,6 +972,26 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     '別のバージョンが公開されました: もう一度アップデートを確認してください。',
   'Aggiornamento interrotto.': 'アップデートが中断されました。',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    '無効なショートカットです。例: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    'ショートカットには Ctrl、Alt、Win のいずれかを含めてください',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'この組み合わせは Windows またはアプリで既に使われています',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'このショートカットはブラウザーへの入力で使用中です: 別のものを選んでください',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'このショートカットは別のアプリで使用中です: 別のものを選んでください',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'このショートカットはクイック検索で使用中です: 別のものを選んでください',
+  'Nessuno username o email per questo elemento': 'この項目にはユーザー名もメールもありません',
+  'Nessuna password salvata per questo elemento': 'この項目にはパスワードが保存されていません',
+  'Operazione non disponibile per questo elemento': 'この項目ではこの操作を利用できません',
+  'Operazione non disponibile': '操作を利用できません',
+  'Indirizzo del sito non valido': 'サイトのアドレスが無効です',
+  'Impossibile aprire il sito nel browser': 'ブラウザーでサイトを開けません',
+  'Apertura dei siti disponibile nella build Windows':
+    'サイトを開く機能は Windows 版で利用できます',
 };
 
 export default dictionary;

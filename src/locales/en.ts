@@ -767,6 +767,51 @@ const dictionary: Dictionary = {
     'Overall assessment of your passwords, with the problems found.',
   Vault: 'Vault',
   Visualizzazione: 'Display',
+  Apri: 'Open',
+  'Apri Jesse’s Archive': 'Open Jesse’s Archive',
+  'Apri la dashboard': 'Open the dashboard',
+  'Apri nel vault': 'Open in vault',
+  'Apri sito': 'Open website',
+  'Attiva la ricerca rapida globale': 'Enable Global Quick Search',
+  Azioni: 'Actions',
+  Bloccato: 'Locked',
+  'Cancella la cronologia delle ricerche': 'Clear search history',
+  'Caricamento…': 'Loading…',
+  'Cerca account, siti, email…': 'Search accounts, sites, emails…',
+  'Cerca anche per categoria e cartella': 'Also search by category and folder',
+  'Cerca in tutto il vault': 'Search the whole vault',
+  'Cerca nei preferiti': 'Search favorites',
+  'Cerca per nome, username, email o sito.': 'Search by name, username, email or site.',
+  'Chiudi la finestra dopo un’azione': 'Close the window after an action',
+  'Copia username': 'Copy username',
+  'Cronologia delle ricerche cancellata': 'Search history cleared',
+  'Impostazioni salvate': 'Settings saved',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Recent searches and recently used items stay in memory only and are cleared when the vault locks. To always have it ready, turn on «Start with Windows» in the Desktop section.',
+  'Mostra gli elementi usati di recente': 'Show recently used items',
+  'Mostra i preferiti quando la ricerca è vuota': 'Show favorites when the search is empty',
+  'Nessun preferito.': 'No favorites.',
+  'Nessun risultato per «{q}»': 'No results for «{q}»',
+  'Password copiata': 'Password copied',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Password copied: the clipboard is cleared in {n} s',
+  'Premi Invio per vedere gli account.': 'Press Enter to see the accounts.',
+  'Ricerca rapida': 'Quick search',
+  'Ricerca rapida globale': 'Global Quick Search',
+  'Ricerche recenti': 'Recent searches',
+  'Ricorda le ricerche recenti': 'Remember recent searches',
+  'Ripristina predefinita': 'Restore default',
+  Sblocca: 'Unlock',
+  'Sblocca il vault per cercare tra i tuoi account.': 'Unlock the vault to search your accounts.',
+  Sbloccato: 'Unlocked',
+  'Scorciatoia attiva: {shortcut}': 'Active shortcut: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Default shortcut restored',
+  'Scorciatoia salvata': 'Shortcut saved',
+  Sito: 'Site',
+  'Sito aperto nel browser': 'Website opened in the browser',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'A search window that opens with a shortcut from any application, even with Jesse’s Archive minimized or in the notification area. It works only while the vault is unlocked.',
+  'Username copiato': 'Username copied',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Vault locked',
@@ -922,6 +967,25 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Another version has been published: check for updates again.',
   'Aggiornamento interrotto.': 'Update interrupted.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    'Invalid shortcut. Example: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia': 'Use at least Ctrl, Alt or Win in the shortcut',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'This combination is already used by Windows or by applications',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Shortcut already used by browser filling: choose another one',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Shortcut already taken by another application: choose another one',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Shortcut already used by the quick search: choose another one',
+  'Nessuno username o email per questo elemento': 'No username or email for this item',
+  'Nessuna password salvata per questo elemento': 'No password saved for this item',
+  'Operazione non disponibile per questo elemento': 'Operation not available for this item',
+  'Operazione non disponibile': 'Operation not available',
+  'Indirizzo del sito non valido': 'Invalid website address',
+  'Impossibile aprire il sito nel browser': 'Unable to open the website in the browser',
+  'Apertura dei siti disponibile nella build Windows':
+    'Opening websites is available in the Windows build',
 };
 
 export default dictionary;

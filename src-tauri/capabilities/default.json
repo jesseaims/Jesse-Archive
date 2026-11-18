@@ -4,7 +4,8 @@
   "windows": [
     "main",
     "quick-fill",
-    "browser-setup"
+    "browser-setup",
+    "quick-search"
   ],
   "permissions": [
     "core:default"

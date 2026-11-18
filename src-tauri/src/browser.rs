@@ -298,6 +298,15 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     });
     Ok(())
 }
+/// Active browser-fill shortcut, to keep the Quick Search one different.
+pub(crate) fn shortcut(app: &tauri::AppHandle) -> Option<Shortcut> {
+    app.try_state::<Bridge>()?
+        .shortcut
+        .lock()
+        .ok()?
+        .parse::<Shortcut>()
+        .ok()
+}
 #[tauri::command]
 pub fn browser_status(app: tauri::AppHandle) -> Value {
     let b = app.state::<Bridge>();
@@ -310,6 +319,9 @@ pub fn browser_shortcut(app: tauri::AppHandle, shortcut: String) -> Result<(), S
         .map_err(|_| "Scorciatoia non valida. Esempio: Ctrl+Alt+J")?;
     if !shortcut.contains('+') || shortcut.len() > 80 {
         return Err("Usa almeno un modificatore e un tasto".into());
+    }
+    if crate::quick_search::uses(&app, &next) {
+        return Err("Scorciatoia già usata dalla ricerca rapida: scegline un'altra".into());
     }
     let b = app.state::<Bridge>();
     let mut previous = b.shortcut.lock().unwrap();

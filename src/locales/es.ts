@@ -773,6 +773,53 @@ const dictionary: Dictionary = {
     'Valoración general de las contraseñas, con los problemas detectados.',
   Vault: 'Bóveda',
   Visualizzazione: 'Visualización',
+  Apri: 'Abrir',
+  'Apri Jesse’s Archive': 'Abrir Jesse’s Archive',
+  'Apri la dashboard': 'Abrir el panel',
+  'Apri nel vault': 'Abrir en el almacén',
+  'Apri sito': 'Abrir sitio web',
+  'Attiva la ricerca rapida globale': 'Activar la búsqueda rápida global',
+  Azioni: 'Acciones',
+  Bloccato: 'Bloqueado',
+  'Cancella la cronologia delle ricerche': 'Borrar el historial de búsquedas',
+  'Caricamento…': 'Cargando…',
+  'Cerca account, siti, email…': 'Buscar cuentas, sitios, correos…',
+  'Cerca anche per categoria e cartella': 'Buscar también por categoría y carpeta',
+  'Cerca in tutto il vault': 'Buscar en todo el almacén',
+  'Cerca nei preferiti': 'Buscar en favoritos',
+  'Cerca per nome, username, email o sito.': 'Busca por nombre, usuario, correo o sitio.',
+  'Chiudi la finestra dopo un’azione': 'Cerrar la ventana tras una acción',
+  'Copia username': 'Copiar usuario',
+  'Cronologia delle ricerche cancellata': 'Historial de búsquedas borrado',
+  'Impostazioni salvate': 'Ajustes guardados',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Las búsquedas recientes y los elementos usados recientemente solo se guardan en memoria y se borran cuando el almacén se bloquea. Para tenerla siempre lista, activa «Iniciar con Windows» en la sección Escritorio.',
+  'Mostra gli elementi usati di recente': 'Mostrar los elementos usados recientemente',
+  'Mostra i preferiti quando la ricerca è vuota':
+    'Mostrar los favoritos cuando la búsqueda está vacía',
+  'Nessun preferito.': 'No hay favoritos.',
+  'Nessun risultato per «{q}»': 'No hay resultados para «{q}»',
+  'Password copiata': 'Contraseña copiada',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Contraseña copiada: el portapapeles se vacía en {n} s',
+  'Premi Invio per vedere gli account.': 'Pulsa Intro para ver las cuentas.',
+  'Ricerca rapida': 'Búsqueda rápida',
+  'Ricerca rapida globale': 'Búsqueda rápida global',
+  'Ricerche recenti': 'Búsquedas recientes',
+  'Ricorda le ricerche recenti': 'Recordar las búsquedas recientes',
+  'Ripristina predefinita': 'Restablecer predeterminado',
+  Sblocca: 'Desbloquear',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Desbloquea el almacén para buscar entre tus cuentas.',
+  Sbloccato: 'Desbloqueado',
+  'Scorciatoia attiva: {shortcut}': 'Atajo activo: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Atajo predeterminado restablecido',
+  'Scorciatoia salvata': 'Atajo guardado',
+  Sito: 'Sitio',
+  'Sito aperto nel browser': 'Sitio abierto en el navegador',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Una ventana de búsqueda que se abre con un atajo desde cualquier aplicación, incluso con Jesse’s Archive minimizado o en el área de notificación. Solo funciona con el almacén desbloqueado.',
+  'Username copiato': 'Usuario copiado',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Bóveda bloqueada',
@@ -932,6 +979,24 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Se ha publicado otra versión: vuelve a buscar actualizaciones.',
   'Aggiornamento interrotto.': 'Actualización interrumpida.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space': 'Atajo no válido. Ejemplo: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia': 'Usa al menos Ctrl, Alt o Win en el atajo',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Esta combinación ya la usan Windows o las aplicaciones',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Atajo ya usado por el rellenado en el navegador: elige otro',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Atajo ya ocupado por otra aplicación: elige otro',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Atajo ya usado por la búsqueda rápida: elige otro',
+  'Nessuno username o email per questo elemento': 'No hay usuario ni correo para este elemento',
+  'Nessuna password salvata per questo elemento': 'No hay contraseña guardada para este elemento',
+  'Operazione non disponibile per questo elemento': 'Operación no disponible para este elemento',
+  'Operazione non disponibile': 'Operación no disponible',
+  'Indirizzo del sito non valido': 'Dirección del sitio no válida',
+  'Impossibile aprire il sito nel browser': 'No se puede abrir el sitio en el navegador',
+  'Apertura dei siti disponibile nella build Windows':
+    'La apertura de sitios está disponible en la versión para Windows',
 };
 
 export default dictionary;

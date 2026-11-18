@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'グローバル クイック検索',
+    'どのアプリからでも Ctrl+Shift+Space を押すと（Jesse’s Archive が通知領域にあっても）、コンパクトな検索ウィンドウが開きます。名前、ユーザー名、メール、サイトでアカウントを探せ、同じサービスのアカウントはまとめて表示されます。ユーザー名やパスワードのコピー、数秒間のパスワード表示、サイトや保管庫の項目を開く操作まで、すべてキーボードで行えます。保管庫のロック解除中のみ動作し、パスワードはウィンドウを経由せずにコピーされ、クリップボードはいつもどおり消去されます。ショートカットとオプションは「設定 → グローバル クイック検索」にあります。',
+  ],
   'window-state': [
     'ウィンドウのサイズと位置を記憶',
     'Jesse’s Archive は閉じたときの状態で再び開きます。全画面、最大化、または選んだサイズと位置のままで、タスク トレイを経由した後も同じです。表示していた画面が接続されていない場合は、使用できる画面の中央に開きます。',

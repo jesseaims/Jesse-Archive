@@ -1,6 +1,7 @@
 import { t, translateMessage } from './i18n';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
+import ShortcutInput from './ShortcutInput';
 type Connection = { shortcut: string; connected: number; error: string; extension_id: string };
 export default function BrowserSettings() {
   const [state, setState] = useState<Connection | null>(null),
@@ -48,37 +49,17 @@ export default function BrowserSettings() {
           'Chrome, Edge, Brave, Opera, Vivaldi e Firefox. Seleziona un campo di accesso sul sito e premi la scorciatoia.',
         )}
       </p>
-      <label className="field">
-        <span>{t('Scorciatoia globale')}</span>
-        <input
-          value={shortcut}
-          onChange={(e) => setShortcut(e.target.value)}
-          placeholder={t('Ctrl+Alt+J')}
-          onKeyDown={(e) => {
-            if (['Control', 'Alt', 'Shift', 'Meta', 'Tab', 'Backspace', 'Delete'].includes(e.key))
-              return;
-            if (e.ctrlKey || e.altKey || e.metaKey) {
-              e.preventDefault();
-              setShortcut(
-                [
-                  e.ctrlKey && 'Ctrl',
-                  e.altKey && 'Alt',
-                  e.shiftKey && 'Shift',
-                  e.metaKey && 'Super',
-                  e.code.startsWith('Key') ? e.code.slice(3) : e.code,
-                ]
-                  .filter(Boolean)
-                  .join('+'),
-              );
-            }
-          }}
-        />
-      </label>
+      <ShortcutInput
+        label={t('Scorciatoia globale')}
+        value={shortcut}
+        onChange={setShortcut}
+        placeholder={t('Ctrl+Alt+J')}
+      />
       <button
         className="secondary"
         disabled={busy}
         onClick={() =>
-          void run(() => invoke('browser_shortcut', { shortcut }), 'Scorciatoia salvata')
+          void run(() => invoke('browser_shortcut', { shortcut }), t('Scorciatoia salvata'))
         }
       >
         {t('Salva scorciatoia')}

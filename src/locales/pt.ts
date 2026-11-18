@@ -775,6 +775,53 @@ const dictionary: Dictionary = {
     'Avaliação geral das suas senhas, com os problemas encontrados.',
   Vault: 'Cofre',
   Visualizzazione: 'Exibição',
+  Apri: 'Abrir',
+  'Apri Jesse’s Archive': 'Abrir o Jesse’s Archive',
+  'Apri la dashboard': 'Abrir o painel',
+  'Apri nel vault': 'Abrir no cofre',
+  'Apri sito': 'Abrir site',
+  'Attiva la ricerca rapida globale': 'Ativar a pesquisa rápida global',
+  Azioni: 'Ações',
+  Bloccato: 'Bloqueado',
+  'Cancella la cronologia delle ricerche': 'Limpar o histórico de pesquisas',
+  'Caricamento…': 'Carregando…',
+  'Cerca account, siti, email…': 'Pesquisar contas, sites, e-mails…',
+  'Cerca anche per categoria e cartella': 'Pesquisar também por categoria e pasta',
+  'Cerca in tutto il vault': 'Pesquisar em todo o cofre',
+  'Cerca nei preferiti': 'Pesquisar nos favoritos',
+  'Cerca per nome, username, email o sito.': 'Pesquise por nome, usuário, e-mail ou site.',
+  'Chiudi la finestra dopo un’azione': 'Fechar a janela após uma ação',
+  'Copia username': 'Copiar usuário',
+  'Cronologia delle ricerche cancellata': 'Histórico de pesquisas limpo',
+  'Impostazioni salvate': 'Configurações salvas',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'As pesquisas recentes e os itens usados recentemente ficam apenas na memória e são apagados quando o cofre é bloqueado. Para tê-la sempre pronta, ative «Iniciar com o Windows» na seção Área de trabalho.',
+  'Mostra gli elementi usati di recente': 'Mostrar os itens usados recentemente',
+  'Mostra i preferiti quando la ricerca è vuota':
+    'Mostrar os favoritos quando a pesquisa está vazia',
+  'Nessun preferito.': 'Nenhum favorito.',
+  'Nessun risultato per «{q}»': 'Nenhum resultado para «{q}»',
+  'Password copiata': 'Senha copiada',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Senha copiada: a área de transferência será limpa em {n} s',
+  'Premi Invio per vedere gli account.': 'Pressione Enter para ver as contas.',
+  'Ricerca rapida': 'Pesquisa rápida',
+  'Ricerca rapida globale': 'Pesquisa rápida global',
+  'Ricerche recenti': 'Pesquisas recentes',
+  'Ricorda le ricerche recenti': 'Lembrar as pesquisas recentes',
+  'Ripristina predefinita': 'Restaurar padrão',
+  Sblocca: 'Desbloquear',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Desbloqueie o cofre para pesquisar suas contas.',
+  Sbloccato: 'Desbloqueado',
+  'Scorciatoia attiva: {shortcut}': 'Atalho ativo: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Atalho padrão restaurado',
+  'Scorciatoia salvata': 'Atalho salvo',
+  Sito: 'Site',
+  'Sito aperto nel browser': 'Site aberto no navegador',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Uma janela de pesquisa que abre com um atalho em qualquer aplicativo, mesmo com o Jesse’s Archive minimizado ou na área de notificação. Funciona apenas com o cofre desbloqueado.',
+  'Username copiato': 'Usuário copiado',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Cofre bloqueado',
@@ -936,6 +983,24 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Outra versão foi publicada: procure atualizações novamente.',
   'Aggiornamento interrotto.': 'Atualização interrompida.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space': 'Atalho inválido. Exemplo: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia': 'Use pelo menos Ctrl, Alt ou Win no atalho',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Esta combinação já é usada pelo Windows ou pelos aplicativos',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Atalho já usado pelo preenchimento no navegador: escolha outro',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Atalho já ocupado por outro aplicativo: escolha outro',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Atalho já usado pela pesquisa rápida: escolha outro',
+  'Nessuno username o email per questo elemento': 'Nenhum usuário ou e-mail para este item',
+  'Nessuna password salvata per questo elemento': 'Nenhuma senha salva para este item',
+  'Operazione non disponibile per questo elemento': 'Operação indisponível para este item',
+  'Operazione non disponibile': 'Operação indisponível',
+  'Indirizzo del sito non valido': 'Endereço do site inválido',
+  'Impossibile aprire il sito nel browser': 'Não foi possível abrir o site no navegador',
+  'Apertura dei siti disponibile nella build Windows':
+    'A abertura de sites está disponível na versão para Windows',
 };
 
 export default dictionary;

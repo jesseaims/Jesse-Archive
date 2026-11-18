@@ -773,6 +773,53 @@ const dictionary: Dictionary = {
     'Gesamtbewertung deiner Passwörter mit den gefundenen Problemen.',
   Vault: 'Tresor',
   Visualizzazione: 'Darstellung',
+  Apri: 'Öffnen',
+  'Apri Jesse’s Archive': 'Jesse’s Archive öffnen',
+  'Apri la dashboard': 'Dashboard öffnen',
+  'Apri nel vault': 'Im Tresor öffnen',
+  'Apri sito': 'Website öffnen',
+  'Attiva la ricerca rapida globale': 'Globale Schnellsuche aktivieren',
+  Azioni: 'Aktionen',
+  Bloccato: 'Gesperrt',
+  'Cancella la cronologia delle ricerche': 'Suchverlauf löschen',
+  'Caricamento…': 'Wird geladen…',
+  'Cerca account, siti, email…': 'Konten, Websites, E-Mails suchen…',
+  'Cerca anche per categoria e cartella': 'Auch nach Kategorie und Ordner suchen',
+  'Cerca in tutto il vault': 'Im ganzen Tresor suchen',
+  'Cerca nei preferiti': 'In Favoriten suchen',
+  'Cerca per nome, username, email o sito.':
+    'Suchen Sie nach Name, Benutzername, E-Mail oder Website.',
+  'Chiudi la finestra dopo un’azione': 'Fenster nach einer Aktion schließen',
+  'Copia username': 'Benutzername kopieren',
+  'Cronologia delle ricerche cancellata': 'Suchverlauf gelöscht',
+  'Impostazioni salvate': 'Einstellungen gespeichert',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Letzte Suchen und zuletzt verwendete Einträge bleiben nur im Arbeitsspeicher und werden beim Sperren des Tresors gelöscht. Damit sie immer bereit ist, aktivieren Sie «Mit Windows starten» im Bereich Desktop.',
+  'Mostra gli elementi usati di recente': 'Zuletzt verwendete Einträge anzeigen',
+  'Mostra i preferiti quando la ricerca è vuota': 'Favoriten bei leerer Suche anzeigen',
+  'Nessun preferito.': 'Keine Favoriten.',
+  'Nessun risultato per «{q}»': 'Keine Ergebnisse für «{q}»',
+  'Password copiata': 'Passwort kopiert',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Passwort kopiert: Die Zwischenablage wird in {n} s geleert',
+  'Premi Invio per vedere gli account.': 'Drücken Sie die Eingabetaste, um die Konten zu sehen.',
+  'Ricerca rapida': 'Schnellsuche',
+  'Ricerca rapida globale': 'Globale Schnellsuche',
+  'Ricerche recenti': 'Letzte Suchen',
+  'Ricorda le ricerche recenti': 'Letzte Suchen merken',
+  'Ripristina predefinita': 'Standard wiederherstellen',
+  Sblocca: 'Entsperren',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Entsperren Sie den Tresor, um Ihre Konten zu durchsuchen.',
+  Sbloccato: 'Entsperrt',
+  'Scorciatoia attiva: {shortcut}': 'Aktives Tastenkürzel: {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Standard-Tastenkürzel wiederhergestellt',
+  'Scorciatoia salvata': 'Tastenkürzel gespeichert',
+  Sito: 'Website',
+  'Sito aperto nel browser': 'Website im Browser geöffnet',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Ein Suchfenster, das sich per Tastenkürzel aus jeder Anwendung öffnet, auch wenn Jesse’s Archive minimiert oder im Infobereich ist. Es funktioniert nur bei entsperrtem Tresor.',
+  'Username copiato': 'Benutzername kopiert',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Tresor gesperrt',
@@ -932,6 +979,27 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Eine andere Version wurde veröffentlicht: Suche erneut nach Updates.',
   'Aggiornamento interrotto.': 'Update unterbrochen.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    'Ungültiges Tastenkürzel. Beispiel: Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    'Verwenden Sie mindestens Strg, Alt oder Win im Tastenkürzel',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Diese Kombination wird bereits von Windows oder von Anwendungen verwendet',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Tastenkürzel wird bereits vom Ausfüllen im Browser verwendet: wählen Sie ein anderes',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Tastenkürzel ist bereits von einer anderen Anwendung belegt: wählen Sie ein anderes',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Tastenkürzel wird bereits von der Schnellsuche verwendet: wählen Sie ein anderes',
+  'Nessuno username o email per questo elemento':
+    'Kein Benutzername und keine E-Mail für diesen Eintrag',
+  'Nessuna password salvata per questo elemento': 'Kein Passwort für diesen Eintrag gespeichert',
+  'Operazione non disponibile per questo elemento': 'Vorgang für diesen Eintrag nicht verfügbar',
+  'Operazione non disponibile': 'Vorgang nicht verfügbar',
+  'Indirizzo del sito non valido': 'Ungültige Website-Adresse',
+  'Impossibile aprire il sito nel browser': 'Website kann nicht im Browser geöffnet werden',
+  'Apertura dei siti disponibile nella build Windows':
+    'Das Öffnen von Websites ist in der Windows-Version verfügbar',
 };
 
 export default dictionary;

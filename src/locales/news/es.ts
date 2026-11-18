@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'Búsqueda rápida global',
+    'Pulsa Ctrl+Shift+Space desde cualquier aplicación, incluso con Jesse’s Archive en el área de notificación, para abrir una ventana de búsqueda compacta: encuentra cuentas por nombre, usuario, correo o sitio, con las cuentas del mismo servicio agrupadas, y copia el usuario o la contraseña, muestra la contraseña unos segundos, abre el sitio o abre el elemento en el almacén, todo desde el teclado. Solo funciona con el almacén desbloqueado, las contraseñas se copian sin pasar por la ventana y el portapapeles se vacía como siempre. El atajo y las opciones están en Ajustes → Búsqueda rápida global.',
+  ],
   'window-state': [
     'La ventana recuerda su tamaño y posición',
     'Jesse’s Archive se vuelve a abrir como lo dejaste: a pantalla completa, maximizado o con el tamaño y la posición que habías elegido, incluso después de pasar por la bandeja del sistema. Si la pantalla en la que estaba ya no está conectada, la ventana se abre en el centro de la disponible.',

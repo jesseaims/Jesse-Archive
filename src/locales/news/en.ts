@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'Global Quick Search',
+    'Press Ctrl+Shift+Space from any application, even with Jesse’s Archive in the notification area, to open a compact search window: find accounts by name, username, email or site, with accounts of the same service grouped together, then copy the username or password, show the password for a few seconds, open the site or open the item in the vault, all from the keyboard. It only works while the vault is unlocked, passwords are copied without passing through the window and the clipboard is cleared as usual. Shortcut and options are in Settings → Global Quick Search.',
+  ],
   'window-state': [
     'The window remembers its size and position',
     'Jesse’s Archive reopens the way you left it: full screen, maximized or with the size and position you chose, even after going through the tray. If the screen it was on is no longer connected, the window opens in the center of the available one.',

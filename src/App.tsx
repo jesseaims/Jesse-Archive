@@ -60,6 +60,10 @@ import {
 import { Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
+import { groupFor, savedGroupKey } from './groups';
+import GroupLogo from './GroupLogo';
+import type { QuickOpen } from './quick-search/actions';
+import QuickSearchSettings from './quick-search/QuickSearchSettings';
 import LanguageMenu from './LanguageMenu';
 import Dashboard from './dashboard/Dashboard';
 import type { BreachResult, DashboardConfig } from './dashboard/model';
@@ -167,63 +171,6 @@ function Field({
   );
 }
 
-// Gruppi di sola presentazione: i vecchi elementi restano leggibili anche senza gk.
-function domainOf(value: string): string {
-  try {
-    const h = new URL(value.includes('://') ? value : 'https://' + value).hostname
-      .toLowerCase()
-      .replace(/^www\./, '');
-    return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(h) ? h : '';
-  } catch {
-    return '';
-  }
-}
-function sourceOf(it: Item): 'web' | 'app' | 'other' {
-  if (it.src === 'app' || it.src === 'other' || it.src === 'web') return it.src;
-  return it.gk?.startsWith('app:') ? 'app' : it.gk?.startsWith('other:') ? 'other' : 'web';
-}
-// Group key computed from the item's current data: web accounts follow their
-// current URL (or email domain), the others their current title.
-function deriveGroupKey(it: Item): string {
-  const src = sourceOf(it);
-  if (src === 'web') {
-    const host = domainOf(it.f?.url || '') || domainOf((it.f?.username || '').split('@')[1] || '');
-    if (host) return 'web:' + host;
-  }
-  return (
-    (src === 'app' ? 'app:' : 'other:') +
-    (it.title || '').toLocaleLowerCase('it').trim().replace(/\s+/g, '-')
-  );
-}
-// Key used when saving: an explicitly associated installed app keeps its key,
-// everything else is recomputed so editing the site or title regroups the account.
-function savedGroupKey(it: Item): string {
-  if (sourceOf(it) === 'app' && it.gk?.startsWith('app:')) return it.gk;
-  return deriveGroupKey(it);
-}
-function groupFor(it: Item) {
-  if (it.type !== 'login') return it.gk || '';
-  // Web accounts are grouped by their current site even if an older save stored a
-  // stale key; app/other accounts keep their saved key.
-  if (sourceOf(it) === 'web') {
-    const key = deriveGroupKey(it);
-    if (key.startsWith('web:')) return key;
-  }
-  return it.gk || deriveGroupKey(it);
-}
-function GroupLogo({ icon, groupKey, name }: { icon?: string; groupKey: string; name: string }) {
-  const [broken, setBroken] = useState(false);
-  useEffect(() => setBroken(false), [icon]);
-  return (
-    <span className="group-logo">
-      {icon && !broken ? (
-        <img src={icon} alt="" onError={() => setBroken(true)} />
-      ) : (
-        <span>{(name || groupKey).slice(0, 2).toUpperCase()}</span>
-      )}
-    </span>
-  );
-}
 function AccountGroups({
   items,
   vault,
@@ -994,6 +941,34 @@ export default function App() {
         : 'login';
     openItem(undefined, currentCategory);
   };
+  // Global Quick Search: asks this window to open an item, a quick action or a page
+  // (src/quick-search/actions.ts). The ref keeps the listener on the current state.
+  const quickOpen = useRef<(p: QuickOpen) => void>(() => {});
+  quickOpen.current = (p) => {
+    if (p.kind === 'item') {
+      // Fresh state: the item may have been added since this window last loaded.
+      void api<State>('state')
+        .then((s) => {
+          setVault(s);
+          const it = s.items.find((i) => i.id === p.id && !i.trashed);
+          if (it) openItem(it);
+        })
+        .catch(() => void refresh());
+    } else if (p.kind === 'action') {
+      if (p.action === 'add-login') openItem(undefined, 'login');
+      else if (p.action === 'add-note') openItem(undefined, 'note');
+      else if (p.action === 'add-personal') openItem(undefined, 'personal');
+      else if (p.action === 'generate') selectPage('generator');
+      else selectPage(p.action);
+    } else if (p.kind === 'page') selectPage(p.page);
+    else void refresh();
+  };
+  useEffect(() => {
+    const stop = listen<QuickOpen>('quick-search-open', (e) => quickOpen.current(e.payload));
+    return () => {
+      void stop.then((fn) => fn());
+    };
+  }, []);
   const saveItem = async () => {
     if (!draft.title.trim()) {
       setError(t('Inserisci un nome per l’elemento'));
@@ -3358,6 +3333,15 @@ function SettingsPage({
               {t('Collega vault esistente')}
             </button>
           </div>
+        </section>
+        <section className="panel settings-panel">
+          <div className="panel-head">
+            <h2>
+              <Search size={18} />
+              {t('Ricerca rapida globale')}
+            </h2>
+          </div>
+          <QuickSearchSettings />
         </section>
         <section className="panel settings-panel">
           <div className="panel-head">

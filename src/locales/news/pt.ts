@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'global-quick-search': [
+    'Pesquisa rápida global',
+    'Pressione Ctrl+Shift+Space em qualquer aplicativo, mesmo com o Jesse’s Archive na área de notificação, para abrir uma janela de pesquisa compacta: encontre contas por nome, usuário, e-mail ou site, com as contas do mesmo serviço agrupadas, e copie o usuário ou a senha, mostre a senha por alguns segundos, abra o site ou abra o item no cofre, tudo pelo teclado. Funciona apenas com o cofre desbloqueado, as senhas são copiadas sem passar pela janela e a área de transferência é limpa como de costume. Atalho e opções ficam em Configurações → Pesquisa rápida global.',
+  ],
   'window-state': [
     'A janela lembra o tamanho e a posição',
     'O Jesse’s Archive reabre como você o deixou: em tela cheia, maximizado ou com o tamanho e a posição que escolheu, mesmo depois de passar pela bandeja do sistema. Se a tela em que estava não estiver mais conectada, a janela abre no centro da tela disponível.',

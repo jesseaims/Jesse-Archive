@@ -778,6 +778,53 @@ const dictionary: Dictionary = {
     'Évaluation globale de vos mots de passe, avec les problèmes détectés.',
   Vault: 'Coffre',
   Visualizzazione: 'Affichage',
+  Apri: 'Ouvrir',
+  'Apri Jesse’s Archive': 'Ouvrir Jesse’s Archive',
+  'Apri la dashboard': 'Ouvrir le tableau de bord',
+  'Apri nel vault': 'Ouvrir dans le coffre',
+  'Apri sito': 'Ouvrir le site',
+  'Attiva la ricerca rapida globale': 'Activer la recherche rapide globale',
+  Azioni: 'Actions',
+  Bloccato: 'Verrouillé',
+  'Cancella la cronologia delle ricerche': 'Effacer l’historique des recherches',
+  'Caricamento…': 'Chargement…',
+  'Cerca account, siti, email…': 'Rechercher comptes, sites, e-mails…',
+  'Cerca anche per categoria e cartella': 'Rechercher aussi par catégorie et dossier',
+  'Cerca in tutto il vault': 'Rechercher dans tout le coffre',
+  'Cerca nei preferiti': 'Rechercher dans les favoris',
+  'Cerca per nome, username, email o sito.': 'Recherchez par nom, identifiant, e-mail ou site.',
+  'Chiudi la finestra dopo un’azione': 'Fermer la fenêtre après une action',
+  'Copia username': 'Copier l’identifiant',
+  'Cronologia delle ricerche cancellata': 'Historique des recherches effacé',
+  'Impostazioni salvate': 'Paramètres enregistrés',
+  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Les recherches récentes et les éléments utilisés récemment restent uniquement en mémoire et sont effacés au verrouillage du coffre. Pour l’avoir toujours prête, activez «Lancer avec Windows» dans la section Bureau.',
+  'Mostra gli elementi usati di recente': 'Afficher les éléments utilisés récemment',
+  'Mostra i preferiti quando la ricerca è vuota':
+    'Afficher les favoris quand la recherche est vide',
+  'Nessun preferito.': 'Aucun favori.',
+  'Nessun risultato per «{q}»': 'Aucun résultat pour «{q}»',
+  'Password copiata': 'Mot de passe copié',
+  'Password copiata: gli appunti si svuotano tra {n} s':
+    'Mot de passe copié : le presse-papiers sera vidé dans {n} s',
+  'Premi Invio per vedere gli account.': 'Appuyez sur Entrée pour voir les comptes.',
+  'Ricerca rapida': 'Recherche rapide',
+  'Ricerca rapida globale': 'Recherche rapide globale',
+  'Ricerche recenti': 'Recherches récentes',
+  'Ricorda le ricerche recenti': 'Mémoriser les recherches récentes',
+  'Ripristina predefinita': 'Rétablir la valeur par défaut',
+  Sblocca: 'Déverrouiller',
+  'Sblocca il vault per cercare tra i tuoi account.':
+    'Déverrouillez le coffre pour rechercher parmi vos comptes.',
+  Sbloccato: 'Déverrouillé',
+  'Scorciatoia attiva: {shortcut}': 'Raccourci actif : {shortcut}',
+  'Scorciatoia predefinita ripristinata': 'Raccourci par défaut rétabli',
+  'Scorciatoia salvata': 'Raccourci enregistré',
+  Sito: 'Site',
+  'Sito aperto nel browser': 'Site ouvert dans le navigateur',
+  'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
+    'Une fenêtre de recherche qui s’ouvre avec un raccourci depuis n’importe quelle application, même quand Jesse’s Archive est réduit ou dans la zone de notification. Elle ne fonctionne que lorsque le coffre est déverrouillé.',
+  'Username copiato': 'Identifiant copié',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Coffre verrouillé',
@@ -938,6 +985,26 @@ const dictionary: Dictionary = {
   "È stata pubblicata un'altra versione: ricontrolla gli aggiornamenti.":
     'Une autre version a été publiée : recherchez à nouveau les mises à jour.',
   'Aggiornamento interrotto.': 'Mise à jour interrompue.',
+  'Scorciatoia non valida. Esempio: Ctrl+Shift+Space':
+    'Raccourci non valide. Exemple : Ctrl+Shift+Space',
+  'Usa almeno Ctrl, Alt o Win nella scorciatoia':
+    'Utilisez au moins Ctrl, Alt ou Win dans le raccourci',
+  'Questa combinazione è già usata da Windows o dalle applicazioni':
+    'Cette combinaison est déjà utilisée par Windows ou par les applications',
+  "Scorciatoia già usata dall'inserimento nel browser: scegline un'altra":
+    'Raccourci déjà utilisé par le remplissage dans le navigateur : choisissez-en un autre',
+  "Scorciatoia già occupata da un'altra applicazione: scegline un'altra":
+    'Raccourci déjà pris par une autre application : choisissez-en un autre',
+  "Scorciatoia già usata dalla ricerca rapida: scegline un'altra":
+    'Raccourci déjà utilisé par la recherche rapide : choisissez-en un autre',
+  'Nessuno username o email per questo elemento': 'Aucun identifiant ni e-mail pour cet élément',
+  'Nessuna password salvata per questo elemento': 'Aucun mot de passe enregistré pour cet élément',
+  'Operazione non disponibile per questo elemento': 'Opération non disponible pour cet élément',
+  'Operazione non disponibile': 'Opération non disponible',
+  'Indirizzo del sito non valido': 'Adresse du site non valide',
+  'Impossibile aprire il sito nel browser': 'Impossible d’ouvrir le site dans le navigateur',
+  'Apertura dei siti disponibile nella build Windows':
+    'L’ouverture des sites est disponible dans la version Windows',
 };
 
 export default dictionary;
