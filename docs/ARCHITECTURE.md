@@ -136,7 +136,7 @@ La sorgente canonica del worker è [browser-extension/background.js](../browser-
 - `fixtures/legacy_v1_synthetic.json` è una fixture crittografica pubblica di test; non riprodurne valori nel manuale.
 - `tests/` contiene due file Node e uno Python; i test Rust sono inline nei moduli.
 - `package-lock.json` e `src-tauri/Cargo.lock` fissano le risoluzioni. Nessun `rust-toolchain.toml` o `.cargo/config.toml` è versionato; la CI è in `.github/workflows/ci.yml` (vedere [DEVELOPMENT](DEVELOPMENT.md#integrazione-continua)).
-- `public/` contiene favicon e logo; `src-tauri/installer-assets/` quattro bitmap. Le tre ICO in `public/`, `src-tauri/` e `legacy-python/` hanno contenuto identico: duplicazione di risorse per tool diversi.
+- `public/` contiene favicon e logo; `src-tauri/installer-assets/` contiene le bitmap NSIS/WiX (`banner`, `dialog`, `nsis-header`, `nsis-sidebar`) e le otto `inno-small-*.bmp`: logo quadrato per l'angolo in alto a destra dell'installer Inno, una per scala DPI. Sono generate da `public/jesse-logo.png` su fondo bianco; `nsis-sidebar.bmp` resta l'immagine laterale. Le tre ICO in `public/`, `src-tauri/` e `legacy-python/` hanno contenuto identico: duplicazione di risorse per tool diversi.
 - `src/style.css` ha regole iniziali e successivi override per tema e schermate. Non importa font o CSS remoti; la cascata conta più dell'ordine storico dei commenti.
 - `.editorconfig` e `.gitattributes` definiscono UTF-8 e fine riga, con CRLF per PowerShell/Inno. `.gitignore` esclude artefatti, vault e molti formati sensibili: non è uno scanner dei segreti già tracciati.
 - Le note storiche in root sono state esaminate come contesto, non come test correnti. La storia iniziale ricostruita è spiegata in [GIT-HISTORY.md](../GIT-HISTORY.md).
