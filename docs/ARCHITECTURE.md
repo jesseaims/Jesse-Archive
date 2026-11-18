@@ -93,6 +93,21 @@ Il componente esegue `ping` ogni 15 secondi mentre dispone di un vault e ascolta
 
 Il JSON consente estensioni e compatibilità, ma molte funzioni assumono che array e oggetti abbiano la forma attesa; i tipi TypeScript non garantiscono la validità dei dati importati o decifrati.
 
+## Passkey WebAuthn, passo per passo
+
+1. `passkey-page.js` (MAIN world, `document_start`, frame principale HTTPS) intercetta `navigator.credentials.create/get`. Le richieste `mediation: "conditional"` e le opzioni non valide restano al browser.
+2. Le opzioni, codificate in base64url, passano con `postMessage` a `passkey-bridge.js` (mondo isolato), poi con `runtime.sendMessage` al background, che aggiunge l'origine da `sender.url`.
+3. Il background invia `{kind:"passkey"}` all'host nativo. `browser.rs` lo passa a `passkey::request`, che valida la richiesta.
+4. **Risposta immediata senza finestra:**
+   - fallback se le passkey sono disattivate;
+   - fallback per un accesso a vault sbloccato senza passkey del sito;
+   - fallback se un'altra richiesta è già in corso;
+   - `SecurityError` se l'rpId non è valido.
+5. **Altrimenti:** la richiesta resta in `Passkeys` e la mini finestra riceve `passkey-changed`.
+6. **Comandi UI:** `passkey_state`, `passkey_approve` (crea la scheda con il comando `item` del vault, oppure firma), `passkey_fallback`, `passkey_cancel`; impostazioni con `passkey_settings`/`passkey_set_enabled` (`passkeys` nella configurazione dispositivo).
+7. **Esito:** l'app risponde con `passkey-result`. Il background rimette a fuoco la finestra del browser e consegna il risultato. La pagina costruisce un `PublicKeyCredential`, rilancia l'errore DOM o richiama l'API nativa (fallback).
+8. **Interruzioni:** un abort della pagina, il timeout del background o la disconnessione dell'host inviano `passkey-cancel` oppure annullano la richiesta in corso.
+
 ## Integrazione browser, passo per passo
 
 1. La scorciatoia chiama `browser::request`: una sola richiesta globale attiva, con identificatore casuale; una risposta di contesto è accettata entro 5 secondi.
@@ -106,7 +121,7 @@ Il JSON consente estensioni e compatibilità, ma molte funzioni assumono che arr
 
 Il relay usa 4 byte little-endian di lunghezza e un oggetto JSON UTF-8, massimo 262144 byte. Il primo frame TCP porta il token per avvio. Il listener autentica entro 3 secondi e poi mantiene la connessione; non c'è TLS. L'helper legge il descrittore da AppData, controlla gli identificatori ammessi negli argomenti e inoltra i frame. Non avvia automaticamente l'app se è chiusa. Vedere [SECURITY](SECURITY.md) per il modello di fiducia locale.
 
-Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`, `update-progress`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
+Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`, `update-progress`, `passkey-changed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
 
 ## Guida e risorse di distribuzione
 

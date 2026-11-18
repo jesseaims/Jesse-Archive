@@ -5,7 +5,13 @@ export default function BrowserSettings() {
   const [state, setState] = useState<Connection | null>(null),
     [shortcut, setShortcut] = useState('Ctrl+Alt+J'),
     [message, setMessage] = useState(''),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [passkeys, setPasskeys] = useState(true);
+  useEffect(() => {
+    void invoke<{ enabled: boolean }>('passkey_settings')
+      .then((s) => setPasskeys(s.enabled))
+      .catch(() => {});
+  }, []);
   const refresh = async () => {
     const s = await invoke<Connection>('browser_status');
     setState(s);
@@ -76,6 +82,23 @@ export default function BrowserSettings() {
         Salva scorciatoia
       </button>
       {state?.error && <p role="alert">Scorciatoia non attiva: {state.error}</p>}
+      <label className="check-line">
+        <input
+          type="checkbox"
+          checked={passkeys}
+          onChange={(e) => {
+            const enabled = e.target.checked;
+            void run(
+              async () => {
+                await invoke('passkey_set_enabled', { enabled });
+                setPasskeys(enabled);
+              },
+              enabled ? 'Passkey attivate' : 'Passkey disattivate: i siti useranno il browser',
+            );
+          }}
+        />
+        Usa Jesse’s Archive per le passkey dei siti (richiede l’estensione aggiornata)
+      </label>
       <button
         className="primary"
         disabled={busy}

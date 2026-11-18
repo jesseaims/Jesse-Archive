@@ -25,13 +25,13 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 | Distribuzione browser | Guida automatizzata e registrazione host, installazione estensione ancora locale/manuale; Firefox temporanea | FEATURES; `browser_installer.rs` |
 | Compilazione nei siti | HTTPS e campi supportati; casi ambigui o frame estranei rifiutati; multistep richiede nuova invocazione | FEATURES; background canonico |
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |
-| Passkey | Archiviazione di una stringa, senza autenticazione WebAuthn | FEATURES; `types.ts` |
+| Passkey | WebAuthn tramite estensione dalla Beta 1.1.14: solo ES256, frame principale, niente autofill condizionale né PRF; UV dichiarato per vault sbloccato e conferma | FEATURES, SECURITY; `passkey.rs`, `passkey-page.js` |
 | Backup | Copia intero vault e singolo `.bak`; export non equivale a backup completo; niente catalogo versioni | DATABASE |
 | Copertura test | Test mirati, non intera matrice UI/browser/installazione/durabilità | [DEVELOPMENT](DEVELOPMENT.md) |
 
 ## Funzionalità non rilevate nel client Rust
 
-Autenticazione biometrica, gestione WebAuthn/passkey come authenticator, servizio cloud con account e API proprie, installazione silenziosa universale dell'estensione, pacchetti store pubblicati/firmati e riempimento universale di app desktop non risultano implementati. Il foglio di emergenza stampabile e il dispatcher `.jbackup` sono presenti nel client Python storico, non nella UI React esaminata. Questa lista non è una richiesta di portarli o aggiungerli.
+Autenticazione biometrica, provider passkey di sistema Windows (uso fuori dai browser), servizio cloud con account e API proprie, installazione silenziosa universale dell'estensione, pacchetti store pubblicati/firmati e riempimento universale di app desktop non risultano implementati. Il foglio di emergenza stampabile e il dispatcher `.jbackup` sono presenti nel client Python storico, non nella UI React esaminata. Questa lista non è una richiesta di portarli o aggiungerli.
 
 ## Criticità da valutare e proposte tecniche non approvate
 
@@ -61,6 +61,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 - Resistenza a interruzioni di scrittura, più istanze/writer esterni e servizi cloud che generano copie con timestamp inconsistente.
 - Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.
 
+- Passkey WebAuthn su siti reali (per esempio webauthn.io, GitHub, Google) in Chromium e Firefox ≥ 128: registrazione, accesso, fallback, abort, siti che richiedono attestazione o algoritmi diversi da ES256.
 - Aggiornamento automatico end-to-end: dalla 1.1.13 installata alla prima release successiva firmata (download, verifica, UAC, installazione silenziosa nella cartella personalizzata e riapertura).
 
 ## Mantenimento dello stato

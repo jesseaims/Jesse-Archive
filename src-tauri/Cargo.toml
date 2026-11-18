@@ -1,6 +1,6 @@
 [package]
 name = "jesse_archive"
-version = "1.1.13"
+version = "1.1.14"
 description = "Jesse's Archive — local encrypted password manager"
 authors = ["Jesse's Archive"]
 edition = "2021"
@@ -36,6 +36,7 @@ reqwest = { version = "0.12", features = ["blocking", "rustls-tls"], default-fea
 rfd = "0.15"
 hex = "0.4"
 ed25519-dalek = "2"
+p256 = "0.13"
 
 [target.'cfg(windows)'.dependencies]
 clipboard-win = "5.4.1"

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "JesseArchive · Inserimento rapido",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "Seleziona dal vault locale gli account per il sito corrente.",
   "permissions": [
     "nativeMessaging",
@@ -14,6 +14,27 @@
   "action": {
     "default_title": "Apri JesseArchive per questo campo"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "passkey-page.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "passkey-bridge.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3dbZEfvGmR2n1bd1Qq4bm9gLGizNo5rCsjrQXdR/+CCilgMlU/Tn4kYHcWkVdQYaOgqTerTdn6uaY2os7B6hBKBwsn3+4+nYDM1fkKbnJ80bH/IyOHbv0PWv3zkdrpw/Sntbgi9Ili+M+Gjx5eYywiAVoPNhutRWU2O5enpW/TMKoRUYNKoxi7YGGvzJ+5tInX6zMDrW7tRCR/j5V1ANdjp5Pp9t6vvKIvdE93EXXecfiZkvnuH0gdgdDZBkcEzX/mF7uzjpg+9OU+0SpYzv5IYyAVbxnjLS49ujuybKhFfLLGsph69325p0TXrooJLQB0vyONAhTBPTYKD7FWNUuQIDAQAB",
   "background": {
     "service_worker": "background.js"

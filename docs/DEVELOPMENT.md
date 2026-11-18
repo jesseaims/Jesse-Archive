@@ -22,6 +22,7 @@ Versioni osservate con comandi di sola lettura: `rustc 1.100.0`, `cargo 1.100.0`
 | psl | 2.1.255 | Confini dei domini, incluse suffix private |
 | reqwest diretto | 0.12.28 | Favicon, Pwned Passwords e aggiornamenti |
 | ed25519-dalek | 2 | Verifica della firma degli aggiornamenti automatici |
+| p256 | 0.13 | Chiavi e firme ES256 delle passkey WebAuthn |
 | windows-sys diretto | 0.61.2 | Clipboard, registro, finestre e integrazione Windows |
 | jsdom | 31.0.1 | DOM sintetico nei test estensione |
 
@@ -83,6 +84,8 @@ Il test legge dati sintetici; non importare il modulo dell'app storica per prova
 | Test inline `core.rs` | KDF, AES, fusione, TOTP, compatibilità fixture v1; `vault_tests` su un vault sintetico in una cartella temporanea (policy di lunghezza, recupero, import non validi, round trip export/import, ripristino dopo salvataggio fallito, `ensure_shape`, `bulk`/`delete` limitato agli elementi nel cestino) | Non coprono interamente CRUD o crash durante scrittura |
 | Test inline browser/protocollo/installer/navigation | Matching domini, framing, target fissi e input navigazione | Non certificano sei browser reali |
 | `tests/browser-extension.test.mjs` | Sei casi con mock API e jsdom, focus e compilazione DOM | Non sostituisce il motore browser, pagine reali, CAPTCHA o framework esterni |
+| `tests/passkey-extension.test.mjs` | Sei casi: serializzazione delle opzioni WebAuthn, oggetti `PublicKeyCredential`, fallback, errori, abort, origine presa dal browser e disconnessione | Classi WebAuthn simulate: non sostituisce un collaudo su siti reali |
+| `passkey.rs` (test inline) | rpId e PSL, CBOR, `clientDataJSON`, registrazione con login verificato, validazione delle richieste; il test `--ignored` `dump_for_external_verifier` produce dati verificati anche con OpenSSL/Node | Nessun browser reale |
 | `tests/browser-host.test.mjs` | Due casi con processo helper, APPDATA isolato e bridge simulato | Può saltare se manca il binario; uno skip non è superamento funzionale |
 | `tests/test_legacy_fixture.py` | Vettore crittografico condiviso | Non esegue la UI Python né garantisce tutta la compatibilità bidirezionale |
 

@@ -805,9 +805,15 @@ export default function App() {
         const q = search.toLowerCase().trim();
         return (
           !q ||
-          [it.title, it.type, it.notes, ...Object.values(it.f || {})].some((v) =>
-            v?.toLowerCase().includes(q),
-          )
+          [
+            it.title,
+            it.type,
+            it.notes,
+            // The hidden WebAuthn key material is never searched.
+            ...Object.entries(it.f || {})
+              .filter(([k]) => k !== 'webauthn')
+              .map(([, v]) => v),
+          ].some((v) => v?.toLowerCase().includes(q))
         );
       })
       .sort((a, b) => (b.updated || 0) - (a.updated || 0));
@@ -1684,6 +1690,14 @@ export default function App() {
                     <span>Categoria</span>
                     <select
                       value={draft.type}
+                      // A WebAuthn passkey keeps its private key in f.webauthn: changing the
+                      // category would discard it.
+                      disabled={!!draft.f?.webauthn}
+                      title={
+                        draft.f?.webauthn
+                          ? 'Passkey WebAuthn: categoria non modificabile'
+                          : undefined
+                      }
                       onChange={(e) =>
                         setDraft((x) => ({ ...x, type: e.target.value as Category, f: {} }))
                       }

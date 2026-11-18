@@ -66,6 +66,22 @@ La CSP è una misura utile; non equivale a isolamento dei comandi per finestra. 
 
 `choose_icon_data` limita il file a 150000 byte e controlla il magic number dei formati ammessi. Altri percorsi che accettano icone data URI non applicano necessariamente lo stesso controllo. I documenti non devono promettere validazione uniforme su tutti gli ingressi.
 
+## Passkey WebAuthn
+
+[passkey-page.js](../browser-extension/passkey-page.js) gira nel contesto della pagina (MAIN world) e sostituisce `navigator.credentials.create/get`. [passkey-bridge.js](../browser-extension/passkey-bridge.js) inoltra al background, che accetta solo frame principali HTTPS e usa come origine `sender.url` fornito dal browser, mai un valore della pagina.
+
+Controlli in [passkey.rs](../src-tauri/src/passkey.rs):
+- **rpId:** deve coincidere con l'host o esserne un dominio genitore registrabile (PSL; mai un suffisso pubblico come `com` o `github.io`).
+- **Richiesta:** challenge e `user.id` di lunghezza limitata; si supporta solo ES256, altrimenti la richiesta passa al browser.
+- **Conferma:** ogni creazione o uso richiede vault sbloccato e una conferma esplicita nella mini finestra.
+- **Collegamento all'account:** `allowCredentials`/`excludeCredentials` vincolano la scelta, e la firma copre `SHA-256(rpId)` e `clientDataJSON` con l'origine reale.
+
+Il flag UV dichiara "utente verificato" perché la master password ha sbloccato il vault e l'utente conferma; non è una verifica biometrica né un nuovo inserimento della password a ogni uso. BE/BS dichiarano una credenziale sincronizzabile, perché il vault può essere copiato nelle cartelle cloud.
+
+La chiave privata P-256 è nel vault cifrato, ma come le password arriva in chiaro alla UI principale con lo stato sbloccato. È nell'export JSON in chiaro e in ogni copia del vault: chi ottiene il vault sbloccato può usare le passkey.
+
+Uno script ostile della pagina può già chiamare WebAuthn per proprio conto: la mini finestra mostra sempre l'rpId verificato. Un'estensione o un processo malevolo dello stesso utente resta fuori dal modello di difesa, come per il riempimento.
+
 ## Native Messaging e sito di destinazione
 
 I moduli [browser.rs](../src-tauri/src/browser.rs), [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) e [helper](../src-tauri/src/bin/jesse_browser_host.rs) implementano:
