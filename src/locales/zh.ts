@@ -630,8 +630,8 @@ const dictionary: Dictionary = {
   'Genera password': '生成密码',
   'Generatore di password': '密码生成器',
   'GitHub, all’avvio e una volta al giorno': 'GitHub，启动时及每天一次',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    '本次会话中打开过的项目，不保存任何历史记录。',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    '最近打开的项目，包括通过快速搜索打开的。',
   'Gli elementi che apri compariranno qui.': '你打开的项目会显示在这里。',
   'Gli ultimi elementi creati.': '最近创建的项目。',
   Grande: '大',
@@ -715,8 +715,8 @@ const dictionary: Dictionary = {
   Sicurezza: '安全',
   Sistema: '系统',
   'Solo nel file locale cifrato, nessun account online': '仅保存在本地加密文件中，无在线账户',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    '仅限本次会话：不会保存任何内容，锁定时清空列表。',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    '保存在加密保险库中，并与快速搜索共享：仅记录是哪些项目，绝不包含密码。',
   'Solo su richiesta, con prefisso dell’hash': '仅在请求时，使用哈希前缀',
   'Sposta dopo': '向后移动',
   'Sposta giù': '下移',
@@ -776,8 +776,8 @@ const dictionary: Dictionary = {
   'Username copiato': '用户名已复制',
   'Elenco degli usati di recente cancellato': '最近使用列表已清除',
   'Cancella gli usati di recente': '清除最近使用',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '最近使用的项目保存在加密保险库中（仅记录是哪些项目，绝不包含密码），重启后仍会保留。若要让快速搜索随时可用，请在“桌面”部分开启“随 Windows 启动”。',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近使用的项目保存在加密保险库中（仅记录是哪些项目，绝不包含密码），重启后仍会保留，并与仪表板的“最近使用”小组件相同。若要让快速搜索随时可用，请在“桌面”部分开启“随 Windows 启动”。',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保险库已锁定',

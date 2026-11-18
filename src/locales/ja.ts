@@ -658,8 +658,8 @@ const dictionary: Dictionary = {
   'Genera password': 'パスワードを生成',
   'Generatore di password': 'パスワード ジェネレーター',
   'GitHub, all’avvio e una volta al giorno': 'GitHub、起動時と 1 日 1 回',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'このセッションで開いた項目。履歴は保存されません。',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    '最近開いた項目（クイック検索から開いたものを含む）。',
   'Gli elementi che apri compariranno qui.': '開いた項目がここに表示されます。',
   'Gli ultimi elementi creati.': '最近作成した項目。',
   Grande: '大',
@@ -744,8 +744,8 @@ const dictionary: Dictionary = {
   Sistema: 'システム',
   'Solo nel file locale cifrato, nessun account online':
     'ローカルの暗号化ファイルのみ。オンライン アカウントなし',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'このセッションのみ: 何も保存されず、ロック時に一覧は消去されます。',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    '暗号化された保管庫に保存され、クイック検索と共有されます（どの項目かだけで、パスワードは保存されません）。',
   'Solo su richiesta, con prefisso dell’hash': '要求時のみ、ハッシュの先頭部分を送信',
   'Sposta dopo': '後ろへ移動',
   'Sposta giù': '下へ移動',
@@ -807,8 +807,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'ユーザー名をコピーしました',
   'Elenco degli usati di recente cancellato': '最近使用した項目の一覧を消去しました',
   'Cancella gli usati di recente': '最近使用した項目を消去',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '最近使用した項目は暗号化された保管庫に保存され（どの項目かだけで、パスワードは保存されません）、再起動後も残ります。クイック検索をいつでも使えるようにするには、「デスクトップ」セクションで「Windows と同時に起動」をオンにしてください。',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近使用した項目は暗号化された保管庫に保存され（どの項目かだけで、パスワードは保存されません）、再起動後も残り、ダッシュボードの「最近使用」ウィジェットと同じです。クイック検索をいつでも使えるようにするには、「デスクトップ」セクションで「Windows と同時に起動」をオンにしてください。',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保管庫はロックされています',

@@ -501,8 +501,7 @@ export default function App() {
   const { askConfirm, showNotice, askText, decision, resolve: resolveDecision } = useAppDialogs();
   const [newsOpen, setNewsOpen] = useState(false);
   // Session-only data shared with the dashboard: never saved, cleared on lock.
-  const [recentIds, setRecentIds] = useState<string[]>([]),
-    [breaches, setBreaches] = useState<BreachResult[] | null>(null);
+  const [breaches, setBreaches] = useState<BreachResult[] | null>(null);
   const [status, setStatus] = useState<Status | null>(null),
     [vault, setVault] = useState<State | null>(null),
     [page, setPage] = useState<Page>('dashboard'),
@@ -539,7 +538,6 @@ export default function App() {
   // Child pages holding secrets unmount because they render only with a vault.
   const wipeSession = useCallback(() => {
     setVault(null);
-    setRecentIds([]);
     setBreaches(null);
     setPassword('');
     setRecovery('');
@@ -740,6 +738,19 @@ export default function App() {
     }
     return r;
   };
+  // "Usati di recente": item ids in the encrypted vault settings, shared with the
+  // Global Quick Search. A convenience: a failed save changes nothing.
+  const recentIds = vault?.settings.recent ?? [];
+  const rememberItem = async (id: string) => {
+    if (recentIds[0] === id) return;
+    const recent = [id, ...recentIds.filter((x) => x !== id)].slice(0, 12);
+    try {
+      const r = await api<{ state: State }>('settings', { recent });
+      setVault(r.state);
+    } catch {
+      /* Il vault resta com'è: l'elenco si aggiorna alla prossima apertura. */
+    }
+  };
   // Dashboard layout: saved in the encrypted vault settings (no toast: it saves often).
   const saveDashboard = async (dashboard: DashboardConfig) => {
     const r = await api<{ state: State }>('settings', { dashboard });
@@ -920,9 +931,7 @@ export default function App() {
     ).then(() => setMulti([]));
   };
   const openItem = (it?: Item, type: Category = 'login') => {
-    // "Usati di recente" (dashboard): ids of items opened in this session only,
-    // kept in memory and cleared on lock; nothing is saved.
-    if (it?.id) setRecentIds((ids) => [it.id, ...ids.filter((id) => id !== it.id)].slice(0, 20));
+    if (it?.id) void rememberItem(it.id);
     setDraft(it ? structuredClone(it) : itemBase(type));
     setGroupIcon('');
     setAppsList(null);

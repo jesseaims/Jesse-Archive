@@ -662,8 +662,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Создать пароль',
   'Generatore di password': 'Генератор паролей',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, при запуске и раз в день',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Элементы, открытые в этом сеансе, без сохранения истории.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Последние открытые элементы, в том числе из быстрого поиска.',
   'Gli elementi che apri compariranno qui.': 'Здесь появятся открытые вами элементы.',
   'Gli ultimi elementi creati.': 'Последние созданные элементы.',
   Grande: 'Большой',
@@ -751,8 +751,8 @@ const dictionary: Dictionary = {
   Sistema: 'Система',
   'Solo nel file locale cifrato, nessun account online':
     'Только в локальном зашифрованном файле, без онлайн-аккаунта',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Только для этого сеанса: ничего не сохраняется, список очищается при блокировке.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Сохраняются в зашифрованном хранилище и общие с быстрым поиском: только какие элементы, никогда пароли.',
   'Solo su richiesta, con prefisso dell’hash': 'Только по запросу, с префиксом хеша',
   'Sposta dopo': 'Переместить дальше',
   'Sposta giù': 'Вниз',
@@ -815,8 +815,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'Имя пользователя скопировано',
   'Elenco degli usati di recente cancellato': 'Список недавно использованных очищен',
   'Cancella gli usati di recente': 'Очистить недавно использованные',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Недавно использованные элементы сохраняются в зашифрованном хранилище (только какие элементы, никогда пароли) и сохраняются после перезапуска. Чтобы быстрый поиск всегда был готов, включите «Запускать вместе с Windows» в разделе «Рабочий стол».',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Недавно использованные элементы сохраняются в зашифрованном хранилище (только какие элементы, никогда пароли), сохраняются после перезапуска и совпадают с виджетом «Недавно использованные» на панели. Чтобы быстрый поиск всегда был готов, включите «Запускать вместе с Windows» в разделе «Рабочий стол».',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Хранилище заблокировано',

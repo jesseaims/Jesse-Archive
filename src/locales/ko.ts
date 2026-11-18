@@ -650,8 +650,8 @@ const dictionary: Dictionary = {
   'Genera password': '비밀번호 생성',
   'Generatore di password': '비밀번호 생성기',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, 시작할 때와 하루에 한 번',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    '이번 세션에서 연 항목입니다. 기록은 저장하지 않습니다.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    '빠른 검색에서 연 항목을 포함해 최근에 연 항목입니다.',
   'Gli elementi che apri compariranno qui.': '연 항목이 여기에 표시됩니다.',
   'Gli ultimi elementi creati.': '최근에 만든 항목.',
   Grande: '크게',
@@ -737,8 +737,8 @@ const dictionary: Dictionary = {
   Sistema: '시스템',
   'Solo nel file locale cifrato, nessun account online':
     '로컬 암호화 파일에만 저장, 온라인 계정 없음',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    '이번 세션에만 해당: 아무것도 저장되지 않으며 잠그면 목록이 지워집니다.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    '암호화된 보관함에 저장되며 빠른 검색과 공유됩니다(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음).',
   'Solo su richiesta, con prefisso dell’hash': '요청할 때만, 해시 앞부분으로',
   'Sposta dopo': '뒤로 이동',
   'Sposta giù': '아래로 이동',
@@ -799,8 +799,8 @@ const dictionary: Dictionary = {
   'Username copiato': '사용자 이름을 복사했습니다',
   'Elenco degli usati di recente cancellato': '최근 사용 목록을 지웠습니다',
   'Cancella gli usati di recente': '최근 사용 지우기',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '최근 사용한 항목은 암호화된 보관함에 저장되며(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음) 다시 시작한 후에도 유지됩니다. 빠른 검색을 항상 사용할 수 있게 하려면 데스크톱 섹션에서 «Windows와 함께 시작»을 켜세요.',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '최근 사용한 항목은 암호화된 보관함에 저장되며(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음) 다시 시작한 후에도 유지되고, 대시보드의 «최근 사용» 위젯과 같습니다. 빠른 검색을 항상 사용할 수 있게 하려면 데스크톱 섹션에서 «Windows와 함께 시작»을 켜세요.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '보관함 잠김',

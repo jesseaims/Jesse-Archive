@@ -664,8 +664,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Gerar senha',
   'Generatore di password': 'Gerador de senhas',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, ao iniciar e uma vez por dia',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Os itens abertos nesta sessão, sem salvar nenhum histórico.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Os últimos itens abertos, também a partir da pesquisa rápida.',
   'Gli elementi che apri compariranno qui.': 'Os itens que você abrir aparecerão aqui.',
   'Gli ultimi elementi creati.': 'Os últimos itens criados.',
   Grande: 'Grande',
@@ -754,8 +754,8 @@ const dictionary: Dictionary = {
   Sistema: 'Sistema',
   'Solo nel file locale cifrato, nessun account online':
     'Somente no arquivo local criptografado, sem conta on-line',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Somente nesta sessão: nada é salvo e a lista é limpa ao bloquear.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Guardados no cofre cifrado e partilhados com a pesquisa rápida: apenas quais itens, nunca as senhas.',
   'Solo su richiesta, con prefisso dell’hash': 'Somente sob demanda, com um prefixo do hash',
   'Sposta dopo': 'Mover para depois',
   'Sposta giù': 'Mover para baixo',
@@ -818,8 +818,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'Usuário copiado',
   'Elenco degli usati di recente cancellato': 'Lista de usados recentemente apagada',
   'Cancella gli usati di recente': 'Apagar usados recentemente',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Os itens usados recentemente são guardados no cofre cifrado (apenas quais itens, nunca as senhas) e mantêm-se após reiniciar. Para ter a pesquisa rápida sempre pronta, ative «Iniciar com o Windows» na secção Ambiente de trabalho.',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Os itens usados recentemente são guardados no cofre cifrado (apenas quais itens, nunca as senhas), mantêm-se após reiniciar e são os mesmos do widget «Usados recentemente» do painel. Para ter a pesquisa rápida sempre pronta, ative «Iniciar com o Windows» na secção Ambiente de trabalho.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Cofre bloqueado',

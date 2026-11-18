@@ -662,8 +662,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Passwort generieren',
   'Generatore di password': 'Passwortgenerator',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, beim Start und einmal täglich',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Die in dieser Sitzung geöffneten Elemente, ohne einen Verlauf zu speichern.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Die zuletzt geöffneten Einträge, auch aus der Schnellsuche.',
   'Gli elementi che apri compariranno qui.': 'Elemente, die du öffnest, erscheinen hier.',
   'Gli ultimi elementi creati.': 'Die zuletzt erstellten Elemente.',
   Grande: 'Groß',
@@ -752,8 +752,8 @@ const dictionary: Dictionary = {
   Sistema: 'System',
   'Solo nel file locale cifrato, nessun account online':
     'Nur in der lokalen verschlüsselten Datei, kein Online-Konto',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Nur für diese Sitzung: Nichts wird gespeichert und die Liste wird beim Sperren geleert.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Im verschlüsselten Tresor gespeichert und mit der Schnellsuche geteilt: nur welche Einträge, nie die Passwörter.',
   'Solo su richiesta, con prefisso dell’hash': 'Nur auf Anfrage, mit einem Hash-Präfix',
   'Sposta dopo': 'Nach hinten',
   'Sposta giù': 'Nach unten',
@@ -816,8 +816,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'Benutzername kopiert',
   'Elenco degli usati di recente cancellato': 'Liste der zuletzt verwendeten Einträge gelöscht',
   'Cancella gli usati di recente': 'Zuletzt verwendete löschen',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Zuletzt verwendete Einträge werden im verschlüsselten Tresor gespeichert (nur welche Einträge, nie die Passwörter) und bleiben nach einem Neustart erhalten. Damit die Schnellsuche immer bereit ist, aktiviere «Mit Windows starten» im Bereich Desktop.',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Zuletzt verwendete Einträge werden im verschlüsselten Tresor gespeichert (nur welche Einträge, nie die Passwörter), bleiben nach einem Neustart erhalten und sind dieselben wie im Dashboard-Widget «Zuletzt verwendet». Damit die Schnellsuche immer bereit ist, aktiviere «Mit Windows starten» im Bereich Desktop.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Tresor gesperrt',

@@ -65,7 +65,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 - Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.
 
 - Passkey WebAuthn su siti reali (per esempio webauthn.io, GitHub, Google) in Chromium e Firefox ≥ 128: registrazione, accesso, fallback, abort, siti che richiedono attestazione o algoritmi diversi da ES256.
-- Dashboard nell'app reale: trascinamento col mouse, resa dei widget con molti dati e su schermi piccoli, prestazioni con vault grandi. Possibili estensioni: widget Documenti quando esisterà la categoria, più istanze dello stesso widget, cronologia d'uso opzionale e cifrata.
+- Dashboard nell'app reale: trascinamento col mouse, resa dei widget con molti dati e su schermi piccoli, prestazioni con vault grandi. Possibili estensioni: widget Documenti quando esisterà la categoria, più istanze dello stesso widget.
 - Ricerca rapida globale nell'app reale: scorciatoia con app ridotta a icona, nel tray e con un'altra applicazione in primo piano, focus immediato, posizione su più monitor e con zoom, copia e pulizia degli appunti, apertura dei siti, conflitti con scorciatoie di altre applicazioni. Possibili estensioni: combinazioni interne personalizzabili, integrazione nella Dashboard e in una command palette.
 - Revisione delle traduzioni da parte di madrelingua e resa grafica dei testi più lunghi (tedesco, russo) e dei caratteri CJK nelle finestre strette; lingue da destra a sinistra non supportate.
 - Aggiornamento automatico end-to-end: dalla 1.1.13 installata alla prima release successiva firmata (download, verifica, UAC, installazione silenziosa nella cartella personalizzata e riapertura).

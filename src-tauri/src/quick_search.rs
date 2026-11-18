@@ -9,8 +9,8 @@
 //!   addresses, categories, folders, favorites, group names and logos. Passwords are
 //!   copied here in the backend (`quick_search_copy`) and reach the webview only
 //!   through `quick_search_reveal`, when the user explicitly asks to see one;
-//! - the recently used items are saved in the encrypted vault (`settings.quick_recent`,
-//!   item ids only), so they survive a restart; with the vault locked the window
+//! - the recently used items are saved in the encrypted vault (`settings.recent`,
+//!   item ids only, shared with the Dashboard widget), so they survive a restart; with the vault locked the window
 //!   receives none of them and forgets what it was showing;
 //! - settings are a device preference (`quick_search` in config.json): no vault data.
 use crate::{clipboard, core, AppState};
@@ -25,7 +25,9 @@ pub const LABEL: &str = "quick-search";
 pub const SIZE: (f64, f64) = (720., 500.);
 pub const DEFAULT_SHORTCUT: &str = "Ctrl+Shift+Space";
 const PREF: &str = "quick_search";
-const RECENT_MAX: usize = 8;
+/// Same limit as the backend and the Dashboard widget; the window shows fewer.
+const RECENT_MAX: usize = 12;
+const RECENT_SHOWN: usize = 8;
 /// Quick actions the main window can run on request (ids of `ACTIONS` in
 /// src/dashboard/widgets.tsx) and pages it can open.
 const ACTIONS: [&str; 6] = [
@@ -356,7 +358,7 @@ pub fn recent_ids(data: &Value) -> Vec<String> {
             .as_array()
             .is_some_and(|a| a.iter().any(|i| text(i, "id") == id && !trashed(i)))
     };
-    data["settings"]["quick_recent"]
+    data["settings"]["recent"]
         .as_array()
         .map(|a| {
             a.iter()
@@ -397,7 +399,7 @@ fn remember_item(app: &AppHandle, id: &str) {
     };
     if let Some(next) = next_recent(&recent_ids(&data), id) {
         drop(data);
-        let _ = vault.call("settings", json!({ "quick_recent": next }));
+        let _ = vault.call("settings", json!({ "recent": next }));
     }
 }
 
@@ -421,7 +423,7 @@ pub fn quick_search_data(app: AppHandle) -> Result<Value, String> {
     // Same colors as the main window (a preset name or custom colors).
     out["theme"] = data["settings"]["theme"].clone();
     out["recent"] = json!(if settings.recent {
-        recent_ids(&data)
+        recent_ids(&data).into_iter().take(RECENT_SHOWN).collect()
     } else {
         vec![]
     });
@@ -575,7 +577,7 @@ pub fn quick_search_hide(app: AppHandle) {
     hide(&app);
 }
 
-/// Empties the recently used items saved in the vault.
+/// Empties the recently used items saved in the vault (also those of the Dashboard).
 #[tauri::command]
 pub fn quick_search_clear_recent(app: AppHandle) -> Result<(), String> {
     let state = app.state::<AppState>();
@@ -583,7 +585,7 @@ pub fn quick_search_clear_recent(app: AppHandle) -> Result<(), String> {
     if vault.call("status", json!({}))?["unlocked"] != true {
         return Err("Vault bloccato".into());
     }
-    vault.call("settings", json!({ "quick_recent": [] }))?;
+    vault.call("settings", json!({ "recent": [] }))?;
     Ok(())
 }
 
@@ -619,10 +621,6 @@ pub fn quick_search_configure(app: AppHandle, settings: Value) -> Result<Value, 
             unregister(&app);
         }
         return Err(e);
-    }
-    if previous.recent && !next.recent {
-        // Turning the list off also empties it (when the vault is unlocked).
-        let _ = quick_search_clear_recent(app.clone());
     }
     *lock(&q.settings) = next;
     if !lock(&q.settings).enabled {
@@ -734,7 +732,7 @@ mod tests {
     #[test]
     fn recent_items_skip_deleted_ones_and_stay_bounded() {
         let data = json!({
-            "settings": {"quick_recent": ["b", "gone", "a", 3, "t"]},
+            "settings": {"recent": ["b", "gone", "a", 3, "t"]},
             "items": [
                 {"id": "a", "type": "login"},
                 {"id": "b", "type": "note"},

@@ -658,8 +658,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Generate password',
   'Generatore di password': 'Password generator',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, at startup and once a day',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Items opened in this session, without saving any history.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'The last items you opened, also from Quick Search.',
   'Gli elementi che apri compariranno qui.': 'Items you open will appear here.',
   'Gli ultimi elementi creati.': 'The latest items created.',
   Grande: 'Large',
@@ -746,8 +746,8 @@ const dictionary: Dictionary = {
   Sistema: 'System',
   'Solo nel file locale cifrato, nessun account online':
     'Only in the local encrypted file, no online account',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Only for this session: nothing is saved and the list is cleared when locking.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Saved in the encrypted vault and shared with Quick Search: only which items, never the passwords.',
   'Solo su richiesta, con prefisso dell’hash': 'On request only, with a hash prefix',
   'Sposta dopo': 'Move later',
   'Sposta giù': 'Move down',
@@ -808,8 +808,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'Username copied',
   'Elenco degli usati di recente cancellato': 'Recently used list cleared',
   'Cancella gli usati di recente': 'Clear recently used',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Recently used items are saved in the encrypted vault (only which items, never the passwords) and are kept after a restart. To always have Quick Search ready, turn on «Start with Windows» in the Desktop section.',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Recently used items are saved in the encrypted vault (only which items, never the passwords), are kept after a restart and are the same as in the Dashboard «Recently used» widget. To always have Quick Search ready, turn on «Start with Windows» in the Desktop section.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Vault locked',

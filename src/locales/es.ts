@@ -662,8 +662,8 @@ const dictionary: Dictionary = {
   'Genera password': 'Generar contraseña',
   'Generatore di password': 'Generador de contraseñas',
   'GitHub, all’avvio e una volta al giorno': 'GitHub, al iniciar y una vez al día',
-  'Gli elementi aperti in questa sessione, senza salvare nessuna cronologia.':
-    'Los elementos abiertos en esta sesión, sin guardar ningún historial.',
+  'Gli ultimi elementi aperti, anche dalla ricerca rapida.':
+    'Los últimos elementos abiertos, también desde la búsqueda rápida.',
   'Gli elementi che apri compariranno qui.': 'Los elementos que abras aparecerán aquí.',
   'Gli ultimi elementi creati.': 'Los últimos elementos creados.',
   Grande: 'Grande',
@@ -752,8 +752,8 @@ const dictionary: Dictionary = {
   Sistema: 'Sistema',
   'Solo nel file locale cifrato, nessun account online':
     'Solo en el archivo local cifrado, sin cuenta en línea',
-  'Solo per questa sessione: nulla viene salvato e la lista si svuota al blocco.':
-    'Solo para esta sesión: no se guarda nada y la lista se vacía al bloquear.',
+  'Salvati nel vault cifrato e condivisi con la ricerca rapida: solo quali elementi, mai le password.':
+    'Guardados en la bóveda cifrada y compartidos con la búsqueda rápida: solo qué elementos, nunca las contraseñas.',
   'Solo su richiesta, con prefisso dell’hash': 'Solo a petición, con un prefijo del hash',
   'Sposta dopo': 'Mover después',
   'Sposta giù': 'Bajar',
@@ -816,8 +816,8 @@ const dictionary: Dictionary = {
   'Username copiato': 'Usuario copiado',
   'Elenco degli usati di recente cancellato': 'Lista de usados recientemente borrada',
   'Cancella gli usati di recente': 'Borrar usados recientemente',
-  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Los elementos usados recientemente se guardan en la bóveda cifrada (solo qué elementos, nunca las contraseñas) y se conservan tras reiniciar. Para tener la búsqueda rápida siempre lista, activa «Iniciar con Windows» en la sección Escritorio.',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password), restano dopo il riavvio e sono gli stessi del widget «Usati di recente» della Dashboard. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Los elementos usados recientemente se guardan en la bóveda cifrada (solo qué elementos, nunca las contraseñas), se conservan tras reiniciar y son los mismos del widget «Usados recientemente» del panel. Para tener la búsqueda rápida siempre lista, activa «Iniciar con Windows» en la sección Escritorio.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Bóveda bloqueada',
