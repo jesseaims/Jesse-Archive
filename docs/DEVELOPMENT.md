@@ -103,7 +103,9 @@ Mancano prove complete di concorrenza e durabilità, collaudo manuale dell'inatt
 
 Il componente centrale non cambia. Un widget deve usare i dati e i comandi già esistenti, senza mostrare segreti, e non deve chiamare da solo comandi che aggiornano l'attività del vault: quelli nuovi di sola lettura vanno aggiunti all'elenco passivo in `Vault::call`.
 
-Il trascinamento usa il drag & drop HTML5. Funziona solo perché la finestra principale ha `"dragDropEnabled": false` in `tauri.conf.json`: con il gestore di rilascio dei file di Tauri attivo (il default), WebView2 su Windows blocca il trascinamento nella pagina e mostra il cursore di divieto. jsdom non riproduce questo comportamento, quindi la regola è verificata da `tests/dashboard.test.mjs`. Se in futuro servisse il rilascio di file nella finestra, il riordino dei widget andrebbe riscritto con eventi pointer.
+La griglia è a mosaico: righe da 8 px (`grid-auto-rows`, `row-gap: 0`) e ogni scheda misura la propria altezza con `ResizeObserver` (`useRowSpan` in `Dashboard.tsx`) e occupa `ceil((altezza + 16) / 8)` righe; `grid-auto-flow: dense` riempie i buchi. Le costanti `GRID_ROW`/`GRID_GAP` devono restare allineate a `.dash-grid` in `style.css`.
+
+Il trascinamento usa il drag & drop HTML5: rilascio su un widget = scambio (`swapWidgets`), rilascio sullo spazio libero = in fondo all'elenco, e il mosaico lo mette nel primo spazio in cui entra. Funziona solo perché la finestra principale ha `"dragDropEnabled": false` in `tauri.conf.json`: con il gestore di rilascio dei file di Tauri attivo (il default), WebView2 su Windows blocca il trascinamento nella pagina e mostra il cursore di divieto. jsdom non riproduce questo comportamento, quindi la regola è verificata da `tests/dashboard.test.mjs`. Se in futuro servisse il rilascio di file nella finestra, il riordino dei widget andrebbe riscritto con eventi pointer.
 
 ## Traduzioni
 

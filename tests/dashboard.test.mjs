@@ -75,6 +75,8 @@ test('layout operations: add once, move, resize, collapse, configure, remove', (
   c = m.moveWidget(c, 2, 0);
   assert.deepEqual(types(c), ['privacy', 'favorites', 'generator']);
   assert.deepEqual(types(m.moveWidget(c, 0, 9)), types(c), 'out-of-range moves are ignored');
+  assert.deepEqual(types(m.swapWidgets(c, 0, 2)), ['generator', 'favorites', 'privacy']);
+  assert.deepEqual(types(m.swapWidgets(c, 0, 9)), types(c), 'out-of-range swaps are ignored');
   c = m.patchWidget(c, 'generator', { size: 'l', collapsed: true, config: { length: 2 } });
   const generator = m.activeLayout(c).widgets[2];
   assert.equal(generator.size, 'l');

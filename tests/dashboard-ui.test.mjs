@@ -301,7 +301,7 @@ test('customize: remove, add from the catalog, move, resize, configure; saved au
   d.close();
 });
 
-test('drag and drop reorders widgets', async () => {
+test('drag and drop swaps two widgets, or sends one to free space', async () => {
   const d = await setup();
   await d.click(d.button('Personalizza dashboard'));
   const before = d.widgets();
@@ -321,7 +321,19 @@ test('drag and drop reorders widgets', async () => {
   await fire(d.widget(before[0]), 'dragover');
   await fire(d.widget(before[0]), 'drop');
   await d.flush();
-  assert.deepEqual(d.widgets(), [before[3], before[0], before[1], before[2], ...before.slice(4)]);
+  assert.deepEqual(
+    d.widgets(),
+    [before[3], before[1], before[2], before[0], ...before.slice(4)],
+    'only the two widgets exchange places',
+  );
+  const grid = d.$('.dash-grid');
+  await fire(d.widget(before[1]).querySelector('.dash-handle'), 'dragstart');
+  await fire(grid, 'dragover');
+  await fire(grid, 'drop');
+  await d.flush();
+  const after = d.widgets();
+  assert.equal(after.at(-1), before[1], 'dropped on free space: goes last, packing fills gaps');
+  assert.equal(after.length, before.length);
   await d.H.unmount();
   d.close();
 });

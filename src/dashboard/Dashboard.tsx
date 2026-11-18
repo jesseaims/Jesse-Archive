@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import type { DragEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { DragEvent, RefObject } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -28,6 +28,7 @@ import {
   patchWidget,
   removeWidget,
   resetLayout,
+  swapWidgets,
   switchLayout,
   WIDGET_SPECS,
 } from './model';
@@ -152,8 +153,15 @@ export default function Dashboard(props: Props) {
 
   const ctx: DashboardContext = { ...props, health, healthError, backup, backupError };
 
-  const onDrop = (to: number) => {
-    if (dragFrom !== null) change(moveWidget(config, dragFrom, to));
+  // On a widget: the two swap places. On free space in the grid: the widget goes last,
+  // and the dense packing puts it in the first gap where it fits.
+  const onDrop = (to: number | 'end') => {
+    if (dragFrom !== null)
+      change(
+        to === 'end'
+          ? moveWidget(config, dragFrom, layout.widgets.length - 1)
+          : swapWidgets(config, dragFrom, to),
+      );
     setDragFrom(null);
     setDropAt(null);
   };
@@ -255,7 +263,19 @@ export default function Dashboard(props: Props) {
           </button>
         </div>
       ) : (
-        <div className="dash-grid" onDragOver={(e) => editing && e.preventDefault()}>
+        <div
+          className="dash-grid"
+          onDragOver={(e) => {
+            if (!editing || dragFrom === null) return;
+            e.preventDefault();
+            if (e.target === e.currentTarget) setDropAt(null);
+          }}
+          onDrop={(e) => {
+            if (!editing || e.target !== e.currentTarget) return;
+            e.preventDefault();
+            onDrop('end');
+          }}
+        >
           {layout.widgets.map((w, index) => (
             <WidgetFrame
               key={w.type}
@@ -349,13 +369,41 @@ type FrameProps = {
   };
 };
 
+// Masonry packing: the grid has thin rows and each card spans just the rows its own
+// height needs, so small cards fill the space next to tall ones instead of leaving
+// holes as tall as the tallest card of a row. Keep in sync with .dash-grid in style.css.
+const GRID_ROW = 8;
+const GRID_GAP = 16;
+
+/** Grid rows a card spans; null before the first measurement (and in jsdom). */
+function useRowSpan(ref: RefObject<HTMLElement | null>) {
+  const [span, setSpan] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const height = el.offsetHeight; // ignores the drag transform
+      if (height > 0) setSpan(Math.ceil((height + GRID_GAP) / GRID_ROW));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+  return span;
+}
+
 function WidgetFrame(p: FrameProps) {
   const def = WIDGETS[p.widget.type];
   const spec = WIDGET_SPECS[p.widget.type];
   const Body = def.Component;
   const title = t(def.name);
+  const ref = useRef<HTMLElement>(null);
+  const span = useRowSpan(ref);
   return (
     <section
+      ref={ref}
+      style={span ? { gridRowEnd: `span ${span}` } : undefined}
       className={`dash-widget size-${p.widget.size} ${p.widget.collapsed ? 'collapsed' : ''} ${p.dragging ? 'dragging' : ''} ${p.dropTarget ? 'drop-target' : ''}`}
       aria-label={title}
       onDragOver={p.editing ? p.drag.onDragOver : undefined}

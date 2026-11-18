@@ -2672,8 +2672,12 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-flow: row dense;
+  /* Masonry: thin rows, each card spans the rows its height needs (Dashboard.tsx,
+     GRID_ROW/GRID_GAP). The vertical gap is part of each card's span. */
+  grid-auto-rows: 8px;
   align-items: start;
-  gap: 16px;
+  column-gap: 16px;
+  row-gap: 0;
 }
 .dash-widget {
   grid-column: span 1;

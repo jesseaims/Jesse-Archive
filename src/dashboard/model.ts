@@ -369,6 +369,14 @@ export const moveWidget = (config: DashboardConfig, from: number, to: number) =>
     return widgets;
   });
 
+/** Dropping a widget onto another exchanges the two: nothing in between shifts. */
+export const swapWidgets = (config: DashboardConfig, a: number, b: number) =>
+  updateLayout(config, (widgets) => {
+    if (a < 0 || a >= widgets.length || b < 0 || b >= widgets.length || a === b) return widgets;
+    [widgets[a], widgets[b]] = [widgets[b], widgets[a]];
+    return widgets;
+  });
+
 export const addWidget = (config: DashboardConfig, type: WidgetType) =>
   updateLayout(config, (widgets) =>
     widgets.some((w) => w.type === type) || !WIDGET_SPECS[type].available
