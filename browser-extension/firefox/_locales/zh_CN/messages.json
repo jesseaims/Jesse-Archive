@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · 快速填充",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "从本地保险库中为当前网站选择账户。",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "为此字段打开 JesseArchive",
+    "description": "Toolbar button tooltip"
+  }
+}

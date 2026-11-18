@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · Quick fill",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Choose accounts for the current site from your local vault.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "Open JesseArchive for this field",
+    "description": "Toolbar button tooltip"
+  }
+}

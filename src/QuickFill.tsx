@@ -1,3 +1,4 @@
+import { t, tRich, translateMessage } from './i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { invoke } from '@tauri-apps/api/core';
@@ -44,7 +45,7 @@ export default function QuickFill() {
       setState(await invoke<Snapshot>('browser_accounts'));
       setPasskey(await invoke<Passkey>('passkey_state'));
     } catch (e) {
-      setError(String(e));
+      setError(translateMessage(e));
     }
   }, []);
   const passkeyAction = async (command: string, args: Record<string, unknown> = {}) => {
@@ -55,7 +56,7 @@ export default function QuickFill() {
       await invoke(command, args);
       setPasskey({ active: false });
     } catch (e) {
-      setError(String(e));
+      setError(translateMessage(e));
       void refresh();
     } finally {
       setBusy(false);
@@ -106,7 +107,7 @@ export default function QuickFill() {
           setState({ available: false });
           timer.current = setTimeout(cancel, 1800);
         } else {
-          setError(e.payload.message || 'Compilazione non riuscita. Richiama il pannello.');
+          setError(e.payload.message || t('Compilazione non riuscita. Richiama il pannello.'));
           void refresh();
         }
       }),
@@ -143,7 +144,7 @@ export default function QuickFill() {
       setPassword('');
       await refresh();
     } catch (err) {
-      setError(String(err));
+      setError(translateMessage(err));
     } finally {
       setBusy(false);
     }
@@ -151,20 +152,20 @@ export default function QuickFill() {
   const unlockForm = (
     <form className="quick-unlock" onSubmit={unlock}>
       <Lock size={28} />
-      <h2>Sblocca il vault</h2>
-      <p>La password principale rimane nell’app.</p>
+      <h2>{t('Sblocca il vault')}</h2>
+      <p>{t('La password principale rimane nell’app.')}</p>
       <input
         key={passkey.active ? passkey.rpId : state.domain}
         autoFocus
         type="password"
         autoComplete="off"
-        aria-label="Password principale"
-        placeholder="Password principale"
+        aria-label={t('Password principale')}
+        placeholder={t('Password principale')}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <button className="primary wide" disabled={busy || !password}>
-        {busy ? 'Sblocco…' : 'Sblocca e continua'}
+        {busy ? t('Sblocco…') : t('Sblocca e continua')}
         <ArrowRight size={17} />
       </button>
     </form>
@@ -174,7 +175,7 @@ export default function QuickFill() {
     if (!passkey.active) return null;
     const candidates = passkey.candidates || [];
     const pick = Math.min(selected, Math.max(0, candidates.length - 1));
-    const account = passkey.userName || passkey.userDisplay || 'account senza nome';
+    const account = passkey.userName || passkey.userDisplay || t('account senza nome');
     return (
       <main
         className="quick-fill"
@@ -198,12 +199,12 @@ export default function QuickFill() {
             <Fingerprint size={23} />
           </span>
           <div>
-            <strong>JesseArchive</strong>
-            <small>{passkey.op === 'create' ? 'Nuova passkey' : 'Accesso con passkey'}</small>
+            <strong>{t('JesseArchive')}</strong>
+            <small>{passkey.op === 'create' ? t('Nuova passkey') : t('Accesso con passkey')}</small>
           </div>
           <button
             className="icon-button"
-            aria-label="Annulla"
+            aria-label={t('Annulla')}
             onClick={() => void passkeyAction('passkey_cancel')}
           >
             <X size={19} />
@@ -212,21 +213,23 @@ export default function QuickFill() {
         <div className="quick-domain">
           <ShieldCheck size={16} />
           <strong>{passkey.rpId}</strong>
-          <span>HTTPS</span>
+          <span>{t('HTTPS')}</span>
         </div>
         {!passkey.unlocked ? (
           unlockForm
         ) : passkey.op === 'create' ? (
           <div className="quick-message">
             <Fingerprint size={32} />
-            <h2>Salvare una passkey?</h2>
+            <h2>{t('Salvare una passkey?')}</h2>
             <p>
-              {passkey.rpName || passkey.rpId} chiede di creare una passkey per{' '}
-              <strong>{account}</strong>. Verrà salvata cifrata nel vault di Jesse’s Archive.
+              {tRich(
+                '{site} chiede di creare una passkey per {account}. Verrà salvata cifrata nel vault di Jesse’s Archive.',
+                { site: passkey.rpName || passkey.rpId, account: <strong>{account}</strong> },
+              )}
             </p>
             {passkey.existing && (
               <p className="quick-error">
-                Per questo account esiste già una passkey in Jesse’s Archive.
+                {t('Per questo account esiste già una passkey in Jesse’s Archive.')}
               </p>
             )}
             <button
@@ -235,12 +238,12 @@ export default function QuickFill() {
               disabled={busy}
               onClick={() => void passkeyAction('passkey_approve')}
             >
-              Salva in Jesse’s Archive
+              {t('Salva in Jesse’s Archive')}
               <ArrowRight size={17} />
             </button>
           </div>
         ) : (
-          <div className="quick-accounts" role="listbox" aria-label="Passkey per il sito">
+          <div className="quick-accounts" role="listbox" aria-label={t('Passkey per il sito')}>
             {candidates.map((a, i) => (
               <button
                 key={a.id}
@@ -257,13 +260,15 @@ export default function QuickFill() {
                 </span>
                 <span>
                   <strong>{a.title}</strong>
-                  <small>{a.username || 'Account senza nome'}</small>
+                  <small>{a.username || t('Account senza nome')}</small>
                 </span>
                 <ArrowRight size={16} />
               </button>
             ))}
             {!candidates.length && (
-              <p className="quick-empty">Nessuna passkey di Jesse’s Archive per questo sito.</p>
+              <p className="quick-empty">
+                {t('Nessuna passkey di Jesse’s Archive per questo sito.')}
+              </p>
             )}
           </div>
         )}
@@ -273,7 +278,7 @@ export default function QuickFill() {
           onClick={() => void passkeyAction('passkey_fallback')}
         >
           <Smartphone size={16} />
-          Usa un altro dispositivo (telefono, Windows Hello…)
+          {t('Usa un altro dispositivo (telefono, Windows Hello…)')}
         </button>
         {error && (
           <p className="quick-error" role="alert">
@@ -281,8 +286,8 @@ export default function QuickFill() {
           </p>
         )}
         <footer className="quick-footer">
-          <span>{busy ? 'Elaborazione…' : 'Invio Conferma · Esc Annulla'}</span>
-          <small>Ogni uso richiede la tua conferma</small>
+          <span>{busy ? t('Elaborazione…') : t('Invio Conferma · Esc Annulla')}</span>
+          <small>{t('Ogni uso richiede la tua conferma')}</small>
         </footer>
       </main>
     );
@@ -304,10 +309,10 @@ export default function QuickFill() {
       clearTimeout(timer.current);
       timer.current = setTimeout(() => {
         setBusy(false);
-        setError('Il browser non ha confermato. Richiama il pannello dal campo di accesso.');
+        setError(t('Il browser non ha confermato. Richiama il pannello dal campo di accesso.'));
       }, 10000);
     } catch (e) {
-      setError(String(e));
+      setError(translateMessage(e));
       setBusy(false);
       void refresh();
     }
@@ -339,10 +344,10 @@ export default function QuickFill() {
           <KeyRound size={23} />
         </span>
         <div>
-          <strong>JesseArchive</strong>
-          <small>Inserimento rapido</small>
+          <strong>{t('JesseArchive')}</strong>
+          <small>{t('Inserimento rapido')}</small>
         </div>
-        <button className="icon-button" aria-label="Chiudi" onClick={cancel}>
+        <button className="icon-button" aria-label={t('Chiudi')} onClick={cancel}>
           <X size={19} />
         </button>
       </header>
@@ -350,7 +355,7 @@ export default function QuickFill() {
         <div className="quick-domain">
           <ShieldCheck size={16} />
           <strong>{state.domain}</strong>
-          <span>HTTPS</span>
+          <span>{t('HTTPS')}</span>
         </div>
       )}
       {notice ? (
@@ -361,10 +366,11 @@ export default function QuickFill() {
       ) : !state.available ? (
         <div className="quick-message">
           <KeyRound size={32} />
-          <h2>Seleziona un campo di accesso</h2>
+          <h2>{t('Seleziona un campo di accesso')}</h2>
           <p>
-            Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la
-            scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.
+            {t(
+              'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.',
+            )}
           </p>
         </div>
       ) : !state.unlocked ? (
@@ -375,8 +381,8 @@ export default function QuickFill() {
             <Search size={17} />
             <input
               autoFocus
-              aria-label="Cerca account"
-              placeholder="Cerca account…"
+              aria-label={t('Cerca account')}
+              placeholder={t('Cerca account…')}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -384,7 +390,7 @@ export default function QuickFill() {
               }}
             />
           </label>
-          <div className="quick-accounts" role="listbox" aria-label="Account per il sito">
+          <div className="quick-accounts" role="listbox" aria-label={t('Account per il sito')}>
             {accounts.map((a, i) => (
               <button
                 key={a.id}
@@ -400,15 +406,16 @@ export default function QuickFill() {
                 </span>
                 <span>
                   <strong>{a.title}</strong>
-                  <small>{a.username || 'Username non impostato'}</small>
+                  <small>{a.username || t('Username non impostato')}</small>
                 </span>
                 <ArrowRight size={16} />
               </button>
             ))}
             {!accounts.length && (
               <p className="quick-empty">
-                Nessun account associato a questo sito. Verifica il dominio o il sito web salvato
-                negli account di JesseArchive.
+                {t(
+                  'Nessun account associato a questo sito. Verifica il dominio o il sito web salvato negli account di JesseArchive.',
+                )}
               </p>
             )}
           </div>
@@ -420,8 +427,8 @@ export default function QuickFill() {
         </p>
       )}
       <footer className="quick-footer">
-        <span>{busy ? 'Elaborazione…' : '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi'}</span>
-        <small>Nessun invio automatico del login</small>
+        <span>{busy ? t('Elaborazione…') : t('↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi')}</span>
+        <small>{t('Nessun invio automatico del login')}</small>
       </footer>
     </main>
   );

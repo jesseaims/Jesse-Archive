@@ -1,3 +1,4 @@
+import { t, translateMessage } from './i18n';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 type Connection = { shortcut: string; connected: number; error: string; extension_id: string };
@@ -20,7 +21,7 @@ export default function BrowserSettings() {
   useEffect(() => {
     void refresh()
       .then((s) => setShortcut(s.shortcut))
-      .catch((e) => setMessage(String(e)));
+      .catch((e) => setMessage(translateMessage(e)));
     const timer = setInterval(() => {
       void refresh().catch(() => {});
     }, 5000);
@@ -34,24 +35,25 @@ export default function BrowserSettings() {
       await refresh();
       setMessage(success);
     } catch (e) {
-      setMessage(String(e));
+      setMessage(translateMessage(e));
     } finally {
       setBusy(false);
     }
   };
   return (
     <div className="form-stack browser-settings">
-      <h3>Inserimento rapido nel browser</h3>
+      <h3>{t('Inserimento rapido nel browser')}</h3>
       <p>
-        Chrome, Edge, Brave, Opera, Vivaldi e Firefox. Seleziona un campo di accesso sul sito e
-        premi la scorciatoia.
+        {t(
+          'Chrome, Edge, Brave, Opera, Vivaldi e Firefox. Seleziona un campo di accesso sul sito e premi la scorciatoia.',
+        )}
       </p>
       <label className="field">
-        <span>Scorciatoia globale</span>
+        <span>{t('Scorciatoia globale')}</span>
         <input
           value={shortcut}
           onChange={(e) => setShortcut(e.target.value)}
-          placeholder="Ctrl+Alt+J"
+          placeholder={t('Ctrl+Alt+J')}
           onKeyDown={(e) => {
             if (['Control', 'Alt', 'Shift', 'Meta', 'Tab', 'Backspace', 'Delete'].includes(e.key))
               return;
@@ -79,9 +81,13 @@ export default function BrowserSettings() {
           void run(() => invoke('browser_shortcut', { shortcut }), 'Scorciatoia salvata')
         }
       >
-        Salva scorciatoia
+        {t('Salva scorciatoia')}
       </button>
-      {state?.error && <p role="alert">Scorciatoia non attiva: {state.error}</p>}
+      {state?.error && (
+        <p role="alert">
+          {t('Scorciatoia non attiva:')} {state.error}
+        </p>
+      )}
       <label className="check-line">
         <input
           type="checkbox"
@@ -93,20 +99,22 @@ export default function BrowserSettings() {
                 await invoke('passkey_set_enabled', { enabled });
                 setPasskeys(enabled);
               },
-              enabled ? 'Passkey attivate' : 'Passkey disattivate: i siti useranno il browser',
+              enabled
+                ? t('Passkey attivate')
+                : t('Passkey disattivate: i siti useranno il browser'),
             );
           }}
         />
-        Usa Jesse’s Archive per le passkey dei siti (richiede l’estensione aggiornata)
+        {t('Usa Jesse’s Archive per le passkey dei siti (richiede l’estensione aggiornata)')}
       </label>
       <button
         className="primary"
         disabled={busy}
         onClick={() =>
-          void run(() => invoke('browser_setup_show'), 'Configurazione browser aperta')
+          void run(() => invoke('browser_setup_show'), t('Configurazione browser aperta'))
         }
       >
-        Configura i browser
+        {t('Configura i browser')}
       </button>
       <button
         className="secondary"
@@ -114,29 +122,29 @@ export default function BrowserSettings() {
         onClick={() =>
           void run(
             () => invoke('browser_install'),
-            'Collegamento registrato. Installa l’estensione e riavvia il browser.',
+            t('Collegamento registrato. Installa l’estensione e riavvia il browser.'),
           )
         }
       >
-        Ripara collegamento browser
+        {t('Ripara collegamento browser')}
       </button>
       <button
         className="secondary"
         onClick={() =>
-          void run(() => invoke('browser_open_extensions'), 'Cartella estensioni aperta')
+          void run(() => invoke('browser_open_extensions'), t('Cartella estensioni aperta'))
         }
       >
-        Apri cartella estensioni
+        {t('Apri cartella estensioni')}
       </button>
       <p role="status">
         {state?.connected
-          ? `${state.connected} collegamenti browser attivi`
-          : 'Nessun browser collegato'}
+          ? t('Collegamenti browser attivi: {n}', { n: state.connected })
+          : t('Nessun browser collegato')}
       </p>
       <p className="helper">
-        La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella
-        corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento
-        senza firma rimane temporaneo.
+        {t(
+          'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.',
+        )}
       </p>
       {message && <p role="status">{message}</p>}
       <div className="divider" />

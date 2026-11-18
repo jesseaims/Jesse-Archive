@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "JesseArchive · Schnelles Ausfüllen",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Wähle Konten für die aktuelle Website aus deinem lokalen Tresor.",
+    "description": "Extension description"
+  },
+  "actionTitle": {
+    "message": "JesseArchive für dieses Feld öffnen",
+    "description": "Toolbar button tooltip"
+  }
+}

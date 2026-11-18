@@ -1,3 +1,4 @@
+import { t, tRich, translateMessage } from './i18n';
 import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { Check, Copy, ExternalLink, Globe, ShieldCheck } from 'lucide-react';
@@ -23,10 +24,10 @@ export default function BrowserInstaller() {
     applyPalette({ preset: 'night' });
     void invoke<Status>('browser_setup_status')
       .then(setStatus)
-      .catch((e) => setError(String(e)));
+      .catch((e) => setError(translateMessage(e)));
     void invoke('browser_install')
       .then(() => setRegistered(true))
-      .catch((e) => setError(String(e)));
+      .catch((e) => setError(translateMessage(e)));
   }, []);
   const open = async (browser: Browser) => {
     setBusy(true);
@@ -49,7 +50,7 @@ export default function BrowserInstaller() {
         }
       }
     } catch (e) {
-      setError(String(e));
+      setError(translateMessage(e));
     } finally {
       setBusy(false);
     }
@@ -66,23 +67,23 @@ export default function BrowserInstaller() {
           <Globe size={25} />
         </span>
         <div>
-          <h1>Collega i tuoi browser</h1>
-          <p>Configura una volta l’estensione per inserire le credenziali dal vault.</p>
+          <h1>{t('Collega i tuoi browser')}</h1>
+          <p>{t('Configura una volta l’estensione per inserire le credenziali dal vault.')}</p>
         </div>
       </header>
       <section className="browser-wizard-step">
         <ShieldCheck size={22} />
         <div>
-          <h2>1. Collegamento con JesseArchive</h2>
+          <h2>{t('1. Collegamento con JesseArchive')}</h2>
           <p role="status">
             {registered
-              ? 'Configurato automaticamente per il tuo utente Windows.'
-              : 'Preparazione del collegamento locale…'}
+              ? t('Configurato automaticamente per il tuo utente Windows.')
+              : t('Preparazione del collegamento locale…')}
           </p>
           {registered && (
             <span className="browser-ready">
               <Check size={14} />
-              Pronto
+              {t('Pronto')}
             </span>
           )}
         </div>
@@ -90,10 +91,11 @@ export default function BrowserInstaller() {
       <section className="browser-wizard-step">
         <Globe size={22} />
         <div>
-          <h2>2. Scegli il browser</h2>
+          <h2>{t('2. Scegli il browser')}</h2>
           <p>
-            Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli
-            appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.
+            {t(
+              'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.',
+            )}
           </p>
           <div className="browser-choices">
             {status?.browsers.map((b) => (
@@ -104,7 +106,7 @@ export default function BrowserInstaller() {
                 onClick={() => void open(b)}
               >
                 {b.name}
-                {b.installed ? <ExternalLink size={14} /> : <small>Non rilevato</small>}
+                {b.installed ? <ExternalLink size={14} /> : <small>{t('Non rilevato')}</small>}
               </button>
             ))}
           </div>
@@ -113,23 +115,37 @@ export default function BrowserInstaller() {
       <section className="browser-wizard-step">
         <Check size={22} />
         <div>
-          <h2>3. Conferma nel browser{selected ? ` · ${selected.name}` : ''}</h2>
+          <h2>
+            {t('3. Conferma nel browser')}
+            {selected ? ` · ${selected.name}` : ''}
+          </h2>
           {selected?.id === 'firefox' ? (
             <>
               <p>
-                In Questo Firefox, premi <strong>Carica componente aggiuntivo temporaneo</strong> e
-                seleziona <strong>manifest.json</strong> nella cartella aperta.
+                {tRich(
+                  'In «Questo Firefox» premi {button} e seleziona {file} nella cartella aperta.',
+                  {
+                    button: <strong>{t('Carica componente aggiuntivo temporaneo')}</strong>,
+                    file: <strong>manifest.json</strong>,
+                  },
+                )}
               </p>
               <p className="browser-note">
-                Questa versione Firefox deve essere caricata di nuovo al riavvio del browser. Per
-                renderla permanente serve la firma Mozilla.
+                {t(
+                  'Questa versione Firefox deve essere caricata di nuovo al riavvio del browser. Per renderla permanente serve la firma Mozilla.',
+                )}
               </p>
             </>
           ) : (
             <p>
-              Attiva <strong>Modalità sviluppatore</strong>, premi{' '}
-              <strong>Carica estensione non pacchettizzata</strong> e seleziona la cartella{' '}
-              <strong>chromium</strong> che abbiamo aperto.
+              {tRich(
+                'Attiva {developer}, premi {load} e seleziona la cartella {folder} che abbiamo aperto.',
+                {
+                  developer: <strong>{t('Modalità sviluppatore')}</strong>,
+                  load: <strong>{t('Carica estensione non pacchettizzata')}</strong>,
+                  folder: <strong>chromium</strong>,
+                },
+              )}
             </p>
           )}
           {selected && (
@@ -140,14 +156,14 @@ export default function BrowserInstaller() {
                 onClick={() =>
                   void copyText(selected.page)
                     .then(() => setPageCopied(true))
-                    .catch((e) => setError(String(e)))
+                    .catch((e) => setError(translateMessage(e)))
                 }
               >
                 <Copy size={14} />
-                {pageCopied ? 'Copiato' : 'Copia indirizzo pagina'}
+                {pageCopied ? t('Copiato') : t('Copia indirizzo pagina')}
               </button>
               <button className="secondary" disabled={busy} onClick={() => void open(selected)}>
-                Apri pagina estensioni
+                {t('Apri pagina estensioni')}
               </button>
             </div>
           )}
@@ -159,11 +175,11 @@ export default function BrowserInstaller() {
                 onClick={() =>
                   void copyText(installPath)
                     .then(() => setCopied(true))
-                    .catch((e) => setError(String(e)))
+                    .catch((e) => setError(translateMessage(e)))
                 }
               >
                 <Copy size={14} />
-                {copied ? 'Copiato' : 'Copia percorso'}
+                {copied ? t('Copiato') : t('Copia percorso')}
               </button>
             </div>
           )}
@@ -175,24 +191,25 @@ export default function BrowserInstaller() {
         </p>
       )}
       <footer>
-        <strong>Ora seleziona un campo di accesso e premi Ctrl+Alt+J.</strong>
+        <strong>{t('Ora seleziona un campo di accesso e premi Ctrl+Alt+J.')}</strong>
         <p>
-          Puoi cambiare la scorciatoia nelle Impostazioni. JesseArchive deve rimanere aperto, anche
-          nell’area di notifica.
+          {t(
+            'Puoi cambiare la scorciatoia nelle Impostazioni. JesseArchive deve rimanere aperto, anche nell’area di notifica.',
+          )}
         </p>
         <p className="helper">
-          La conferma iniziale del browser è necessaria per questa distribuzione locale.
+          {t('La conferma iniziale del browser è necessaria per questa distribuzione locale.')}
         </p>
         <button
           className="primary browser-finish"
           disabled={busy}
           onClick={() => {
             setError('');
-            void invoke('browser_setup_finish').catch((e) => setError(String(e)));
+            void invoke('browser_setup_finish').catch((e) => setError(translateMessage(e)));
           }}
         >
           <Check size={16} />
-          Ho installato l’estensione: apri Jesse’s Archive
+          {t('Ho installato l’estensione: apri Jesse’s Archive')}
         </button>
       </footer>
     </main>

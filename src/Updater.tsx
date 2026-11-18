@@ -1,3 +1,4 @@
+import { t, translateMessage } from './i18n';
 import { useEffect, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
@@ -40,11 +41,18 @@ function summary(notes = '') {
 export async function offerUpdate(info: UpdateInfo, { askConfirm, showNotice }: Dialogs) {
   const notes = summary(info.notes);
   const ok = await askConfirm(
-    `È disponibile Jesse's Archive Beta ${info.version} (installata: Beta ${info.current}).` +
-      (notes ? `\n\nNovità:\n${notes}` : '') +
-      `\n\nDownload: ${megabytes(info.size)}. Il setup è firmato e verificato prima dell'installazione. ` +
-      `Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.`,
-    { title: 'Aggiornamento disponibile', confirmLabel: 'Aggiorna ora' },
+    t("È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).", {
+      version: info.version,
+      current: info.current,
+    }) +
+      // Release notes come from GitHub as written by the author (Italian).
+      (notes ? '\n\n' + t('Novità:') + '\n' + notes : '') +
+      '\n\n' +
+      t(
+        "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.",
+        { size: megabytes(info.size) },
+      ),
+    { title: t('Aggiornamento disponibile'), confirmLabel: t('Aggiorna ora') },
   );
   if (!ok) return false;
   try {
@@ -52,7 +60,7 @@ export async function offerUpdate(info: UpdateInfo, { askConfirm, showNotice }: 
     return true;
   } catch (e) {
     window.dispatchEvent(new Event(IDLE_EVENT));
-    await showNotice(String(e), 'Aggiornamento non riuscito', true);
+    await showNotice(translateMessage(e), t('Aggiornamento non riuscito'), true);
     return false;
   }
 }
@@ -113,8 +121,12 @@ export function UpdateProgress() {
     <div className="update-progress" role="status" aria-live="polite">
       <Download size={16} />
       {percent < 100
-        ? `Download aggiornamento: ${percent}% (${megabytes(progress.received)} di ${megabytes(progress.total)})`
-        : 'Verifica completata: avvio dell’installazione…'}
+        ? t('Download aggiornamento: {percent}% ({received} di {total})', {
+            percent,
+            received: megabytes(progress.received),
+            total: megabytes(progress.total),
+          })
+        : t('Verifica completata: avvio dell’installazione…')}
       <span className="update-progress-bar" style={{ width: `${percent}%` }} />
     </div>
   );
@@ -128,15 +140,17 @@ export function UpdateSettings(dialogs: Dialogs) {
   useEffect(() => {
     void invoke<UpdateSettingsState>('update_settings')
       .then(setState)
-      .catch((e) => setMessage(String(e)));
+      .catch((e) => setMessage(translateMessage(e)));
   }, []);
   const toggle = async (auto: boolean) => {
     try {
       await invoke('update_set_auto', { enabled: auto });
       setState((s) => (s ? { ...s, auto } : s));
-      setMessage(auto ? 'Controllo automatico attivato.' : 'Controllo automatico disattivato.');
+      setMessage(
+        auto ? t('Controllo automatico attivato.') : t('Controllo automatico disattivato.'),
+      );
     } catch (e) {
-      setMessage(String(e));
+      setMessage(translateMessage(e));
     }
   };
   const checkNow = async () => {
@@ -145,9 +159,9 @@ export function UpdateSettings(dialogs: Dialogs) {
     try {
       const info = await invoke<UpdateInfo>('update_check');
       if (info.available) await offerUpdate(info, dialogs);
-      else setMessage(`Hai già l'ultima versione (Beta ${info.current}).`);
+      else setMessage(t("Hai già l'ultima versione (Beta {version}).", { version: info.current }));
     } catch (e) {
-      setMessage(String(e));
+      setMessage(translateMessage(e));
     } finally {
       setBusy(false);
     }
@@ -157,7 +171,7 @@ export function UpdateSettings(dialogs: Dialogs) {
       <div className="panel-head">
         <h2>
           <Download size={18} />
-          Aggiornamenti
+          {t('Aggiornamenti')}
         </h2>
       </div>
       <div className="form-stack">
@@ -168,7 +182,7 @@ export function UpdateSettings(dialogs: Dialogs) {
             disabled={!state?.configured}
             onChange={(e) => void toggle(e.target.checked)}
           />
-          Controlla automaticamente (all'avvio e una volta al giorno)
+          {t("Controlla automaticamente (all'avvio e una volta al giorno)")}
         </label>
         <button
           className="secondary"
@@ -176,13 +190,15 @@ export function UpdateSettings(dialogs: Dialogs) {
           onClick={() => void checkNow()}
         >
           <RefreshCw size={16} className={busy ? 'spin' : undefined} />
-          Cerca aggiornamenti
+          {t('Cerca aggiornamenti')}
         </button>
         {message && <p>{message}</p>}
         <p>
           {state && !state.configured
-            ? 'Aggiornamento automatico non disponibile in questa build.'
-            : "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida."}
+            ? t('Aggiornamento automatico non disponibile in questa build.')
+            : t(
+                "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.",
+              )}
         </p>
       </div>
     </section>

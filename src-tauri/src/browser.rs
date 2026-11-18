@@ -249,7 +249,7 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         "quick-fill",
         tauri::WebviewUrl::App("index.html?quick-fill".into()),
     )
-    .title("JesseArchive · Inserimento rapido")
+    .title(crate::i18n::native(&crate::i18n::current())[3])
     .inner_size(QUICK_FILL_SIZE.0, QUICK_FILL_SIZE.1)
     .resizable(false)
     .visible(false)
