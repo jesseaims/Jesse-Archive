@@ -4,7 +4,8 @@
  *
  * The configuration lives in the encrypted vault settings (`settings.dashboard`,
  * saved through the existing `settings` command). It only contains widget types,
- * sizes, collapsed state and options such as item ids to pin: never secrets.
+ * sizes, grid positions, collapsed state and options such as item ids to pin: never
+ * secrets.
  * Anything read back is normalized: unknown widgets, sizes or options are dropped
  * or replaced by defaults, so older, newer or damaged configurations never break
  * the screen.
@@ -35,6 +36,9 @@ export type WidgetInstance = {
   size: WidgetSize;
   collapsed: boolean;
   config: WidgetConfig;
+  /** Column (0-based, 0..GRID_COLS - width) and tile row of the top-left corner. */
+  x: number;
+  y: number;
 };
 export type LayoutId = 'default' | 'minimal' | 'security' | 'productivity' | 'custom';
 export type Layout = { widgets: WidgetInstance[] };
@@ -216,6 +220,7 @@ export const WIDGET_SPECS: Record<WidgetType, WidgetSpec> = {
 export const isWidgetType = (v: unknown): v is WidgetType =>
   typeof v === 'string' && Object.prototype.hasOwnProperty.call(WIDGET_SPECS, v);
 
+/** A new, not yet placed widget: `placeAll` gives it a position. */
 export function newWidget(type: WidgetType, size?: WidgetSize): WidgetInstance {
   const spec = WIDGET_SPECS[type];
   return {
@@ -223,6 +228,8 @@ export function newWidget(type: WidgetType, size?: WidgetSize): WidgetInstance {
     size: size && spec.sizes.includes(size) ? size : spec.defaultSize,
     collapsed: false,
     config: normalizeWidgetConfig(type, spec.defaults),
+    x: -1,
+    y: -1,
   };
 }
 
@@ -234,7 +241,7 @@ export function normalizeWidgetConfig(type: WidgetType, config: unknown): Widget
 }
 
 const preset = (...entries: [WidgetType, WidgetSize?][]): Layout => ({
-  widgets: entries.map(([type, size]) => newWidget(type, size)),
+  widgets: placeAll(entries.map(([type, size]) => newWidget(type, size))),
 });
 
 /** Starting point of each layout; "Ripristina" goes back to it. */
@@ -291,14 +298,22 @@ function normalizeLayout(raw: unknown): Layout {
     const spec = WIDGET_SPECS[w.type];
     if (!spec.available) continue;
     seen.add(w.type);
+    const size = spec.sizes.includes(w.size) ? w.size : spec.defaultSize;
+    const x = Number.isInteger(w.x) ? w.x : -1;
+    const y = Number.isInteger(w.y) ? w.y : -1;
+    const valid = x >= 0 && x + WIDTH[size] <= GRID_COLS && y >= 0 && y < 200;
     widgets.push({
       type: w.type,
-      size: spec.sizes.includes(w.size) ? w.size : spec.defaultSize,
+      size,
       collapsed: w.collapsed === true,
       config: normalizeWidgetConfig(w.type, w.config),
+      x: valid ? x : -1,
+      y: valid ? y : -1,
     });
   }
-  return { widgets };
+  // Widgets without a position (older configurations), out of range or overlapping
+  // go to the first free space; the others keep their place.
+  return { widgets: placeAll(widgets) };
 }
 
 /**
@@ -360,50 +375,157 @@ export const resetLayout = (config: DashboardConfig): DashboardConfig => ({
   },
 });
 
+// --- Grid placement ------------------------------------------------------------------
+//
+// The grid has GRID_COLS columns and tile rows of the same height. Each widget keeps
+// an explicit position, so a change only moves the widgets it directly involves:
+// nothing is re-flowed. Narrow windows show the same widgets in reading order.
+
+export const GRID_COLS = 4;
+export const WIDTH: Record<WidgetSize, number> = { s: 1, m: 2, l: GRID_COLS };
+
+type Cell = { x: number; y: number; w: number };
+const cellOf = (w: WidgetInstance): Cell => ({ x: w.x, y: w.y, w: WIDTH[w.size] });
+const overlaps = (a: Cell, b: Cell) => a.y === b.y && a.x < b.x + b.w && b.x < a.x + a.w;
+const clampX = (x: number, w: number) => Math.min(GRID_COLS - w, Math.max(0, Math.round(x)));
+const placed = (w: WidgetInstance) => w.x >= 0 && w.y >= 0;
+
+/** Reading order: by row, then column. Also the order of narrow windows and the keyboard. */
+export const byPosition = (widgets: WidgetInstance[]) =>
+  [...widgets].sort((a, b) => a.y - b.y || a.x - b.x);
+
+/** First free cell for a width, scanning rows from `fromY`, left to right. */
+function firstFree(widgets: WidgetInstance[], w: number, fromY = 0): { x: number; y: number } {
+  for (let y = Math.max(0, fromY); ; y++)
+    for (let x = 0; x + w <= GRID_COLS; x++)
+      if (!widgets.some((o) => placed(o) && overlaps({ x, y, w }, cellOf(o)))) return { x, y };
+}
+
+/** Rows left completely empty collapse, so the rows below move up together. */
+function dropEmptyRows(widgets: WidgetInstance[]): WidgetInstance[] {
+  const rows = [...new Set(widgets.map((w) => w.y))].sort((a, b) => a - b);
+  return byPosition(widgets.map((w) => ({ ...w, y: rows.indexOf(w.y) })));
+}
+
+/** Keeps valid, non-overlapping positions and places the rest in the first free space. */
+function placeAll(widgets: WidgetInstance[]): WidgetInstance[] {
+  const out: WidgetInstance[] = [];
+  for (const w of widgets)
+    out.push(
+      placed(w) && !out.some((o) => placed(o) && overlaps(cellOf(w), cellOf(o)))
+        ? w
+        : { ...w, x: -1, y: -1 },
+    );
+  for (let i = 0; i < out.length; i++)
+    if (!placed(out[i])) out[i] = { ...out[i], ...firstFree(out, WIDTH[out[i].size]) };
+  return dropEmptyRows(out);
+}
+
+/** Puts the widgets in `moving` in the first free spaces, starting from row `fromY`. */
+function rehome(rest: WidgetInstance[], moving: WidgetInstance[], fromY: number) {
+  const out = [...rest];
+  for (const w of byPosition(moving)) out.push({ ...w, ...firstFree(out, WIDTH[w.size], fromY) });
+  return out;
+}
+
+/**
+ * Swap: the covered widgets go, left to right, into the cells the moving widget left
+ * (those not taken by its new place). Null when they do not all fit there.
+ */
+function packInto(vacated: Cell, target: Cell, hit: WidgetInstance[], stay: WidgetInstance[]) {
+  const taken = [target, ...stay.map(cellOf)];
+  const out: WidgetInstance[] = [];
+  for (const o of [...hit].sort((a, b) => a.x - b.x)) {
+    const w = WIDTH[o.size];
+    let spot: Cell | null = null;
+    for (let x = vacated.x; x + w <= vacated.x + vacated.w && !spot; x++) {
+      const cell = { x, y: vacated.y, w };
+      if (!taken.some((c) => overlaps(cell, c))) spot = cell;
+    }
+    if (!spot) return null;
+    taken.push(spot);
+    out.push({ ...o, x: spot.x, y: spot.y });
+  }
+  return out;
+}
+
+/**
+ * Moves a widget to column `x`, row `y` (clamped to the grid). On free space it just
+ * goes there. Over other widgets: those take the place the widget left (a swap); if
+ * they do not fit there, only they move to the first free space from that row. No
+ * other widget changes place.
+ */
+export function placeWidget(widgets: WidgetInstance[], type: WidgetType, x: number, y: number) {
+  const moving = widgets.find((w) => w.type === type);
+  if (!moving || !Number.isFinite(x) || !Number.isFinite(y)) return widgets;
+  const width = WIDTH[moving.size];
+  const target: Cell = { x: clampX(x, width), y: Math.max(0, Math.round(y)), w: width };
+  if (target.x === moving.x && target.y === moving.y) return widgets;
+  const others = widgets.filter((w) => w !== moving);
+  const hit = others.filter((o) => overlaps(target, cellOf(o)));
+  const stay = others.filter((o) => !hit.includes(o));
+  const moved = { ...moving, x: target.x, y: target.y };
+  const swapped = packInto(cellOf(moving), target, hit, stay);
+  return dropEmptyRows(
+    swapped
+      ? [...stay, moved, ...swapped]
+      : rehome([...stay, moved], hit, Math.min(moving.y, target.y)),
+  );
+}
+
+export const moveWidgetTo = (config: DashboardConfig, type: WidgetType, x: number, y: number) =>
+  updateLayout(config, (widgets) => placeWidget(widgets, type, x, y));
+
+/** Keyboard/menu move: takes the place of the previous or next widget in reading order. */
 export const moveWidget = (config: DashboardConfig, from: number, to: number) =>
   updateLayout(config, (widgets) => {
-    if (from < 0 || from >= widgets.length || to < 0 || to >= widgets.length || from === to)
+    const order = byPosition(widgets);
+    if (from < 0 || from >= order.length || to < 0 || to >= order.length || from === to)
       return widgets;
-    const [moved] = widgets.splice(from, 1);
-    widgets.splice(to, 0, moved);
-    return widgets;
+    return placeWidget(widgets, order[from].type, order[to].x, order[to].y);
   });
 
-/** Dropping a widget onto another exchanges the two: nothing in between shifts. */
-export const swapWidgets = (config: DashboardConfig, a: number, b: number) =>
-  updateLayout(config, (widgets) => {
-    if (a < 0 || a >= widgets.length || b < 0 || b >= widgets.length || a === b) return widgets;
-    [widgets[a], widgets[b]] = [widgets[b], widgets[a]];
-    return widgets;
-  });
-
+/** A new widget goes in the first free space: nothing else moves. */
 export const addWidget = (config: DashboardConfig, type: WidgetType) =>
   updateLayout(config, (widgets) =>
     widgets.some((w) => w.type === type) || !WIDGET_SPECS[type].available
       ? widgets
-      : [...widgets, newWidget(type)],
+      : placeAll([...widgets, newWidget(type)]),
   );
 
 /** Removing a widget only changes the layout: vault data is never touched. */
 export const removeWidget = (config: DashboardConfig, type: WidgetType) =>
-  updateLayout(config, (widgets) => widgets.filter((w) => w.type !== type));
+  updateLayout(config, (widgets) => dropEmptyRows(widgets.filter((w) => w.type !== type)));
 
+/**
+ * Options, collapsed state and size. A widget that grows stays where it is (moved left
+ * if it would leave the grid); only the widgets it now covers move to free space.
+ */
 export const patchWidget = (
   config: DashboardConfig,
   type: WidgetType,
-  patch: Partial<WidgetInstance>,
+  patch: Partial<Omit<WidgetInstance, 'type' | 'x' | 'y'>>,
 ) =>
-  updateLayout(config, (widgets) =>
-    widgets.map((w) => {
-      if (w.type !== type) return w;
-      const next = { ...w, ...patch };
-      return {
-        ...next,
-        size: WIDGET_SPECS[type].sizes.includes(next.size) ? next.size : w.size,
-        config: normalizeWidgetConfig(type, next.config),
-      };
-    }),
-  );
+  updateLayout(config, (widgets) => {
+    const current = widgets.find((w) => w.type === type);
+    if (!current) return widgets;
+    const next = { ...current, ...patch };
+    const size = WIDGET_SPECS[type].sizes.includes(next.size) ? next.size : current.size;
+    const updated: WidgetInstance = {
+      ...next,
+      type,
+      size,
+      x: clampX(current.x, WIDTH[size]),
+      y: current.y,
+      config: normalizeWidgetConfig(type, next.config),
+    };
+    const others = widgets.filter((w) => w !== current);
+    const hit = others.filter((o) => overlaps(cellOf(updated), cellOf(o)));
+    if (!hit.length) return widgets.map((w) => (w === current ? updated : w));
+    return dropEmptyRows(
+      rehome([...others.filter((o) => !hit.includes(o)), updated], hit, updated.y),
+    );
+  });
 
 // --- Security score ------------------------------------------------------------------
 

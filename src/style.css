@@ -2668,19 +2668,22 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   color: var(--ui-muted);
   font-size: 13px;
 }
+/* Fixed grid: 4 columns, tiles of the same height, each widget at its stored position
+   (--x, --y, --w from Dashboard.tsx; TILE_HEIGHT and GRID_GAP there must match). */
 .dash-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-flow: row dense;
-  /* Masonry: thin rows, each card spans the rows its height needs (Dashboard.tsx,
-     GRID_ROW/GRID_GAP). The vertical gap is part of each card's span. */
-  grid-auto-rows: 8px;
-  align-items: start;
-  column-gap: 16px;
-  row-gap: 0;
+  grid-auto-rows: 320px;
+  align-items: stretch;
+  gap: 16px;
+}
+.dashboard.editing .dash-grid {
+  /* One free row below the widgets, to drop a widget there. */
+  grid-template-rows: repeat(var(--rows), 320px);
 }
 .dash-widget {
-  grid-column: span 1;
+  grid-column: var(--x) / span var(--w);
+  grid-row: var(--y);
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -2693,11 +2696,16 @@ input[type='password']::-webkit-credentials-auto-fill-button {
     opacity 0.18s ease,
     transform 0.18s ease;
 }
-.dash-widget.size-m {
-  grid-column: span 2;
+.dash-widget.collapsed {
+  align-self: start;
 }
-.dash-widget.size-l {
-  grid-column: 1 / -1;
+.dash-ghost {
+  grid-column: var(--x) / span var(--w);
+  grid-row: var(--y);
+  border: 2px dashed var(--ui-accent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ui-accent) 12%, transparent);
+  pointer-events: none;
 }
 .dash-widget:hover {
   border-color: color-mix(in srgb, var(--ui-accent) 35%, var(--ui-border));
@@ -2761,6 +2769,9 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 }
 .dash-widget-body {
   display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
   flex-direction: column;
   gap: 12px;
   padding: 16px 18px 18px;
@@ -3317,17 +3328,26 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   font-weight: 700;
   white-space: nowrap;
 }
+/* Narrow windows: same widgets in reading order (the CSS order is their position). */
 @media (max-width: 1180px) {
-  .dash-grid {
+  .dash-grid,
+  .dashboard.editing .dash-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-flow: row dense;
+  }
+  .dash-widget {
+    grid-column: auto / span 1;
+    grid-row: auto;
+  }
+  .dash-widget.size-m,
+  .dash-widget.size-l {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 720px) {
   .dash-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .dash-widget.size-m {
-    grid-column: span 1;
   }
   .dash-toolbar {
     justify-content: flex-start;

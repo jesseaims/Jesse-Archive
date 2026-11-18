@@ -256,7 +256,11 @@ test('customize: remove, add from the catalog, move, resize, configure; saved au
   );
   await d.click(d.button('Aggiungi', generatorRow));
   await d.click(d.button('Chiudi', catalog));
-  assert.equal(d.widgets().at(-1), 'Generatore di password');
+  // It takes the first free space, the one Preferiti left (column 1, row 2): the
+  // other widgets keep their place.
+  const cell = (name) => ['--x', '--y'].map((v) => d.widget(name).style.getPropertyValue(v));
+  assert.deepEqual(cell('Generatore di password'), ['1', '2']);
+  assert.deepEqual(cell('Aggiunti di recente'), ['3', '2']);
   // Move it first with the keyboard-accessible menu, then make it large.
   const gen = () => d.widget('Generatore di password');
   // The menu stays open, so the widget can be moved several steps in a row.
@@ -301,7 +305,7 @@ test('customize: remove, add from the catalog, move, resize, configure; saved au
   d.close();
 });
 
-test('drag and drop swaps two widgets, or sends one to free space', async () => {
+test('drag and drop: preview, then only the two widgets exchange places', async () => {
   const d = await setup();
   await d.click(d.button('Personalizza dashboard'));
   const before = d.widgets();
@@ -312,28 +316,50 @@ test('drag and drop swaps two widgets, or sends one to free space', async () => 
       setData() {},
       setDragImage: (img) => (dragImage = img),
       effectAllowed: '',
+      dropEffect: '',
     };
     Object.defineProperty(ev, 'dataTransfer', { value: dataTransfer });
     await d.H.act(async () => el.dispatchEvent(ev));
+    return ev;
   };
-  await fire(d.widget(before[3]).querySelector('.dash-handle'), 'dragstart');
-  assert.equal(dragImage, d.widget(before[3]), 'the whole card is the drag image');
-  await fire(d.widget(before[0]), 'dragover');
-  await fire(d.widget(before[0]), 'drop');
-  await d.flush();
+  // Default layout, row 1: Punteggio | Panoramica (2 columns) | Azioni rapide.
+  assert.deepEqual(before.slice(0, 3), [
+    'Punteggio di sicurezza',
+    'Panoramica del vault',
+    'Azioni rapide',
+  ]);
+  await fire(d.widget('Azioni rapide').querySelector('.dash-handle'), 'dragstart');
+  assert.equal(dragImage, d.widget('Azioni rapide'), 'the whole card is the drag image');
+  const over = await fire(d.widget('Punteggio di sicurezza'), 'dragover');
+  assert.ok(over.defaultPrevented, 'dropping there is allowed');
+  // While dragging: the landing place is previewed and the widget that will swap is
+  // highlighted.
+  assert.ok(d.$('.dash-ghost'), 'landing preview');
+  assert.deepEqual(
+    d.$$('.dash-widget.drop-target').map((x) => x.getAttribute('aria-label')),
+    ['Punteggio di sicurezza'],
+  );
+  await fire(d.widget('Punteggio di sicurezza'), 'drop');
+  await d.flush(700);
+  assert.ok(!d.$('.dash-ghost'), 'preview gone after the drop');
   assert.deepEqual(
     d.widgets(),
-    [before[3], before[1], before[2], before[0], ...before.slice(4)],
+    ['Azioni rapide', 'Panoramica del vault', 'Punteggio di sicurezza', ...before.slice(3)],
     'only the two widgets exchange places',
   );
-  const grid = d.$('.dash-grid');
-  await fire(d.widget(before[1]).querySelector('.dash-handle'), 'dragstart');
-  await fire(grid, 'dragover');
-  await fire(grid, 'drop');
-  await d.flush();
-  const after = d.widgets();
-  assert.equal(after.at(-1), before[1], 'dropped on free space: goes last, packing fills gaps');
-  assert.equal(after.length, before.length);
+  const saved = d.calls.filter((c) => c[0] === 'save').at(-1)?.[1];
+  const cells = Object.fromEntries(
+    saved.layouts[saved.active].widgets.map((w) => [w.type, [w.x, w.y]]),
+  );
+  assert.deepEqual(cells, {
+    'quick-actions': [0, 0],
+    'vault-overview': [1, 0],
+    'security-score': [3, 0],
+    favorites: [0, 1],
+    'recent-added': [2, 1],
+    'security-audit': [0, 2],
+    'backup-status': [2, 2],
+  });
   await d.H.unmount();
   d.close();
 });

@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import type { DragEvent, RefObject } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties, DragEvent } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -23,13 +23,16 @@ import {
   activeLayout,
   addWidget,
   LAYOUT_IDS,
+  byPosition,
+  GRID_COLS,
   moveWidget,
+  moveWidgetTo,
   normalizeDashboard,
   patchWidget,
   removeWidget,
   resetLayout,
-  swapWidgets,
   switchLayout,
+  WIDTH,
   WIDGET_SPECS,
 } from './model';
 import type {
@@ -82,8 +85,8 @@ export default function Dashboard(props: Props) {
     [catalog, setCatalog] = useState(false),
     [settingsFor, setSettingsFor] = useState<WidgetType | null>(null),
     [menuFor, setMenuFor] = useState<WidgetType | null>(null),
-    [dragFrom, setDragFrom] = useState<number | null>(null),
-    [dropAt, setDropAt] = useState<number | null>(null),
+    [dragFrom, setDragFrom] = useState<WidgetType | null>(null),
+    [dropAt, setDropAt] = useState<{ x: number; y: number } | null>(null),
     [saveError, setSaveError] = useState('');
   const [health, setHealth] = useState<HealthReport | null>(null),
     [healthError, setHealthError] = useState(''),
@@ -153,15 +156,44 @@ export default function Dashboard(props: Props) {
 
   const ctx: DashboardContext = { ...props, health, healthError, backup, backupError };
 
-  // On a widget: the two swap places. On free space in the grid: the widget goes last,
-  // and the dense packing puts it in the first gap where it fits.
-  const onDrop = (to: number | 'end') => {
-    if (dragFrom !== null)
-      change(
-        to === 'end'
-          ? moveWidget(config, dragFrom, layout.widgets.length - 1)
-          : swapWidgets(config, dragFrom, to),
-      );
+  const narrow = useNarrow();
+  const widgets = byPosition(layout.widgets);
+  const rows = widgets.reduce((n, w) => Math.max(n, w.y + 1), 0);
+  const moving = widgets.find((w) => w.type === dragFrom);
+
+  // Where the dragged widget would land: on a widget, that widget's place (they swap);
+  // on free space (wide grid only), the cell under the pointer.
+  const targetFor = (e: DragEvent<HTMLElement>) => {
+    if (!moving) return null;
+    const width = WIDTH[moving.size];
+    const clamp = (x: number) => Math.min(GRID_COLS - width, Math.max(0, x));
+    const overType = (e.target as HTMLElement)
+      .closest?.('[data-widget]')
+      ?.getAttribute('data-widget');
+    const over = widgets.find((w) => w.type === overType && w.type !== moving.type);
+    if (over) return { x: clamp(over.x), y: over.y };
+    if (narrow) return null;
+    const r = e.currentTarget.getBoundingClientRect();
+    const col = Math.floor(((e.clientX - r.left) / (r.width + GRID_GAP)) * GRID_COLS);
+    const row = Math.floor((e.clientY - r.top) / (TILE_HEIGHT + GRID_GAP));
+    if (!(r.width > 0) || !Number.isFinite(col) || !Number.isFinite(row)) return null;
+    return { x: clamp(col - Math.floor((width - 1) / 2)), y: Math.min(rows, Math.max(0, row)) };
+  };
+  // The widgets the drop would move: highlighted while dragging.
+  const hit = new Set(
+    moving && dropAt
+      ? widgets
+          .filter(
+            (w) =>
+              w !== moving &&
+              w.y === dropAt.y &&
+              w.x < dropAt.x + WIDTH[moving.size] &&
+              dropAt.x < w.x + WIDTH[w.size],
+          )
+          .map((w) => w.type)
+      : [],
+  );
+  const endDrag = () => {
     setDragFrom(null);
     setDropAt(null);
   };
@@ -265,28 +297,34 @@ export default function Dashboard(props: Props) {
       ) : (
         <div
           className="dash-grid"
+          style={{ '--rows': rows + (editing ? 1 : 0) } as CSSProperties}
           onDragOver={(e) => {
-            if (!editing || dragFrom === null) return;
+            if (!editing || !moving) return;
+            const target = targetFor(e);
+            if (!target) return;
             e.preventDefault();
-            if (e.target === e.currentTarget) setDropAt(null);
+            e.dataTransfer.dropEffect = 'move';
+            if (target.x !== dropAt?.x || target.y !== dropAt?.y) setDropAt(target);
           }}
           onDrop={(e) => {
-            if (!editing || e.target !== e.currentTarget) return;
+            if (!editing || !moving) return;
             e.preventDefault();
-            onDrop('end');
+            const target = targetFor(e) ?? dropAt;
+            if (target) change(moveWidgetTo(config, moving.type, target.x, target.y));
+            endDrag();
           }}
         >
-          {layout.widgets.map((w, index) => (
+          {widgets.map((w, index) => (
             <WidgetFrame
               key={w.type}
               widget={w}
               index={index}
-              count={layout.widgets.length}
+              count={widgets.length}
               ctx={ctx}
               editing={editing}
               menuOpen={menuFor === w.type}
-              dragging={dragFrom === index}
-              dropTarget={dropAt === index && dragFrom !== index}
+              dragging={dragFrom === w.type}
+              dropTarget={hit.has(w.type)}
               onMenu={(open) => setMenuFor(open ? w.type : null)}
               onPatch={(patch) => change(patchWidget(config, w.type, patch))}
               onMove={(to) => change(moveWidget(config, index, to))}
@@ -299,31 +337,21 @@ export default function Dashboard(props: Props) {
                 setSettingsFor(w.type);
               }}
               onRefresh={() => (WIDGETS[w.type].refresh === 'health' ? loadHealth() : loadBackup())}
-              drag={{
-                onDragStart: (e: DragEvent) => {
-                  e.dataTransfer.effectAllowed = 'move';
-                  e.dataTransfer.setData('text/plain', w.type);
-                  // Drag the whole card, not just the small handle icon.
-                  const card = (e.currentTarget as HTMLElement).closest('.dash-widget');
-                  if (card) e.dataTransfer.setDragImage(card, 24, 24);
-                  setDragFrom(index);
-                },
-                onDragEnd: () => {
-                  setDragFrom(null);
-                  setDropAt(null);
-                },
-                onDragOver: (e: DragEvent) => {
-                  if (dragFrom === null) return;
-                  e.preventDefault();
-                  setDropAt(index);
-                },
-                onDrop: (e: DragEvent) => {
-                  e.preventDefault();
-                  onDrop(index);
-                },
+              onDragStart={(e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', w.type);
+                // Drag the whole card, not just the small handle icon.
+                const card = (e.currentTarget as HTMLElement).closest('.dash-widget');
+                if (card) e.dataTransfer.setDragImage(card, 24, 24);
+                setMenuFor(null);
+                setDragFrom(w.type);
               }}
+              onDragEnd={endDrag}
             />
           ))}
+          {moving && dropAt && !narrow && (
+            <div className="dash-ghost" aria-hidden="true" style={cellStyle(dropAt, moving)} />
+          )}
         </div>
       )}
       {catalog && (
@@ -356,41 +384,35 @@ type FrameProps = {
   dragging: boolean;
   dropTarget: boolean;
   onMenu: (open: boolean) => void;
-  onPatch: (patch: Partial<WidgetInstance>) => void;
+  onPatch: (patch: Partial<Omit<WidgetInstance, 'type' | 'x' | 'y'>>) => void;
   onMove: (to: number) => void;
   onRemove: () => void;
   onSettings: () => void;
   onRefresh: () => void;
-  drag: {
-    onDragStart: (e: DragEvent) => void;
-    onDragEnd: () => void;
-    onDragOver: (e: DragEvent) => void;
-    onDrop: (e: DragEvent) => void;
-  };
+  onDragStart: (e: DragEvent) => void;
+  onDragEnd: () => void;
 };
 
-// Masonry packing: the grid has thin rows and each card spans just the rows its own
-// height needs, so small cards fill the space next to tall ones instead of leaving
-// holes as tall as the tallest card of a row. Keep in sync with .dash-grid in style.css.
-const GRID_ROW = 8;
+// Fixed grid: GRID_COLS columns, tiles of the same height, explicit positions (see
+// model.ts). Keep TILE_HEIGHT and GRID_GAP in sync with .dash-grid in style.css.
+const TILE_HEIGHT = 320;
 const GRID_GAP = 16;
+// Below this width the grid has 2 or 1 columns and shows widgets in reading order.
+const NARROW_QUERY = '(max-width: 1180px)';
 
-/** Grid rows a card spans; null before the first measurement (and in jsdom). */
-function useRowSpan(ref: RefObject<HTMLElement | null>) {
-  const [span, setSpan] = useState<number | null>(null);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const measure = () => {
-      const height = el.offsetHeight; // ignores the drag transform
-      if (height > 0) setSpan(Math.ceil((height + GRID_GAP) / GRID_ROW));
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [ref]);
-  return span;
+const cellStyle = (at: { x: number; y: number }, w: WidgetInstance) =>
+  ({ '--x': at.x + 1, '--y': at.y + 1, '--w': WIDTH[w.size] }) as CSSProperties;
+
+function useNarrow() {
+  const query = typeof window.matchMedia === 'function' ? window.matchMedia(NARROW_QUERY) : null;
+  const [narrow, setNarrow] = useState(query?.matches ?? false);
+  useEffect(() => {
+    if (!query) return;
+    const update = () => setNarrow(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+  return narrow;
 }
 
 function WidgetFrame(p: FrameProps) {
@@ -398,16 +420,12 @@ function WidgetFrame(p: FrameProps) {
   const spec = WIDGET_SPECS[p.widget.type];
   const Body = def.Component;
   const title = t(def.name);
-  const ref = useRef<HTMLElement>(null);
-  const span = useRowSpan(ref);
   return (
     <section
-      ref={ref}
-      style={span ? { gridRowEnd: `span ${span}` } : undefined}
+      data-widget={p.widget.type}
+      style={{ ...cellStyle(p.widget, p.widget), order: p.index }}
       className={`dash-widget size-${p.widget.size} ${p.widget.collapsed ? 'collapsed' : ''} ${p.dragging ? 'dragging' : ''} ${p.dropTarget ? 'drop-target' : ''}`}
       aria-label={title}
-      onDragOver={p.editing ? p.drag.onDragOver : undefined}
-      onDrop={p.editing ? p.drag.onDrop : undefined}
     >
       <header className="dash-widget-head">
         {p.editing && (
@@ -418,8 +436,8 @@ function WidgetFrame(p: FrameProps) {
             tabIndex={-1}
             aria-label={t('Trascina per spostare')}
             title={t('Trascina per spostare')}
-            onDragStart={p.drag.onDragStart}
-            onDragEnd={p.drag.onDragEnd}
+            onDragStart={p.onDragStart}
+            onDragEnd={p.onDragEnd}
           >
             <GripVertical size={16} />
           </span>
