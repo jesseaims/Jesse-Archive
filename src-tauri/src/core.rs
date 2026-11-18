@@ -1042,6 +1042,19 @@ impl Vault {
                     }
                     self.data["settings"]["dashboard"] = d.clone()
                 }
+                // Recently used items of the Global Quick Search: item ids only.
+                if let Some(r) = b.get("quick_recent") {
+                    let ids = r.as_array().filter(|a| {
+                        a.len() <= 8
+                            && a.iter().all(|x| {
+                                x.as_str().is_some_and(|s| !s.is_empty() && s.len() <= 128)
+                            })
+                    });
+                    let Some(ids) = ids else {
+                        return Err("Elenco degli usati di recente non valido".into());
+                    };
+                    self.data["settings"]["quick_recent"] = json!(ids);
+                }
                 self.data["settings_upd"] = json!(now());
                 self.save()?;
                 Ok(json!({"state":self.state()}))
@@ -2353,6 +2366,35 @@ mod vault_tests {
         let huge = json!({"pad": "x".repeat(40 * 1024)});
         assert!(v.call("settings", json!({"dashboard": huge})).is_err());
         assert_eq!(v.data["settings"]["dashboard"], layout);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn quick_search_recent_items_are_ids_saved_in_the_vault() {
+        let (mut v, dir) = unlocked_vault();
+        v.call(
+            "settings",
+            json!({"quick_recent": ["qs-recent-alpha", "qs-recent-beta"]}),
+        )
+        .unwrap();
+        assert_eq!(
+            v.data["settings"]["quick_recent"],
+            json!(["qs-recent-alpha", "qs-recent-beta"])
+        );
+        // Saved inside the encrypted payload, never in clear in the file.
+        let saved: V = serde_json::from_slice(&fs::read(&v.path).unwrap()).unwrap();
+        assert!(!saved.to_string().contains("qs-recent-alpha"));
+        for bad in [
+            json!("qs-recent-alpha"),
+            json!([1]),
+            json!([""]),
+            json!(vec!["x"; 9]),
+        ] {
+            assert!(v.call("settings", json!({"quick_recent": bad})).is_err());
+        }
+        assert_eq!(
+            v.data["settings"]["quick_recent"],
+            json!(["qs-recent-alpha", "qs-recent-beta"])
+        );
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

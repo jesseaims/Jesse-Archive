@@ -781,7 +781,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': 'Globale Schnellsuche aktivieren',
   Azioni: 'Aktionen',
   Bloccato: 'Gesperrt',
-  'Cancella la cronologia delle ricerche': 'Suchverlauf löschen',
   'Caricamento…': 'Wird geladen…',
   'Cerca account, siti, email…': 'Konten, Websites, E-Mails suchen…',
   'Cerca anche per categoria e cartella': 'Auch nach Kategorie und Ordner suchen',
@@ -791,10 +790,7 @@ const dictionary: Dictionary = {
     'Suchen Sie nach Name, Benutzername, E-Mail oder Website.',
   'Chiudi la finestra dopo un’azione': 'Fenster nach einer Aktion schließen',
   'Copia username': 'Benutzername kopieren',
-  'Cronologia delle ricerche cancellata': 'Suchverlauf gelöscht',
   'Impostazioni salvate': 'Einstellungen gespeichert',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Letzte Suchen und zuletzt verwendete Einträge bleiben nur im Arbeitsspeicher und werden beim Sperren des Tresors gelöscht. Damit sie immer bereit ist, aktivieren Sie «Mit Windows starten» im Bereich Desktop.',
   'Mostra gli elementi usati di recente': 'Zuletzt verwendete Einträge anzeigen',
   'Mostra i preferiti quando la ricerca è vuota': 'Favoriten bei leerer Suche anzeigen',
   'Nessun preferito.': 'Keine Favoriten.',
@@ -805,8 +801,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Drücken Sie die Eingabetaste, um die Konten zu sehen.',
   'Ricerca rapida': 'Schnellsuche',
   'Ricerca rapida globale': 'Globale Schnellsuche',
-  'Ricerche recenti': 'Letzte Suchen',
-  'Ricorda le ricerche recenti': 'Letzte Suchen merken',
   'Ripristina predefinita': 'Standard wiederherstellen',
   Sblocca: 'Entsperren',
   'Sblocca il vault per cercare tra i tuoi account.':
@@ -820,6 +814,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     'Ein Suchfenster, das sich per Tastenkürzel aus jeder Anwendung öffnet, auch wenn Jesse’s Archive minimiert oder im Infobereich ist. Es funktioniert nur bei entsperrtem Tresor.',
   'Username copiato': 'Benutzername kopiert',
+  'Elenco degli usati di recente cancellato': 'Liste der zuletzt verwendeten Einträge gelöscht',
+  'Cancella gli usati di recente': 'Zuletzt verwendete löschen',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Zuletzt verwendete Einträge werden im verschlüsselten Tresor gespeichert (nur welche Einträge, nie die Passwörter) und bleiben nach einem Neustart erhalten. Damit die Schnellsuche immer bereit ist, aktiviere «Mit Windows starten» im Bereich Desktop.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Tresor gesperrt',
@@ -1000,6 +998,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': 'Website kann nicht im Browser geöffnet werden',
   'Apertura dei siti disponibile nella build Windows':
     'Das Öffnen von Websites ist in der Windows-Version verfügbar',
+  'Elenco degli usati di recente non valido': 'Ungültige Liste der zuletzt verwendeten Einträge',
 };
 
 export default dictionary;

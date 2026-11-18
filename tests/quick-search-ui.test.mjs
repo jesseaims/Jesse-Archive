@@ -32,7 +32,6 @@ const SETTINGS = {
   favorites: true,
   recent: true,
   categories: true,
-  history: true,
 };
 // What `quick_search_data` returns: metadata only.
 const METADATA = {
@@ -65,7 +64,7 @@ const METADATA = {
   ],
 };
 
-async function setup({ locked = false, settings = {} } = {}) {
+async function setup({ locked = false, settings = {}, recent = [] } = {}) {
   const dom = new JSDOM('<div id="root"></div>', {
     url: 'http://localhost/?quick-search',
     runScripts: 'outside-only',
@@ -87,7 +86,7 @@ async function setup({ locked = false, settings = {} } = {}) {
   };
   w.IS_REACT_ACT_ENVIRONMENT = true;
   const calls = [];
-  const state = { locked, history: [], recent: [] };
+  const state = { locked, recent };
   // Tauri events: listen() registers a callback through transformCallback.
   const callbacks = new Map();
   const listeners = [];
@@ -115,15 +114,11 @@ async function setup({ locked = false, settings = {} } = {}) {
                 settings: { ...SETTINGS, ...settings },
                 ...structuredClone(METADATA),
                 recent: state.recent,
-                history: state.history,
               };
         case 'quick_search_copy':
           return { ok: true, clear_after: 30 };
         case 'quick_search_reveal':
           return { value: PASSWORD };
-        case 'quick_search_remember':
-          state.history = [args.query];
-          return null;
         case 'quick_search_open':
         case 'quick_search_open_url':
         case 'quick_search_hide':
@@ -237,6 +232,19 @@ test('opens with the search field ready: favorites and quick actions, no secrets
   assert.ok(!d.text().includes(PASSWORD));
 });
 
+test('recently used items saved in the vault are listed when the search is empty', async () => {
+  const d = await setup({ recent: ['b1', 'eliminato'] });
+  await d.emit('quick-search-shown');
+  assert.match(d.text(), /Usati di recente/);
+  assert.ok(
+    d.rows().some((r) => r.text === 'Banca'),
+    'the recent item',
+  );
+  const off = await setup({ recent: ['b1'], settings: { recent: false } });
+  await off.emit('quick-search-shown');
+  assert.doesNotMatch(off.text(), /Usati di recente/, 'hidden when turned off');
+});
+
 test('search by name, username, domain and typo; same-service accounts grouped', async () => {
   const d = await setup();
   await d.emit('quick-search-shown');
@@ -285,8 +293,8 @@ test('keyboard: arrows, Enter copies the password, Ctrl+C, Ctrl+Shift+C, Alt/Ctr
   assert.deepEqual(d.last('quick_search_open_url'), { id: 'e2' });
   await d.key('Enter', { ctrlKey: true });
   assert.deepEqual(d.last('quick_search_open'), { target: { kind: 'item', id: 'e2' } });
-  // The query used for an action is remembered (history enabled in these settings).
-  assert.deepEqual(d.last('quick_search_remember'), { query: 'epic' });
+  // Queries are never sent anywhere to be remembered (there is no search history).
+  assert.ok(!d.calls.some(([cmd]) => cmd === 'quick_search_remember'));
   const hides = d.count('quick_search_hide');
   await d.key('Escape');
   assert.equal(d.count('quick_search_hide'), hides + 1, 'Esc closes');

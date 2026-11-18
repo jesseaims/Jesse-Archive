@@ -783,7 +783,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': 'Ativar a pesquisa rápida global',
   Azioni: 'Ações',
   Bloccato: 'Bloqueado',
-  'Cancella la cronologia delle ricerche': 'Limpar o histórico de pesquisas',
   'Caricamento…': 'Carregando…',
   'Cerca account, siti, email…': 'Pesquisar contas, sites, e-mails…',
   'Cerca anche per categoria e cartella': 'Pesquisar também por categoria e pasta',
@@ -792,10 +791,7 @@ const dictionary: Dictionary = {
   'Cerca per nome, username, email o sito.': 'Pesquise por nome, usuário, e-mail ou site.',
   'Chiudi la finestra dopo un’azione': 'Fechar a janela após uma ação',
   'Copia username': 'Copiar usuário',
-  'Cronologia delle ricerche cancellata': 'Histórico de pesquisas limpo',
   'Impostazioni salvate': 'Configurações salvas',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'As pesquisas recentes e os itens usados recentemente ficam apenas na memória e são apagados quando o cofre é bloqueado. Para tê-la sempre pronta, ative «Iniciar com o Windows» na seção Área de trabalho.',
   'Mostra gli elementi usati di recente': 'Mostrar os itens usados recentemente',
   'Mostra i preferiti quando la ricerca è vuota':
     'Mostrar os favoritos quando a pesquisa está vazia',
@@ -807,8 +803,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Pressione Enter para ver as contas.',
   'Ricerca rapida': 'Pesquisa rápida',
   'Ricerca rapida globale': 'Pesquisa rápida global',
-  'Ricerche recenti': 'Pesquisas recentes',
-  'Ricorda le ricerche recenti': 'Lembrar as pesquisas recentes',
   'Ripristina predefinita': 'Restaurar padrão',
   Sblocca: 'Desbloquear',
   'Sblocca il vault per cercare tra i tuoi account.':
@@ -822,6 +816,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     'Uma janela de pesquisa que abre com um atalho em qualquer aplicativo, mesmo com o Jesse’s Archive minimizado ou na área de notificação. Funciona apenas com o cofre desbloqueado.',
   'Username copiato': 'Usuário copiado',
+  'Elenco degli usati di recente cancellato': 'Lista de usados recentemente apagada',
+  'Cancella gli usati di recente': 'Apagar usados recentemente',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Os itens usados recentemente são guardados no cofre cifrado (apenas quais itens, nunca as senhas) e mantêm-se após reiniciar. Para ter a pesquisa rápida sempre pronta, ative «Iniciar com o Windows» na secção Ambiente de trabalho.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Cofre bloqueado',
@@ -1001,6 +999,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': 'Não foi possível abrir o site no navegador',
   'Apertura dei siti disponibile nella build Windows':
     'A abertura de sites está disponível na versão para Windows',
+  'Elenco degli usati di recente non valido': 'Lista de usados recentemente inválida',
 };
 
 export default dictionary;

@@ -102,21 +102,20 @@ export default function QuickSearchSettings() {
       {check('favorites', t('Mostra i preferiti quando la ricerca è vuota'))}
       {check('recent', t('Mostra gli elementi usati di recente'))}
       {check('categories', t('Cerca anche per categoria e cartella'))}
-      {check('history', t('Ricorda le ricerche recenti'))}
       <button
         className="secondary"
-        disabled={busy || !settings.enabled}
+        disabled={busy || !settings.enabled || !settings.recent}
         onClick={() => {
-          void invoke('quick_search_clear_history').then(() =>
-            setMessage(t('Cronologia delle ricerche cancellata')),
-          );
+          invoke('quick_search_clear_recent')
+            .then(() => setMessage(t('Elenco degli usati di recente cancellato')))
+            .catch((e) => setMessage(translateMessage(e)));
         }}
       >
-        {t('Cancella la cronologia delle ricerche')}
+        {t('Cancella gli usati di recente')}
       </button>
       <p className="helper">
         {t(
-          'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.',
+          'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.',
         )}
       </p>
       {message && <p role="status">{message}</p>}

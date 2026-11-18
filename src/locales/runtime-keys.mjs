@@ -142,4 +142,5 @@ export const RUNTIME_KEYS = [
   'Indirizzo del sito non valido',
   'Impossibile aprire il sito nel browser',
   'Apertura dei siti disponibile nella build Windows',
+  'Elenco degli usati di recente non valido',
 ];

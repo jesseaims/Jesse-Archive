@@ -780,7 +780,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': 'Включить глобальный быстрый поиск',
   Azioni: 'Действия',
   Bloccato: 'Заблокировано',
-  'Cancella la cronologia delle ricerche': 'Очистить историю поиска',
   'Caricamento…': 'Загрузка…',
   'Cerca account, siti, email…': 'Поиск учётных записей, сайтов, адресов почты…',
   'Cerca anche per categoria e cartella': 'Искать также по категории и папке',
@@ -790,10 +789,7 @@ const dictionary: Dictionary = {
     'Ищите по названию, имени пользователя, почте или сайту.',
   'Chiudi la finestra dopo un’azione': 'Закрывать окно после действия',
   'Copia username': 'Копировать имя пользователя',
-  'Cronologia delle ricerche cancellata': 'История поиска очищена',
   'Impostazioni salvate': 'Настройки сохранены',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Недавние запросы и недавно использованные элементы хранятся только в памяти и удаляются при блокировке хранилища. Чтобы поиск всегда был под рукой, включите «Запускать вместе с Windows» в разделе «Рабочий стол».',
   'Mostra gli elementi usati di recente': 'Показывать недавно использованные элементы',
   'Mostra i preferiti quando la ricerca è vuota': 'Показывать избранное, когда строка поиска пуста',
   'Nessun preferito.': 'Нет избранного.',
@@ -804,8 +800,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Нажмите Enter, чтобы увидеть учётные записи.',
   'Ricerca rapida': 'Быстрый поиск',
   'Ricerca rapida globale': 'Глобальный быстрый поиск',
-  'Ricerche recenti': 'Недавние запросы',
-  'Ricorda le ricerche recenti': 'Запоминать недавние запросы',
   'Ripristina predefinita': 'Восстановить по умолчанию',
   Sblocca: 'Разблокировать',
   'Sblocca il vault per cercare tra i tuoi account.':
@@ -819,6 +813,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     'Окно поиска, которое открывается сочетанием клавиш из любого приложения, даже когда Jesse’s Archive свёрнут или находится в области уведомлений. Работает только при разблокированном хранилище.',
   'Username copiato': 'Имя пользователя скопировано',
+  'Elenco degli usati di recente cancellato': 'Список недавно использованных очищен',
+  'Cancella gli usati di recente': 'Очистить недавно использованные',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Недавно использованные элементы сохраняются в зашифрованном хранилище (только какие элементы, никогда пароли) и сохраняются после перезапуска. Чтобы быстрый поиск всегда был готов, включите «Запускать вместе с Windows» в разделе «Рабочий стол».',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Хранилище заблокировано',
@@ -999,6 +997,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': 'Не удалось открыть сайт в браузере',
   'Apertura dei siti disponibile nella build Windows':
     'Открытие сайтов доступно в версии для Windows',
+  'Elenco degli usati di recente non valido': 'Недопустимый список недавно использованных',
 };
 
 export default dictionary;

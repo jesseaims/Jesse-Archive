@@ -775,7 +775,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': 'Enable Global Quick Search',
   Azioni: 'Actions',
   Bloccato: 'Locked',
-  'Cancella la cronologia delle ricerche': 'Clear search history',
   'Caricamento…': 'Loading…',
   'Cerca account, siti, email…': 'Search accounts, sites, emails…',
   'Cerca anche per categoria e cartella': 'Also search by category and folder',
@@ -784,10 +783,7 @@ const dictionary: Dictionary = {
   'Cerca per nome, username, email o sito.': 'Search by name, username, email or site.',
   'Chiudi la finestra dopo un’azione': 'Close the window after an action',
   'Copia username': 'Copy username',
-  'Cronologia delle ricerche cancellata': 'Search history cleared',
   'Impostazioni salvate': 'Settings saved',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    'Recent searches and recently used items stay in memory only and are cleared when the vault locks. To always have it ready, turn on «Start with Windows» in the Desktop section.',
   'Mostra gli elementi usati di recente': 'Show recently used items',
   'Mostra i preferiti quando la ricerca è vuota': 'Show favorites when the search is empty',
   'Nessun preferito.': 'No favorites.',
@@ -798,8 +794,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Press Enter to see the accounts.',
   'Ricerca rapida': 'Quick search',
   'Ricerca rapida globale': 'Global Quick Search',
-  'Ricerche recenti': 'Recent searches',
-  'Ricorda le ricerche recenti': 'Remember recent searches',
   'Ripristina predefinita': 'Restore default',
   Sblocca: 'Unlock',
   'Sblocca il vault per cercare tra i tuoi account.': 'Unlock the vault to search your accounts.',
@@ -812,6 +806,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     'A search window that opens with a shortcut from any application, even with Jesse’s Archive minimized or in the notification area. It works only while the vault is unlocked.',
   'Username copiato': 'Username copied',
+  'Elenco degli usati di recente cancellato': 'Recently used list cleared',
+  'Cancella gli usati di recente': 'Clear recently used',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    'Recently used items are saved in the encrypted vault (only which items, never the passwords) and are kept after a restart. To always have Quick Search ready, turn on «Start with Windows» in the Desktop section.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': 'Vault locked',
@@ -986,6 +984,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': 'Unable to open the website in the browser',
   'Apertura dei siti disponibile nella build Windows':
     'Opening websites is available in the Windows build',
+  'Elenco degli usati di recente non valido': 'Invalid recently used list',
 };
 
 export default dictionary;

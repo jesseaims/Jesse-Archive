@@ -19,7 +19,6 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
-  History,
   KeyRound,
   LoaderCircle,
   Lock,
@@ -44,21 +43,18 @@ export type QuickSearchSettings = {
   favorites: boolean;
   recent: boolean;
   categories: boolean;
-  history: boolean;
 };
 type Payload = Partial<SearchData> & {
   unlocked: boolean;
   settings: QuickSearchSettings;
   recent?: string[];
-  history?: string[];
   theme?: { preset: string; custom?: Record<string, string> } | null;
 };
 type Row =
   | { kind: 'section'; label: string }
   | { kind: 'group'; group: ResultGroup; expanded: boolean }
   | { kind: 'account'; account: AccountResult; nested: boolean }
-  | { kind: 'action'; action: QuickAction }
-  | { kind: 'history'; query: string };
+  | { kind: 'action'; action: QuickAction };
 
 /** A revealed password disappears by itself after this many milliseconds. */
 const REVEAL_MS = 15000;
@@ -220,10 +216,6 @@ export default function QuickSearch() {
           pushGroups(recent);
         }
       }
-      if (settings?.history && payload?.history?.length) {
-        out.push({ kind: 'section', label: t('Ricerche recenti') });
-        for (const h of payload.history) out.push({ kind: 'history', query: h });
-      }
       out.push({ kind: 'section', label: t('Azioni rapide') });
       for (const action of QUICK_ACTIONS) out.push({ kind: 'action', action });
       return out;
@@ -239,7 +231,7 @@ export default function QuickSearch() {
       for (const action of actions) out.push({ kind: 'action', action });
     }
     return out;
-  }, [index, deferred, favoritesOnly, expanded, settings, payload?.recent, payload?.history]);
+  }, [index, deferred, favoritesOnly, expanded, settings, payload?.recent]);
 
   // Keep the selection on a selectable row and in view.
   const selectableRows = rows.map((r, i) => (selectable(r) ? i : -1)).filter((i) => i >= 0);
@@ -266,7 +258,6 @@ export default function QuickSearch() {
     setNotice('');
     try {
       const done = await fn();
-      if (query.trim()) void invoke('quick_search_remember', { query });
       if (close && settings?.close_after) void invoke('quick_search_hide');
       else if (done) setNotice(done);
     } catch (e) {
@@ -325,7 +316,6 @@ export default function QuickSearch() {
     if (!r) return;
     if (r.kind === 'group') toggleGroup(r.group.key);
     else if (r.kind === 'action') runAction(r.action);
-    else if (r.kind === 'history') setQuery(r.query);
     else if (r.kind === 'account') {
       const a = r.account;
       if (a.item.has_password) void copyPassword(a);
@@ -622,17 +612,6 @@ function RowContent({ row }: { row: Row }) {
       </>
     );
   }
-  if (row.kind === 'history')
-    return (
-      <>
-        <span className="qs-icon">
-          <History size={16} />
-        </span>
-        <span className="qs-row-text">
-          <strong>{row.query}</strong>
-        </span>
-      </>
-    );
   return null;
 }
 

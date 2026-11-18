@@ -744,7 +744,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': '启用全局快速搜索',
   Azioni: '操作',
   Bloccato: '已锁定',
-  'Cancella la cronologia delle ricerche': '清除搜索历史',
   'Caricamento…': '正在加载…',
   'Cerca account, siti, email…': '搜索帐户、网站、邮箱…',
   'Cerca anche per categoria e cartella': '也按类别和文件夹搜索',
@@ -753,10 +752,7 @@ const dictionary: Dictionary = {
   'Cerca per nome, username, email o sito.': '按名称、用户名、邮箱或网站搜索。',
   'Chiudi la finestra dopo un’azione': '执行操作后关闭窗口',
   'Copia username': '复制用户名',
-  'Cronologia delle ricerche cancellata': '搜索历史已清除',
   'Impostazioni salvate': '设置已保存',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '最近搜索和最近使用的项目仅保存在内存中，保管库锁定时会被清除。若要随时可用，请在“桌面”部分开启“随 Windows 启动”。',
   'Mostra gli elementi usati di recente': '显示最近使用的项目',
   'Mostra i preferiti quando la ricerca è vuota': '搜索为空时显示收藏',
   'Nessun preferito.': '没有收藏。',
@@ -766,8 +762,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': '按 Enter 查看帐户。',
   'Ricerca rapida': '快速搜索',
   'Ricerca rapida globale': '全局快速搜索',
-  'Ricerche recenti': '最近搜索',
-  'Ricorda le ricerche recenti': '记住最近搜索',
   'Ripristina predefinita': '恢复默认值',
   Sblocca: '解锁',
   'Sblocca il vault per cercare tra i tuoi account.': '解锁保管库以搜索你的帐户。',
@@ -780,6 +774,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     '一个可在任何应用程序中用快捷键打开的搜索窗口，即使 Jesse’s Archive 已最小化或位于通知区域。仅在保管库解锁时可用。',
   'Username copiato': '用户名已复制',
+  'Elenco degli usati di recente cancellato': '最近使用列表已清除',
+  'Cancella gli usati di recente': '清除最近使用',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近使用的项目保存在加密保险库中（仅记录是哪些项目，绝不包含密码），重启后仍会保留。若要让快速搜索随时可用，请在“桌面”部分开启“随 Windows 启动”。',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保险库已锁定',
@@ -940,6 +938,7 @@ const dictionary: Dictionary = {
   'Indirizzo del sito non valido': '网站地址无效',
   'Impossibile aprire il sito nel browser': '无法在浏览器中打开网站',
   'Apertura dei siti disponibile nella build Windows': '打开网站功能仅在 Windows 版本中可用',
+  'Elenco degli usati di recente non valido': '最近使用列表无效',
 };
 
 export default dictionary;

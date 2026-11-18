@@ -9,13 +9,14 @@
 //!   addresses, categories, folders, favorites, group names and logos. Passwords are
 //!   copied here in the backend (`quick_search_copy`) and reach the webview only
 //!   through `quick_search_reveal`, when the user explicitly asks to see one;
-//! - the search history and the recently used items exist only in memory and are
-//!   wiped whenever the vault locks;
+//! - the recently used items are saved in the encrypted vault (`settings.quick_recent`,
+//!   item ids only), so they survive a restart; with the vault locked the window
+//!   receives none of them and forgets what it was showing;
 //! - settings are a device preference (`quick_search` in config.json): no vault data.
 use crate::{clipboard, core, AppState};
 use serde_json::{json, Value};
 use std::sync::Mutex;
-use tauri::{AppHandle, Emitter, Listener, Manager, PhysicalPosition, WebviewWindow};
+use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, WebviewWindow};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Modifiers, Shortcut};
 use zeroize::Zeroizing;
 
@@ -24,7 +25,6 @@ pub const LABEL: &str = "quick-search";
 pub const SIZE: (f64, f64) = (720., 500.);
 pub const DEFAULT_SHORTCUT: &str = "Ctrl+Shift+Space";
 const PREF: &str = "quick_search";
-const HISTORY_MAX: usize = 8;
 const RECENT_MAX: usize = 8;
 /// Quick actions the main window can run on request (ids of `ACTIONS` in
 /// src/dashboard/widgets.tsx) and pages it can open.
@@ -46,7 +46,6 @@ pub struct Settings {
     pub favorites: bool,
     pub recent: bool,
     pub categories: bool,
-    pub history: bool,
 }
 
 impl Default for Settings {
@@ -58,7 +57,6 @@ impl Default for Settings {
             favorites: true,
             recent: true,
             categories: true,
-            history: false,
         }
     }
 }
@@ -80,7 +78,6 @@ impl Settings {
             favorites: flag("favorites", d.favorites),
             recent: flag("recent", d.recent),
             categories: flag("categories", d.categories),
-            history: flag("history", d.history),
         }
     }
     pub fn to_value(&self) -> Value {
@@ -91,7 +88,6 @@ impl Settings {
             "favorites": self.favorites,
             "recent": self.recent,
             "categories": self.categories,
-            "history": self.history,
         })
     }
 }
@@ -100,29 +96,10 @@ pub struct QuickSearch {
     settings: Mutex<Settings>,
     registered: Mutex<Option<Shortcut>>,
     error: Mutex<String>,
-    history: Mutex<Vec<String>>,
-    recent: Mutex<Vec<String>>,
 }
 
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
-}
-
-impl QuickSearch {
-    /// Session-only data: dropped when the vault locks.
-    fn wipe(&self) {
-        lock(&self.history).clear();
-        lock(&self.recent).clear();
-    }
-    fn remember_item(&self, id: &str) {
-        if !lock(&self.settings).recent {
-            return;
-        }
-        let mut recent = lock(&self.recent);
-        recent.retain(|x| x != id);
-        recent.insert(0, id.to_owned());
-        recent.truncate(RECENT_MAX);
-    }
 }
 
 /// Validates a shortcut. It must have Ctrl, Alt or Win and must not take over a
@@ -165,8 +142,6 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         settings: Mutex::new(settings.clone()),
         registered: Mutex::new(None),
         error: Mutex::new(String::new()),
-        history: Mutex::new(Vec::new()),
-        recent: Mutex::new(Vec::new()),
     });
     tauri::WebviewWindowBuilder::new(
         app,
@@ -187,13 +162,6 @@ pub fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
             *lock(&app.state::<QuickSearch>().error) = e;
         }
     }
-    // Every lock (button, tray, inactivity, closing to the tray) emits vault-locked.
-    let handle = app.clone();
-    app.listen_any("vault-locked", move |_| {
-        if let Some(q) = handle.try_state::<QuickSearch>() {
-            q.wipe();
-        }
-    });
     Ok(())
 }
 
@@ -380,6 +348,59 @@ fn find<'a>(data: &'a Value, id: &str) -> Result<&'a Value, String> {
         .ok_or_else(|| "Elemento non trovato".into())
 }
 
+/// Recently used items saved in the vault, newest first. Items deleted or in the
+/// trash since then are left out.
+pub fn recent_ids(data: &Value) -> Vec<String> {
+    let alive = |id: &str| {
+        data["items"]
+            .as_array()
+            .is_some_and(|a| a.iter().any(|i| text(i, "id") == id && !trashed(i)))
+    };
+    data["settings"]["quick_recent"]
+        .as_array()
+        .map(|a| {
+            a.iter()
+                .filter_map(Value::as_str)
+                .filter(|id| alive(id))
+                .map(str::to_owned)
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The list with `id` first, at most `RECENT_MAX` entries; None when unchanged.
+fn next_recent(current: &[String], id: &str) -> Option<Vec<String>> {
+    if current.first().map(String::as_str) == Some(id) {
+        return None;
+    }
+    let mut next = vec![id.to_owned()];
+    next.extend(current.iter().filter(|x| *x != id).cloned());
+    next.truncate(RECENT_MAX);
+    Some(next)
+}
+
+/// Puts an item first among the recently used ones, in the encrypted vault settings.
+/// A convenience: if the vault is locked or cannot be saved, nothing changes.
+fn remember_item(app: &AppHandle, id: &str) {
+    if !lock(&app.state::<QuickSearch>().settings).recent {
+        return;
+    }
+    let state = app.state::<AppState>();
+    let Ok(mut vault) = state.vault() else {
+        return;
+    };
+    if !matches!(vault.call("status", json!({})), Ok(s) if s["unlocked"] == true) {
+        return;
+    }
+    let Ok(data) = vault.call("browser_state", json!({})) else {
+        return;
+    };
+    if let Some(next) = next_recent(&recent_ids(&data), id) {
+        drop(data);
+        let _ = vault.call("settings", json!({ "quick_recent": next }));
+    }
+}
+
 /// A deliberate action on the vault counts as activity for the auto-lock delay.
 fn touch(app: &AppHandle) {
     if let Ok(mut vault) = app.state::<AppState>().vault() {
@@ -392,7 +413,6 @@ pub fn quick_search_data(app: AppHandle) -> Result<Value, String> {
     let q = app.state::<QuickSearch>();
     let settings = lock(&q.settings).clone();
     let Some(data) = vault_data(&app)? else {
-        q.wipe();
         return Ok(json!({"unlocked": false, "settings": settings.to_value()}));
     };
     let mut out = snapshot(&data);
@@ -401,12 +421,7 @@ pub fn quick_search_data(app: AppHandle) -> Result<Value, String> {
     // Same colors as the main window (a preset name or custom colors).
     out["theme"] = data["settings"]["theme"].clone();
     out["recent"] = json!(if settings.recent {
-        lock(&q.recent).clone()
-    } else {
-        vec![]
-    });
-    out["history"] = json!(if settings.history {
-        lock(&q.history).clone()
+        recent_ids(&data)
     } else {
         vec![]
     });
@@ -439,7 +454,7 @@ pub async fn quick_search_copy(app: AppHandle, id: String, field: String) -> Res
         drop(data);
         clipboard::copy_with_timeout(value, seconds)?;
         touch(&app);
-        app.state::<QuickSearch>().remember_item(&id);
+        remember_item(&app, &id);
         Ok(json!({"ok": true, "clear_after": seconds}))
     })
     .await
@@ -462,7 +477,7 @@ pub fn quick_search_reveal(app: AppHandle, id: String) -> Result<Value, String> 
     let out = json!({"value": value});
     drop(data);
     touch(&app);
-    app.state::<QuickSearch>().remember_item(&id);
+    remember_item(&app, &id);
     Ok(out)
 }
 
@@ -524,7 +539,7 @@ pub fn quick_search_open_url(app: AppHandle, id: String) -> Result<(), String> {
         site_url(text(&find(&data, &id)?["f"], "url")).ok_or("Indirizzo del sito non valido")?;
     drop(data);
     open_in_browser(&url)?;
-    app.state::<QuickSearch>().remember_item(&id);
+    remember_item(&app, &id);
     Ok(())
 }
 
@@ -537,7 +552,7 @@ pub fn quick_search_open(app: AppHandle, target: Value) -> Result<(), String> {
             let id = text(&target, "id");
             let data = vault_data(&app)?.ok_or("Vault bloccato")?;
             find(&data, id)?;
-            app.state::<QuickSearch>().remember_item(id);
+            remember_item(&app, id);
             json!({"kind": "item", "id": id})
         }
         "action" if ACTIONS.contains(&text(&target, "action")) => {
@@ -560,26 +575,16 @@ pub fn quick_search_hide(app: AppHandle) {
     hide(&app);
 }
 
-/// Adds a query to the session history, when the history is enabled.
+/// Empties the recently used items saved in the vault.
 #[tauri::command]
-pub fn quick_search_remember(app: AppHandle, query: String) {
-    let q = app.state::<QuickSearch>();
-    let query = query.trim();
-    if !lock(&q.settings).history || query.is_empty() || query.chars().count() > 100 {
-        return;
+pub fn quick_search_clear_recent(app: AppHandle) -> Result<(), String> {
+    let state = app.state::<AppState>();
+    let mut vault = state.vault()?;
+    if vault.call("status", json!({}))?["unlocked"] != true {
+        return Err("Vault bloccato".into());
     }
-    if !matches!(vault_data(&app), Ok(Some(_))) {
-        return;
-    }
-    let mut history = lock(&q.history);
-    history.retain(|x| x != query);
-    history.insert(0, query.to_owned());
-    history.truncate(HISTORY_MAX);
-}
-
-#[tauri::command]
-pub fn quick_search_clear_history(app: AppHandle) {
-    lock(&app.state::<QuickSearch>().history).clear();
+    vault.call("settings", json!({ "quick_recent": [] }))?;
+    Ok(())
 }
 
 #[tauri::command]
@@ -615,11 +620,9 @@ pub fn quick_search_configure(app: AppHandle, settings: Value) -> Result<Value, 
         }
         return Err(e);
     }
-    if !next.history {
-        lock(&q.history).clear();
-    }
-    if !next.recent {
-        lock(&q.recent).clear();
+    if previous.recent && !next.recent {
+        // Turning the list off also empties it (when the vault is unlocked).
+        let _ = quick_search_clear_recent(app.clone());
     }
     *lock(&q.settings) = next;
     if !lock(&q.settings).enabled {
@@ -720,11 +723,32 @@ mod tests {
     #[test]
     fn settings_fall_back_to_defaults() {
         assert_eq!(Settings::from_value(&Value::Null), Settings::default());
-        let s = Settings::from_value(&json!({"enabled": false, "shortcut": "", "history": "yes"}));
+        let s = Settings::from_value(&json!({"enabled": false, "shortcut": "", "recent": "yes"}));
         assert!(!s.enabled);
         assert_eq!(s.shortcut, DEFAULT_SHORTCUT);
-        assert!(!s.history);
+        assert!(s.recent);
         let round = Settings::from_value(&s.to_value());
         assert_eq!(round, s);
+    }
+
+    #[test]
+    fn recent_items_skip_deleted_ones_and_stay_bounded() {
+        let data = json!({
+            "settings": {"quick_recent": ["b", "gone", "a", 3, "t"]},
+            "items": [
+                {"id": "a", "type": "login"},
+                {"id": "b", "type": "note"},
+                {"id": "t", "type": "login", "trashed": 1700000000.0},
+            ],
+        });
+        assert_eq!(recent_ids(&data), ["b", "a"]);
+        assert!(recent_ids(&json!({})).is_empty());
+        let ids = |v: &[&str]| v.iter().map(|s| s.to_string()).collect::<Vec<_>>();
+        assert_eq!(next_recent(&ids(&["b", "a"]), "b"), None, "already first");
+        assert_eq!(next_recent(&ids(&["b", "a"]), "a"), Some(ids(&["a", "b"])));
+        let full: Vec<String> = (0..RECENT_MAX).map(|i| i.to_string()).collect();
+        let next = next_recent(&full, "new").unwrap();
+        assert_eq!(next.len(), RECENT_MAX);
+        assert_eq!(next[0], "new");
     }
 }

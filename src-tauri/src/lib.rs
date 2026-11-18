@@ -355,8 +355,7 @@ pub fn run() {
             quick_search::quick_search_open_url,
             quick_search::quick_search_open,
             quick_search::quick_search_hide,
-            quick_search::quick_search_remember,
-            quick_search::quick_search_clear_history,
+            quick_search::quick_search_clear_recent,
             quick_search::quick_search_settings,
             quick_search::quick_search_configure
         ])

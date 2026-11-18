@@ -773,7 +773,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': 'グローバル クイック検索を有効にする',
   Azioni: 'アクション',
   Bloccato: 'ロック中',
-  'Cancella la cronologia delle ricerche': '検索履歴を消去',
   'Caricamento…': '読み込み中…',
   'Cerca account, siti, email…': 'アカウント、サイト、メールを検索…',
   'Cerca anche per categoria e cartella': 'カテゴリとフォルダーでも検索する',
@@ -782,10 +781,7 @@ const dictionary: Dictionary = {
   'Cerca per nome, username, email o sito.': '名前、ユーザー名、メール、サイトで検索します。',
   'Chiudi la finestra dopo un’azione': '操作の後にウィンドウを閉じる',
   'Copia username': 'ユーザー名をコピー',
-  'Cronologia delle ricerche cancellata': '検索履歴を消去しました',
   'Impostazioni salvate': '設定を保存しました',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '最近の検索と最近使った項目はメモリにのみ保持され、保管庫がロックされると消去されます。常に使えるようにするには、「デスクトップ」セクションで「Windows と同時に起動」をオンにしてください。',
   'Mostra gli elementi usati di recente': '最近使った項目を表示',
   'Mostra i preferiti quando la ricerca è vuota': '検索が空のときにお気に入りを表示',
   'Nessun preferito.': 'お気に入りはありません。',
@@ -796,8 +792,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Enter キーでアカウントを表示します。',
   'Ricerca rapida': 'クイック検索',
   'Ricerca rapida globale': 'グローバル クイック検索',
-  'Ricerche recenti': '最近の検索',
-  'Ricorda le ricerche recenti': '最近の検索を記憶する',
   'Ripristina predefinita': '既定に戻す',
   Sblocca: 'ロック解除',
   'Sblocca il vault per cercare tra i tuoi account.':
@@ -811,6 +805,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     'どのアプリからでもショートカットで開ける検索ウィンドウです。Jesse’s Archive が最小化されていても、通知領域にあっても使えます。保管庫のロック解除中のみ動作します。',
   'Username copiato': 'ユーザー名をコピーしました',
+  'Elenco degli usati di recente cancellato': '最近使用した項目の一覧を消去しました',
+  'Cancella gli usati di recente': '最近使用した項目を消去',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '最近使用した項目は暗号化された保管庫に保存され（どの項目かだけで、パスワードは保存されません）、再起動後も残ります。クイック検索をいつでも使えるようにするには、「デスクトップ」セクションで「Windows と同時に起動」をオンにしてください。',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '保管庫はロックされています',
@@ -992,6 +990,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': 'ブラウザーでサイトを開けません',
   'Apertura dei siti disponibile nella build Windows':
     'サイトを開く機能は Windows 版で利用できます',
+  'Elenco degli usati di recente non valido': '最近使用した項目の一覧が無効です',
 };
 
 export default dictionary;

@@ -766,7 +766,6 @@ const dictionary: Dictionary = {
   'Attiva la ricerca rapida globale': '전역 빠른 검색 사용',
   Azioni: '작업',
   Bloccato: '잠김',
-  'Cancella la cronologia delle ricerche': '검색 기록 지우기',
   'Caricamento…': '불러오는 중…',
   'Cerca account, siti, email…': '계정, 사이트, 이메일 검색…',
   'Cerca anche per categoria e cartella': '카테고리와 폴더로도 검색',
@@ -775,10 +774,7 @@ const dictionary: Dictionary = {
   'Cerca per nome, username, email o sito.': '이름, 사용자 이름, 이메일 또는 사이트로 검색하세요.',
   'Chiudi la finestra dopo un’azione': '작업 후 창 닫기',
   'Copia username': '사용자 이름 복사',
-  'Cronologia delle ricerche cancellata': '검색 기록을 지웠습니다',
   'Impostazioni salvate': '설정을 저장했습니다',
-  'Le ricerche recenti e gli elementi usati di recente restano solo in memoria e si cancellano quando il vault si blocca. Per averla sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
-    '최근 검색과 최근 사용한 항목은 메모리에만 보관되며 보관함이 잠기면 지워집니다. 항상 사용할 수 있게 하려면 데스크톱 섹션에서 «Windows 시작 시 실행»을 켜세요.',
   'Mostra gli elementi usati di recente': '최근 사용한 항목 표시',
   'Mostra i preferiti quando la ricerca è vuota': '검색어가 비어 있을 때 즐겨찾기 표시',
   'Nessun preferito.': '즐겨찾기가 없습니다.',
@@ -789,8 +785,6 @@ const dictionary: Dictionary = {
   'Premi Invio per vedere gli account.': 'Enter 키를 눌러 계정을 확인하세요.',
   'Ricerca rapida': '빠른 검색',
   'Ricerca rapida globale': '전역 빠른 검색',
-  'Ricerche recenti': '최근 검색',
-  'Ricorda le ricerche recenti': '최근 검색 기억',
   'Ripristina predefinita': '기본값으로 복원',
   Sblocca: '잠금 해제',
   'Sblocca il vault per cercare tra i tuoi account.': '보관함 잠금을 해제하고 계정을 검색하세요.',
@@ -803,6 +797,10 @@ const dictionary: Dictionary = {
   'Una finestra di ricerca che si apre con una scorciatoia da qualsiasi applicazione, anche con Jesse’s Archive ridotto a icona o nell’area di notifica. Funziona solo con il vault sbloccato.':
     '어떤 앱에서든 단축키로 여는 검색 창입니다. Jesse’s Archive가 최소화되어 있거나 알림 영역에 있어도 사용할 수 있습니다. 보관함 잠금이 해제된 상태에서만 작동합니다.',
   'Username copiato': '사용자 이름을 복사했습니다',
+  'Elenco degli usati di recente cancellato': '최근 사용 목록을 지웠습니다',
+  'Cancella gli usati di recente': '최근 사용 지우기',
+  'Gli elementi usati di recente sono salvati nel vault cifrato (solo quali elementi, mai le password) e restano dopo il riavvio. Per avere la ricerca rapida sempre pronta, attiva «Avvia con Windows» nella sezione Desktop.':
+    '최근 사용한 항목은 암호화된 보관함에 저장되며(어떤 항목인지만 저장하고 비밀번호는 저장하지 않음) 다시 시작한 후에도 유지됩니다. 빠른 검색을 항상 사용할 수 있게 하려면 데스크톱 섹션에서 «Windows와 함께 시작»을 켜세요.',
 
   // Backend and extension messages (src/locales/runtime-keys.mjs)
   'Vault bloccato': '보관함 잠김',
@@ -978,6 +976,7 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': '브라우저에서 사이트를 열 수 없습니다',
   'Apertura dei siti disponibile nella build Windows':
     '사이트 열기는 Windows 버전에서 사용할 수 있습니다',
+  'Elenco degli usati di recente non valido': '최근 사용 목록이 올바르지 않습니다',
 };
 
 export default dictionary;
