@@ -7,6 +7,7 @@ mod core;
 mod i18n;
 mod passkey;
 mod updater;
+mod window_state;
 mod zoom;
 use serde_json::Value;
 use std::sync::Mutex;
@@ -234,13 +235,11 @@ pub fn run() {
                 });
                 return;
             }
-            if let Some(w) = app.get_webview_window("main") {
-                let _ = w.show();
-                let _ = w.set_focus();
-            }
+            window_state::show_main(app);
         }))
         .manage(AppState(Mutex::new(core::Vault::new())))
         .manage(zoom::Zoom(Mutex::new(zoom::load())))
+        .manage(window_state::WindowState::default())
         .manage(passkey::Passkeys(Mutex::new(None)))
         .setup(|app| {
             browser::setup(app.handle())?;
@@ -257,12 +256,7 @@ pub fn run() {
                 TrayIconBuilder::new()
                     .menu(&menu)
                     .on_menu_event(|app, event| match event.id().as_ref() {
-                        "show" => {
-                            if let Some(w) = app.get_webview_window("main") {
-                                let _ = w.show();
-                                let _ = w.set_focus();
-                            }
-                        }
+                        "show" => window_state::show_main(app),
                         "lock" => {
                             if let Some(st) = app.try_state::<AppState>() {
                                 if let Ok(mut vault) = st.vault() {
@@ -284,14 +278,26 @@ pub fn run() {
             // Saved zoom for this device, applied to the windows created so far
             // (main, quick-fill and possibly the guide).
             zoom::apply_all(app.handle(), zoom::current(app.handle()));
-            if std::env::args().any(|a| a == "--background" || a == "--browser-setup") {
-                if let Some(w) = app.get_webview_window("main") {
-                    let _ = w.hide();
-                }
+            // The main window starts hidden (tauri.conf.json): it is shown with the
+            // size, position and maximized state of the last session, unless the app
+            // starts in the background or only for the browser guide.
+            window_state::load(app.handle());
+            if !std::env::args().any(|a| a == "--background" || a == "--browser-setup") {
+                window_state::show_main(app.handle());
             }
             Ok(())
         })
         .on_window_event(|win, event| {
+            if win.label() == "main"
+                && matches!(
+                    event,
+                    tauri::WindowEvent::Resized(_) | tauri::WindowEvent::Moved(_)
+                )
+            {
+                if let Some(w) = win.app_handle().get_webview_window("main") {
+                    window_state::track(win.app_handle(), &w);
+                }
+            }
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 let app = win.app_handle();
                 if win.label() == "browser-setup" {
@@ -307,6 +313,8 @@ pub fn run() {
                 if let Some(st) = app.try_state::<AppState>() {
                     if let Ok(mut v) = st.vault() {
                         let mode = v.close_action();
+                        // Before hiding: once in the tray the window is not saved.
+                        window_state::save(app);
                         if mode == "tray" {
                             let _ = v.call("lock", serde_json::json!({}));
                             api.prevent_close();
@@ -354,6 +362,13 @@ pub fn run() {
             passkey::passkey_settings,
             passkey::passkey_set_enabled
         ])
-        .run(tauri::generate_context!())
-        .expect("Tauri application failed");
+        .build(tauri::generate_context!())
+        .expect("Tauri application failed")
+        .run(|app, event| {
+            // Every way of quitting (tray menu, close button, update install) saves
+            // the main window state while it is still visible.
+            if let tauri::RunEvent::ExitRequested { .. } = event {
+                window_state::save(app);
+            }
+        });
 }

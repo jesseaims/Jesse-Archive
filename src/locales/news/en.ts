@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    'The window remembers its size and position',
+    'Jesse’s Archive reopens the way you left it: full screen, maximized or with the size and position you chose, even after going through the tray. If the screen it was on is no longer connected, the window opens in the center of the available one.',
+  ],
   'customizable-dashboard': [
     'Customizable dashboard',
     "The new Dashboard is the app's control center: security score, password audit, vault overview, favorites, recent items, secure notes, quick actions, generator, backup status and privacy. With “Customize dashboard” you add, remove, drag and resize widgets, choose between several layouts and adjust each widget's options; everything is saved automatically in the encrypted vault and no widget shows passwords.",

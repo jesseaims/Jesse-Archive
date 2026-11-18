@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    'La fenêtre se souvient de sa taille et de sa position',
+    'Jesse’s Archive se rouvre tel que vous l’avez laissé : en plein écran, agrandi ou avec la taille et la position choisies, même après un passage par la zone de notification. Si l’écran sur lequel il se trouvait n’est plus branché, la fenêtre s’ouvre au centre de l’écran disponible.',
+  ],
   'customizable-dashboard': [
     'Tableau de bord personnalisable',
     'Le nouveau tableau de bord est le centre de contrôle de l’application : score de sécurité, analyse des mots de passe, aperçu du coffre, favoris, éléments récents, notes sécurisées, actions rapides, générateur, état de la sauvegarde et confidentialité. Avec « Personnaliser le tableau de bord », ajoutez, retirez, déplacez et redimensionnez les widgets, choisissez parmi plusieurs dispositions et réglez les options de chacun ; tout s’enregistre automatiquement dans le coffre chiffré et aucun widget n’affiche de mot de passe.',

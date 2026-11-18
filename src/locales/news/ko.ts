@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    '창 크기와 위치 기억',
+    'Jesse’s Archive는 닫을 때의 상태로 다시 열립니다. 전체 화면, 최대화 또는 선택한 크기와 위치 그대로이며, 트레이를 거친 뒤에도 마찬가지입니다. 원래 있던 화면이 더 이상 연결되어 있지 않으면 사용 가능한 화면의 가운데에 열립니다.',
+  ],
   'customizable-dashboard': [
     '사용자 지정 대시보드',
     '새 대시보드는 앱의 제어 센터입니다. 보안 점수, 비밀번호 분석, 보관함 개요, 즐겨찾기, 최근 항목, 보안 메모, 빠른 작업, 생성기, 백업 상태, 개인정보 보호를 보여 줍니다. "대시보드 사용자 지정"에서 위젯을 추가, 제거, 이동하고 크기를 바꾸며, 여러 레이아웃 중에서 선택하고 위젯별 옵션을 조정할 수 있습니다. 모든 내용은 암호화된 보관함에 자동으로 저장되며 비밀번호를 표시하는 위젯은 없습니다.',

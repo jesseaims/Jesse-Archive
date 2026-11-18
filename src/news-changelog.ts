@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'window-state',
+    addedAt: '2026-11-18T16:40:00+01:00',
+    version: 'Beta 1.1.18',
+    title: 'La finestra ricorda dimensione e posizione',
+    description:
+      'Jesse’s Archive si riapre come l’hai lasciato: a schermo intero, massimizzato oppure con la dimensione e la posizione che avevi scelto, anche dopo essere passato dal tray. Se lo schermo su cui si trovava non è più collegato, la finestra si apre al centro di quello disponibile.',
+    icon: 'wrench',
+  },
+  {
     id: 'customizable-dashboard',
     addedAt: '2026-11-18T03:03:12+01:00',
     version: 'Beta 1.1.17',

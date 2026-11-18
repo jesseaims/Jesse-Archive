@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-state': [
+    '窗口会记住大小和位置',
+    'Jesse’s Archive 会以你离开时的样子重新打开：全屏、最大化，或保持你选择的大小和位置，即使经过系统托盘也是如此。如果原来所在的屏幕已断开，窗口会在可用屏幕的中央打开。',
+  ],
   'customizable-dashboard': [
     '可自定义的仪表板',
     '新的仪表板是应用的控制中心：安全评分、密码分析、保险库概览、收藏、最近的项目、安全笔记、快捷操作、生成器、备份状态和隐私。通过“自定义仪表板”可以添加、移除、拖动和调整小组件大小，在多个布局之间切换并调整每个小组件的选项；所有内容都会自动保存在加密保险库中，任何小组件都不会显示密码。',
