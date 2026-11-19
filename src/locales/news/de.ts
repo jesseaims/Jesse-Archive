@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    'Neues Installationsprogramm im Stil der App',
+    'Das Setup wurde neu gestaltet: ein einziges Fenster vom Anfang bis zum Ende, mit dem dunklen Design und dem Logo von Jesse’s Archive, statt des Ablaufs über Windows Installer. Es hat jetzt auch eine eigene Deinstallation, die das Programm entfernt, ohne Tresor und Einstellungen anzutasten. Beim Update von der vorherigen Version musst du nichts tun: Das neue Setup ersetzt das alte im selben Ordner.',
+  ],
   'extension-logo-autoreload': [
     'Erweiterungslogo und automatisches Neuladen',
     'Die Browsererweiterung zeigt jetzt das Logo von Jesse’s Archive in der Symbolleiste und in der Liste der Erweiterungen. Nach jedem Update lädt sie sich selbst neu, sobald sie sich mit der App verbindet, ohne dass du das auf der Erweiterungsseite von Hand tun musst. Lade sie dieses eine Mal noch von Hand neu: Das automatische Neuladen gilt ab den nächsten Updates.',

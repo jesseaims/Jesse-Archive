@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    'Nouveau programme d’installation au style de l’app',
+    'Le programme d’installation a été refait : une seule fenêtre du début à la fin, avec le thème sombre et le logo de Jesse’s Archive, à la place de la procédure qui passait par Windows Installer. Il a aussi désormais sa propre désinstallation, qui supprime le programme sans toucher au coffre ni aux paramètres. En mettant à jour depuis la version précédente, vous n’avez rien à faire : le nouveau programme remplace l’ancien dans le même dossier.',
+  ],
   'extension-logo-autoreload': [
     'Logo de l’extension et rechargement automatique',
     'L’extension du navigateur affiche désormais le logo de Jesse’s Archive dans la barre et dans la liste des extensions. Après chaque mise à jour, elle se recharge toute seule dès qu’elle se connecte à l’app, sans devoir le faire à la main depuis la page des extensions. Pour cette fois, rechargez-la encore à la main : le rechargement automatique s’applique à partir des prochaines mises à jour.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    'Nuevo instalador con el estilo de la app',
+    'El instalador se ha rehecho: una sola ventana de principio a fin, con el tema oscuro y el logotipo de Jesse’s Archive, en lugar del procedimiento que pasaba por Windows Installer. Ahora también tiene su propia desinstalación, que quita el programa sin tocar la bóveda ni la configuración. Al actualizar desde la versión anterior no tienes que hacer nada: el nuevo instalador sustituye al anterior en la misma carpeta.',
+  ],
   'extension-logo-autoreload': [
     'Logotipo de la extensión y recarga automática',
     'La extensión del navegador ahora muestra el logotipo de Jesse’s Archive en la barra y en la lista de extensiones. Después de cada actualización se recarga sola en cuanto se conecta a la app, sin tener que hacerlo a mano desde la página de extensiones. Por esta vez recárgala a mano: la recarga automática se aplica a partir de las próximas actualizaciones.',

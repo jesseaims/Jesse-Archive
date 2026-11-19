@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'new-installer',
+    addedAt: '2026-11-19T17:00:00+01:00',
+    version: 'Beta 1.2.0',
+    title: 'Nuovo installer nello stile dell’app',
+    description:
+      'Il setup è stato rifatto: una sola finestra dall’inizio alla fine, con il tema scuro e il logo di Jesse’s Archive, al posto della procedura che passava da Windows Installer. Ora ha anche una propria disinstallazione, che rimuove il programma senza toccare vault e impostazioni. Aggiornando dalla versione precedente non devi fare nulla: il nuovo setup sostituisce quella vecchia nella stessa cartella.',
+    icon: 'package',
+  },
+  {
     id: 'extension-logo-autoreload',
     addedAt: '2026-11-19T15:00:00+01:00',
     version: 'Beta 1.1.21',

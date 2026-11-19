@@ -68,7 +68,7 @@ Entrambi i manifest derivano dal background canonico; modificare le copie genera
 
 ## Distribuzione e codice storico
 
-Il prodotto attivo usa MSI Tauri incorporato in un bootstrapper Inno `.exe`; la procedura completa include helper e pacchetti browser. Esistono controlli automatici Rust, Node/jsdom e una fixture Python, non una copertura end-to-end di ogni funzione. Vedere [DEVELOPMENT](DEVELOPMENT.md).
+Dalla Beta 1.2.0 il prodotto si installa con un solo setup Inno `.exe` nello stile dell'app (tema scuro «Notte»), con disinstallazione propria; sostituisce da solo le installazioni MSI precedenti mantenendo cartella e dati. La procedura completa include helper e pacchetti browser. Esistono controlli automatici Rust, Node/jsdom e una fixture Python, non una copertura end-to-end di ogni funzione. Vedere [DEVELOPMENT](DEVELOPMENT.md).
 
 `legacy-python/` è un client separato: server HTTP locale, pywebview opzionale, UI HTML imperativa, stampa di emergenza, flusso `.jbackup` e comportamenti diversi di blocco/conflitti. Non è una libreria del client Rust e la sua esistenza non prova la disponibilità di tali schermate nella nuova UI.
 

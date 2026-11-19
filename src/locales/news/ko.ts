@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    '앱 스타일의 새 설치 프로그램',
+    '설치 프로그램을 새로 만들었습니다. Windows Installer를 거치던 절차 대신 Jesse’s Archive의 어두운 테마와 로고를 사용한 하나의 창으로 처음부터 끝까지 진행됩니다. 이제 자체 제거 기능도 있어 보관함과 설정은 건드리지 않고 프로그램만 제거합니다. 이전 버전에서 업데이트할 때는 아무것도 할 필요가 없습니다. 새 설치 프로그램이 같은 폴더에서 이전 버전을 대체합니다.',
+  ],
   'extension-logo-autoreload': [
     '확장 프로그램 로고와 자동 다시 로드',
     '브라우저 확장 프로그램이 이제 도구 모음과 확장 프로그램 목록에 Jesse’s Archive 로고를 표시합니다. 업데이트할 때마다 앱에 연결되면 스스로 다시 로드되므로 확장 프로그램 페이지에서 직접 할 필요가 없습니다. 이번 한 번만 직접 다시 로드하세요. 자동 다시 로드는 다음 업데이트부터 적용됩니다.',

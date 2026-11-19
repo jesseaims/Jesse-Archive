@@ -25,7 +25,7 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `src/QuickFill.tsx`, `src/BrowserInstaller.tsx`, `src/BrowserSettings.tsx` | Mini finestra, guida di configurazione e relative impostazioni |
 | `src-tauri/src/quick_search.rs`, `src-tauri/src/clipboard.rs`, `src/quick-search/` | Ricerca rapida globale: scorciatoia, finestra `quick-search`, solo metadati alla webview, copia nel backend; motore di ricerca puro in `engine.ts` |
 | `browser-extension/background.js` | Contesto della pagina e riempimento dei campi; sorgente delle copie Chromium/Firefox |
-| `scripts/`, `installer/`, script PowerShell in root | Generazione metadati e pacchetti; MSI Tauri incorporato nell'EXE Inno |
+| `scripts/`, `installer/`, script PowerShell in root | Generazione metadati e pacchetti; setup unico Inno (dalla Beta 1.2.0, niente MSI) |
 | `legacy-python/` | Applicazione precedente indipendente; non chiamata dal client Rust |
 
 Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup` (tutte in `capabilities/default.json`). Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
@@ -44,7 +44,7 @@ Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup` (tutte in 
 | `ed25519-dalek` | Verifica della firma degli aggiornamenti automatici (`updater.rs`) |
 | `p256` | Passkey WebAuthn ES256 (`passkey.rs`) |
 | `rfd`, `clipboard-win`, `winreg`, `windows-sys` | Dialoghi e integrazione Windows |
-| Node.js/npm, Cargo MSVC, WiX/Tauri, Inno Setup | Toolchain e distribuzione Windows con WebView2 offline |
+| Node.js/npm, Cargo MSVC, Tauri, Inno Setup 7 | Toolchain e distribuzione Windows con WebView2 offline |
 | Node test runner, jsdom, fixture Python | Test dell'estensione, relay nativo e compatibilità crittografica |
 
 Versioni esatte risolte, prerequisiti Node e distinzione fra toolchain osservata e requisiti dichiarati sono in [DEVELOPMENT](docs/DEVELOPMENT.md). Non dedurre il requisito minimo Rust dalla sola edition: l'MSRV complessivo è **Da verificare**.
@@ -115,7 +115,7 @@ node --test tests/browser-host.test.mjs
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -SkipNpmInstall
 ```
 
-La procedura completa è quella con MSI + Inno; `Build-Windows.ps1` e il comando Tauri diretto non includono da soli il confezionamento del componente browser. `npm ci` installa e può eseguire script di dipendenze; non è un controllo in sola lettura. Non eseguire `npm run build` durante un incarico strettamente documentale: il prebuild aggiorna uno snapshot versionato.
+La procedura completa è `Build-Setup-EXE.ps1` (programma compilato senza pacchetto Tauri, poi Inno); `Build-Windows.ps1` e il comando Tauri diretto non includono da soli il confezionamento del componente browser. `npm ci` installa e può eseguire script di dipendenze; non è un controllo in sola lettura. Non eseguire `npm run build` durante un incarico strettamente documentale: il prebuild aggiorna uno snapshot versionato.
 
 La CI GitHub Actions (`.github/workflows/ci.yml`, Windows) esegue questi controlli, escluso il setup, a ogni push/PR verso `main` e deve restare verde. Le release non sono compilate da GitHub: dopo il merge di una nuova versione eseguire `git fetch origin`; l'automazione locale `JesseArchive-AutoPublish` le compila e pubblica da questo PC con `Publish-Release.ps1` (vedere [DEVELOPMENT](docs/DEVELOPMENT.md#pubblicazione-delle-release) e AGENTS.md).
 

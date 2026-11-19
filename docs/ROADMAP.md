@@ -13,7 +13,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Ricerca rapida globale con scorciatoia di sistema, raggruppamento degli account per servizio e copia sicura delle credenziali (dalla Beta 1.1.19).
 - Dashboard personalizzabile con widget, layout multipli e salvataggio automatico (dalla Beta 1.1.17).
 - Interfaccia in dieci lingue (dalla Beta 1.1.16), con installer ed estensione tradotti.
-- News e commit con data/ora per voce; setup MSI incorporato in EXE Inno; suite Rust/Node e fixture Python.
+- News e commit con data/ora per voce; setup unico Inno nello stile dell'app (dalla Beta 1.2.0, prima MSI dentro un EXE Inno); suite Rust/Node e fixture Python.
 
 “Presente” non certifica la compatibilità universale né implica un collaudo aggiornato. Questa attività ha soltanto analizzato e documentato.
 
