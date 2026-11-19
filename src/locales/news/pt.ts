@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    'Verificação de vazamentos e preenchimento mais confiáveis',
+    'A verificação de contas comprometidas agora também funciona com cofres grandes (antes parava com “Não foi possível contatar o Pwned Passwords” a partir de cerca de 120 senhas) e tenta de novo sozinha se a rede falhar. O preenchimento no navegador também reconhece os campos de login de sites feitos com componentes web, como o Reddit, e os quadros de login de um subdomínio do mesmo site, como o da Ubisoft. Depois da atualização, recarregue a extensão na página de extensões do navegador.',
+  ],
   'global-quick-search': [
     'Pesquisa rápida global',
     'Pressione Ctrl+Shift+Space em qualquer aplicativo, mesmo com o Jesse’s Archive na área de notificação, para abrir uma janela de pesquisa compacta: encontre contas por nome, usuário, e-mail ou site, com as contas do mesmo serviço agrupadas, e copie o usuário ou a senha, mostre a senha por alguns segundos, abra o site ou abra o item no cofre, tudo pelo teclado. Funciona apenas com o cofre desbloqueado, as senhas são copiadas sem passar pela janela e a área de transferência é limpa como de costume. Atalho e opções ficam em Configurações → Pesquisa rápida global.',

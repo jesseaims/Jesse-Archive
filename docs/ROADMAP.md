@@ -21,12 +21,12 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 
 | Area | Stato osservato | Riferimento |
 |---|---|---|
-| Blocco inattività | Scadenza su ogni comando e thread di controllo ogni 5 s, UI azzerata su `vault-locked`; manca un collaudo manuale con finestra nascosta e pannello rapido | [SECURITY](SECURITY.md), `core.rs`, `lib.rs` |
+| Blocco inattività | Scadenza su ogni comando e thread di controllo ogni 5 s, UI azzerata su `vault-locked`; collaudato a mano nell'app reale (senza interazione, finestra nel tray, pannello rapido, ricerca rapida) | [SECURITY](SECURITY.md), `core.rs`, `lib.rs` |
 | Memoria sensibile | Alcune chiavi Zeroizing, ma copie JSON, frontend e buffer non cancellati integralmente | SECURITY; `core.rs`, `App.tsx` |
 | Sincronizzazione | File esterni e timestamp per record intero; nessun trasporto cloud proprio, lock multiprocesso o transazione; UI non segue sempre rev | [DATABASE](DATABASE.md), [ARCHITECTURE](ARCHITECTURE.md) |
-| Validazione e migrazioni | Import JSON/`.jshare` validato e atomico, forma del vault garantita allo sblocco; nessuno schema completo dei campi né motore di migrazione | DATABASE; `core.rs` |
+| Validazione e migrazioni | Import JSON/`.jshare` validato e atomico, forma del vault garantita allo sblocco; import JSON, CSV, `.jshare` e rifiuto di un file corrotto provati a mano con file sintetici; nessuno schema completo dei campi né motore di migrazione | DATABASE; `core.rs` |
 | Distribuzione browser | Guida automatizzata e registrazione host, installazione estensione ancora locale/manuale; Firefox temporanea | FEATURES; `browser_installer.rs` |
-| Compilazione nei siti | HTTPS e campi supportati; casi ambigui o frame estranei rifiutati; multistep richiede nuova invocazione | FEATURES; background canonico |
+| Compilazione nei siti | HTTPS e campi supportati, anche in shadow root aperti e in iframe dello stesso dominio registrabile (Beta 1.1.20); casi ambigui o frame di altri siti rifiutati; multistep richiede nuova invocazione. Provata su Brave: login in due passaggi su Epic Games e rifiuto al cambio pagina | FEATURES; background canonico |
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |
 | Passkey | WebAuthn tramite estensione dalla Beta 1.1.14: solo ES256, frame principale, niente autofill condizionale né PRF; UV dichiarato per vault sbloccato e conferma | FEATURES, SECURITY; `passkey.rs`, `passkey-page.js` |
 | Backup | Copia intero vault e singolo `.bak`; export non equivale a backup completo; niente catalogo versioni | DATABASE |
@@ -42,7 +42,6 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 
 | Proposta | Motivazione e cautela |
 |---|---|
-| Collaudare il modello di inattività/sessione | Implementato (attività utente distinta dal polling, thread di scadenza); resta da provare manualmente scadenza senza interazione, blocco e ripresa del pannello |
 | Rafforzare confini IPC e gestione memoria | Valutare comandi accessibili alle finestre, copie plaintext, cleanup di draft/state e buffer; non promettere wipe assoluto |
 | Validazione strutturale e migrazioni | Rifiutare dati malformati senza panic o mutazioni parziali; mantenere compatibilità con vault e fixture v1 |
 | Durabilità, concorrenza e merge | Test di guasto e rollback, writer concorrenti, timestamp conflittuali e interazione UI/revisione prima di cambiare formato |
@@ -58,17 +57,17 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 ## Da verificare
 
 - Funzionamento reale di apertura pagina estensioni su Chrome, Edge, Opera, Vivaldi e Firefox; la precedente prova manuale riguarda Brave.
-- Riempimento end-to-end su siti reali, incluso Epic Games, con la versione installata, scheda/frame/focus appropriati e URL salvati. I test di matching non equivalgono a questa prova.
-- Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati.
+- Riempimento end-to-end su altri siti e browser: su Brave funzionano Epic Games (due passaggi) e il rifiuto al cambio pagina; Reddit (componenti web) e Ubisoft (riquadro su sottodominio) sono corretti nella Beta 1.1.20 e vanno riprovati con la versione installata.
+- Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati. Un'installazione su un secondo PC (portatile) è riuscita; la prova senza rete non è documentata.
 - Compatibilità del prodotto completo su sistemi non Windows e minima versione Rust/browser realmente supportata; manifest e codice condizionale non bastano a certificarla.
 - Resistenza a interruzioni di scrittura, più istanze/writer esterni e servizi cloud che generano copie con timestamp inconsistente.
 - Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.
 
 - Passkey WebAuthn su siti reali (per esempio webauthn.io, GitHub, Google) in Chromium e Firefox ≥ 128: registrazione, accesso, fallback, abort, siti che richiedono attestazione o algoritmi diversi da ES256.
-- Dashboard nell'app reale: trascinamento col mouse, resa dei widget con molti dati e su schermi piccoli, prestazioni con vault grandi. Possibili estensioni: widget Documenti quando esisterà la categoria, più istanze dello stesso widget.
-- Ricerca rapida globale nell'app reale: scorciatoia con app ridotta a icona, nel tray e con un'altra applicazione in primo piano, focus immediato, posizione su più monitor e con zoom, copia e pulizia degli appunti, apertura dei siti, conflitti con scorciatoie di altre applicazioni. Possibili estensioni: combinazioni interne personalizzabili, integrazione nella Dashboard e in una command palette.
-- Revisione delle traduzioni da parte di madrelingua e resa grafica dei testi più lunghi (tedesco, russo) e dei caratteri CJK nelle finestre strette; lingue da destra a sinistra non supportate.
-- Aggiornamento automatico end-to-end: dalla 1.1.13 installata alla prima release successiva firmata (download, verifica, UAC, installazione silenziosa nella cartella personalizzata e riapertura).
+- Dashboard nell'app reale: trascinamento col mouse e finestra piccola collaudati; provata con un vault sintetico di 238 elementi. Possibili estensioni: widget Documenti quando esisterà la categoria, più istanze dello stesso widget.
+- Ricerca rapida globale: collaudata nell'app reale (tray, focus immediato, zoom alto e basso, copia e pulizia degli appunti, apertura dei siti); restano più monitor. Le applicazioni che leggono direttamente la tastiera (TeamSpeak) perdono la combinazione senza avviso. Possibili estensioni: combinazioni interne personalizzabili, integrazione nella Dashboard e in una command palette.
+- Revisione delle traduzioni da parte di madrelingua; la resa grafica nelle dieci lingue è stata controllata a vista sugli screenshot del sito senza problemi evidenti; lingue da destra a sinistra non supportate.
+- Cartella sincronizzata con due dispositivi o due copie modificate, guida estensioni su Chrome, Edge, Opera, Vivaldi e Firefox, passkey su siti reali: non ancora provati a mano.
 
 ## Mantenimento dello stato
 

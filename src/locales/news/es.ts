@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    'Verificación de filtraciones y autocompletado más fiables',
+    'La verificación de cuentas comprometidas ahora también funciona con bóvedas grandes (antes se detenía con «No se puede contactar con Pwned Passwords» a partir de unas 120 contraseñas) y vuelve a intentarlo sola si la red falla. El autocompletado del navegador también reconoce los campos de acceso de los sitios creados con componentes web, como Reddit, y los marcos de acceso de un subdominio del mismo sitio, como el de Ubisoft. Después de actualizar, recarga la extensión desde la página de extensiones del navegador.',
+  ],
   'global-quick-search': [
     'Búsqueda rápida global',
     'Pulsa Ctrl+Shift+Space desde cualquier aplicación, incluso con Jesse’s Archive en el área de notificación, para abrir una ventana de búsqueda compacta: encuentra cuentas por nombre, usuario, correo o sitio, con las cuentas del mismo servicio agrupadas, y copia el usuario o la contraseña, muestra la contraseña unos segundos, abre el sitio o abre el elemento en el almacén, todo desde el teclado. Solo funciona con el almacén desbloqueado, las contraseñas se copian sin pasar por la ventana y el portapapeles se vacía como siempre. El atajo y las opciones están en Ajustes → Búsqueda rápida global.',

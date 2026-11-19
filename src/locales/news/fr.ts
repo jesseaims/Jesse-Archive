@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    'Vérification des fuites et remplissage plus fiables',
+    'La vérification des comptes compromis fonctionne désormais aussi avec les grands coffres (auparavant elle s’arrêtait avec « Impossible de contacter Pwned Passwords » au-delà d’environ 120 mots de passe) et réessaie toute seule en cas de souci réseau. Le remplissage depuis le navigateur reconnaît aussi les champs de connexion des sites construits avec des composants web, comme Reddit, et les cadres de connexion d’un sous-domaine du même site, comme celui d’Ubisoft. Après la mise à jour, rechargez l’extension depuis la page des extensions du navigateur.',
+  ],
   'global-quick-search': [
     'Recherche rapide globale',
     'Appuyez sur Ctrl+Shift+Space depuis n’importe quelle application, même avec Jesse’s Archive dans la zone de notification, pour ouvrir une fenêtre de recherche compacte : trouvez des comptes par nom, identifiant, e-mail ou site, avec les comptes d’un même service regroupés, puis copiez l’identifiant ou le mot de passe, affichez le mot de passe quelques secondes, ouvrez le site ou l’élément dans le coffre, entièrement au clavier. Elle ne fonctionne que coffre déverrouillé, les mots de passe sont copiés sans passer par la fenêtre et le presse-papiers est vidé comme d’habitude. Raccourci et options : Paramètres → Recherche rapide globale.',

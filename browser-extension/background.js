@@ -64,7 +64,9 @@ async function receive(message) {
     if (!tab?.id || !tab.url?.startsWith('https://')) return;
     const frames = await api.scripting.executeScript({target: {tabId: tab.id, allFrames: true}, func: captureContext});
     const frame = frames.find(f => f.result?.focused);
-    if (!frame || new URL(frame.result.url).origin !== new URL(tab.url).origin) return;
+    // A login frame of another origin (connect.example.com inside example.com) is sent too:
+    // the app accepts it only on the same registrable domain as the tab (PSL check).
+    if (!frame || !frame.result.url.startsWith('https://')) return;
     target = {request: message.request, tabId: tab.id, frameId: frame.frameId, url: frame.result.url, top: tab.url, captured: Date.now()};
     send({kind: 'context', request: target.request, url: target.url, top: target.top});
   }
@@ -83,7 +85,9 @@ async function receive(message) {
   }
 }
 function captureContext() {
-  const el = document.activeElement;
+  // Sites built with web components (Reddit) keep the input inside open shadow roots.
+  let el = document.activeElement;
+  while (el?.shadowRoot?.activeElement) el = el.shadowRoot.activeElement;
   const editable = el instanceof HTMLInputElement && ['text','email','password','tel'].includes(el.type);
   // Save only a DOM reference in an isolated extension world, never any secret.
   globalThis.__jesseArchiveField = editable ? el : null;
@@ -96,13 +100,20 @@ function fillFields(expectedUrl, username, password) {
   if (!(focused instanceof HTMLInputElement) || !focused.isConnected) return {ok:false, message:'Seleziona nuovamente il campo di accesso.'};
   const visible = el => !el.disabled && !el.readOnly && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
   if (!visible(focused)) return {ok:false, message:'Il campo selezionato non è modificabile.'};
-  const scope = focused.form || document;
-  const inputs = [...scope.querySelectorAll('input')].filter(visible);
+  // Inputs in document order, also inside open shadow roots; the form is searched across them.
+  const deepInputs = root => {
+    const out = [];
+    const walk = node => { for (const el of node.querySelectorAll('*')) { if (el instanceof HTMLInputElement) out.push(el); if (el.shadowRoot) walk(el.shadowRoot); } };
+    walk(root); return out;
+  };
+  let scope = focused.form;
+  for (let n = focused; !scope && n; n = n.parentNode || n.host) if (n instanceof HTMLFormElement) scope = n;
+  const inputs = deepInputs(scope || document).filter(visible);
   const passwords = inputs.filter(el => el.type === 'password' && el.autocomplete !== 'new-password');
   if (passwords.length > 1 || focused.autocomplete === 'new-password') return {ok:false, message:'Modulo ambiguo o registrazione: usa la copia manuale dall’app.'};
   const passwordField = focused.type === 'password' ? focused : passwords[0];
   const texts = inputs.filter(el => ['text','email','tel'].includes(el.type) && !/one-time-code/.test(el.autocomplete));
-  const usernameField = focused.type !== 'password' ? focused : texts.find(el => el.autocomplete === 'username') || texts.filter(el => (el.compareDocumentPosition(passwordField) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0).at(-1);
+  const usernameField = focused.type !== 'password' ? focused : texts.find(el => el.autocomplete === 'username') || texts.filter(el => inputs.indexOf(el) < inputs.indexOf(passwordField)).at(-1);
   if (!passwordField && (!usernameField || !username)) return {ok:false, message:'Nessuna credenziale adatta al campo selezionato.'};
   if (passwordField && !password) return {ok:false, message:'Questo account non ha una password salvata.'};
   const setValue = (el, value) => {

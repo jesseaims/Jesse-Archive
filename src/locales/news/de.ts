@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    'Zuverlässigere Leak-Prüfung und Autofill',
+    'Die Prüfung auf kompromittierte Konten funktioniert jetzt auch mit großen Tresoren (vorher brach sie ab etwa 120 Passwörtern mit „Pwned Passwords ist nicht erreichbar“ ab) und versucht es bei Netzwerkproblemen selbst erneut. Das Ausfüllen im Browser erkennt jetzt auch Anmeldefelder von Websites mit Webkomponenten wie Reddit sowie Anmelderahmen einer Subdomain derselben Website wie bei Ubisoft. Lade die Erweiterung nach dem Update auf der Erweiterungsseite des Browsers neu.',
+  ],
   'global-quick-search': [
     'Globale Schnellsuche',
     'Drücken Sie Ctrl+Shift+Space in jeder Anwendung, auch wenn Jesse’s Archive im Infobereich ist, um ein kompaktes Suchfenster zu öffnen: Finden Sie Konten nach Name, Benutzername, E-Mail oder Website, mit den Konten desselben Dienstes gruppiert, und kopieren Sie Benutzername oder Passwort, zeigen Sie das Passwort einige Sekunden an, öffnen Sie die Website oder den Eintrag im Tresor – alles per Tastatur. Sie funktioniert nur bei entsperrtem Tresor, Passwörter werden kopiert, ohne durch das Fenster zu gehen, und die Zwischenablage wird wie gewohnt geleert. Tastenkürzel und Optionen finden Sie unter Einstellungen → Globale Schnellsuche.',

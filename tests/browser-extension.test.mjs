@@ -18,6 +18,16 @@ test('fills username and password, dispatches input, never submits',()=>{
  let submitted=0,inputs=0;w.document.querySelector('form').addEventListener('submit',()=>submitted++);w.document.addEventListener('input',()=>inputs++);
  capture('u');assert.equal(fill().ok,true);assert.equal(w.document.getElementById('u').value,'utente日本語');assert.equal(w.document.getElementById('p').value,'sëgreto🔑');assert.equal(inputs,2);assert.equal(submitted,0);w.close();
 });
+test('fills fields inside open shadow roots (web components such as Reddit)',()=>{
+ for(const start of ['u','p']){
+  const {w}=page('<form><x-field id="hu"></x-field><x-field id="hp"></x-field><button>Accedi</button></form>');
+  const field=(id,type)=>{const root=w.document.getElementById(id).attachShadow({mode:'open'});const i=w.document.createElement('input');i.type=type;root.appendChild(i);return i;};
+  const u=field('hu','text'),p=field('hp','password');
+  (start==='u'?u:p).focus();w.testCapture();
+  assert.equal(w.testFill('https://example.com/login','utente','segreto').ok,true,start);
+  assert.equal(u.value,'utente');assert.equal(p.value,'segreto');w.close();
+ }
+});
 test('supports username-only and password-only steps',()=>{
  for(const [html,id,value] of [['<input id="u">','u','utente日本語'],['<input id="p" type="password">','p','sëgreto🔑']]) {
   const {w,capture,fill}=page(html);capture(id);assert.equal(fill().ok,true);assert.equal(w.document.getElementById(id).value,value);w.close();

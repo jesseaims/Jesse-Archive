@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    '더 안정적인 유출 확인과 자동 입력',
+    '유출된 계정 확인이 이제 큰 보관함에서도 작동합니다(이전에는 비밀번호가 약 120개를 넘으면 «Pwned Passwords에 연결할 수 없습니다»로 중단됨). 네트워크에 문제가 생기면 스스로 다시 시도합니다. 브라우저 자동 입력은 Reddit처럼 웹 컴포넌트로 만든 사이트의 로그인 필드와 Ubisoft처럼 같은 사이트 하위 도메인의 로그인 프레임도 인식합니다. 업데이트 후 브라우저의 확장 프로그램 페이지에서 확장 프로그램을 다시 로드하세요.',
+  ],
   'global-quick-search': [
     '전역 빠른 검색',
     '어떤 앱에서든 Ctrl+Shift+Space를 누르면(Jesse’s Archive가 알림 영역에 있어도) 작은 검색 창이 열립니다. 이름, 사용자 이름, 이메일 또는 사이트로 계정을 찾고, 같은 서비스의 계정은 묶어서 보여 줍니다. 사용자 이름이나 비밀번호 복사, 몇 초간 비밀번호 표시, 사이트 열기, 보관함에서 항목 열기까지 모두 키보드로 할 수 있습니다. 보관함 잠금이 해제된 상태에서만 작동하며, 비밀번호는 창을 거치지 않고 복사되고 클립보드는 평소처럼 비워집니다. 단축키와 옵션은 설정 → 전역 빠른 검색에 있습니다.',

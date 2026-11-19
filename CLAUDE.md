@@ -63,12 +63,12 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Verifica violazioni e favicon | Implementate, opzionali e con rete; `breaches`, `group_logo`, `SecurityPage`, `saveItem` |
 | Esportazione/importazione e pacchetti cifrati | Implementati in `core.rs` e Settings; export JSON/CSV in chiaro, `.jshare` cifrato; selezione fine non completamente esposta nella UI |
 | Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
-| Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudo end-to-end alla prima release successiva alla 1.1.13 |
+| Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudato end-to-end dall'utente |
 | Ricerca rapida globale | Implementata: Ctrl+Shift+Space (personalizzabile), finestra `quick-search`, ricerca per nome/username/email/dominio con errori di battitura, account raggruppati per servizio, copia/mostra password, apri sito o vault, tastiera completa; solo metadati nella finestra, usati di recente salvati nel vault cifrato (solo id), nessuna cronologia delle ricerche; `npm run test:quick-search` |
 | Dashboard personalizzabile | Implementata in `src/dashboard/`: registro dei widget, layout multipli, drag & drop nativo, salvataggio automatico in `settings.dashboard`; `health`/`backup_info` passivi; `npm run test:dashboard` |
 | Lingua dell'interfaccia | Implementata: pulsante «Lingua», dieci lingue, preferenza `lang` del dispositivo, tray/titoli/messaggi del backend, News, installer ed estensione tradotti; `npm run test:i18n` verifica la completezza |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo; dimensione, posizione e stato massimizzato della finestra ricordati per dispositivo (`window_state.rs`) |
-| Inserimento browser | Parziale/da collaudare sui siti: login HTTPS, selezione esplicita, PSL e due passaggi manuali |
+| Inserimento browser | Parziale: login HTTPS, selezione esplicita, PSL e due passaggi manuali; campi in shadow root aperti e iframe dello stesso dominio registrabile (`frame_allowed`); provato su Brave, altri siti e browser da collaudare |
 | Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
 | Guida estensioni | Implementata; caricamento iniziale ancora manuale, Firefox locale temporaneo |
 | News e commit offline con orari individuali | Implementati in `NewsPanel.tsx`, changelog e snapshot generato |
@@ -83,7 +83,7 @@ Il codice usa `Zeroizing` per alcune chiavi; non per tutto il JSON, i buffer, l'
 
 La scadenza (`expire_if_idle`) si verifica su ogni comando e in un thread ogni 5 secondi; ogni blocco emette `vault-locked` e la UI azzera il proprio stato. Non documentarla come cancellazione garantita della memoria JavaScript. La rotazione master/recovery riscrive i wrapper e conserva la DEK; i backup storici possono mantenere accessi precedenti. Non risultano autenticazione biometrica, keyring OS, firma del payload applicativo, anti-rollback o audit di sicurezza indipendente.
 
-Il bridge browser autentica un canale locale con un token per avvio salvato in AppData; non è una difesa contro codice ostile già in esecuzione come lo stesso utente. L'estensione controlla HTTPS, origine del frame, pagina e campo; la scelta delle credenziali rimane esplicita.
+Il bridge browser autentica un canale locale con un token per avvio salvato in AppData; non è una difesa contro codice ostile già in esecuzione come lo stesso utente. L'estensione controlla HTTPS, pagina e campo; il backend ammette solo frame dello stesso dominio registrabile della scheda; la scelta delle credenziali rimane esplicita.
 
 ## F. Database & Data Management
 

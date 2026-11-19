@@ -116,10 +116,10 @@ Il JSON consente estensioni e compatibilità, ma molte funzioni assumono che arr
 ## Integrazione browser, passo per passo
 
 1. La scorciatoia chiama `browser::request`: una sola richiesta globale attiva, con identificatore casuale; una risposta di contesto è accettata entro 5 secondi.
-2. Il worker dell'estensione verifica finestra attiva, scheda HTTPS e input selezionato. Usa `scripting.executeScript` in tutti i frame; accetta soltanto un frame con origine uguale alla pagina principale.
-3. `receive` conserva URL, URL principale, client e richiesta. Il controllo del Rust usa `host`; quello dell'estensione è un confronto di origini più stretto. Il timeout della selezione è 120 secondi.
+2. Il worker dell'estensione verifica finestra attiva, scheda HTTPS e input selezionato. Usa `scripting.executeScript` in tutti i frame e trova il campo selezionato anche dentro shadow root aperti; invia il frame focalizzato se è HTTPS, anche di un'altra origine.
+3. `receive` conserva URL, URL principale, client e richiesta. `frame_allowed` (Rust) accetta il frame se ha lo stesso `host` della pagina principale oppure, tramite `same_account_site`, lo stesso dominio registrabile PSL e la stessa porta; altrimenti la richiesta viene ignorata. Il timeout della selezione è 120 secondi.
 4. `browser_accounts` usa `browser_state` e restituisce ID, titolo e username degli account compatibili, non le password. Il pannello può sbloccare il core tramite IPC.
-5. `same_account_site` normalizza URL salvati senza protocollo, richiede HTTPS sulla destinazione, confronta porta e dominio registrabile tramite PSL, inclusi i suffissi privati. La logica non viene usata per allargare l'accesso agli iframe.
+5. `same_account_site` normalizza URL salvati senza protocollo, richiede HTTPS sulla destinazione, confronta porta e dominio registrabile tramite PSL, inclusi i suffissi privati. Dalla Beta 1.1.20 la stessa regola decide anche quali iframe di accesso sono ammessi (punto 3).
 6. `browser_fill` ricontrolla stato del vault, scadenza, ID e sito; solo dopo invia username/password al client selezionato.
 7. L'estensione ricontrolla richiesta, scheda, URL e riferimento DOM. Inserisce valori con setter nativo e notifiche `input/change`, sposta il focus, ma non invia il modulo. `Tab` è un evento sintetico, non una garanzia di tabulazione OS.
 8. Il messaggio `filled` termina la sessione; il pannello mostra l'esito e si richiude. Login a schermate separate richiedono un nuovo richiamo del pannello.

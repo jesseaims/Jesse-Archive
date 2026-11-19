@@ -96,13 +96,13 @@ Il protocollo espone messaggi `open`, `context`, `filled` dal relay, non `Vault:
 
 La ricerca account richiede HTTPS nella pagina, stessa porta e dominio registrabile calcolato con PSL. Include i suffissi privati, evitando di unificare tenant diversi di servizi come `github.io`. Gli URL salvati senza schema sono normalizzati per la ricerca. Questo criterio non prova che ogni sottodominio della stessa organizzazione sia un servizio di login affidabile; la selezione resta manuale.
 
-L'estensione verifica origine esatta tra frame e pagina principale, URL prima dell'iniezione, richiesta recente e riferimento DOM ancora valido. Il backend ha un controllo `host` separato, con normalizzazione `www`; non chiamarlo verifica completa dell'origine web equivalente al controllo JavaScript. Il codice esclude iframe cross-origin anche se il dominio registrabile fosse lo stesso.
+L'estensione verifica HTTPS del frame focalizzato, URL prima dell'iniezione, richiesta recente e riferimento DOM ancora valido. Dalla Beta 1.1.20 un iframe di un'altra origine è ammesso solo se il backend (`frame_allowed`) lo trova sullo stesso dominio registrabile PSL e sulla stessa porta della scheda, per esempio un riquadro `connect.example.com` dentro `www.example.com`: è la stessa fiducia già data agli account salvati per un sottodominio. I suffissi privati restano separati (`alice.github.io` dentro `bob.github.io` è rifiutato), così come iframe HTTP, con credenziali nell'URL o di altri siti. Rischio residuo: un sottodominio dello stesso dominio che ospita contenuti di terzi può ricevere la sessione se l'utente seleziona un suo campo e sceglie esplicitamente un account. I campi dentro shadow root aperti vengono trovati; quelli chiusi no.
 
 [background.js](../browser-extension/background.js) non ascolta messaggi delle pagine o dei content script per esporre il canale nativo. Richiede `nativeMessaging`, `tabs`, `scripting` e accesso a tutte le pagine HTTPS: è una superficie ampia da mantenere sotto revisione. Nessuna credenziale è salvata nello storage dell'estensione; durante il riempimento passa però in memoria nell'estensione e nei campi del sito. Moduli personalizzati, mutazioni sincrone del DOM e policy browser richiedono collaudi reali oltre a jsdom.
 
 ## Servizi di rete opzionali
 
-`breaches` calcola SHA-1 localmente e invia solo un prefisso di cinque cifre esadecimali a Pwned Passwords, con padding richiesto e cache per prefisso nella singola operazione. Il suffisso viene confrontato localmente. Non è una verifica della sicurezza complessiva di un account.
+`breaches` calcola SHA-1 localmente e invia solo un prefisso di cinque cifre esadecimali a Pwned Passwords, con padding richiesto e cache per prefisso nella singola operazione. Le richieste girano su un thread dedicato, fuori dal worker asincrono del comando, e ogni prefisso è ritentato due volte. Il suffisso viene confrontato localmente. Non è una verifica della sicurezza complessiva di un account.
 
 `group_logo` richiede una favicon a DuckDuckGo e rivela il dominio richiesto e i normali metadati di rete. La preferenza loghi è attiva di default quando assente: il salvataggio di un account web può attivare la richiesta, senza un dialogo separato per ogni sito. Non descrivere tutte le operazioni dell'app come prive di rete. Le copie cloud sono gestite dal software del provider, non da una API di upload del progetto.
 
@@ -158,14 +158,14 @@ Le priorità seguenti sono valutazioni documentali per orientare una futura revi
 
 | ID | Evidenza e impatto | Verifica/proposta |
 |---|---|---|
-| SEC-01 | Attenuata: scadenza su ogni comando, thread di blocco ogni 5 s, `vault-locked` emesso su ogni transizione, `wipeSession` nella UI | Media: collaudo manuale con finestra nascosta e pannello rapido; la memoria JavaScript non è cancellata in modo verificabile (vedere SEC-03) |
+| SEC-01 | Attenuata: scadenza su ogni comando, thread di blocco ogni 5 s, `vault-locked` emesso su ogni transizione, `wipeSession` nella UI; collaudo manuale nell'app reale superato (Beta 1.1.19: senza interazione, finestra nel tray, pannello rapido e ricerca rapida) | Media: la memoria JavaScript non è cancellata in modo verificabile (vedere SEC-03) |
 | SEC-02 | `unlock`: `fails` incrementato senza backoff nel Rust | Valutare limitazione tentativi locali e relativi test; non attribuire il backoff Python al prodotto attivo |
 | SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
 | SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
 | SEC-05 | Attenuata: `validate_import` rifiuta payload malformati, `ensure_shape` garantisce la forma usata da `arr`/`obj`, `import`/`unpack` ripristinano la memoria se falliscono, e un mutex del vault avvelenato da un panic viene recuperato da `AppState::vault` bloccando il vault (dati su disco intatti). Restano `unwrap` interni e nessuno schema completo dei campi | Media: estendere i controlli alle altre route (`item`, `bulk`) e ai mutex di `browser.rs` |
 | SEC-06 | Comandi nativi condivisi dalle tre finestre, I/O file generico | Rivedere autorizzazione per comando e confini delle webview |
 | SEC-07 | Token locale in chiaro e worker non limitati; fiducia nello stesso utente | Documentare ACL effettive e limiti; testare abuso/riconnessioni su profili sintetici |
-| SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini | Revisionare superficie e casi di delega, preservando scelta esplicita e gate iframe |
+| SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini, usato dalla Beta 1.1.20 anche per gli iframe di accesso | Revisionare superficie e casi di delega, preservando scelta esplicita e il rifiuto degli iframe di altri domini registrabili |
 | SEC-09 | Generatori/`bits`: stime euristiche; PIN usa modulo, passphrase a sillabe | Verificare distribuzioni, vincoli e accuratezza delle stime; nessuna certificazione di entropia |
 
 Non esistono test esaustivi dei punti sopra. L'elenco non è una prova dell'assenza di altri problemi. Stato e suggerimenti sono riepilogati in [ROADMAP](ROADMAP.md).
