@@ -36,7 +36,7 @@ Dalla Beta 1.1.14, quando un sito HTTPS propone di creare una passkey o di acced
 Esc o la X annullano. Se il vault è sbloccato e non contiene passkey per il sito, l'accesso passa direttamente al browser.
 
 Limiti:
-- Dopo l'aggiornamento ricarica l'estensione (o riavvia il browser).
+- Dalla Beta 1.1.21 l'estensione si ricarica da sola dopo l'aggiornamento (la prima volta, passando alla 1.1.21, va ricaricata a mano). Le schede già aperte vanno ricaricate per usare le passkey.
 - Su Firefox serve la versione 128 o successiva.
 - Le passkey proposte automaticamente nei campi di accesso (autofill) restano gestite dal browser.
 - Gli iframe non sono supportati, e nemmeno gli algoritmi diversi da ES256.

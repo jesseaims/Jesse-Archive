@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    '拡張機能のロゴと自動再読み込み',
+    'ブラウザー拡張機能のツールバーと拡張機能の一覧に Jesse’s Archive のロゴが表示されるようになりました。更新のたびに、アプリに接続するとすぐに自動で再読み込みされるため、拡張機能ページで手動で行う必要はありません。今回だけはもう一度手動で再読み込みしてください。自動再読み込みは次回以降の更新から有効です。',
+  ],
   'breach-check-autofill-fixes': [
     '漏えいチェックと自動入力の信頼性を向上',
     '侵害されたアカウントのチェックが大きな保管庫でも動作するようになりました（以前は約 120 件を超えると「Pwned Passwords に接続できません」で停止していました）。ネットワークに問題があると自動で再試行します。ブラウザーの自動入力は、Reddit のような Web コンポーネントで作られたサイトのログイン欄や、Ubisoft のような同じサイトのサブドメインのログイン枠も認識するようになりました。更新後は、ブラウザーの拡張機能ページで拡張機能を再読み込みしてください。',

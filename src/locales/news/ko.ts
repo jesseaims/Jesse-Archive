@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    '확장 프로그램 로고와 자동 다시 로드',
+    '브라우저 확장 프로그램이 이제 도구 모음과 확장 프로그램 목록에 Jesse’s Archive 로고를 표시합니다. 업데이트할 때마다 앱에 연결되면 스스로 다시 로드되므로 확장 프로그램 페이지에서 직접 할 필요가 없습니다. 이번 한 번만 직접 다시 로드하세요. 자동 다시 로드는 다음 업데이트부터 적용됩니다.',
+  ],
   'breach-check-autofill-fixes': [
     '더 안정적인 유출 확인과 자동 입력',
     '유출된 계정 확인이 이제 큰 보관함에서도 작동합니다(이전에는 비밀번호가 약 120개를 넘으면 «Pwned Passwords에 연결할 수 없습니다»로 중단됨). 네트워크에 문제가 생기면 스스로 다시 시도합니다. 브라우저 자동 입력은 Reddit처럼 웹 컴포넌트로 만든 사이트의 로그인 필드와 Ubisoft처럼 같은 사이트 하위 도메인의 로그인 프레임도 인식합니다. 업데이트 후 브라우저의 확장 프로그램 페이지에서 확장 프로그램을 다시 로드하세요.',

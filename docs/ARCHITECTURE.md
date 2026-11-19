@@ -124,6 +124,8 @@ Il JSON consente estensioni e compatibilità, ma molte funzioni assumono che arr
 7. L'estensione ricontrolla richiesta, scheda, URL e riferimento DOM. Inserisce valori con setter nativo e notifiche `input/change`, sposta il focus, ma non invia il modulo. `Tab` è un evento sintetico, non una garanzia di tabulazione OS.
 8. Il messaggio `filled` termina la sessione; il pannello mostra l'esito e si richiude. Login a schermate separate richiedono un nuovo richiamo del pannello.
 
+A ogni collegamento l'estensione invia `hello` con la versione del proprio manifest. Se è più vecchia di quella dell'app (`needs_reload`, confronto numerico di `updater::is_newer`), `browser.rs` risponde `reload` e l'estensione chiama `runtime.reload()`, che rilegge i file sostituiti dal setup. `reload_asked` limita la richiesta a una volta per versione e per avvio dell'app, così una copia caricata da un'altra cartella non si ricarica in ciclo.
+
 Il relay usa 4 byte little-endian di lunghezza e un oggetto JSON UTF-8, massimo 262144 byte. Il primo frame TCP porta il token per avvio. Il listener autentica entro 3 secondi e poi mantiene la connessione; non c'è TLS. L'helper legge il descrittore da AppData, controlla gli identificatori ammessi negli argomenti e inoltra i frame. Non avvia automaticamente l'app se è chiusa. Vedere [SECURITY](SECURITY.md) per il modello di fiducia locale.
 
 Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`, `update-progress`, `passkey-changed`, `language-changed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.

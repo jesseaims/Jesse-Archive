@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'extension-logo-autoreload',
+    addedAt: '2026-11-19T15:00:00+01:00',
+    version: 'Beta 1.1.21',
+    title: 'Logo dell’estensione e ricaricamento automatico',
+    description:
+      'L’estensione del browser mostra ora il logo di Jesse’s Archive nella barra e nell’elenco delle estensioni. Dopo ogni aggiornamento si ricarica da sola appena si collega all’app, senza doverlo fare a mano dalla pagina delle estensioni. Per questa volta ricaricala ancora a mano: il ricaricamento automatico vale dai prossimi aggiornamenti.',
+    icon: 'package',
+  },
+  {
     id: 'breach-check-autofill-fixes',
     addedAt: '2026-11-19T13:00:00+01:00',
     version: 'Beta 1.1.20',
