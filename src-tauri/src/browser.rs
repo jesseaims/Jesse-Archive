@@ -99,6 +99,13 @@ fn same_account_site(saved: &str, target: &str) -> bool {
         _ => false,
     }
 }
+/// The focused login field may be in a frame of another origin only when it
+/// belongs to the same registrable domain as the tab (connect.ubisoft.com inside
+/// www.ubisoft.com), same HTTPS port. A frame of another site (ads, widgets,
+/// alice.github.io inside bob.github.io) never receives a session.
+fn frame_allowed(url: &str, top: &str) -> bool {
+    host(url).is_some() && (host(url) == host(top) || same_account_site(top, url))
+}
 pub(crate) fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Result<(), String> {
     let bridge = app.state::<Bridge>();
     let stream = bridge
@@ -175,8 +182,7 @@ fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
             }
             let url = message["url"].as_str().unwrap_or("");
             let top = message["top"].as_str().unwrap_or("");
-            // Cross-origin frames require a separate explicit site association; never leak top-site credentials.
-            if host(url).is_none() || host(url) != host(top) {
+            if !frame_allowed(url, top) {
                 return;
             }
             *bridge.session.lock().unwrap() = Some(Session {
@@ -481,6 +487,33 @@ pub fn browser_install() -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn login_frames_only_on_the_same_registrable_domain() {
+        for (frame, top) in [
+            ("https://example.com/login", "https://example.com/"),
+            (
+                "https://connect.example.com/login",
+                "https://www.example.com/it",
+            ),
+            (
+                "https://www.example.co.uk/a",
+                "https://login.example.co.uk/b",
+            ),
+        ] {
+            assert!(frame_allowed(frame, top), "{frame} in {top}");
+        }
+        for (frame, top) in [
+            ("https://ads.attacker.test/", "https://www.example.com/"),
+            ("https://example.com.attacker.test/", "https://example.com/"),
+            ("https://alice.github.io/", "https://bob.github.io/"),
+            ("http://connect.example.com/", "https://example.com/"),
+            ("https://connect.example.com:8443/", "https://example.com/"),
+            ("https://user@connect.example.com/", "https://example.com/"),
+            ("not a url", "https://example.com/"),
+        ] {
+            assert!(!frame_allowed(frame, top), "{frame} in {top}");
+        }
+    }
     #[test]
     fn exact_site_matching() {
         let item = json!({"type":"login","f":{"url":"https://www.example.com/login"}});

@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'breach-check-autofill-fixes',
+    addedAt: '2026-11-19T13:00:00+01:00',
+    version: 'Beta 1.1.20',
+    title: 'Verifica violazioni e inserimento più affidabili',
+    description:
+      'La verifica degli account compromessi ora funziona anche con vault grandi (prima si interrompeva con «Impossibile contattare Pwned Passwords» oltre circa 120 password) e riprova da sola se la rete ha un intoppo. L’inserimento dal browser riconosce anche i campi di accesso dei siti costruiti con componenti web, come Reddit, e i riquadri di accesso di un sottodominio dello stesso sito, come quello di Ubisoft. Dopo l’aggiornamento ricarica l’estensione dalla pagina delle estensioni del browser.',
+    icon: 'wrench',
+  },
+  {
     id: 'global-quick-search',
     addedAt: '2026-11-18T19:00:00+01:00',
     version: 'Beta 1.1.19',

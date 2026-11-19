@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'breach-check-autofill-fixes': [
+    '更可靠的泄露检查和自动填充',
+    '受损账户检查现在也适用于大型保险库（以前超过约 120 个密码时会因“无法连接 Pwned Passwords”而中断），网络出现问题时会自动重试。浏览器自动填充现在也能识别使用 Web 组件构建的网站（如 Reddit）的登录字段，以及同一网站子域名中的登录框架（如 Ubisoft）。更新后，请在浏览器的扩展页面中重新加载扩展。',
+  ],
   'global-quick-search': [
     '全局快速搜索',
     '在任何应用程序中按 Ctrl+Shift+Space（即使 Jesse’s Archive 位于通知区域），即可打开紧凑的搜索窗口：按名称、用户名、邮箱或网站查找帐户，同一服务的帐户会分组显示；然后复制用户名或密码、显示密码几秒钟、打开网站或在保管库中打开项目，全部可用键盘完成。仅在保管库解锁时可用，密码复制时不会经过该窗口，剪贴板照常清空。快捷键和选项位于“设置 → 全局快速搜索”。',

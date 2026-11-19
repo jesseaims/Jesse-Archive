@@ -1761,39 +1761,74 @@ fn breaches(d: &V) -> Res<Vec<V>> {
                     .unwrap_or(false)
         })
         .collect();
+    let hashes: Vec<String> = active
+        .iter()
+        .map(|p| hex::encode_upper(Sha1::digest(s(p, "value").as_bytes())))
+        .collect();
+    let prefixes: Vec<String> = hashes
+        .iter()
+        .map(|h| h[..5].to_string())
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect();
+    // reqwest::blocking must not run on the Tauri async worker that executes the
+    // `api` command: there, after about 128 requests, tokio's cooperative budget
+    // stalls it and every later request times out. A plain thread avoids it.
+    let ranges = std::thread::scope(|sc| sc.spawn(|| pwned_ranges(&prefixes)).join())
+        .map_err(|_| "Impossibile contattare Pwned Passwords".to_string())??;
+    Ok(active
+        .iter()
+        .zip(&hashes)
+        .map(|(p, hash)| {
+            let (prefix, suffix) = hash.split_at(5);
+            let count = ranges.get(prefix).map_or(0, |r| pwned_count(r, suffix));
+            json!({"pid":p["id"],"item_id":p["item_id"],"title":p["item_title"],"count":count})
+        })
+        .collect())
+}
+/// Downloads the k-anonymity ranges (only 5-character SHA-1 prefixes leave the
+/// device). A request is retried twice before giving up, so one network hiccup
+/// does not fail a check of hundreds of passwords.
+fn pwned_ranges(prefixes: &[String]) -> Res<HashMap<String, String>> {
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(8))
         .build()
         .map_err(err)?;
-    let mut cache = HashMap::<String, String>::new();
-    let mut out = Vec::new();
-    for p in active {
-        let hash = hex::encode_upper(Sha1::digest(s(p, "value").as_bytes()));
-        let (prefix, suffix) = hash.split_at(5);
-        if !cache.contains_key(prefix) {
+    let mut out = HashMap::new();
+    for prefix in prefixes {
+        let mut body = None;
+        for attempt in 0..3u64 {
+            if attempt > 0 {
+                std::thread::sleep(std::time::Duration::from_millis(400 * attempt));
+            }
             let response = client
                 .get(format!("https://api.pwnedpasswords.com/range/{prefix}"))
                 .header("Add-Padding", "true")
                 .header("User-Agent", "JesseArchive-Tauri")
                 .send()
                 .and_then(|r| r.error_for_status())
-                .and_then(|r| r.text())
-                .map_err(|_| "Impossibile contattare Pwned Passwords".to_string())?;
-            cache.insert(prefix.into(), response);
+                .and_then(|r| r.text());
+            if let Ok(text) = response {
+                body = Some(text);
+                break;
+            }
         }
-        let count = cache[prefix]
-            .lines()
-            .find_map(|l| {
-                l.split_once(':')
-                    .filter(|(h, _)| h == &suffix)
-                    .and_then(|(_, n)| n.trim().parse::<u64>().ok())
-            })
-            .unwrap_or(0);
-        out.push(
-            json!({"pid":p["id"],"item_id":p["item_id"],"title":p["item_title"],"count":count}),
-        )
+        let text = body.ok_or("Impossibile contattare Pwned Passwords")?;
+        out.insert(prefix.clone(), text);
     }
     Ok(out)
+}
+/// Occurrences of a hash suffix in a range response ("SUFFIX:COUNT" lines; the
+/// padding lines have count 0).
+fn pwned_count(range: &str, suffix: &str) -> u64 {
+    range
+        .lines()
+        .find_map(|l| {
+            l.split_once(':')
+                .filter(|(h, _)| h.eq_ignore_ascii_case(suffix))
+                .and_then(|(_, n)| n.trim().parse::<u64>().ok())
+        })
+        .unwrap_or(0)
 }
 fn word(n: usize) -> String {
     let c = b"bdfgklmnprstvz";
@@ -2126,6 +2161,20 @@ mod tests {
             totp("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ", 59).unwrap(),
             "287082"
         )
+    }
+    #[test]
+    fn pwned_range_counts() {
+        let range = "0018A45C4D1DEF81644B54AB7F969B88D65:10\r\n00D4F6E8FA6EECAD2A3AA415EEC418D38EC:0\r\n1E4C9B93F3F0682250B6CF8331B7EE68FD8:3861493\r\n";
+        assert_eq!(
+            pwned_count(range, "1E4C9B93F3F0682250B6CF8331B7EE68FD8"),
+            3861493
+        );
+        assert_eq!(
+            pwned_count(range, "1e4c9b93f3f0682250b6cf8331b7ee68fd8"),
+            3861493
+        );
+        assert_eq!(pwned_count(range, "00D4F6E8FA6EECAD2A3AA415EEC418D38EC"), 0);
+        assert_eq!(pwned_count(range, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), 0);
     }
 }
 #[cfg(test)]
