@@ -13,7 +13,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Ricerca rapida globale con scorciatoia di sistema, raggruppamento degli account per servizio e copia sicura delle credenziali (dalla Beta 1.1.19).
 - Dashboard personalizzabile con widget, layout multipli e salvataggio automatico (dalla Beta 1.1.17).
 - Interfaccia in dieci lingue (dalla Beta 1.1.16), con installer ed estensione tradotti.
-- News e commit con data/ora per voce; setup MSI incorporato in EXE Inno; suite Rust/Node e fixture Python.
+- News e commit con data/ora per voce; setup unico Inno nello stile dell'app (dalla Beta 1.2.0, prima MSI dentro un EXE Inno); suite Rust/Node e fixture Python.
 
 “Presente” non certifica la compatibilità universale né implica un collaudo aggiornato. Questa attività ha soltanto analizzato e documentato.
 
@@ -58,7 +58,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 
 - Funzionamento reale di apertura pagina estensioni su Chrome, Edge, Opera, Vivaldi e Firefox; la precedente prova manuale riguarda Brave.
 - Riempimento end-to-end su altri siti e browser: su Brave funzionano Epic Games (due passaggi) e il rifiuto al cambio pagina; Reddit (componenti web) e Ubisoft (riquadro su sottodominio) sono corretti nella Beta 1.1.20 e vanno riprovati con la versione installata.
-- Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati. Un'installazione su un secondo PC (portatile) è riuscita; la prova senza rete non è documentata.
+- Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati. Un'installazione su un secondo PC (portatile) è riuscita; la prova senza rete non è documentata. Installer unico della Beta 1.2.0 collaudato su questo PC: aggiornamento dall'MSI 1.1.21 (una sola voce in «App installate», cartella mantenuta), collegamenti, estensione, disinstallazione con vault conservato, reinstallazione e aggiornamento silenzioso con riapertura dell'app; su un PC pulito **Da verificare**.
 - Compatibilità del prodotto completo su sistemi non Windows e minima versione Rust/browser realmente supportata; manifest e codice condizionale non bastano a certificarla.
 - Resistenza a interruzioni di scrittura, più istanze/writer esterni e servizi cloud che generano copie con timestamp inconsistente.
 - Risultati correnti di clippy e copertura aggiuntiva: clippy non fa parte della CI.

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    'アプリと同じスタイルの新しいインストーラー',
+    'セットアップを作り直しました。Windows Installer を経由していた手順に代わり、Jesse’s Archive のダークテーマとロゴを使った 1 つのウィンドウで最初から最後まで進みます。独自のアンインストールも備え、保管庫と設定には触れずにプログラムだけを削除します。以前のバージョンから更新する場合は何もする必要はありません。新しいセットアップが同じフォルダーで古いものを置き換えます。',
+  ],
   'extension-logo-autoreload': [
     '拡張機能のロゴと自動再読み込み',
     'ブラウザー拡張機能のツールバーと拡張機能の一覧に Jesse’s Archive のロゴが表示されるようになりました。更新のたびに、アプリに接続するとすぐに自動で再読み込みされるため、拡張機能ページで手動で行う必要はありません。今回だけはもう一度手動で再読み込みしてください。自動再読み込みは次回以降の更新から有効です。',

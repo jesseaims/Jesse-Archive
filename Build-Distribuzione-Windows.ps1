@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('exe','msi','both')]
+    [ValidateSet('exe','msi','both','app')]
     [string]$Formato = 'exe',
     [switch]$SkipNpmInstall
 )
@@ -44,6 +44,12 @@ $browserBundlePath = Join-Path $PSScriptRoot 'src-tauri/resources/browser-bundle
 [System.IO.File]::WriteAllText($browserBundlePath, $browserBundle, (New-Object System.Text.UTF8Encoding($false)))
 if ($Formato -eq 'exe' -or $Formato -eq 'both') {
     Run-Step 'Creazione setup EXE NSIS con WebView2 OFFLINE' { npm run tauri -- build --bundles nsis --config $browserBundlePath }
+}
+if ($Formato -eq 'app') {
+    # Only the program, with the frontend embedded: Build-Setup-EXE.ps1 packages it with Inno Setup.
+    Run-Step 'Compilazione applicazione (senza pacchetti MSI/NSIS)' { npm run tauri -- build --no-bundle --config $browserBundlePath }
+    Write-Host "`nApplicazione compilata in src-tauri\target\release\" -ForegroundColor Green
+    return
 }
 if ($Formato -eq 'msi' -or $Formato -eq 'both') {
     Run-Step 'Creazione MSI con WebView2 OFFLINE' { npm run tauri -- build --bundles msi --config $browserBundlePath }

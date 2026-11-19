@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    '与应用风格一致的新安装程序',
+    '安装程序已重新制作：从头到尾只有一个窗口，采用 Jesse’s Archive 的深色主题和图标，取代了以前经由 Windows Installer 的流程。现在它还有自己的卸载程序，卸载时不会触及保险库和设置。从旧版本更新时无需任何操作：新的安装程序会在同一文件夹中替换旧版本。',
+  ],
   'extension-logo-autoreload': [
     '扩展图标与自动重新加载',
     '浏览器扩展现在会在工具栏和扩展列表中显示 Jesse’s Archive 的图标。每次更新后，它一连接到应用就会自动重新加载，无需在扩展页面中手动操作。这一次请再手动重新加载一次：自动重新加载从之后的更新开始生效。',

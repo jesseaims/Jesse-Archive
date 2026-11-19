@@ -392,7 +392,7 @@ pub async fn update_install(app: AppHandle, version: String) -> Result<(), Strin
     }
     let _ = app.emit("vault-locked", ());
     // The installer waits for UAC/extraction; leave a moment for the UI, then quit so
-    // Windows Installer can replace the program files.
+    // the setup can replace the program files.
     let exit = app.clone();
     std::thread::spawn(move || {
         std::thread::sleep(Duration::from_millis(800));

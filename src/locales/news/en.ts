@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'new-installer': [
+    'New installer in the app’s style',
+    'The setup has been redone: a single window from start to finish, with the dark theme and logo of Jesse’s Archive, instead of the procedure that went through Windows Installer. It now also has its own uninstaller, which removes the program without touching the vault and the settings. Updating from the previous version needs nothing from you: the new setup replaces the old one in the same folder.',
+  ],
   'extension-logo-autoreload': [
     'Extension logo and automatic reload',
     'The browser extension now shows the Jesse’s Archive logo in the toolbar and in the extensions list. After every update it reloads by itself as soon as it connects to the app, with no need to do it by hand from the extensions page. Reload it by hand one last time: the automatic reload applies from the next updates.',
