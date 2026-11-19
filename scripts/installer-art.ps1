@@ -17,7 +17,7 @@ function Color([string]$hex, [int]$alpha = 255) {
     $c = [System.Drawing.ColorTranslator]::FromHtml($hex)
     [System.Drawing.Color]::FromArgb($alpha, $c.R, $c.G, $c.B)
 }
-$background = '#0d0e16'; $accent = '#a97ee0'; $text = '#e9eaf5'; $muted = '#9396ab'
+$background = '#0d0e16'; $accent = '#a97ee0'
 
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
 using System;
@@ -155,15 +155,6 @@ function Save($bmp, $g, [string]$name) {
     $bmp.Save((Join-Path $out $name), [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose(); $bmp.Dispose()
 }
-# Hinted grayscale antialiasing: the panel is transparent, and ClearType needs an opaque background.
-function Draw-Text($g, [string]$s, [string]$family, [int]$px, [string]$hex, [float]$y, [int]$w) {
-    $g.TextRenderingHint = 'AntiAliasGridFit'
-    $font = New-Object System.Drawing.Font $family, $px, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
-    $brush = New-Object System.Drawing.SolidBrush (Color $hex)
-    $format = New-Object System.Drawing.StringFormat; $format.Alignment = 'Center'
-    $g.DrawString($s, $font, $brush, (New-Object System.Drawing.RectangleF 0, ([Math]::Round($y)), $w, ($px * 2)), $format)
-    $font.Dispose(); $brush.Dispose(); $format.Dispose()
-}
 
 # Image area sizes from the Inno Setup 7 documentation, DPI 100% to 250%.
 # Page background (aspect 497:360).
@@ -189,9 +180,9 @@ foreach ($size in @(@(202, 386), @(269, 515), @(336, 643), @(403, 772), @(430, 8
     $logoSize = [int][Math]::Round(128 * $s)
     $lx = [int][Math]::Round(($w - $logoSize) / 2); $ly = [int][Math]::Round($cy - $logoSize / 2)
     [Art]::DrawLogo($g, $source, $lx, $ly, $logoSize, (Color $accent 150))
+    # The name and the subtitle are not in the image: the setup draws them as native
+    # ClearType labels (AddBrandLabels in JesseArchive-Setup.iss), at these heights.
     $below = $ly + $logoSize
-    Draw-Text $g "Jesse's Archive" 'Segoe UI Semibold' ([int][Math]::Round(19 * $s)) $text ($below + 14 * $s) $w
-    Draw-Text $g 'Password manager' 'Segoe UI' ([int][Math]::Round(12 * $s)) $muted ($below + 44 * $s) $w
     $line = New-Object System.Drawing.Pen (Color $accent 120), ([Math]::Round(2 * $s))
     $ly2 = [Math]::Round($below + 72 * $s) + 0.5 * ($line.Width % 2)
     $g.DrawLine($line, [float]([Math]::Round($w / 2 - 18 * $s)), [float]$ly2, [float]([Math]::Round($w / 2 + 18 * $s)), [float]$ly2)
