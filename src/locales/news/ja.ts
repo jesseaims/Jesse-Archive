@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    'インストーラーの画像をより鮮明に',
+    'セットアップ画面の横に表示されるロゴと名前がくっきり表示されるようになりました。元のイラストから作成し、画面の拡大率ごとにぴったりのサイズで用意しているため、Windows が引き伸ばす必要がなくなりました。',
+  ],
   'new-installer': [
     'アプリと同じスタイルの新しいインストーラー',
     'セットアップを作り直しました。Windows Installer を経由していた手順に代わり、Jesse’s Archive のダークテーマとロゴを使った 1 つのウィンドウで最初から最後まで進みます。独自のアンインストールも備え、保管庫と設定には触れずにプログラムだけを削除します。以前のバージョンから更新する場合は何もする必要はありません。新しいセットアップが同じフォルダーで古いものを置き換えます。',

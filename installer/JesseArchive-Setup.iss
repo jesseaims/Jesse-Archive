@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.2.0"
+﻿#define AppVersion "1.2.1"
 #define AppName "Jesse's Archive"
 #define AppExe "jesse_archive.exe"
 ; Fixed id of this installation: updates and uninstall rely on it, never change it.
@@ -23,9 +23,10 @@ UninstallDisplayName={#AppName}
 ; Look of the app's default "Notte" theme. Images: scripts/installer-art.ps1.
 WizardStyle=modern dark hidebevels includetitlebar
 WizardBackColor=#0d0e16
-WizardBackImageFile=art\background-596.png,art\background-994.png,art\background-1630.png
-WizardImageFile=art\side-202.png,art\side-336.png,art\side-534.png
-WizardSmallImageFile=art\small-58.png,art\small-77.png,art\small-97.png,art\small-116.png,art\small-124.png,art\small-159.png
+; One image per DPI setting (100% to 250%), at the exact size of its area: never resampled.
+WizardBackImageFile=art\background-596.png,art\background-796.png,art\background-994.png,art\background-1193.png,art\background-1272.png,art\background-1471.png,art\background-1630.png
+WizardImageFile=art\side-202.png,art\side-269.png,art\side-336.png,art\side-403.png,art\side-430.png,art\side-498.png,art\side-534.png
+WizardSmallImageFile=art\small-58.png,art\small-77.png,art\small-97.png,art\small-116.png,art\small-124.png,art\small-143.png,art\small-159.png
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=admin
@@ -204,6 +205,40 @@ const
   UninstallKey = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
   WebView2Key = 'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
   WebView2KeyWow = 'SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+
+{ Name and subtitle under the logo of the side image, as native labels: Windows draws them
+  with ClearType at the current DPI, like the rest of the wizard text, which a transparent
+  image cannot do. Heights match the layout of scripts/installer-art.ps1 (image 202x386). }
+procedure AddBrandLabel(Image: TBitmapImage; Caption, FontName: String; FontSize, Top: Integer; Color: TColor);
+var
+  L: TLabel;
+begin
+  L := TLabel.Create(WizardForm);
+  L.Parent := Image.Parent;
+  L.StyleElements := [seClient, seBorder];
+  L.Transparent := True;
+  L.AutoSize := False;
+  L.Alignment := taCenter;
+  L.ShowAccelChar := False;
+  L.Font.Name := FontName;
+  L.Font.Size := FontSize;
+  L.Font.Color := Color;
+  L.Caption := Caption;
+  L.SetBounds(Image.Left, Image.Top + MulDiv(Image.Height, Top, 386), Image.Width, MulDiv(Image.Height, 30, 386));
+  L.BringToFront;
+end;
+
+procedure AddBrandLabels(Image: TBitmapImage);
+begin
+  AddBrandLabel(Image, AppTitle, 'Segoe UI Semibold', 14, 214, $F5EAE9);
+  AddBrandLabel(Image, 'Password manager', 'Segoe UI', 9, 246, $AB9693);
+end;
+
+procedure InitializeWizard;
+begin
+  AddBrandLabels(WizardForm.WizardBitmapImage);
+  AddBrandLabels(WizardForm.WizardBitmapImage2);
+end;
 
 { Number of running processes with this executable name (WMI). }
 function ProcessCount(Name: String): Integer;

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    'Sharper installer images',
+    'The logo and the name on the side of the setup are now sharp: they come from the original artwork and are prepared at the exact size for every display scale, so Windows no longer has to stretch them.',
+  ],
   'new-installer': [
     'New installer in the app’s style',
     'The setup has been redone: a single window from start to finish, with the dark theme and logo of Jesse’s Archive, instead of the procedure that went through Windows Installer. It now also has its own uninstaller, which removes the program without touching the vault and the settings. Updating from the previous version needs nothing from you: the new setup replaces the old one in the same folder.',

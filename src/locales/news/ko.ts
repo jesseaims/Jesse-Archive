@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    '더 선명해진 설치 프로그램 이미지',
+    '설치 화면 옆의 로고와 이름이 이제 선명하게 보입니다. 원본 그림에서 만들고 화면 배율마다 정확한 크기로 준비하므로 Windows가 더 이상 이미지를 늘리지 않습니다.',
+  ],
   'new-installer': [
     '앱 스타일의 새 설치 프로그램',
     '설치 프로그램을 새로 만들었습니다. Windows Installer를 거치던 절차 대신 Jesse’s Archive의 어두운 테마와 로고를 사용한 하나의 창으로 처음부터 끝까지 진행됩니다. 이제 자체 제거 기능도 있어 보관함과 설정은 건드리지 않고 프로그램만 제거합니다. 이전 버전에서 업데이트할 때는 아무것도 할 필요가 없습니다. 새 설치 프로그램이 같은 폴더에서 이전 버전을 대체합니다.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    '更清晰的安装程序图片',
+    '安装程序侧边的标志和名称现在更加清晰：它们来自原始插画，并为每种显示缩放比例准备了精确尺寸，Windows 不再需要拉伸它们。',
+  ],
   'new-installer': [
     '与应用风格一致的新安装程序',
     '安装程序已重新制作：从头到尾只有一个窗口，采用 Jesse’s Archive 的深色主题和图标，取代了以前经由 Windows Installer 的流程。现在它还有自己的卸载程序，卸载时不会触及保险库和设置。从旧版本更新时无需任何操作：新的安装程序会在同一文件夹中替换旧版本。',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    'Images de l’installateur plus nettes',
+    'Le logo et le nom sur le côté de l’installateur sont désormais nets : ils proviennent de l’illustration d’origine et sont préparés à la taille exacte pour chaque mise à l’échelle de l’écran, Windows n’a donc plus à les étirer.',
+  ],
   'new-installer': [
     'Nouveau programme d’installation au style de l’app',
     'Le programme d’installation a été refait : une seule fenêtre du début à la fin, avec le thème sombre et le logo de Jesse’s Archive, à la place de la procédure qui passait par Windows Installer. Il a aussi désormais sa propre désinstallation, qui supprime le programme sans toucher au coffre ni aux paramètres. En mettant à jour depuis la version précédente, vous n’avez rien à faire : le nouveau programme remplace l’ancien dans le même dossier.',

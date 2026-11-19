@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    'Schärfere Bilder im Installationsprogramm',
+    'Logo und Name an der Seite des Setups sind jetzt scharf: Sie stammen aus der Originalgrafik und werden für jede Anzeigeskalierung in genau der passenden Größe erstellt, sodass Windows sie nicht mehr strecken muss.',
+  ],
   'new-installer': [
     'Neues Installationsprogramm im Stil der App',
     'Das Setup wurde neu gestaltet: ein einziges Fenster vom Anfang bis zum Ende, mit dem dunklen Design und dem Logo von Jesse’s Archive, statt des Ablaufs über Windows Installer. Es hat jetzt auch eine eigene Deinstallation, die das Programm entfernt, ohne Tresor und Einstellungen anzutasten. Beim Update von der vorherigen Version musst du nichts tun: Das neue Setup ersetzt das alte im selben Ordner.',
