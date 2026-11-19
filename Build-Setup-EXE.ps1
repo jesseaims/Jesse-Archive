@@ -47,19 +47,52 @@ foreach ($name in 'jesse_archive.exe', 'jesse_browser_host.exe') {
 
 Write-Host '==> WebView2 offline per l''installer' -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $payloadFolder, $outFolder | Out-Null
-if (-not (Test-Path -LiteralPath $webView2)) {
-    Write-Host "Scarico il runtime WebView2 offline da Microsoft: $webView2Url"
-    $partial = "$webView2.partial"
-    Invoke-WebRequest -Uri $webView2Url -OutFile $partial -UseBasicParsing
-    Move-Item -LiteralPath $partial -Destination $webView2 -Force
+# A verified copy is kept per user, outside the working copy, so every build (also the
+# release automation, which builds in a fresh folder each time) reuses it instead of
+# downloading about 200 MB again. Refreshed after 90 days; the runtime installed on the
+# user's PC updates itself anyway.
+$webView2Cache = Join-Path $env:LOCALAPPDATA 'JesseArchive-Build\MicrosoftEdgeWebView2RuntimeInstallerX64.exe'
+function Test-WebView2([string]$path) {
+    if (-not (Test-Path -LiteralPath $path)) { return $false }
+    $signature = Get-AuthenticodeSignature -LiteralPath $path
+    return $signature.Status -eq 'Valid' -and $signature.SignerCertificate.Subject -match 'O=Microsoft Corporation' -and
+        (Get-Item -LiteralPath $path).Length -ge 100MB
 }
-$signature = Get-AuthenticodeSignature -LiteralPath $webView2
-if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') {
-    Remove-Item -LiteralPath $webView2 -Force
-    throw "Installer WebView2 non firmato da Microsoft ($($signature.Status)): eliminato, riprova la build."
+$cacheValid = Test-WebView2 $webView2Cache
+if (-not $cacheValid -and (Test-Path -LiteralPath $webView2Cache)) {
+    Remove-Item -LiteralPath $webView2Cache -Force
 }
-if ((Get-Item -LiteralPath $webView2).Length -lt 100MB) {
-    throw 'Installer WebView2 troppo piccolo: non sembra la versione offline completa.'
+$cacheOld = $cacheValid -and (Get-Item -LiteralPath $webView2Cache).LastWriteTime -lt (Get-Date).AddDays(-90)
+if (-not (Test-WebView2 $webView2) -or $cacheOld) {
+    if (-not $cacheValid -or $cacheOld) {
+        Write-Host "Scarico il runtime WebView2 offline da Microsoft: $webView2Url"
+        New-Item -ItemType Directory -Force -Path (Split-Path $webView2Cache) | Out-Null
+        $partial = "$webView2Cache.partial"
+        try {
+            Invoke-WebRequest -Uri $webView2Url -OutFile $partial -UseBasicParsing
+            if (-not (Test-WebView2 $partial)) {
+                throw 'Installer WebView2 scaricato non valido: firma Microsoft assente o file troppo piccolo.'
+            }
+            Move-Item -LiteralPath $partial -Destination $webView2Cache -Force
+            $cacheValid = $true
+        } catch {
+            Remove-Item -LiteralPath $partial -Force -ErrorAction SilentlyContinue
+            # An old but valid copy is still usable when the refresh fails.
+            if (-not $cacheValid) { throw }
+            Write-Host "Aggiornamento della copia WebView2 non riuscito, uso quella esistente: $_" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "Uso la copia verificata di WebView2: $webView2Cache"
+    }
+    Copy-Item -LiteralPath $webView2Cache -Destination $webView2 -Force
+} elseif (-not $cacheValid) {
+    # First build with the cache: seed it from the payload already in this working copy.
+    New-Item -ItemType Directory -Force -Path (Split-Path $webView2Cache) | Out-Null
+    Copy-Item -LiteralPath $webView2 -Destination $webView2Cache -Force
+}
+if (-not (Test-WebView2 $webView2)) {
+    Remove-Item -LiteralPath $webView2 -Force -ErrorAction SilentlyContinue
+    throw 'Installer WebView2 non valido (firma Microsoft o dimensione): eliminato, riprova la build.'
 }
 # The pre-1.2.0 MSI payload is no longer used.
 Remove-Item -LiteralPath (Join-Path $payloadFolder 'JesseArchive.msi') -Force -ErrorAction SilentlyContinue
