@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    'Extension logo and automatic reload',
+    'The browser extension now shows the Jesse’s Archive logo in the toolbar and in the extensions list. After every update it reloads by itself as soon as it connects to the app, with no need to do it by hand from the extensions page. Reload it by hand one last time: the automatic reload applies from the next updates.',
+  ],
   'breach-check-autofill-fixes': [
     'More reliable breach check and autofill',
     'The compromised accounts check now also works with large vaults (before, it stopped with “Cannot reach Pwned Passwords” beyond about 120 passwords) and retries by itself if the network hiccups. Browser autofill also recognizes the login fields of sites built with web components, such as Reddit, and login frames from a subdomain of the same site, such as Ubisoft’s. After the update, reload the extension from the browser’s extensions page.',

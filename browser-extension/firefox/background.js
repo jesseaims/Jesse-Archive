@@ -14,6 +14,8 @@ function connect() {
     for (const request of [...passkeys.keys()]) finishPasskey(request, {action:'fallback'});
     clearTimeout(retry); retry = setTimeout(connect, 10000);
   });
+  // The app asks for a reload when it is newer: the setup has replaced these files on disk.
+  send({kind:'hello', version: api.runtime.getManifest().version});
 }
 /* WebAuthn requests from passkey-bridge.js. The origin comes from the browser
  * (sender), only for HTTPS top-level frames; the page cannot choose it. */
@@ -56,6 +58,7 @@ function onPasskeyMessage(message, sender, respond) {
 api.runtime.onMessage.addListener(onPasskeyMessage);
 function send(message) { port?.postMessage(message); }
 async function receive(message) {
+  if (message.kind === 'reload') { api.runtime.reload(); return; }
   if (message.kind === 'passkey-result') { finishPasskey(message.request, message.result); return; }
   if (message.kind === 'context') {
     const win = await api.windows.getLastFocused();

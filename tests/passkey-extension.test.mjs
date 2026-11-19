@@ -169,8 +169,10 @@ function background() {
   w.chrome = {
     runtime: {
       id: 'ext',
+      getManifest: () => ({ version: '1.0.0' }),
       connectNative: () => ({
-        postMessage: (m) => sent.push(m),
+        // The connection greeting (version check) is covered in browser-extension.test.mjs.
+        postMessage: (m) => m.kind !== 'hello' && sent.push(m),
         onMessage: { addListener: (fn) => (onPortMessage = fn) },
         onDisconnect: { addListener: (fn) => (onDisconnect = fn) },
       }),

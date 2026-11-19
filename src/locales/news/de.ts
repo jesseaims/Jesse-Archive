@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    'Erweiterungslogo und automatisches Neuladen',
+    'Die Browsererweiterung zeigt jetzt das Logo von Jesse’s Archive in der Symbolleiste und in der Liste der Erweiterungen. Nach jedem Update lädt sie sich selbst neu, sobald sie sich mit der App verbindet, ohne dass du das auf der Erweiterungsseite von Hand tun musst. Lade sie dieses eine Mal noch von Hand neu: Das automatische Neuladen gilt ab den nächsten Updates.',
+  ],
   'breach-check-autofill-fixes': [
     'Zuverlässigere Leak-Prüfung und Autofill',
     'Die Prüfung auf kompromittierte Konten funktioniert jetzt auch mit großen Tresoren (vorher brach sie ab etwa 120 Passwörtern mit „Pwned Passwords ist nicht erreichbar“ ab) und versucht es bei Netzwerkproblemen selbst erneut. Das Ausfüllen im Browser erkennt jetzt auch Anmeldefelder von Websites mit Webkomponenten wie Reddit sowie Anmelderahmen einer Subdomain derselben Website wie bei Ubisoft. Lade die Erweiterung nach dem Update auf der Erweiterungsseite des Browsers neu.',

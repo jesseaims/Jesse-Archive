@@ -1,7 +1,7 @@
 use crate::{browser_protocol as wire, AppState};
 use serde_json::{json, Value};
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     net::{TcpListener, TcpStream},
     sync::{Arc, Mutex},
     time::{Duration, Instant},
@@ -26,6 +26,14 @@ pub struct Bridge {
     session: Mutex<Option<Session>>,
     shortcut: Mutex<String>,
     shortcut_error: Mutex<String>,
+    /// Extension versions already asked to reload in this run: at most one reload per
+    /// version, so an extension loaded from an old copy never reloads in a loop.
+    reload_asked: Mutex<HashSet<String>>,
+}
+/// After an update the setup replaces the extension files, but the browser keeps
+/// running the old code until the extension is reloaded.
+fn needs_reload(extension: &str) -> bool {
+    crate::updater::is_newer(env!("CARGO_PKG_VERSION"), extension)
 }
 fn random() -> String {
     use rand::RngCore;
@@ -165,6 +173,19 @@ pub(crate) fn hide(app: &tauri::AppHandle) {
 }
 fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
     match message["kind"].as_str().unwrap_or("") {
+        "hello" => {
+            let version = message["version"].as_str().unwrap_or("");
+            if needs_reload(version)
+                && app
+                    .state::<Bridge>()
+                    .reload_asked
+                    .lock()
+                    .unwrap()
+                    .insert(version.to_string())
+            {
+                let _ = send(app, client, json!({"kind":"reload"}));
+            }
+        }
         "open" => {
             // Only the extension's toolbar action sends this message.
             let id = random();
@@ -238,6 +259,7 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         session: Mutex::new(None),
         shortcut: Mutex::new(shortcut.clone()),
         shortcut_error: Mutex::new(String::new()),
+        reload_asked: Mutex::new(HashSet::new()),
     });
     std::fs::write(
         directory.join("connection.json"),
@@ -487,6 +509,16 @@ pub fn browser_install() -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn only_older_extensions_are_asked_to_reload() {
+        let app = env!("CARGO_PKG_VERSION");
+        assert!(needs_reload("0.9.0"));
+        assert!(!needs_reload(app));
+        assert!(!needs_reload("999.0.0"));
+        for bad in ["", "1.1", "abc", "1.1.x"] {
+            assert!(!needs_reload(bad), "{bad}");
+        }
+    }
     #[test]
     fn login_frames_only_on_the_same_registrable_domain() {
         for (frame, top) in [

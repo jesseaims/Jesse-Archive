@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    'Logo de l’extension et rechargement automatique',
+    'L’extension du navigateur affiche désormais le logo de Jesse’s Archive dans la barre et dans la liste des extensions. Après chaque mise à jour, elle se recharge toute seule dès qu’elle se connecte à l’app, sans devoir le faire à la main depuis la page des extensions. Pour cette fois, rechargez-la encore à la main : le rechargement automatique s’applique à partir des prochaines mises à jour.',
+  ],
   'breach-check-autofill-fixes': [
     'Vérification des fuites et remplissage plus fiables',
     'La vérification des comptes compromis fonctionne désormais aussi avec les grands coffres (auparavant elle s’arrêtait avec « Impossible de contacter Pwned Passwords » au-delà d’environ 120 mots de passe) et réessaie toute seule en cas de souci réseau. Le remplissage depuis le navigateur reconnaît aussi les champs de connexion des sites construits avec des composants web, comme Reddit, et les cadres de connexion d’un sous-domaine du même site, comme celui d’Ubisoft. Après la mise à jour, rechargez l’extension depuis la page des extensions du navigateur.',

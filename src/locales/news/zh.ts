@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    '扩展图标与自动重新加载',
+    '浏览器扩展现在会在工具栏和扩展列表中显示 Jesse’s Archive 的图标。每次更新后，它一连接到应用就会自动重新加载，无需在扩展页面中手动操作。这一次请再手动重新加载一次：自动重新加载从之后的更新开始生效。',
+  ],
   'breach-check-autofill-fixes': [
     '更可靠的泄露检查和自动填充',
     '受损账户检查现在也适用于大型保险库（以前超过约 120 个密码时会因“无法连接 Pwned Passwords”而中断），网络出现问题时会自动重试。浏览器自动填充现在也能识别使用 Web 组件构建的网站（如 Reddit）的登录字段，以及同一网站子域名中的登录框架（如 Ubisoft）。更新后，请在浏览器的扩展页面中重新加载扩展。',

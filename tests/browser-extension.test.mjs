@@ -6,7 +6,7 @@ const source=readFileSync(new URL('../browser-extension/background.js',import.me
 function page(html,url='https://example.com/login') {
  const dom=new JSDOM(html,{url,runScripts:'outside-only'});
  const w=dom.window;
- w.chrome={runtime:{connectNative:()=>({onMessage:{addListener(){}},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
+ w.chrome={runtime:{getManifest:()=>({version:'1.0.0'}),reload:()=>{w.reloaded=(w.reloaded||0)+1},connectNative:()=>({postMessage(){},onMessage:{addListener(){}},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
  w.HTMLInputElement.prototype.getClientRects=function(){return this.hidden?[]:[{}]};
  w.document.hasFocus=()=>true;
  w.eval(source+'\n globalThis.testFill=fillFields;globalThis.testCapture=captureContext;globalThis.receiveTest=receive;globalThis.testTarget=value=>{target=value};globalThis.testTransport=value=>{port=value};');
@@ -56,4 +56,14 @@ test('native target rejects tab navigation before sending credentials to page',a
  w.testTransport({postMessage:m=>sent.push(m)});
  await w.receiveTest({kind:'fill',request:'r',url:'https://example.com/login',top:'https://example.com/login',username:'u',password:'p'});
  assert.equal(sent[0].kind,'filled');assert.equal(sent[0].ok,false);w.close();
+});
+test('greets the app with its version and reloads itself when the app asks',async()=>{
+ const dom=new JSDOM('',{url:'https://extension.invalid/',runScripts:'outside-only'});const w=dom.window;
+ const sent=[];let onPort,reloads=0;
+ w.chrome={runtime:{getManifest:()=>({version:'1.2.3'}),reload:()=>reloads++,connectNative:()=>({postMessage:m=>sent.push(m),onMessage:{addListener:fn=>onPort=fn},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
+ w.eval(source);
+ assert.deepEqual(sent.map(m=>[m.kind,m.version]),[['hello','1.2.3']]);
+ assert.equal(reloads,0);
+ onPort({kind:'reload'});await new Promise(r=>setTimeout(r,0));
+ assert.equal(reloads,1);w.close();
 });

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-logo-autoreload': [
+    'Logotipo de la extensión y recarga automática',
+    'La extensión del navegador ahora muestra el logotipo de Jesse’s Archive en la barra y en la lista de extensiones. Después de cada actualización se recarga sola en cuanto se conecta a la app, sin tener que hacerlo a mano desde la página de extensiones. Por esta vez recárgala a mano: la recarga automática se aplica a partir de las próximas actualizaciones.',
+  ],
   'breach-check-autofill-fixes': [
     'Verificación de filtraciones y autocompletado más fiables',
     'La verificación de cuentas comprometidas ahora también funciona con bóvedas grandes (antes se detenía con «No se puede contactar con Pwned Passwords» a partir de unas 120 contraseñas) y vuelve a intentarlo sola si la red falla. El autocompletado del navegador también reconoce los campos de acceso de los sitios creados con componentes web, como Reddit, y los marcos de acceso de un subdominio del mismo sitio, como el de Ubisoft. Después de actualizar, recarga la extensión desde la página de extensiones del navegador.',
