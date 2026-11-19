@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'installer-sharper-images',
+    addedAt: '2026-11-19T18:00:00+01:00',
+    version: 'Beta 1.2.1',
+    title: 'Immagini dell’installer più nitide',
+    description:
+      'Il logo e il nome sul lato del setup ora sono nitidi: vengono dall’illustrazione originale e sono preparati alla misura esatta per ogni scala dello schermo, così Windows non deve più stirarli.',
+    icon: 'palette',
+  },
+  {
     id: 'new-installer',
     addedAt: '2026-11-19T17:00:00+01:00',
     version: 'Beta 1.2.0',

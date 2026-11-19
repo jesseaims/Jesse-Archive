@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'installer-sharper-images': [
+    'Imagens do instalador mais nítidas',
+    'O logotipo e o nome na lateral do instalador agora aparecem nítidos: vêm da ilustração original e são preparados no tamanho exato para cada escala de ecrã, por isso o Windows já não precisa de os esticar.',
+  ],
   'new-installer': [
     'Novo instalador no estilo do app',
     'O instalador foi refeito: uma única janela do início ao fim, com o tema escuro e o logotipo do Jesse’s Archive, no lugar do procedimento que passava pelo Windows Installer. Agora ele também tem sua própria desinstalação, que remove o programa sem mexer no cofre nem nas configurações. Ao atualizar a partir da versão anterior, você não precisa fazer nada: o novo instalador substitui o antigo na mesma pasta.',

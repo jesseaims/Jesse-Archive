@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.2.0"
+﻿#define AppVersion "1.2.1"
 #define AppName "Jesse's Archive"
 #define AppExe "jesse_archive.exe"
 ; Fixed id of this installation: updates and uninstall rely on it, never change it.
@@ -23,9 +23,10 @@ UninstallDisplayName={#AppName}
 ; Look of the app's default "Notte" theme. Images: scripts/installer-art.ps1.
 WizardStyle=modern dark hidebevels includetitlebar
 WizardBackColor=#0d0e16
-WizardBackImageFile=art\background-596.png,art\background-994.png,art\background-1630.png
-WizardImageFile=art\side-202.png,art\side-336.png,art\side-534.png
-WizardSmallImageFile=art\small-58.png,art\small-77.png,art\small-97.png,art\small-116.png,art\small-124.png,art\small-159.png
+; One image per DPI setting (100% to 250%), at the exact size of its area: never resampled.
+WizardBackImageFile=art\background-596.png,art\background-796.png,art\background-994.png,art\background-1193.png,art\background-1272.png,art\background-1471.png,art\background-1630.png
+WizardImageFile=art\side-202.png,art\side-269.png,art\side-336.png,art\side-403.png,art\side-430.png,art\side-498.png,art\side-534.png
+WizardSmallImageFile=art\small-58.png,art\small-77.png,art\small-97.png,art\small-116.png,art\small-124.png,art\small-143.png,art\small-159.png
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=admin
