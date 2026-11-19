@@ -17,7 +17,7 @@ function Color([string]$hex, [int]$alpha = 255) {
     $c = [System.Drawing.ColorTranslator]::FromHtml($hex)
     [System.Drawing.Color]::FromArgb($alpha, $c.R, $c.G, $c.B)
 }
-$background = '#0d0e16'; $surface = '#171823'; $accent = '#a97ee0'; $text = '#e9eaf5'; $muted = '#9396ab'
+$background = '#0d0e16'; $accent = '#a97ee0'; $text = '#e9eaf5'; $muted = '#9396ab'
 
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
 using System;
@@ -42,6 +42,25 @@ public static class Art {
                 px[i] = Clamp(px[i] + (c.B - px[i]) * a + n);
                 px[i + 1] = Clamp(px[i + 1] + (c.G - px[i + 1]) * a + n);
                 px[i + 2] = Clamp(px[i + 2] + (c.R - px[i + 2]) * a + n);
+            }
+        }
+        Marshal.Copy(px, 0, data.Scan0, px.Length);
+        bmp.UnlockBits(data);
+    }
+
+    // Same glow on a transparent canvas: the color stays fixed and only the alpha fades,
+    // so the image blends with whatever the wizard paints behind it.
+    public static void GlowAlpha(Bitmap bmp, double cx, double cy, double r, Color c, double strength) {
+        var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+        var px = new byte[data.Stride * bmp.Height];
+        for (int y = 0; y < bmp.Height; y++) {
+            for (int x = 0; x < bmp.Width; x++) {
+                double d = Math.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy)) / r;
+                if (d >= 1) continue;
+                double t = 1 - d;
+                int i = y * data.Stride + x * 4;
+                px[i] = c.B; px[i + 1] = c.G; px[i + 2] = c.R;
+                px[i + 3] = Clamp(255 * strength * t * t * (3 - 2 * t));
             }
         }
         Marshal.Copy(px, 0, data.Scan0, px.Length);
@@ -136,9 +155,9 @@ function Save($bmp, $g, [string]$name) {
     $bmp.Save((Join-Path $out $name), [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose(); $bmp.Dispose()
 }
-# Text drawn on an opaque background with ClearType and hinting, like the wizard's own text.
+# Hinted grayscale antialiasing: the panel is transparent, and ClearType needs an opaque background.
 function Draw-Text($g, [string]$s, [string]$family, [int]$px, [string]$hex, [float]$y, [int]$w) {
-    $g.TextRenderingHint = 'ClearTypeGridFit'
+    $g.TextRenderingHint = 'AntiAliasGridFit'
     $font = New-Object System.Drawing.Font $family, $px, ([System.Drawing.FontStyle]::Regular), ([System.Drawing.GraphicsUnit]::Pixel)
     $brush = New-Object System.Drawing.SolidBrush (Color $hex)
     $format = New-Object System.Drawing.StringFormat; $format.Alignment = 'Center'
@@ -161,13 +180,11 @@ foreach ($size in @(@(596, 432), @(796, 576), @(994, 720), @(1193, 864), @(1272,
 # Side panel of the welcome and finish pages (aspect 164:314).
 foreach ($size in @(@(202, 386), @(269, 515), @(336, 643), @(403, 772), @(430, 824), @(498, 953), @(534, 1022))) {
     $w = $size[0]; $h = $size[1]; $s = $w / 202
+    # Transparent panel: the page background shows through, so the panel has no edge of
+    # its own; only a soft glow behind the logo.
     $bmp, $g = New-Canvas $w $h
-    $rect = New-Object System.Drawing.Rectangle 0, 0, $w, $h
-    $grad = New-Object System.Drawing.Drawing2D.LinearGradientBrush $rect, (Color $surface), (Color $background), 90
-    $g.FillRectangle($grad, $rect); $grad.Dispose()
-    $g.Flush()
     $cy = $h * 0.36
-    [Art]::Glow($bmp, $w * 0.5, $cy, $w * 0.95, (Color $accent), 0.32)
+    [Art]::GlowAlpha($bmp, $w * 0.5, $cy, $w * 0.6, (Color $accent), 0.22)
     # 128 px at 100% DPI; about 340 px at 250%, still below the 360 px of the source.
     $logoSize = [int][Math]::Round(128 * $s)
     $lx = [int][Math]::Round(($w - $logoSize) / 2); $ly = [int][Math]::Round($cy - $logoSize / 2)
