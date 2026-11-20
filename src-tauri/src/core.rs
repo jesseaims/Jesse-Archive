@@ -1860,10 +1860,25 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         if title.is_empty() {
             continue;
         }
-        // Kaspersky's "Login name" tells several logins of one site or app apart. The
-        // title stays the site/app name: without an address the main list groups by
-        // title, so a changed title would put every account in a group of its own.
-        if !login_name.is_empty() && login_name != username && login_name != title {
+        // Without an address the main list would group a web account by the domain of
+        // its email: Kaspersky applications become installed-app accounts grouped by
+        // the app, other accounts plain groups by name.
+        let src = if !url.is_empty() {
+            "web"
+        } else if section.contains("applica") {
+            "app"
+        } else {
+            "other"
+        };
+        // Kaspersky's "Login name" is the name the user gave to each account of a site or
+        // app ("Sea of thieves" inside "Microsoft Store"): it becomes the title, while the
+        // site/app stays the group. Only "other" accounts are grouped by their own title,
+        // so there it goes to the notes instead.
+        let group_name = title.clone();
+        let named = !login_name.is_empty() && login_name != username && login_name != title;
+        if named && src != "other" {
+            title = login_name.clone();
+        } else if named {
             notes.insert(0, format!("Nome login: {login_name}"));
         }
         let notes = notes.join("\n\n");
@@ -1872,16 +1887,8 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         } else {
             let f = json!({"url": url, "username": username, "password": password, "totp": ""});
             push_imported(d, "login", &title, V::Null, f, &notes);
-            // Without an address the main list would group a web account by the domain
-            // of its email: Kaspersky applications become installed-app accounts and
-            // other accounts plain groups, both grouped by name.
-            if url.is_empty() {
-                let src = if section.contains("applica") || section.contains("application") {
-                    "app"
-                } else {
-                    "other"
-                };
-                group_by_title(d, src, &title);
+            if src != "web" {
+                group_by_title(d, src, &group_name);
             }
         }
         n += 1;
@@ -1891,8 +1898,8 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
     }
     Ok(n)
 }
-/// Puts the last added item in the app/other group of its title, with the same key
-/// the UI computes (src/groups.ts `deriveGroupKey`) and the title as group name.
+/// Puts the last added item in the app/other group named `title`, with the same key
+/// the UI computes (src/groups.ts `deriveGroupKey`) and `title` as group name.
 fn group_by_title(d: &mut V, src: &str, title: &str) {
     let key = format!(
         "{src}:{}",
@@ -2619,22 +2626,24 @@ mod vault_tests {
             s(epic, "notes"),
             "prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto"
         );
-        // Two logins of one site: same title (one group), login name in the notes.
+        // The login name is the title of that account; the site stays its group.
         let work = items
             .iter()
             .find(|i| s(&i["f"], "username") == "lavoro@example.com")
             .unwrap();
-        assert_eq!(s(work, "title"), "Epic Games");
-        assert_eq!(s(work, "notes"), "Nome login: Lavoro");
+        assert_eq!(s(work, "title"), "Lavoro");
+        assert_eq!(s(work, "notes"), "");
+        assert_eq!(s(&work["f"], "url"), "https://www.epicgames.com");
         assert_eq!(s(&by_title(&items, "Skype")["f"], "password"), "pw-3");
         // Applications: one group per app name, never per email domain.
+        // Titled by their login names, both in the group of the app.
         let feather: Vec<&V> = items
             .iter()
-            .filter(|i| s(i, "title") == "Feather Launcher")
+            .filter(|i| s(i, "gk") == "app:feather-launcher")
             .collect();
         assert_eq!(feather.len(), 2);
-        for it in feather {
-            assert_eq!(s(it, "gk"), "app:feather-launcher");
+        for (it, title) in feather.iter().zip(["Principale", "Secondario"]) {
+            assert_eq!(s(it, "title"), title);
             assert_eq!(s(it, "src"), "app");
         }
         assert_eq!(

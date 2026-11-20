@@ -57,7 +57,7 @@ import {
   type State,
   type Status,
 } from './types';
-import { CheckSquare, Newspaper } from 'lucide-react';
+import { CheckSquare, ChevronDown, Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
 import { groupFor, savedGroupKey } from './groups';
@@ -553,8 +553,9 @@ export default function App() {
     [showSecrets, setShowSecrets] = useState<string[]>([]),
     [mobileMenu, setMobileMenu] = useState(false),
     [appsList, setAppsList] = useState<{ name: string; path: string }[] | null>(null),
+    [appsQuery, setAppsQuery] = useState(''),
     [groupIcon, setGroupIcon] = useState(''),
-    [bulkFolder, setBulkFolder] = useState(''),
+    [moveOpen, setMoveOpen] = useState(false),
     [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     if (!vault) applyPalette({ preset: 'night' });
@@ -766,6 +767,39 @@ export default function App() {
       notify(message);
     }
     return r;
+  };
+  // Bulk bar "Sposta in": moves the selection to a folder, or to a new one.
+  const moveMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!moveOpen) return;
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (
+        e instanceof KeyboardEvent
+          ? e.key === 'Escape'
+          : !moveMenuRef.current?.contains(e.target as Node)
+      )
+        setMoveOpen(false);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, [moveOpen]);
+  const moveSelected = async (folder: string) => {
+    setMoveOpen(false);
+    const r = await mutate('bulk', { ids: multi, op: 'move', folder }, t('Elementi spostati'));
+    if (r) setMulti([]);
+  };
+  const moveToNewFolder = async () => {
+    setMoveOpen(false);
+    const name = (await askText(t('Nome della nuova cartella')))?.trim();
+    if (!name) return;
+    const before = new Set((vault?.folders || []).map((f) => f.id));
+    const r = await mutate('folder', { name }, t('Cartella creata'));
+    const created = r?.state?.folders.find((f) => !before.has(f.id));
+    if (created) await moveSelected(created.id);
   };
   // "Usati di recente": item ids in the encrypted vault settings, shared with the
   // Global Quick Search. A convenience: a failed save changes nothing.
@@ -1498,77 +1532,110 @@ export default function App() {
                 {multi.length > 0 && (
                   <div className="bulkbar">
                     <strong>{t('Selezionati: {n}', { n: multi.length })}</strong>
-                    <button
-                      onClick={async () => {
-                        // Moving many items to the trash at once is confirmed with the count.
-                        if (
-                          page !== 'trash' &&
-                          multi.length > 1 &&
-                          !(await askConfirm(
-                            t('Spostare nel cestino {n} elementi selezionati?', {
-                              n: multi.length,
-                            }),
-                            { title: t('Nel cestino'), confirmLabel: t('Nel cestino') },
-                          ))
-                        )
-                          return;
-                        await mutate('bulk', {
-                          ids: multi,
-                          op: page === 'trash' ? 'restore' : 'trash',
-                        }).then(() => setMulti([]));
-                      }}
-                    >
-                      {page === 'trash' ? t('Ripristina') : t('Nel cestino')}
-                    </button>
-                    {page === 'trash' && (
-                      <button
-                        onClick={async () => {
-                          if (
-                            await askConfirm(
-                              t('Eliminare definitivamente gli elementi selezionati?'),
-                              {
-                                title: t('Eliminazione definitiva'),
-                                danger: true,
-                                confirmLabel: t('Elimina definitivamente'),
-                              },
-                            )
-                          )
-                            await mutate('bulk', { ids: multi, op: 'delete' }).then(() =>
-                              setMulti([]),
-                            );
-                        }}
-                      >
-                        {t('Elimina')}
+                    <div className="bulkbar-actions">
+                      {page === 'trash' ? (
+                        <>
+                          <button
+                            className="secondary"
+                            onClick={() =>
+                              void mutate('bulk', { ids: multi, op: 'restore' }).then(() =>
+                                setMulti([]),
+                              )
+                            }
+                          >
+                            <RefreshCw size={16} />
+                            {t('Ripristina')}
+                          </button>
+                          <button
+                            className="secondary danger-soft"
+                            onClick={async () => {
+                              if (
+                                await askConfirm(
+                                  t('Eliminare definitivamente gli elementi selezionati?'),
+                                  {
+                                    title: t('Eliminazione definitiva'),
+                                    danger: true,
+                                    confirmLabel: t('Elimina definitivamente'),
+                                  },
+                                )
+                              )
+                                await mutate('bulk', { ids: multi, op: 'delete' }).then(() =>
+                                  setMulti([]),
+                                );
+                            }}
+                          >
+                            <Trash2 size={16} />
+                            {t('Elimina')}
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="icon-button danger bulk-trash"
+                            title={t('Sposta nel cestino')}
+                            aria-label={t('Sposta nel cestino')}
+                            onClick={async () => {
+                              // Moving many items at once is confirmed with the count.
+                              if (
+                                multi.length > 1 &&
+                                !(await askConfirm(
+                                  t('Spostare nel cestino {n} elementi selezionati?', {
+                                    n: multi.length,
+                                  }),
+                                  { title: t('Nel cestino'), confirmLabel: t('Nel cestino') },
+                                ))
+                              )
+                                return;
+                              await mutate('bulk', { ids: multi, op: 'trash' }).then(() =>
+                                setMulti([]),
+                              );
+                            }}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                          <div className="bulk-move" ref={moveMenuRef}>
+                            <button
+                              className="secondary"
+                              aria-haspopup="menu"
+                              aria-expanded={moveOpen}
+                              onClick={() => setMoveOpen((o) => !o)}
+                            >
+                              <Folder size={16} />
+                              {t('Sposta in')}
+                              <ChevronDown size={15} />
+                            </button>
+                            {moveOpen && (
+                              <div className="bulk-move-menu" role="menu">
+                                {vault.folders.map((f) => (
+                                  <button
+                                    key={f.id}
+                                    role="menuitem"
+                                    onClick={() => void moveSelected(f.id)}
+                                  >
+                                    <Folder size={15} />
+                                    <span>{f.name}</span>
+                                  </button>
+                                ))}
+                                {!vault.folders.length && (
+                                  <p className="bulk-move-empty">{t('Nessuna cartella')}</p>
+                                )}
+                                <button
+                                  role="menuitem"
+                                  className="bulk-move-new"
+                                  onClick={() => void moveToNewFolder()}
+                                >
+                                  <FolderPlus size={15} />
+                                  <span>{t('Nuova cartella…')}</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                      <button className="secondary" onClick={() => setMulti([])}>
+                        {t('Annulla')}
                       </button>
-                    )}
-                    {page !== 'trash' && (
-                      <>
-                        <select value={bulkFolder} onChange={(e) => setBulkFolder(e.target.value)}>
-                          <option value="">{t('Sposta in...')}</option>
-                          {vault.folders.map((f) => (
-                            <option key={f.id} value={f.id}>
-                              {f.name}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          disabled={!bulkFolder}
-                          onClick={() =>
-                            void mutate('bulk', {
-                              ids: multi,
-                              op: 'move',
-                              folder: bulkFolder,
-                            }).then(() => {
-                              setMulti([]);
-                              setBulkFolder('');
-                            })
-                          }
-                        >
-                          {t('Sposta')}
-                        </button>
-                      </>
-                    )}
-                    <button onClick={() => setMulti([])}>{t('Annulla')}</button>
+                    </div>
                   </div>
                 )}
                 {(page === 'all' || page === 'login') && (
@@ -2001,7 +2068,10 @@ export default function App() {
                           className="secondary"
                           onClick={async () => {
                             const r = await run<{ apps: { name: string; path: string }[] }>('apps');
-                            if (r) setAppsList(r.apps);
+                            if (r) {
+                              setAppsQuery('');
+                              setAppsList(r.apps);
+                            }
                           }}
                         >
                           <Folder size={16} />
@@ -2010,30 +2080,51 @@ export default function App() {
                       )}
                       {appsList && (
                         <div className="apps-picker">
-                          {appsList.length ? (
-                            appsList.slice(0, 150).map((a) => (
-                              <button
-                                key={a.path}
-                                onClick={async () => {
-                                  const r = await run<{ icon: string }>('app_icon', {
-                                    path: a.path,
-                                  });
-                                  setGroupIcon(r?.icon || '');
-                                  setDraft((x) => ({
-                                    ...x,
-                                    gk: 'app:' + a.name.toLowerCase().trim().replace(/\s+/g, '-'),
-                                    src: 'app',
-                                    title: x.title || a.name,
-                                  }));
-                                  setAppsList(null);
-                                }}
-                              >
-                                {a.name}
-                              </button>
-                            ))
-                          ) : (
-                            <span>{t('Nessuna applicazione individuata')}</span>
-                          )}
+                          <input
+                            autoFocus
+                            className="apps-picker-search"
+                            aria-label={t('Cerca applicazione')}
+                            placeholder={t('Cerca applicazione…')}
+                            value={appsQuery}
+                            onChange={(e) => setAppsQuery(e.target.value)}
+                          />
+                          <div className="apps-picker-list" role="listbox">
+                            {appsList.length ? (
+                              appsList
+                                .filter((a) =>
+                                  a.name
+                                    .toLocaleLowerCase()
+                                    .includes(appsQuery.trim().toLocaleLowerCase()),
+                                )
+                                .slice(0, 300)
+                                .map((a) => (
+                                  <button
+                                    key={a.path}
+                                    onClick={async () => {
+                                      const r = await run<{ icon: string }>('app_icon', {
+                                        path: a.path,
+                                      });
+                                      setGroupIcon(r?.icon || '');
+                                      setDraft((x) => ({
+                                        ...x,
+                                        gk:
+                                          'app:' + a.name.toLowerCase().trim().replace(/\s+/g, '-'),
+                                        src: 'app',
+                                        title: x.title || a.name,
+                                      }));
+                                      setAppsList(null);
+                                    }}
+                                    title={a.name}
+                                    role="option"
+                                    aria-selected={false}
+                                  >
+                                    <span>{a.name}</span>
+                                  </button>
+                                ))
+                            ) : (
+                              <span>{t('Nessuna applicazione individuata')}</span>
+                            )}
+                          </div>
                         </div>
                       )}
                       {draft.f.totp && (

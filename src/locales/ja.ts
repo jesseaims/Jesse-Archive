@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': 'フォルダーを作成しました',
+  'Cerca applicazione': 'アプリケーションを検索',
+  'Cerca applicazione…': 'アプリケーションを検索…',
+  'Elementi spostati': '項目を移動しました',
+  'Nome della nuova cartella': '新しいフォルダーの名前',
+  'Nuova cartella…': '新しいフォルダー…',
+  'Sposta in': '移動先',
   'Deseleziona tutti': 'すべて選択解除',
   "Seleziona l'account {name}": 'アカウント {name} を選択',
   'Seleziona tutti': 'すべて選択',
@@ -601,8 +608,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '変更が見つかりました (クラウド フォルダー経由のほかのデバイスからなど):',
   'Sostituire la password dell’account?': 'アカウントのパスワードを置き換えますか?',
-  Sposta: '移動',
-  'Sposta in...': '移動先...',
   'Sposta nel cestino': 'ごみ箱に移動',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'アカウント「{name}」{detail}をごみ箱に移動しますか?',

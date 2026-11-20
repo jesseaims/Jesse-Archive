@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': 'Folder created',
+  'Cerca applicazione': 'Search application',
+  'Cerca applicazione…': 'Search application…',
+  'Elementi spostati': 'Items moved',
+  'Nome della nuova cartella': 'Name of the new folder',
+  'Nuova cartella…': 'New folder…',
+  'Sposta in': 'Move to',
   'Deseleziona tutti': 'Deselect all',
   "Seleziona l'account {name}": 'Select the account {name}',
   'Seleziona tutti': 'Select all',
@@ -600,8 +607,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Changes were found (for example from another device through the cloud folder):',
   'Sostituire la password dell’account?': 'Replace the account password?',
-  Sposta: 'Move',
-  'Sposta in...': 'Move to...',
   'Sposta nel cestino': 'Move to trash',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Move the account "{name}"{detail} to the trash?',

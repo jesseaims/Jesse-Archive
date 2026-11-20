@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': 'Папка создана',
+  'Cerca applicazione': 'Поиск приложения',
+  'Cerca applicazione…': 'Поиск приложения…',
+  'Elementi spostati': 'Элементы перемещены',
+  'Nome della nuova cartella': 'Название новой папки',
+  'Nuova cartella…': 'Новая папка…',
+  'Sposta in': 'Переместить в',
   'Deseleziona tutti': 'Снять выделение',
   "Seleziona l'account {name}": 'Выбрать аккаунт {name}',
   'Seleziona tutti': 'Выбрать все',
@@ -606,8 +613,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Найдены изменения (например, с другого устройства через облачную папку):',
   'Sostituire la password dell’account?': 'Заменить пароль учётной записи?',
-  Sposta: 'Переместить',
-  'Sposta in...': 'Переместить в...',
   'Sposta nel cestino': 'В корзину',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Переместить учётную запись «{name}»{detail} в корзину?',

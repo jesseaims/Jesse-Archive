@@ -561,14 +561,77 @@ p {
   display: flex;
   gap: 15px;
   align-items: center;
+  flex-wrap: wrap;
   padding: 12px 24px;
   background: var(--ui-selected);
 }
-.bulkbar button {
-  background: transparent;
-  color: var(--ui-accent);
+.bulkbar-actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.bulkbar .bulk-trash {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+}
+.bulk-move {
+  position: relative;
+}
+.bulk-move-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  min-width: 220px;
+  max-width: min(320px, 80vw);
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.bulk-move-menu button {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 9px 10px;
   border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ui-text);
+  font-size: 13px;
+  min-width: 0;
+}
+.bulk-move-menu button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bulk-move-menu button:hover {
+  background: var(--ui-hover);
+}
+.bulk-move-menu .bulk-move-new {
+  border-top: 1px solid var(--ui-border);
+  border-radius: 0 0 7px 7px;
+  margin-top: 4px;
+  color: var(--ui-accent);
+}
+.bulk-move-empty {
+  margin: 0;
+  padding: 9px 10px;
   font-size: 12px;
+  color: var(--ui-muted);
 }
 .two-cols,
 .settings-grid {
@@ -1078,25 +1141,47 @@ p {
     animation: none !important;
   }
 }
+/* Installed-app picker: its own size, never squeezed by the editor layout. */
 .apps-picker {
   display: flex;
   flex-direction: column;
-  max-height: 185px;
-  overflow: auto;
+  flex: none;
+  gap: 6px;
   border: 1px solid var(--ui-border);
   border-radius: 9px;
   background: var(--ui-input);
-  padding: 5px;
+  padding: 6px;
+  min-width: 0;
+}
+.apps-picker-search {
+  flex: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+.apps-picker-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: clamp(160px, 38vh, 340px);
+  min-height: 160px;
 }
 .apps-picker button {
+  flex: none;
+  min-height: 34px;
   background: transparent;
   border: 0;
   border-radius: 6px;
   color: var(--ui-text);
-  padding: 9px;
+  padding: 8px 10px;
   text-align: left;
   justify-content: flex-start;
-  font-size: 12px;
+  font-size: 13px;
+  min-width: 0;
+}
+.apps-picker button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .apps-picker button:hover {
   background: var(--ui-hover);
@@ -1104,15 +1189,6 @@ p {
 .apps-picker span {
   padding: 12px;
   color: var(--ui-muted);
-}
-.bulkbar select {
-  background: var(--ui-selected);
-  color: var(--ui-text);
-  border: 1px solid var(--ui-border);
-  border-radius: 7px;
-  padding: 6px;
-  font-size: 12px;
-  max-width: 140px;
 }
 :root {
   --brand-color: var(--ui-accent);

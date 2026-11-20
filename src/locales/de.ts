@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // German. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': 'Ordner erstellt',
+  'Cerca applicazione': 'Anwendung suchen',
+  'Cerca applicazione…': 'Anwendung suchen…',
+  'Elementi spostati': 'Elemente verschoben',
+  'Nome della nuova cartella': 'Name des neuen Ordners',
+  'Nuova cartella…': 'Neuer Ordner…',
+  'Sposta in': 'Verschieben nach',
   'Deseleziona tutti': 'Auswahl aufheben',
   "Seleziona l'account {name}": 'Konto {name} auswählen',
   'Seleziona tutti': 'Alle auswählen',
@@ -605,8 +612,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Es wurden Änderungen gefunden (zum Beispiel von einem anderen Gerät über den Cloud-Ordner):',
   'Sostituire la password dell’account?': 'Passwort des Kontos ersetzen?',
-  Sposta: 'Verschieben',
-  'Sposta in...': 'Verschieben nach...',
   'Sposta nel cestino': 'In den Papierkorb',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Konto „{name}“{detail} in den Papierkorb verschieben?',

@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': '폴더를 만들었습니다',
+  'Cerca applicazione': '애플리케이션 검색',
+  'Cerca applicazione…': '애플리케이션 검색…',
+  'Elementi spostati': '항목을 옮겼습니다',
+  'Nome della nuova cartella': '새 폴더 이름',
+  'Nuova cartella…': '새 폴더…',
+  'Sposta in': '이동',
   'Deseleziona tutti': '모두 선택 해제',
   "Seleziona l'account {name}": '{name} 계정 선택',
   'Seleziona tutti': '모두 선택',
@@ -593,8 +600,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '변경 사항을 찾았습니다(예: 클라우드 폴더를 통한 다른 기기의 변경):',
   'Sostituire la password dell’account?': '계정의 비밀번호를 바꿀까요?',
-  Sposta: '이동',
-  'Sposta in...': '이동할 위치...',
   'Sposta nel cestino': '휴지통으로 이동',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     '"{name}"{detail} 계정을 휴지통으로 이동할까요?',

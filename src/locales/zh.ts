@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella creata': '文件夹已创建',
+  'Cerca applicazione': '搜索应用程序',
+  'Cerca applicazione…': '搜索应用程序…',
+  'Elementi spostati': '项目已移动',
+  'Nome della nuova cartella': '新文件夹名称',
+  'Nuova cartella…': '新建文件夹…',
+  'Sposta in': '移动到',
   'Deseleziona tutti': '取消全选',
   "Seleziona l'account {name}": '选择账户 {name}',
   'Seleziona tutti': '全选',
@@ -574,8 +581,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '发现了更改（例如来自通过云文件夹同步的其他设备）：',
   'Sostituire la password dell’account?': '替换该账户的密码？',
-  Sposta: '移动',
-  'Sposta in...': '移动到...',
   'Sposta nel cestino': '移至回收站',
   'Spostare nel cestino l\'account "{name}"{detail}?': '将账户“{name}”{detail}移至回收站？',
   'Spostare nel cestino l\'elemento "{name}"{detail}?': '将项目“{name}”{detail}移至回收站？',
