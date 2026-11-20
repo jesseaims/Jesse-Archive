@@ -2080,14 +2080,45 @@ export default function App() {
                       )}
                       {appsList && (
                         <div className="apps-picker">
-                          <input
-                            autoFocus
-                            className="apps-picker-search"
-                            aria-label={t('Cerca applicazione')}
-                            placeholder={t('Cerca applicazione…')}
-                            value={appsQuery}
-                            onChange={(e) => setAppsQuery(e.target.value)}
-                          />
+                          <div className="apps-picker-top">
+                            <input
+                              autoFocus
+                              className="apps-picker-search"
+                              aria-label={t('Cerca applicazione')}
+                              placeholder={t('Cerca applicazione…')}
+                              value={appsQuery}
+                              onChange={(e) => setAppsQuery(e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              className="secondary"
+                              title={t('Scegli il file .exe o il collegamento dell’applicazione')}
+                              onClick={async () => {
+                                const path = await picker('app');
+                                if (!path) return;
+                                const r = await run<{ name: string; icon: string }>('app_info', {
+                                  path,
+                                });
+                                if (!r) return;
+                                setGroupIcon(r.icon || '');
+                                setDraft((x) => ({
+                                  ...x,
+                                  gk: 'app:' + r.name.toLowerCase().trim().replace(/\s+/g, '-'),
+                                  src: 'app',
+                                  title: x.title || r.name,
+                                }));
+                                setAppsList(null);
+                              }}
+                            >
+                              <Folder size={15} />
+                              {t('Sfoglia…')}
+                            </button>
+                          </div>
+                          <p className="apps-picker-hint">
+                            {t(
+                              'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».',
+                            )}
+                          </p>
                           <div className="apps-picker-list" role="listbox">
                             {appsList.length ? (
                               appsList

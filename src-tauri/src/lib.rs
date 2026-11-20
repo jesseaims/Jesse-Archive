@@ -100,6 +100,9 @@ fn choose_file(mode: String) -> Result<Option<String>, String> {
         "icon" => dialog
             .add_filter("Immagini", &["png", "jpg", "jpeg", "ico"])
             .pick_file(),
+        "app" => dialog
+            .add_filter("Applicazioni", &["exe", "lnk"])
+            .pick_file(),
         _ => dialog.pick_file(),
     };
     if mode == "import" {

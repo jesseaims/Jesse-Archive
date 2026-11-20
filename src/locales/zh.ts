@@ -2,6 +2,10 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    '“开始”菜单中的应用程序。如果没有，请用“浏览…”选择其文件。',
+  'Scegli il file .exe o il collegamento dell’applicazione': '选择应用程序的 .exe 文件或快捷方式',
+  'Sfoglia…': '浏览…',
   'Cartella creata': '文件夹已创建',
   'Cerca applicazione': '搜索应用程序',
   'Cerca applicazione…': '搜索应用程序…',

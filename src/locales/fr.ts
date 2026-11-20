@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'Applications du menu Démarrer. S’il en manque une, choisissez son fichier avec « Parcourir… ».',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'Choisissez le fichier .exe ou le raccourci de l’application',
+  'Sfoglia…': 'Parcourir…',
   'Cartella creata': 'Dossier créé',
   'Cerca applicazione': 'Rechercher une application',
   'Cerca applicazione…': 'Rechercher une application…',

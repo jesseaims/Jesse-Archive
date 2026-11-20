@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    '시작 메뉴의 애플리케이션입니다. 없으면 “찾아보기…”로 파일을 선택하세요.',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    '애플리케이션의 .exe 파일 또는 바로 가기를 선택하세요',
+  'Sfoglia…': '찾아보기…',
   'Cartella creata': '폴더를 만들었습니다',
   'Cerca applicazione': '애플리케이션 검색',
   'Cerca applicazione…': '애플리케이션 검색…',

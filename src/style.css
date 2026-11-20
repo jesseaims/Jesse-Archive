@@ -157,6 +157,9 @@ p {
 .folder-nav {
   max-height: 210px;
   overflow: auto;
+  /* With overflow its minimum height is 0: in a window shorter than the sidebar the
+     flex column squeezed the folder list away. The sidebar scrolls instead. */
+  flex-shrink: 0;
 }
 .nav-item {
   height: 42px;
@@ -1153,10 +1156,24 @@ p {
   padding: 6px;
   min-width: 0;
 }
-.apps-picker-search {
+.apps-picker-top {
+  display: flex;
+  gap: 6px;
   flex: none;
-  width: 100%;
+}
+.apps-picker-search {
+  flex: 1;
+  min-width: 0;
   box-sizing: border-box;
+}
+.apps-picker-top button {
+  flex: none;
+}
+.apps-picker-hint {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 11px;
+  color: var(--ui-muted);
 }
 .apps-picker-list {
   display: flex;

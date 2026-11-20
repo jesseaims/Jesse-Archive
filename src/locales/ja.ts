@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'スタートメニューのアプリケーションです。見つからない場合は「参照…」でファイルを選択してください。',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'アプリケーションの .exe ファイルまたはショートカットを選択',
+  'Sfoglia…': '参照…',
   'Cartella creata': 'フォルダーを作成しました',
   'Cerca applicazione': 'アプリケーションを検索',
   'Cerca applicazione…': 'アプリケーションを検索…',

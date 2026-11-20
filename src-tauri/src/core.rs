@@ -1288,6 +1288,11 @@ impl Vault {
             }
             "apps" => Ok(json!({"apps":installed_apps()})),
             "app_icon" => Ok(json!({"icon":app_icon(s(&b,"path"))?})),
+            // Application chosen by hand ("Sfoglia…"): its display name and icon.
+            "app_info" => {
+                let p = s(&b, "path");
+                Ok(json!({"name":app_name(p)?,"icon":app_icon(p)?}))
+            }
             "prefs_set" => {
                 if let Some(c) = b.get("close_action").and_then(V::as_str) {
                     if c != "quit" && c != "tray" {
@@ -2374,6 +2379,46 @@ fn walk_lnk(p: &Path, out: &mut HashMap<String, V>, depth: usize) {
 fn installed_apps() -> Vec<V> {
     Vec::new()
 }
+/// Display name of an executable or shortcut: the file description or product name
+/// from its version information ("Feather Launcher" for FeatherLauncher.exe), else
+/// the file name without extension.
+fn app_name(p: &str) -> Res<String> {
+    let path = Path::new(p);
+    if !path.is_file() {
+        return Err("File non trovato".into());
+    }
+    let stem = path
+        .file_stem()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .trim()
+        .to_string();
+    #[cfg(windows)]
+    {
+        let ps = r#"$v=(Get-Item -LiteralPath $env:JA_PATH).VersionInfo;if($v.FileDescription){$v.FileDescription}elseif($v.ProductName){$v.ProductName}"#;
+        use std::os::windows::process::CommandExt;
+        // A shortcut keeps its own name: it is the one shown in the Start menu.
+        if !p.to_ascii_lowercase().ends_with(".lnk") {
+            if let Ok(out) = std::process::Command::new("powershell")
+                .args(["-NoProfile", "-NonInteractive", "-Command", ps])
+                .env("JA_PATH", p)
+                .creation_flags(0x08000000)
+                .output()
+            {
+                let name: String = String::from_utf8_lossy(&out.stdout)
+                    .trim()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(80)
+                    .collect();
+                if !name.is_empty() {
+                    return Ok(name);
+                }
+            }
+        }
+    }
+    Ok(stem)
+}
 fn app_icon(p: &str) -> Res<String> {
     #[cfg(windows)]
     {
@@ -2593,6 +2638,40 @@ mod vault_tests {
         assert_eq!(read_config_key(&v.config, "unlock_fails"), json!(0));
         v.call("lock", json!({})).unwrap();
         assert!(v.call("unlock", bad).unwrap_err().ends_with("non corretti"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[cfg(windows)]
+    #[test]
+    fn app_name_reads_the_file_description() {
+        let windir = std::env::var("WINDIR").unwrap_or_else(|_| "C:\\Windows".into());
+        let notepad = format!("{windir}\\System32\\notepad.exe");
+        let name = app_name(&notepad).unwrap();
+        // The description ("Notepad", "Blocco note"…) rather than the bare file name.
+        assert!(!name.is_empty() && name != "notepad", "{name}");
+        assert!(app_name("C:\\percorso\\inesistente.exe").is_err());
+    }
+    #[test]
+    fn new_folders_are_kept() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        let item = v
+            .call("item", json!({"type": "login", "title": "Sito", "f": {}}))
+            .unwrap()["id"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let state = v.call("folder", json!({"name": "Lavoro"})).unwrap()["state"].clone();
+        let folders = array(&state, "folders");
+        assert_eq!(folders.len(), 1, "{state}");
+        let fid = s(&folders[0], "id").to_string();
+        v.call("bulk", json!({"ids": [item], "op": "move", "folder": fid}))
+            .unwrap();
+        v.call("lock", json!({})).unwrap();
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        assert_eq!(array(&v.data, "folders").len(), 1);
+        assert_eq!(s(&array(&v.data, "items")[0], "folder"), fid);
         fs::remove_dir_all(dir).unwrap();
     }
     /// Synthetic Kaspersky Password Manager text export (no real data).
