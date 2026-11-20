@@ -171,7 +171,9 @@ fn decide(items: &[V], never: &[V], p: &Pending) -> Mode {
 }
 
 /// Items and excluded sites, or `None` when the vault is locked.
-fn vault_view(app: &tauri::AppHandle) -> Result<Option<(Vec<V>, Vec<V>)>, String> {
+/// Login items and excluded sites; `None` while the vault is locked.
+type VaultView = Option<(Vec<V>, Vec<V>)>;
+fn vault_view(app: &tauri::AppHandle) -> Result<VaultView, String> {
     let state = app.state::<AppState>();
     let mut vault = state.vault()?;
     if vault.call("status", json!({}))?["unlocked"] != true {

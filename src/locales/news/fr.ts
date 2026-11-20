@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'unlock-throttling': [
+    'Protection contre les tentatives de deviner le mot de passe',
+    'Après 5 tentatives erronées d’affilée pour déverrouiller le coffre (mot de passe principal ou code de récupération), Jesse’s Archive vous fait attendre 30 secondes avant l’essai suivant, en doublant à chaque fois jusqu’à 15 minutes. Le compteur résiste au redémarrage de l’application et s’efface au premier déverrouillage réussi.',
+  ],
   'save-new-logins': [
     'Enregistrez les nouveaux comptes depuis le navigateur',
     'Quand vous vous inscrivez sur un site, ou vous connectez avec un compte qui n’est pas encore dans le coffre, Jesse’s Archive vous demande s’il faut l’enregistrer : nom, identifiant ou e-mail, mot de passe et, si vous le souhaitez, les autres données saisies forment un nouveau compte pour ce site. Si vous changez un mot de passe sur un site, il propose de mettre à jour celui enregistré. Rien n’est enregistré sans votre confirmation, et vous pouvez le désactiver ou exclure des sites dans les Paramètres. Nécessite l’extension mise à jour.',

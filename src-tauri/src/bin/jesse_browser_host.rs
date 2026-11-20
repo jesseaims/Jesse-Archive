@@ -1,3 +1,5 @@
+// Shared with the app; the relay does not use every constant (HOST).
+#[allow(dead_code)]
 #[path = "../browser_protocol.rs"]
 mod protocol;
 use serde_json::{json, Value};

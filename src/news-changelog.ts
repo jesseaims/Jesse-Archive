@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'unlock-throttling',
+    addedAt: '2026-11-20T17:00:00+01:00',
+    version: 'Beta 1.3.1',
+    title: 'Protezione contro chi prova a indovinare la password',
+    description:
+      'Dopo 5 tentativi errati di fila di sbloccare il vault (password principale o codice di recupero), Jesse’s Archive fa attendere 30 secondi prima del tentativo successivo, il doppio ogni volta fino a 15 minuti. Il conteggio resta anche riavviando l’app e si azzera al primo sblocco corretto.',
+    icon: 'shield',
+  },
+  {
     id: 'save-new-logins',
     addedAt: '2026-11-20T12:00:00+01:00',
     version: 'Beta 1.3.0',

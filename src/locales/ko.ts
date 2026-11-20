@@ -2,6 +2,10 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    '잘못된 시도가 너무 많습니다: {n}초 후에 다시 시도하세요',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    '비밀번호 또는 복구 코드가 올바르지 않습니다. 시도가 너무 많습니다: {n}초 후에 다시 시도하세요',
   'Aggiorna password': '비밀번호 업데이트',
   'Aggiornare la password?': '비밀번호를 업데이트할까요?',
   'Campo {n}': '항목 {n}',

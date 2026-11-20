@@ -2,6 +2,10 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    '誤った試行が多すぎます：{n} 秒後にもう一度お試しください',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'パスワードまたは復旧コードが正しくありません。試行が多すぎます：{n} 秒後にもう一度お試しください',
   'Aggiorna password': 'パスワードを更新',
   'Aggiornare la password?': 'パスワードを更新しますか？',
   'Campo {n}': '項目 {n}',

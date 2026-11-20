@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'unlock-throttling': [
+    'Protección contra quien intenta adivinar la contraseña',
+    'Tras 5 intentos fallidos seguidos de desbloquear el vault (contraseña maestra o código de recuperación), Jesse’s Archive te hace esperar 30 segundos antes del siguiente, el doble cada vez hasta 15 minutos. El recuento se mantiene al reiniciar la app y se borra con el primer desbloqueo correcto.',
+  ],
   'save-new-logins': [
     'Guarda las cuentas nuevas desde el navegador',
     'Cuando te registras en un sitio, o inicias sesión con una cuenta que aún no está en el vault, Jesse’s Archive te pregunta si quieres guardarla: nombre, usuario o correo, contraseña y, si quieres, los demás datos introducidos pasan a una cuenta nueva para ese sitio. Si cambias una contraseña en un sitio, te ofrece actualizar la guardada. No se guarda nada sin tu confirmación, y puedes desactivarlo o excluir sitios en Ajustes. Requiere la extensión actualizada.',

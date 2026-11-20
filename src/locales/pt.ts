@@ -2,6 +2,10 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    'Demasiadas tentativas erradas: tenta novamente dentro de {n} segundos',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'Palavra-passe ou código de recuperação incorretos. Demasiadas tentativas: tenta novamente dentro de {n} segundos',
   'Aggiorna password': 'Atualizar palavra-passe',
   'Aggiornare la password?': 'Atualizar a palavra-passe?',
   'Campo {n}': 'Campo {n}',

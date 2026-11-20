@@ -45,9 +45,8 @@ async fn api(
     name: String,
     body: Value,
 ) -> Result<Value, String> {
-    let mut core = state.vault().map_err(|e| {
+    let mut core = state.vault().inspect_err(|_| {
         let _ = app.emit("vault-locked", ());
-        e
     })?;
     let was_unlocked = core.unlocked();
     let result = core.call(&name, body);

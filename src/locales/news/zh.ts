@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'unlock-throttling': [
+    '防止猜测密码',
+    '连续 5 次解锁保险库失败（主密码或恢复码）后，Jesse’s Archive 会让你等待 30 秒再试，之后每次等待时间加倍，最长 15 分钟。重启应用后计数仍然保留，首次正确解锁后清零。',
+  ],
   'save-new-logins': [
     '从浏览器保存新账户',
     '当你在网站上注册，或使用尚未保存在保险库中的账户登录时，Jesse’s Archive 会询问是否保存：名称、用户名或电子邮件、密码，以及你愿意的话，其他输入的信息都会保存为该网站的新账户。如果你在网站上更改了密码，它会提议更新已保存的密码。未经你确认不会保存任何内容，你也可以在设置中关闭此功能或排除网站。需要更新后的扩展。',

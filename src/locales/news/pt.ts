@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'unlock-throttling': [
+    'Proteção contra quem tenta adivinhar a palavra-passe',
+    'Após 5 tentativas erradas seguidas de desbloquear o cofre (palavra-passe principal ou código de recuperação), o Jesse’s Archive faz-te esperar 30 segundos antes da seguinte, o dobro de cada vez até 15 minutos. A contagem mantém-se ao reiniciar a app e é apagada no primeiro desbloqueio correto.',
+  ],
   'save-new-logins': [
     'Guarda contas novas a partir do navegador',
     'Quando te registas num site, ou inicias sessão com uma conta que ainda não está no cofre, o Jesse’s Archive pergunta se a queres guardar: nome, utilizador ou email, palavra-passe e, se quiseres, os outros dados introduzidos passam a uma conta nova para esse site. Se mudares uma palavra-passe num site, propõe atualizar a guardada. Nada é guardado sem a tua confirmação, e podes desativar a função ou excluir sites nas Definições. Requer a extensão atualizada.',

@@ -31,7 +31,7 @@ I parametri KDF sono fissati nel codice, non negoziati dall'envelope. Non cambia
 
 ## Sblocco, recupero e rotazione
 
-`Vault::call("unlock")` legge l'envelope, sceglie il wrapper master o recupero, ricava la DEK e decifra i dati. Un fallimento crittografico incrementa `fails` e produce un errore generico di password/recupero. Il Rust non usa quel contatore per rallentare o bloccare tentativi ulteriori.
+`Vault::call("unlock")` legge l'envelope, sceglie il wrapper master o recupero, ricava la DEK e decifra i dati. Un fallimento crittografico produce un errore generico di password/recupero e incrementa il contatore dei tentativi errati. Dalla Beta 1.3.1 i primi 5 errori consecutivi sono liberi; poi ogni tentativo, anche con la password giusta, è rifiutato finché non passano 30 secondi, che raddoppiano a ogni errore fino a 15 minuti. Il contatore (`unlock_fails`, `unlock_last_fail`) è nella configurazione del dispositivo, così riavviare l'app non lo azzera; l'attesa residua è limitata al passo corrente, così spostare l'orologio indietro non allunga il blocco. Il rifiuto è immediato: nessuna attesa trattiene il vault. Vale per chi usa l'app su questo PC: chi copia il file del vault o modifica la configurazione aggira il contatore, e lì protegge solo il costo di scrypt.
 
 `master` richiede la password corrente e riscrive il wrapper master. `recovery_new` verifica la master e rigenera il wrapper del recupero. Il recupero può impostare una nuova master. La **DEK resta la stessa**: è una rotazione delle protezioni della chiave, non della chiave dati. Un backup con wrapper precedente può consentire di recuperare la stessa DEK tramite credenziali precedenti. Non descrivere questa procedura come revoca globale su tutte le copie.
 
@@ -171,7 +171,7 @@ Le priorità seguenti sono valutazioni documentali per orientare una futura revi
 | ID | Evidenza e impatto | Verifica/proposta |
 |---|---|---|
 | SEC-01 | Attenuata: scadenza su ogni comando, thread di blocco ogni 5 s, `vault-locked` emesso su ogni transizione, `wipeSession` nella UI; collaudo manuale nell'app reale superato (Beta 1.1.19: senza interazione, finestra nel tray, pannello rapido e ricerca rapida) | Media: la memoria JavaScript non è cancellata in modo verificabile (vedere SEC-03) |
-| SEC-02 | `unlock`: `fails` incrementato senza backoff nel Rust | Valutare limitazione tentativi locali e relativi test; non attribuire il backoff Python al prodotto attivo |
+| SEC-02 | Attenuata (Beta 1.3.1): rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii, testato in `core.rs` | Bassa: il contatore è nella configurazione del dispositivo, non protetta; contro una copia del file vale solo scrypt |
 | SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
 | SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
 | SEC-05 | Attenuata: `validate_import` rifiuta payload malformati, `ensure_shape` garantisce la forma usata da `arr`/`obj`, `import`/`unpack` ripristinano la memoria se falliscono, e un mutex del vault avvelenato da un panic viene recuperato da `AppState::vault` bloccando il vault (dati su disco intatti). Restano `unwrap` interni e nessuno schema completo dei campi | Media: estendere i controlli alle altre route (`item`, `bulk`) e ai mutex di `browser.rs` |

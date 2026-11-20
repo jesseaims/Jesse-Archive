@@ -31,6 +31,8 @@ export const RUNTIME_KEYS = [
   'Password principale: minimo 8 caratteri',
   'Password principale non corretta',
   'Password o codice di recupero non corretti',
+  'Troppi tentativi errati: riprova tra {n} secondi',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi',
   'Password vuota',
   'Password non trovata',
   "Password attuale: modificala nell'elemento",

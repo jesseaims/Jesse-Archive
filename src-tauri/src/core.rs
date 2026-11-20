@@ -444,6 +444,17 @@ fn write_config_key(path: &Path, k: &str, val: V) -> Res<()> {
     fs::create_dir_all(path.parent().ok_or("config path")?).map_err(err)?;
     fs::write(path, serde_json::to_vec(&c).map_err(err)?).map_err(err)
 }
+/// Wrong unlock attempts (password or recovery code) allowed without waiting; after
+/// them each attempt waits 30 s, doubling up to 15 minutes. Against someone using the
+/// app on this PC: a copy of the vault file is protected by scrypt, not by this.
+const FREE_UNLOCK_ATTEMPTS: u32 = 5;
+const MAX_UNLOCK_WAIT: f64 = 900.;
+fn unlock_wait(fails: u32) -> f64 {
+    match fails.checked_sub(FREE_UNLOCK_ATTEMPTS) {
+        None => 0.,
+        Some(extra) => (30. * 2f64.powi(extra.min(10) as i32)).min(MAX_UNLOCK_WAIT),
+    }
+}
 /// Per-device preference that must work while the vault is locked (e.g. zoom).
 pub fn device_pref(k: &str) -> V {
     read_config_key(&device_config_path(), k)
@@ -696,6 +707,26 @@ impl Vault {
                 if !self.path.exists() {
                     return Err("Nessun vault trovato".into());
                 }
+                // Wrong attempts are counted in the device configuration, so restarting
+                // the app does not reset them. The remaining wait is bounded, so moving
+                // the clock back cannot lock the user out for longer.
+                let fails = self.fails.max(
+                    read_config_key(&self.config, "unlock_fails")
+                        .as_u64()
+                        .unwrap_or(0)
+                        .min(u32::MAX as u64) as u32,
+                );
+                let last_fail = read_config_key(&self.config, "unlock_last_fail")
+                    .as_f64()
+                    .unwrap_or(0.);
+                let wait = unlock_wait(fails);
+                let remaining = (last_fail + wait - now()).clamp(0., wait);
+                if remaining > 0. {
+                    return Err(format!(
+                        "Troppi tentativi errati: riprova tra {} secondi",
+                        remaining.ceil() as u64
+                    ));
+                }
                 let h: V =
                     serde_json::from_slice(&fs::read(&self.path).map_err(err)?).map_err(err)?;
                 let is_rec = !s(&b, "recovery").is_empty();
@@ -724,11 +755,26 @@ impl Vault {
                 let (dek, mut data) = match decryption {
                     Ok(x) => x,
                     Err(_) => {
-                        self.fails += 1;
+                        self.fails = fails.saturating_add(1);
+                        // Best effort: if the configuration cannot be written, the count
+                        // still applies in memory until the app closes.
+                        let _ = write_config_key(&self.config, "unlock_fails", json!(self.fails));
+                        let _ = write_config_key(&self.config, "unlock_last_fail", json!(now()));
+                        let wait = unlock_wait(self.fails);
+                        if wait > 0. {
+                            return Err(format!(
+                                "Password o codice di recupero non corretti. Troppi tentativi: riprova tra {} secondi",
+                                wait as u64
+                            ));
+                        }
                         return Err("Password o codice di recupero non corretti".into());
                     }
                 };
                 ensure_shape(&mut data)?;
+                if fails > 0 {
+                    let _ = write_config_key(&self.config, "unlock_fails", json!(0));
+                    let _ = write_config_key(&self.config, "unlock_last_fail", V::Null);
+                }
                 self.header = h;
                 self.header.as_object_mut().unwrap().remove("data");
                 self.key = Some(dek);
@@ -2071,11 +2117,11 @@ fn app_icon(p: &str) -> Res<String> {
             .output()
             .map_err(err)?;
         let b = String::from_utf8_lossy(&out.stdout).trim().to_string();
-        return Ok(if b.len() > 100 {
+        Ok(if b.len() > 100 {
             format!("data:image/png;base64,{b}")
         } else {
             String::new()
-        });
+        })
     }
     #[cfg(not(windows))]
     {
@@ -2199,7 +2245,7 @@ mod legacy_python_vectors {
             serde_json::from_str(include_str!("../../fixtures/legacy_v1_synthetic.json")).unwrap();
         let h = &f["header"];
         let got = kdf(s(&f, "password"), &decode(h, "salt").unwrap()).unwrap();
-        assert_eq!(hex::encode(&*got), s(&f, "expected_kdf_hex"));
+        assert_eq!(hex::encode(*got), s(&f, "expected_kdf_hex"));
         let dek = unseal(&got, s(h, "wrap")).unwrap();
         assert_eq!(hex::encode(&dek), s(&f, "expected_dek_hex"));
         let dek: [u8; 32] = dek.try_into().unwrap();
@@ -2230,6 +2276,52 @@ mod vault_tests {
             fails: 0,
         };
         (v, dir)
+    }
+    #[test]
+    fn unlock_wait_grows_and_is_capped() {
+        for fails in 0..FREE_UNLOCK_ATTEMPTS {
+            assert_eq!(unlock_wait(fails), 0.);
+        }
+        assert_eq!(unlock_wait(5), 30.);
+        assert_eq!(unlock_wait(6), 60.);
+        assert_eq!(unlock_wait(9), 480.);
+        assert_eq!(unlock_wait(10), MAX_UNLOCK_WAIT);
+        assert_eq!(unlock_wait(u32::MAX), MAX_UNLOCK_WAIT);
+    }
+    #[test]
+    fn wrong_unlock_attempts_are_throttled_and_survive_a_restart() {
+        let (mut v, dir) = test_vault();
+        let good = json!({"password": "password-sintetica"});
+        let bad = json!({"password": "sbagliata-sintetica"});
+        v.call("create", good.clone()).unwrap();
+        v.call("lock", json!({})).unwrap();
+        for attempt in 1..=FREE_UNLOCK_ATTEMPTS {
+            let e = v.call("unlock", bad.clone()).unwrap_err();
+            assert_eq!(
+                e.contains("riprova tra 30 secondi"),
+                attempt == FREE_UNLOCK_ATTEMPTS,
+                "{attempt}: {e}"
+            );
+        }
+        // Even the right password waits, also after a restart (new Vault, same config).
+        let e = v.call("unlock", good.clone()).unwrap_err();
+        assert!(e.starts_with("Troppi tentativi errati: riprova tra"), "{e}");
+        let (mut restarted, other) = test_vault();
+        restarted.path = v.path.clone();
+        restarted.config = v.config.clone();
+        assert!(restarted.call("unlock", good.clone()).is_err());
+        fs::remove_dir_all(other).unwrap();
+        // A clock moved back never makes the wait longer than the current step.
+        write_config_key(&v.config, "unlock_last_fail", json!(now() + 1e6)).unwrap();
+        let e = v.call("unlock", good.clone()).unwrap_err();
+        assert!(e.contains("riprova tra 30 secondi"), "{e}");
+        // After the wait the right password works and clears the count.
+        write_config_key(&v.config, "unlock_last_fail", json!(now() - 31.)).unwrap();
+        v.call("unlock", good.clone()).unwrap();
+        assert_eq!(read_config_key(&v.config, "unlock_fails"), json!(0));
+        v.call("lock", json!({})).unwrap();
+        assert!(v.call("unlock", bad).unwrap_err().ends_with("non corretti"));
+        fs::remove_dir_all(dir).unwrap();
     }
     // 7 characters but 14 UTF-8 bytes, and 8 characters / 16 bytes.
     const SHORT_ACCENTED: &str = "àèìòùéç";

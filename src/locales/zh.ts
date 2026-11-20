@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Troppi tentativi errati: riprova tra {n} secondi': '错误尝试次数过多：请在 {n} 秒后重试',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    '密码或恢复码不正确。尝试次数过多：请在 {n} 秒后重试',
   'Aggiorna password': '更新密码',
   'Aggiornare la password?': '更新密码？',
   'Campo {n}': '字段 {n}',

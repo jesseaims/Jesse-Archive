@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'unlock-throttling': [
+    'Schutz gegen das Erraten des Passworts',
+    'Nach 5 falschen Versuchen in Folge, den Tresor zu entsperren (Master-Passwort oder Wiederherstellungscode), lässt dich Jesse’s Archive 30 Sekunden bis zum nächsten Versuch warten, jedes Mal doppelt so lange bis zu 15 Minuten. Der Zähler bleibt auch nach einem Neustart der App erhalten und wird beim ersten richtigen Entsperren gelöscht.',
+  ],
   'save-new-logins': [
     'Neue Konten direkt aus dem Browser speichern',
     'Wenn du dich auf einer Website registrierst oder mit einem Konto anmeldest, das noch nicht im Tresor ist, fragt Jesse’s Archive, ob es gespeichert werden soll: Name, Benutzername oder E-Mail, Passwort und auf Wunsch die übrigen eingegebenen Daten werden ein neues Konto für diese Website. Wenn du auf einer Website ein Passwort änderst, bietet es an, das gespeicherte zu aktualisieren. Ohne deine Bestätigung wird nichts gespeichert; in den Einstellungen kannst du die Funktion ausschalten oder Websites ausschließen. Erfordert die aktualisierte Erweiterung.',
