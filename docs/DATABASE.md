@@ -41,6 +41,7 @@ Le configurazioni locali non fanno parte degli export del vault. Non leggerne o 
 | `rsalt` | Sale separato Base64 del wrapper di recupero |
 | `rwrap` | Stessa DEK protetta dal codice di recupero normalizzato |
 | `hv` | Timestamp dell'header, usato anche da `adopt` per il confronto |
+| `mac` | Dalla Beta 1.6.0: HMAC-SHA256 Base64 di `v`, `salt`, `wrap`, `rsalt`, `rwrap`, `hv` (JSON con chiavi ordinate) con una chiave derivata dalla DEK (`HMAC(DEK, "jesse-archive header mac v1")`). Riscritto a ogni salvataggio; i vault precedenti lo ricevono al primo salvataggio. Le versioni precedenti lo ignorano e lo conservano. `serde_json` usa `float_roundtrip`: senza, alcuni `hv` riletti dal file differivano di un bit e il `mac` falliva a caso (test `header_mac_survives_writing_and_reading_the_file`) |
 | `data` | Payload JSON cifrato con la DEK |
 
 I blob `wrap`, `rwrap`, `data` usano lo stesso encoding `Base64(nonce || ciphertext || tag)`. I timestamp applicativi sono normalmente secondi Unix `f64`; i timestamp delle News sono invece stringhe ISO 8601 e non appartengono al vault.

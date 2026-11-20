@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
+    '同时更换加密数据的密钥：旧密码将无法再打开保险库，即使是它的副本。你会收到一个新的恢复码，请妥善保存。如果你在其他电脑上使用此保险库，请将它们更新到此版本：已打开的会被锁定并要求输入新密码。',
+  'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':
+    '旧的恢复码将失效：加密数据的密钥也会更换。',
+  'La vecchia password potrebbe essere stata scoperta': '旧密码可能已经泄露',
+  'La chiave del vault è stata cambiata su un altro dispositivo: sbloccalo con la password principale attuale.':
+    '保险库密钥已在另一台设备上更改：请使用当前主密码解锁。',
   'Importa da un altro password manager o da un file': '从其他密码管理器或文件导入',
   'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
     'Bitwarden 导出已加密：请导出为未加密的 JSON 或 CSV',

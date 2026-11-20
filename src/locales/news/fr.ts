@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'Meilleure protection lors du changement de mot de passe principal',
+    'L’en-tête du coffre est désormais signé avec une clé que vous seul pouvez obtenir : une ancienne copie placée dans le dossier du coffre (par exemple par quelqu’un ayant accès à votre cloud) ne peut plus faire revenir un ancien mot de passe principal. En changeant le mot de passe principal, vous pouvez cocher « L’ancien mot de passe a peut-être été découvert » : la clé qui chiffre les données change aussi, l’ancien mot de passe n’ouvre plus le coffre, même à partir d’une copie, et vous recevez un nouveau code de récupération à conserver. Un nouveau code de récupération change toujours aussi la clé. Si vous utilisez le coffre sur plusieurs PC, mettez-les tous à jour d’abord.',
+  ],
   'universal-import': [
     'Importez depuis les principaux gestionnaires de mots de passe',
     'L’import reconnaît désormais les fichiers de Bitwarden (CSV et JSON non chiffré), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass et KeePassXC (CSV et XML), RoboForm ainsi que de Chrome, Edge, Brave, Opera, Firefox et Mots de passe d’Apple. Avant l’import, un aperçu indique le programme reconnu et le nombre d’éléments trouvés ; pour les CSV, vous pouvez vérifier et changer le champ de chaque colonne, ce qui permet d’importer aussi les fichiers d’autres programmes.',

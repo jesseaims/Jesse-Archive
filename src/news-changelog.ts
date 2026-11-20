@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'vault-header-key-rotation',
+    addedAt: '2026-11-20T23:00:00+01:00',
+    version: 'Beta 1.6.0',
+    title: 'Più protezione quando cambi la password principale',
+    description:
+      'L’intestazione del vault ora è firmata con una chiave che solo tu puoi ottenere: una vecchia copia messa nella cartella del vault (per esempio da chi ha accesso al tuo cloud) non può più riportare in vita una vecchia password principale. Quando cambi la password principale puoi spuntare «La vecchia password potrebbe essere stata scoperta»: cambia anche la chiave che cifra i dati, così la vecchia password non apre più il vault nemmeno da una copia, e ricevi un nuovo codice di recupero da salvare. Anche un nuovo codice di recupero cambia sempre la chiave. Se usi il vault su più PC, aggiornali prima tutti.',
+    icon: 'shield',
+  },
+  {
     id: 'universal-import',
     addedAt: '2026-11-20T21:00:00+01:00',
     version: 'Beta 1.5.0',

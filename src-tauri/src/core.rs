@@ -86,6 +86,8 @@ fn seal(k: &[u8; 32], plain: &[u8]) -> Res<String> {
     raw.extend(cipher);
     Ok(B64.encode(raw))
 }
+const AUTH_FAILED: &str = "Autenticazione AES-GCM fallita";
+const REKEYED: &str = "La chiave del vault è stata cambiata su un altro dispositivo: sbloccalo con la password principale attuale.";
 fn unseal(k: &[u8; 32], blob: &str) -> Res<Vec<u8>> {
     let raw = B64.decode(blob).map_err(err)?;
     if raw.len() < 28 {
@@ -94,7 +96,7 @@ fn unseal(k: &[u8; 32], blob: &str) -> Res<Vec<u8>> {
     Aes256Gcm::new_from_slice(k)
         .map_err(err)?
         .decrypt(Nonce::from_slice(&raw[..12]), &raw[12..])
-        .map_err(|_| "Autenticazione AES-GCM fallita".into())
+        .map_err(|_| AUTH_FAILED.into())
 }
 fn decode(v: &V, k: &str) -> Res<Vec<u8>> {
     B64.decode(s(v, k)).map_err(err)
@@ -117,6 +119,34 @@ fn recovery() -> String {
         out.push(alphabet[(b[0] as usize) % alphabet.len()] as char)
     }
     out
+}
+/// Authentication of the vault header (version, salts, wrapped keys, `hv`) with a key
+/// derived from the DEK: only someone who can open the vault can produce it. Without
+/// it, a copy placed in the vault folder with an old header and a higher `hv` was
+/// adopted, bringing back an old master password or making the vault unreadable.
+fn header_mac_engine(dek: &[u8; 32], h: &V) -> Res<hmac::Hmac<sha2::Sha256>> {
+    use hmac::{Hmac, Mac};
+    use sha2::Sha256;
+    let mut derive = <Hmac<Sha256> as Mac>::new_from_slice(dek).map_err(err)?;
+    derive.update(b"jesse-archive header mac v1");
+    let key = Zeroizing::new(derive.finalize().into_bytes());
+    // serde_json maps keep their keys sorted: the same header always gives the same text.
+    let fields = json!({"v":h["v"],"salt":h["salt"],"wrap":h["wrap"],"rsalt":h["rsalt"],"rwrap":h["rwrap"],"hv":h["hv"]});
+    let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(&key).map_err(err)?;
+    mac.update(&serde_json::to_vec(&fields).map_err(err)?);
+    Ok(mac)
+}
+fn header_mac(dek: &[u8; 32], h: &V) -> Res<String> {
+    use hmac::Mac;
+    Ok(B64.encode(header_mac_engine(dek, h)?.finalize().into_bytes()))
+}
+/// Constant-time check of the header's `mac` (`verify_slice`).
+fn header_mac_ok(dek: &[u8; 32], h: &V) -> bool {
+    use hmac::Mac;
+    match (B64.decode(s(h, "mac")), header_mac_engine(dek, h)) {
+        (Ok(given), Ok(mac)) => mac.verify_slice(&given).is_ok(),
+        _ => false,
+    }
 }
 fn wrapped(secret: &str, dek: &[u8; 32]) -> Res<(String, String)> {
     let salt = rand_bytes::<16>();
@@ -551,8 +581,14 @@ impl Vault {
         ensure_shape(&mut d)?;
         Ok((h, d))
     }
+    /// Takes the header of another copy only if it is newer and authenticated with the
+    /// current key: an old header with an inflated `hv`, or one without `mac` (written by
+    /// a version before 1.6.0), is ignored.
     fn adopt(&mut self, h: &V) {
-        if num(h, "hv") > num(&self.header, "hv") {
+        let Some(key) = self.key.as_ref() else {
+            return;
+        };
+        if num(h, "hv") > num(&self.header, "hv") && header_mac_ok(key, h) {
             let mut v = h.clone();
             v.as_object_mut().map(|o| o.remove("data"));
             self.header = v
@@ -564,13 +600,24 @@ impl Vault {
         }
         let sign = sig(&self.path);
         if sign.is_some() && sign != self.signature {
-            if let Ok((h, remote)) = self.read(&self.path) {
-                if merge_data(&mut self.data, &remote) {
-                    self.rev += 1;
+            match self.read(&self.path) {
+                Ok((h, remote)) => {
+                    if merge_data(&mut self.data, &remote) {
+                        self.rev += 1;
+                    }
+                    self.adopt(&h);
+                    self.push |= self.data != remote || num(&h, "hv") < num(&self.header, "hv");
+                    self.signature = sign;
                 }
-                self.adopt(&h);
-                self.push |= self.data != remote || num(&h, "hv") < num(&self.header, "hv");
-                self.signature = sign;
+                // The file is readable but this key no longer opens it: another device
+                // re-encrypted the vault with a new key. Writing now would overwrite its
+                // data with the old key, so this session closes instead.
+                Err(e) if e == AUTH_FAILED => {
+                    self.lock();
+                    return Err(REKEYED.into());
+                }
+                // Partial write of a sync client: retried at the next synchronization.
+                Err(_) => {}
             }
         }
         // Do not rename conflict files automatically: preserve cloud copies until the user has a verified backup.
@@ -615,16 +662,47 @@ impl Vault {
     }
     fn save(&mut self) -> Res<()> {
         self.pull()?;
+        self.write_out()
+    }
+    /// Writes the vault with the current key; the header is authenticated every time.
+    fn write_out(&mut self) -> Res<()> {
+        let key = Zeroizing::new(**self.key.as_ref().ok_or("Vault bloccato")?);
+        self.header["mac"] = json!(header_mac(&key, &self.header)?);
         let mut h = self.header.clone();
-        h["data"] = json!(seal(
-            &**self.key.as_ref().ok_or("Vault bloccato")?,
-            &serde_json::to_vec(&self.data).map_err(err)?
-        )?);
+        h["data"] = json!(seal(&key, &serde_json::to_vec(&self.data).map_err(err)?)?);
         atomic_write(&self.path, &serde_json::to_vec(&h).map_err(err)?)?;
         self.signature = sig(&self.path);
         self.push = false;
         self.rev += 1;
         Ok(())
+    }
+    /// New data key: everything is re-encrypted, the master password is wrapped again
+    /// and a new recovery code is created (the old one cannot be re-wrapped: only its
+    /// wrapped form is known). Old passwords, recovery codes and copies of the header
+    /// no longer open the data written from now on; existing backups still do.
+    fn rotate_key(&mut self, password: &str) -> Res<String> {
+        // Merge what other devices wrote while the old key still opens it.
+        self.pull()?;
+        let dek = Zeroizing::new(rand_bytes::<32>());
+        let rec = recovery();
+        let (salt, wrap) = wrapped(password, &dek)?;
+        let (rsalt, rwrap) = wrapped(&key(&rec), &dek)?;
+        let snapshot = (self.key.clone(), self.header.clone());
+        for (k, v) in [
+            ("salt", salt),
+            ("wrap", wrap),
+            ("rsalt", rsalt),
+            ("rwrap", rwrap),
+        ] {
+            self.header[k] = json!(v);
+        }
+        self.header["hv"] = json!(now());
+        self.key = Some(dek);
+        if let Err(e) = self.write_out() {
+            (self.key, self.header) = snapshot;
+            return Err(e);
+        }
+        Ok(rec)
     }
     fn state(&self) -> V {
         let mut d = self.data.clone();
@@ -1123,6 +1201,11 @@ impl Vault {
                 if !long_enough(s(&b, "new")) {
                     return Err("Minimo 8 caratteri".into());
                 }
+                // "The old password may have been discovered": new data key as well.
+                if b["rotate"] == true {
+                    let rec = self.rotate_key(s(&b, "new"))?;
+                    return Ok(json!({"ok":1,"recovery":rec}));
+                }
                 let (salt, wrap) = wrapped(s(&b, "new"), self.key.as_ref().unwrap())?;
                 self.header["salt"] = json!(salt);
                 self.header["wrap"] = json!(wrap);
@@ -1132,12 +1215,9 @@ impl Vault {
             }
             "recovery_new" => {
                 self.check_master(s(&b, "password"))?;
-                let rec = recovery();
-                let (rsalt, rwrap) = wrapped(&key(&rec), self.key.as_ref().unwrap())?;
-                self.header["rsalt"] = json!(rsalt);
-                self.header["rwrap"] = json!(rwrap);
-                self.header["hv"] = json!(now());
-                self.save()?;
+                // A new recovery code is made when the old one may be known: the data
+                // key changes too, so the old code no longer opens anything new.
+                let rec = self.rotate_key(s(&b, "password"))?;
                 Ok(json!({"recovery":rec}))
             }
             "pack" => {
@@ -2647,6 +2727,175 @@ mod vault_tests {
             fails: 0,
         };
         (v, dir)
+    }
+    /// Second session ("another device") on the same vault file.
+    fn second_session(v: &Vault) -> (Vault, PathBuf) {
+        let (mut other, dir) = test_vault();
+        other.path = v.path.clone();
+        other.config = v.config.clone();
+        (other, dir)
+    }
+    fn header_on_disk(v: &Vault) -> V {
+        serde_json::from_slice(&fs::read(&v.path).unwrap()).unwrap()
+    }
+    fn opens(v: &mut Vault, body: V) -> bool {
+        let _ = v.call("lock", json!({}));
+        // Wrong attempts must not slow the next ones down in these tests.
+        let _ = fs::remove_file(&v.config);
+        v.fails = 0;
+        let ok = v.call("unlock", body).is_ok();
+        let _ = fs::remove_file(&v.config);
+        v.fails = 0;
+        ok
+    }
+    #[test]
+    fn header_mac_survives_writing_and_reading_the_file() {
+        // `hv` is a decimal: without exact float parsing (serde_json float_roundtrip)
+        // some values came back one bit different and their mac failed at random.
+        let dek = rand_bytes::<32>();
+        for _ in 0..5000 {
+            let hv = 1.7e9 + (u32::from_le_bytes(rand_bytes::<4>()) as f64) / 997.0;
+            let mut h = json!({"v":1,"salt":"c2FsZQ==","wrap":"d3JhcA==","rsalt":"cg==","rwrap":"cnc=","hv":hv});
+            h["mac"] = json!(header_mac(&dek, &h).unwrap());
+            let back: V = serde_json::from_slice(&serde_json::to_vec(&h).unwrap()).unwrap();
+            assert!(header_mac_ok(&dek, &back), "hv {hv}");
+        }
+    }
+    #[test]
+    fn forged_or_unsigned_headers_are_not_adopted() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let old = header_on_disk(&v);
+        assert!(header_mac_ok(v.key.as_ref().unwrap(), &old));
+        v.call(
+            "master",
+            json!({"old": "password-uno", "new": "password-due"}),
+        )
+        .unwrap();
+        // A copy with the old header (old password) and the current data, with an
+        // inflated hv: with or without the old mac, it must not be adopted.
+        let current = header_on_disk(&v);
+        let copy = v.path.with_file_name("jesse_archive (copia).vault");
+        for keep_mac in [true, false] {
+            let mut forged = old.clone();
+            forged["data"] = current["data"].clone();
+            forged["hv"] = json!(num(&current, "hv") + 1e9);
+            if !keep_mac {
+                forged.as_object_mut().unwrap().remove("mac");
+            }
+            fs::write(&copy, serde_json::to_vec(&forged).unwrap()).unwrap();
+            v.call("item", json!({"type": "note", "title": "dopo"}))
+                .unwrap();
+            assert!(!opens(&mut v, json!({"password": "password-uno"})));
+            assert!(opens(&mut v, json!({"password": "password-due"})));
+        }
+        fs::remove_file(&copy).unwrap();
+        // A real password change made by another device (same key, valid mac) is adopted.
+        let (mut other, odir) = second_session(&v);
+        other
+            .call("unlock", json!({"password": "password-due"}))
+            .unwrap();
+        other
+            .call(
+                "master",
+                json!({"old": "password-due", "new": "password-tre"}),
+            )
+            .unwrap();
+        v.call("ping", json!({})).unwrap();
+        v.call("item", json!({"type": "note", "title": "sync"}))
+            .unwrap();
+        assert!(opens(&mut v, json!({"password": "password-tre"})));
+        fs::remove_dir_all(odir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn rotating_the_key_retires_old_passwords_and_codes() {
+        let (mut v, dir) = test_vault();
+        let rec1 = v
+            .call("create", json!({"password": "password-uno"}))
+            .unwrap()["recovery"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        v.call("item", json!({"type": "note", "title": "segreto"}))
+            .unwrap();
+        let before = header_on_disk(&v);
+        let rec2 = v
+            .call(
+                "master",
+                json!({"old": "password-uno", "new": "password-due", "rotate": true}),
+            )
+            .unwrap()["recovery"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        assert_ne!(rec1, rec2);
+        // Offline: the old password opens the old wrapped key, which no longer decrypts
+        // the current data.
+        let after = header_on_disk(&v);
+        let old_dek: [u8; 32] = unseal(
+            &kdf("password-uno", &decode(&before, "salt").unwrap()).unwrap(),
+            s(&before, "wrap"),
+        )
+        .unwrap()
+        .try_into()
+        .unwrap();
+        assert!(unseal(&old_dek, s(&after, "data")).is_err());
+        // The data is all there under the new key.
+        assert!(opens(&mut v, json!({"password": "password-due"})));
+        assert!(array(&v.data, "items")
+            .iter()
+            .any(|i| s(i, "title") == "segreto"));
+        assert!(!opens(&mut v, json!({"password": "password-uno"})));
+        assert!(!opens(&mut v, json!({"recovery": rec1})));
+        assert!(opens(&mut v, json!({"recovery": rec2.clone()})));
+        // A new recovery code rotates the key too: the previous code stops working.
+        let rec3 = v
+            .call("recovery_new", json!({"password": "password-due"}))
+            .unwrap()["recovery"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        assert!(!opens(&mut v, json!({"recovery": rec2})));
+        assert!(opens(&mut v, json!({"recovery": rec3})));
+        assert!(opens(&mut v, json!({"password": "password-due"})));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn another_open_session_locks_instead_of_overwriting_a_new_key() {
+        let (mut a, dir) = test_vault();
+        a.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let (mut b, bdir) = second_session(&a);
+        b.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        a.call(
+            "master",
+            json!({"old": "password-uno", "new": "password-due", "rotate": true}),
+        )
+        .unwrap();
+        a.call(
+            "item",
+            json!({"type": "note", "title": "dopo la rotazione"}),
+        )
+        .unwrap();
+        let written = fs::read(&a.path).unwrap();
+        // B notices at its next synchronization and closes without writing.
+        assert_eq!(b.call("ping", json!({})).unwrap_err(), REKEYED);
+        assert!(!b.unlocked());
+        assert!(b
+            .call("item", json!({"type": "note", "title": "x"}))
+            .is_err());
+        assert_eq!(fs::read(&a.path).unwrap(), written);
+        // With the new password it opens again and sees A's data.
+        b.call("unlock", json!({"password": "password-due"}))
+            .unwrap();
+        assert!(array(&b.data, "items")
+            .iter()
+            .any(|i| s(i, "title") == "dopo la rotazione"));
+        fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
     }
     #[test]
     fn unlock_wait_grows_and_is_capped() {

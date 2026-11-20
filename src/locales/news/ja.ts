@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'マスターパスワード変更時の保護を強化',
+    '保管庫のヘッダーは、あなただけが得られる鍵で署名されるようになりました。保管庫フォルダーに置かれた古いコピー（クラウドにアクセスできる人によるものなど）で、古いマスターパスワードが復活することはなくなります。マスターパスワードの変更時に「古いパスワードが知られた可能性がある」をオンにすると、データを暗号化する鍵も変わり、古いパスワードではコピーからも保管庫を開けなくなります。保存用の新しい復旧コードも発行されます。新しい復旧コードを作成すると、常に鍵も変わります。複数の PC で保管庫を使っている場合は、先にすべて更新してください。',
+  ],
   'universal-import': [
     '主要なパスワードマネージャーからのインポート',
     'Bitwarden（CSV と暗号化なしの JSON）、LastPass、1Password、Dashlane、NordPass、Proton Pass、KeePass と KeePassXC（CSV と XML）、RoboForm、さらに Chrome、Edge、Brave、Opera、Firefox、Apple パスワードのファイルを認識できるようになりました。インポートの前に、認識したプログラムと見つかった項目数をプレビューで表示します。CSV では各列の対応項目を確認・変更できるため、他のプログラムのファイルも読み込めます。',

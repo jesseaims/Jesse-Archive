@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    '마스터 비밀번호 변경 시 보호 강화',
+    '이제 볼트 헤더가 본인만 얻을 수 있는 키로 서명됩니다. 볼트 폴더에 넣은 오래된 사본(예: 클라우드에 접근할 수 있는 사람이 넣은 것)으로 이전 마스터 비밀번호가 되살아나지 않습니다. 마스터 비밀번호를 바꿀 때 “이전 비밀번호가 노출되었을 수 있음”을 선택하면 데이터를 암호화하는 키도 바뀌어, 이전 비밀번호로는 사본으로도 볼트를 열 수 없고 저장할 새 복구 코드를 받습니다. 새 복구 코드를 만들면 항상 키도 바뀝니다. 여러 PC에서 볼트를 사용한다면 먼저 모두 업데이트하세요.',
+  ],
   'universal-import': [
     '주요 비밀번호 관리자에서 가져오기',
     '이제 Bitwarden(CSV 및 암호화되지 않은 JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass와 KeePassXC(CSV 및 XML), RoboForm, 그리고 Chrome, Edge, Brave, Opera, Firefox, Apple 암호의 파일을 인식합니다. 가져오기 전에 미리 보기에서 인식한 프로그램과 찾은 항목 수를 보여 줍니다. CSV는 각 열이 어느 항목으로 들어갈지 확인하고 바꿀 수 있어 다른 프로그램의 파일도 가져올 수 있습니다.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'Mais proteção ao mudar a palavra-passe principal',
+    'O cabeçalho do cofre passa a ser assinado com uma chave que só tu podes obter: uma cópia antiga colocada na pasta do cofre (por exemplo, por alguém com acesso à tua nuvem) já não pode trazer de volta uma palavra-passe principal antiga. Ao mudar a palavra-passe principal podes marcar «A palavra-passe antiga pode ter sido descoberta»: a chave que cifra os dados também muda, por isso a palavra-passe antiga deixa de abrir o cofre, mesmo a partir de uma cópia, e recebes um novo código de recuperação para guardar. Um novo código de recuperação muda sempre também a chave. Se usas o cofre em vários PC, atualiza-os todos primeiro.',
+  ],
   'universal-import': [
     'Importa dos principais gestores de palavras-passe',
     'A importação reconhece agora os ficheiros do Bitwarden (CSV e JSON não cifrado), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass e KeePassXC (CSV e XML), RoboForm e do Chrome, Edge, Brave, Opera, Firefox e Palavras-passe da Apple. Antes de importar, uma pré-visualização mostra o programa reconhecido e quantos elementos encontrou; nos CSV podes verificar e mudar o campo de cada coluna, por isso também funcionam ficheiros de outros programas.',

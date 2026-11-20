@@ -585,7 +585,10 @@ export default function App() {
     [search, setSearch] = useState(''),
     [password, setPassword] = useState(''),
     [recovery, setRecovery] = useState(''),
+    // The unlock screen asks for the recovery code instead of the master password.
+    [recoveryMode, setRecoveryMode] = useState(false),
     [recoveryNew, setRecoveryNew] = useState(''),
+    [rotateKey, setRotateKey] = useState(false),
     [viewRecovery, setViewRecovery] = useState(''),
     [error, setError] = useState(''),
     [toast, setToast] = useState(''),
@@ -1242,14 +1245,15 @@ export default function App() {
               e.preventDefault();
               if (status.exists) {
                 const r = await run('unlock', {
-                  password: recovery ? '' : password,
-                  recovery,
+                  password: recoveryMode ? '' : password,
+                  recovery: recoveryMode ? recovery : '',
                   new_password: recoveryNew,
                 });
                 if (r) {
                   setPassword('');
                   setRecovery('');
                   setRecoveryNew('');
+                  setRecoveryMode(false);
                   await refresh();
                 }
               } else {
@@ -1264,13 +1268,15 @@ export default function App() {
             }}
           >
             <Field
-              label={recovery ? t('Codice di recupero') : t('Password principale')}
-              value={recovery || password}
-              onChange={(v) => (recovery ? setRecovery(v) : setPassword(v))}
-              secret={!recovery}
-              placeholder={t('Inserisci la tua password')}
+              label={recoveryMode ? t('Codice di recupero') : t('Password principale')}
+              value={recoveryMode ? recovery : password}
+              onChange={(v) => (recoveryMode ? setRecovery(v) : setPassword(v))}
+              secret={!recoveryMode}
+              placeholder={
+                recoveryMode ? 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX' : t('Inserisci la tua password')
+              }
             />
-            {recovery && (
+            {recoveryMode && (
               <Field
                 label={t('Nuova password principale (facoltativa)')}
                 value={recoveryNew}
@@ -1292,16 +1298,13 @@ export default function App() {
             <button
               className="subtle link-btn"
               onClick={() => {
-                if (recovery) {
-                  setRecovery('');
-                  setRecoveryNew('');
-                } else {
-                  setRecovery('RECOVERY-');
-                  setPassword('');
-                }
+                setRecovery('');
+                setRecoveryNew('');
+                setPassword('');
+                setRecoveryMode(!recoveryMode);
               }}
             >
-              {recovery ? t('Torna alla password') : t('Usa il codice di recupero')}
+              {recoveryMode ? t('Torna alla password') : t('Usa il codice di recupero')}
             </button>
           )}
           <button
@@ -2449,15 +2452,37 @@ export default function App() {
                     onChange={setRecoveryNew}
                     secret
                   />
+                  <label className="check-line rotate-key">
+                    <input
+                      type="checkbox"
+                      checked={rotateKey}
+                      onChange={(e) => setRotateKey(e.target.checked)}
+                    />
+                    <span>
+                      <strong>{t('La vecchia password potrebbe essere stata scoperta')}</strong>
+                      <small>
+                        {t(
+                          'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.',
+                        )}
+                      </small>
+                    </span>
+                  </label>
                 </>
               )}
               {dialog === 'recovery_new' && (
-                <Field
-                  label={t('Conferma password principale')}
-                  value={password}
-                  onChange={setPassword}
-                  secret
-                />
+                <>
+                  <p className="helper">
+                    {t(
+                      'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.',
+                    )}
+                  </p>
+                  <Field
+                    label={t('Conferma password principale')}
+                    value={password}
+                    onChange={setPassword}
+                    secret
+                  />
+                </>
               )}
               {dialog === 'recover' && (
                 <div className="recovery-panel">
@@ -2507,11 +2532,22 @@ export default function App() {
                   if (dialog === 'group')
                     r = await mutate('group_edit', groupDraft, t('Gruppo aggiornato'));
                   if (dialog === 'master') {
-                    r = await run('master', { old: password, new: recoveryNew });
+                    r = await run<{ recovery?: string }>('master', {
+                      old: password,
+                      new: recoveryNew,
+                      rotate: rotateKey,
+                    });
                     if (r) {
                       setPassword('');
                       setRecoveryNew('');
+                      setRotateKey(false);
                       notify(t('Password principale aggiornata'));
+                      // New data key: the new recovery code must be saved now.
+                      if (r.recovery) {
+                        setViewRecovery(r.recovery);
+                        setDialog('recover');
+                        return;
+                      }
                     }
                   }
                   if (dialog === 'recovery_new') {
