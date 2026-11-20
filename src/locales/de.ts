@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // German. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "Nicht unterstützte Verschlüsselungsparameter: Aktualisiere Jesse's Archive auf die neueste Version.",
+  'Copia del vault più vecchia': 'Ältere Kopie des Tresors',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    'Die Tresordatei ist älter als die zuletzt auf diesem PC geöffnete oder gespeicherte Version: Sie wurde möglicherweise durch eine frühere Kopie ersetzt (zum Beispiel im Cloud-Ordner), und die neuesten Änderungen könnten fehlen. Wenn du selbst eine Sicherung wiederhergestellt hast, kannst du diese Warnung ignorieren. Andernfalls prüfe vor Änderungen den Versionsverlauf deines Cloud-Dienstes: Solange du nichts änderst, bleibt die Datei unverändert.',
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     'Auch den Schlüssel ändern, der die Daten verschlüsselt: Das alte Passwort öffnet den Tresor dann nicht mehr, auch nicht aus einer Kopie. Du erhältst einen neuen Wiederherstellungscode, den du speichern musst. Wenn du den Tresor auf anderen PCs nutzt, aktualisiere sie auf diese Version: Geöffnete werden gesperrt und fragen nach dem neuen Passwort.',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

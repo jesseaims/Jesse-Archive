@@ -1244,7 +1244,7 @@ export default function App() {
             onSubmit={async (e) => {
               e.preventDefault();
               if (status.exists) {
-                const r = await run('unlock', {
+                const r = await run<{ rollback?: boolean }>('unlock', {
                   password: recoveryMode ? '' : password,
                   recovery: recoveryMode ? recovery : '',
                   new_password: recoveryNew,
@@ -1255,6 +1255,15 @@ export default function App() {
                   setRecoveryNew('');
                   setRecoveryMode(false);
                   await refresh();
+                  // The file is older than the newest write seen on this PC (core.rs).
+                  if (r.rollback)
+                    await showNotice(
+                      t(
+                        "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.",
+                      ),
+                      t('Copia del vault più vecchia'),
+                      true,
+                    );
                 }
               } else {
                 const r = await run<{ recovery: string }>('create', { password });

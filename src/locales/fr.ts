@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "Paramètres de chiffrement non pris en charge : mettez à jour Jesse's Archive vers la dernière version.",
+  'Copia del vault più vecchia': 'Copie plus ancienne du coffre',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    'Le fichier du coffre est plus ancien que la dernière version ouverte ou enregistrée sur ce PC : il a peut-être été remplacé par une copie antérieure (par exemple dans le dossier cloud) et les modifications les plus récentes peuvent manquer. Si vous avez restauré vous-même une sauvegarde, vous pouvez ignorer cet avertissement. Sinon, avant toute modification, consultez l’historique des versions de votre service cloud : tant que vous ne modifiez rien, le fichier reste tel quel.',
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     'Changer aussi la clé qui chiffre les données : l’ancien mot de passe n’ouvrira plus le coffre, même à partir d’une copie. Vous recevrez un nouveau code de récupération à conserver. Si vous utilisez le coffre sur d’autres PC, mettez-les à jour vers cette version : ceux qui sont ouverts se verrouilleront et demanderont le nouveau mot de passe.',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

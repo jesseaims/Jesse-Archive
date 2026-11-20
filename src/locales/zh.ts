@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "不支持的加密参数：请将 Jesse's Archive 更新到最新版本。",
+  'Copia del vault più vecchia': '较旧的保险库副本',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    '保险库文件比此电脑上最近打开或保存的版本更旧：它可能已被替换为较早的副本（例如在云文件夹中），最新的更改可能会丢失。如果是你自己恢复了备份，可以忽略此警告。否则，在进行更改之前，请检查云服务的版本历史：在你修改任何内容之前，文件会保持原样。',
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     '同时更换加密数据的密钥：旧密码将无法再打开保险库，即使是它的副本。你会收到一个新的恢复码，请妥善保存。如果你在其他电脑上使用此保险库，请将它们更新到此版本：已打开的会被锁定并要求输入新密码。',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "Unsupported encryption parameters: update Jesse's Archive to the latest version.",
+  'Copia del vault più vecchia': 'Older copy of the vault',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    "The vault file is older than the latest version opened or saved on this PC: it may have been replaced with an earlier copy (for example in the cloud folder) and the most recent changes may be missing. If you restored a backup yourself, you can ignore this warning. Otherwise, before making changes, check your cloud service's version history: until you change something the file stays as it is.",
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     'Also change the key that encrypts the data: the old password will no longer open the vault, not even from a copy of it. You will get a new recovery code to save. If you use the vault on other PCs, update them to this version: the open ones will lock and ask for the new password.',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

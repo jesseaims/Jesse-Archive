@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'vault-scrypt-rollback',
+    addedAt: '2026-11-20T23:45:00+01:00',
+    version: 'Beta 1.7.0',
+    title: 'Password principale più difficile da forzare e avviso sulle copie vecchie',
+    description:
+      'Al primo sblocco la protezione della password principale passa a un calcolo quattro volte più pesante (scrypt con 128 MB di memoria): chi ottiene una copia del vault impiega molto più tempo a provare le password. Lo sblocco può richiedere una frazione di secondo in più. Anche i nuovi pacchetti .jshare usano questa protezione. Se il file del vault viene sostituito con una sua copia più vecchia (per esempio nella cartella cloud), all’apertura compare un avviso. Inoltre una modifica non salvata perché il file era occupato viene ora salvata alla sincronizzazione successiva. Se usi il vault su più PC, aggiornali tutti: dopo il primo sblocco con questa versione, quelle precedenti non lo aprono più.',
+    icon: 'shield',
+  },
+  {
     id: 'vault-header-key-rotation',
     addedAt: '2026-11-20T23:00:00+01:00',
     version: 'Beta 1.6.0',
