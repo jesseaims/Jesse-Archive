@@ -468,15 +468,17 @@ fn atomic_write(path: &Path, text: &[u8]) -> Res<()> {
     }
     Ok(())
 }
-fn sig(path: &Path) -> Option<(u64, u128)> {
-    let m = fs::metadata(path).ok()?;
-    let t = m
-        .modified()
-        .ok()?
-        .duration_since(UNIX_EPOCH)
-        .ok()?
-        .as_nanos();
-    Some((m.len(), t))
+/// Identity of the vault file's content, used by `pull` to notice writes from other
+/// PCs. A hash, not size and modification time: two writes of the same size within
+/// one tick of the file clock (up to ~15 ms on Windows) looked identical, and the
+/// second one was never merged.
+type FileSig = [u8; 32];
+fn sig(path: &Path) -> Option<FileSig> {
+    content_sig(&fs::read(path).ok()?).into()
+}
+fn content_sig(bytes: &[u8]) -> FileSig {
+    use sha2::Digest;
+    sha2::Sha256::digest(bytes).into()
 }
 pub struct Vault {
     pub path: PathBuf,
@@ -486,7 +488,7 @@ pub struct Vault {
     data: V,
     last: f64,
     last_sync: f64,
-    signature: Option<(u64, u128)>,
+    signature: Option<FileSig>,
     push: bool,
     rev: u64,
     fails: u32,
@@ -720,14 +722,17 @@ impl Vault {
         let mut h = self.header.clone();
         let plain = Zeroizing::new(serde_json::to_vec(&self.data).map_err(err)?);
         h["data"] = json!(seal(&key, &plain)?);
-        if let Err(e) = atomic_write(&self.path, &serde_json::to_vec(&h).map_err(err)?) {
+        let bytes = serde_json::to_vec(&h).map_err(err)?;
+        if let Err(e) = atomic_write(&self.path, &bytes) {
             // Retried at the next synchronization (ping), e.g. when another PC was
             // replacing the file at the same moment.
             self.push = true;
             return Err(e);
         }
         self.record_seen(written);
-        self.signature = sig(&self.path);
+        // From what was written, not re-read from the file: another PC may already
+        // have replaced it, and its changes would then never be merged.
+        self.signature = Some(content_sig(&bytes));
         self.push = false;
         self.rev += 1;
         Ok(())
@@ -3246,6 +3251,24 @@ mod vault_tests {
         assert!(titles(&b.data).is_superset(&all));
         assert!(titles(&data_on_disk(&a)).is_superset(&all));
         fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn same_size_writes_in_the_same_clock_tick_are_told_apart() {
+        let (v, dir) = test_vault();
+        let when = std::time::SystemTime::now();
+        let write = |text: &[u8]| {
+            fs::write(&v.path, text).unwrap();
+            fs::File::options()
+                .write(true)
+                .open(&v.path)
+                .unwrap()
+                .set_modified(when)
+                .unwrap();
+            sig(&v.path)
+        };
+        // Same size, same modification time: size + time alone saw no change.
+        assert_ne!(write(b"{\"a\":1}"), write(b"{\"b\":2}"));
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

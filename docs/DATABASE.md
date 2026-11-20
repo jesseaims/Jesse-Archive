@@ -105,7 +105,7 @@ Non esiste una UI dedicata che ripristini automaticamente la `.bak`. Un ripristi
 
 ## Fusione e cartelle cloud
 
-`sig` usa dimensione e mtime in nanosecondi. `pull` legge una copia cambiata e le copie di conflitto `jesse_archive*.vault` nella directory, tentando la decifratura con la DEK già sbloccata. I fallimenti di lettura/decifratura durante questa ricerca sono ignorati; il Rust non rinomina automaticamente quei file in `.merged`.
+`sig` è, dalla Beta 1.7.0, lo SHA-256 del contenuto del file; dopo una scrittura la sessione lo calcola dai byte che ha scritto, non rileggendo il file. Prima usava dimensione e ora di modifica, riletti dopo la sostituzione: due scritture della stessa dimensione nello stesso scatto dell'orologio dei file (fino a ~15 ms su Windows), o un file messo da un altro PC subito dopo la propria scrittura, sembravano invariati e le modifiche dell'altro PC non venivano mai fuse (trovato dalla CI con `two_pcs_writing_at_the_same_time_end_with_every_change`; test `same_size_writes_in_the_same_clock_tick_are_told_apart`). `pull` rilegge quindi il file a ogni sincronizzazione. `pull` legge una copia cambiata e le copie di conflitto `jesse_archive*.vault` nella directory, tentando la decifratura con la DEK già sbloccata. I fallimenti di lettura/decifratura durante questa ricerca sono ignorati; il Rust non rinomina automaticamente quei file in `.merged`.
 
 `merge_data`:
 
