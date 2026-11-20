@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'CSV / JSON / .jshare / 카스퍼스키 TXT 가져오기',
+  'File di testo non valido': '올바르지 않은 텍스트 파일입니다',
+  'Il file non è testo UTF-8 o UTF-16': '파일이 UTF-8 또는 UTF-16 텍스트가 아닙니다',
+  'Nessun account riconosciuto nel file di Kaspersky': '카스퍼스키 파일에서 계정을 찾지 못했습니다',
   'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
     'CSV를 Excel 또는 다른 스프레드시트로 바로 열지 마세요. =, +, - 또는 @로 시작하는 값이 수식으로 실행됩니다.',
   'Scegli di nuovo il file da importare': '가져올 파일을 다시 선택하세요',
@@ -315,7 +320,6 @@ const dictionary: Dictionary = {
     '파일에서 보관함을 다시 읽고 같은 폴더의 사본과 비교했습니다.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '보관함이 잠겨 있어(예: 사용하지 않아서) 데이터를 다시 불러오지 못했습니다.\n\n마스터 비밀번호로 보관함을 다시 잠금 해제하세요.',
-  'Importa CSV / JSON / .jshare': 'CSV / JSON / .jshare 가져오기',
   'Importa dati nel vault': '보관함으로 데이터 가져오기',
   'Importa pacchetto cifrato': '암호화된 패키지 가져오기',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':

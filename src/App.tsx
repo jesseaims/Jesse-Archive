@@ -3234,7 +3234,7 @@ function SettingsPage({
             </div>
             <button className="secondary" onClick={() => void importData()}>
               <Upload size={16} />
-              {t('Importa CSV / JSON / .jshare')}
+              {t('Importa CSV / JSON / .jshare / TXT di Kaspersky')}
             </button>
             <button className="secondary" onClick={() => setDialog('share')}>
               <ShieldCheck size={16} />

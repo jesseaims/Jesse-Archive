@@ -2,6 +2,12 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'CSV / JSON / .jshare / カスペルスキー TXT をインポート',
+  'File di testo non valido': '無効なテキストファイルです',
+  'Il file non è testo UTF-8 o UTF-16': 'ファイルが UTF-8 または UTF-16 のテキストではありません',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'カスペルスキーのファイルでアカウントが見つかりませんでした',
   'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
     'CSV を Excel などの表計算ソフトで直接開かないでください。=、+、-、@ で始まる値が数式として実行されます。',
   'Scegli di nuovo il file da importare': 'インポートするファイルをもう一度選択してください',
@@ -319,7 +325,6 @@ const dictionary: Dictionary = {
     'ファイルから保管庫を再読み込みし、同じフォルダー内のコピーと比較しました。',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '保管庫がロックされているため (無操作など)、データを再読み込みできませんでした。\n\nマスター パスワードで保管庫のロックを解除し直してください。',
-  'Importa CSV / JSON / .jshare': 'CSV / JSON / .jshare をインポート',
   'Importa dati nel vault': '保管庫にデータをインポート',
   'Importa pacchetto cifrato': '暗号化パッケージをインポート',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':

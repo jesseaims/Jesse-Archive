@@ -2,6 +2,10 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky': '导入 CSV / JSON / .jshare / 卡巴斯基 TXT',
+  'File di testo non valido': '文本文件无效',
+  'Il file non è testo UTF-8 o UTF-16': '该文件不是 UTF-8 或 UTF-16 文本',
+  'Nessun account riconosciuto nel file di Kaspersky': '在卡巴斯基文件中未识别到任何账户',
   'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
     '不要直接用 Excel 或其他电子表格打开 CSV：以 =、+、- 或 @ 开头的值会被当作公式执行。',
   'Scegli di nuovo il file da importare': '请重新选择要导入的文件',
@@ -306,7 +310,6 @@ const dictionary: Dictionary = {
     '已从文件重新读取保险库，并与同一文件夹中的可能副本进行了比较。',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '保险库已锁定（例如因长时间未操作），因此无法重新加载数据。\n\n请使用主密码重新解锁保险库。',
-  'Importa CSV / JSON / .jshare': '导入 CSV / JSON / .jshare',
   'Importa dati nel vault': '将数据导入保险库',
   'Importa pacchetto cifrato': '导入加密数据包',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':

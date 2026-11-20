@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    'カスペルスキー パスワードマネージャーからのインポート',
+    'Jesse’s Archive は、カスペルスキー パスワードマネージャーの「テキストファイルにエクスポート」で作成したテキストファイル（.txt）をインポートできるようになりました。ウェブサイト、アプリケーション、その他のアカウントは、名前、アドレス、ユーザー名、パスワード、コメント付きのアカウントになり、カスペルスキーのメモはメモになります。インポート後はエクスポートしたファイルを削除してください。パスワードが平文で含まれています。',
+  ],
   'unlock-throttling': [
     'パスワード推測への対策',
     '保管庫のロック解除（マスターパスワードまたは復旧コード）に 5 回続けて失敗すると、Jesse’s Archive は次の試行まで 30 秒待たせ、以後は失敗するたびに 2 倍（最長 15 分）になります。この回数はアプリを再起動しても保持され、正しくロック解除した時点でリセットされます。',

@@ -2,6 +2,12 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'Importer CSV / JSON / .jshare / TXT de Kaspersky',
+  'File di testo non valido': 'Fichier texte non valide',
+  'Il file non è testo UTF-8 o UTF-16': 'Le fichier n’est pas du texte UTF-8 ou UTF-16',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'Aucun compte reconnu dans le fichier de Kaspersky',
   'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
     'N’ouvrez pas le CSV directement avec Excel ou un autre tableur : les valeurs commençant par =, +, - ou @ seraient exécutées comme des formules.',
   'Scegli di nuovo il file da importare': 'Choisissez à nouveau le fichier à importer',
@@ -324,7 +330,6 @@ const dictionary: Dictionary = {
     'Le coffre a été relu depuis le fichier et comparé aux éventuelles copies du même dossier.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     'Le coffre est verrouillé (par exemple après une inactivité), les données n’ont donc pas pu être rechargées.\n\nDéverrouillez à nouveau le coffre avec le mot de passe principal.',
-  'Importa CSV / JSON / .jshare': 'Importer CSV / JSON / .jshare',
   'Importa dati nel vault': 'Importer des données dans le coffre',
   'Importa pacchetto cifrato': 'Importer un paquet chiffré',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':

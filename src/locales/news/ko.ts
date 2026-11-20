@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    '카스퍼스키 패스워드 매니저에서 가져오기',
+    '이제 Jesse’s Archive에서 카스퍼스키 패스워드 매니저의 “텍스트 파일로 내보내기”로 만든 텍스트 파일(.txt)을 가져올 수 있습니다. 웹사이트, 애플리케이션, 기타 계정은 이름, 주소, 사용자 이름, 비밀번호, 메모가 있는 계정이 되고, 카스퍼스키 노트는 노트가 됩니다. 가져온 후에는 내보낸 파일을 삭제하세요. 비밀번호가 평문으로 들어 있습니다.',
+  ],
   'unlock-throttling': [
     '비밀번호 추측 방지',
     '볼트 잠금 해제(마스터 비밀번호 또는 복구 코드)에 연속 5번 실패하면 Jesse’s Archive는 다음 시도까지 30초를 기다리게 하며, 실패할 때마다 두 배로 늘어나 최대 15분이 됩니다. 이 횟수는 앱을 다시 시작해도 유지되며 처음으로 올바르게 잠금 해제하면 초기화됩니다.',

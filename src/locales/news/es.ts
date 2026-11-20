@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    'Importar desde Kaspersky Password Manager',
+    'Jesse’s Archive ya importa el archivo de texto (.txt) que crea Kaspersky Password Manager con «Exportar a archivo de texto»: sitios web, aplicaciones y otras cuentas pasan a ser cuentas con nombre, dirección, usuario, contraseña y comentarios, y las notas de Kaspersky pasan a ser notas. Después borra el archivo exportado: contiene tus contraseñas en claro.',
+  ],
   'unlock-throttling': [
     'Protección contra quien intenta adivinar la contraseña',
     'Tras 5 intentos fallidos seguidos de desbloquear el vault (contraseña maestra o código de recuperación), Jesse’s Archive te hace esperar 30 segundos antes del siguiente, el doble cada vez hasta 15 minutos. El recuento se mantiene al reiniciar la app y se borra con el primer desbloqueo correcto.',

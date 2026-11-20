@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    'Import from Kaspersky Password Manager',
+    'Jesse’s Archive now imports the text file (.txt) that Kaspersky Password Manager creates with “Export to text file”: websites, applications and other accounts become accounts with name, address, username, password and comments, and Kaspersky notes become notes. Delete the exported file afterwards: it contains your passwords in clear text.',
+  ],
   'unlock-throttling': [
     'Protection against password guessing',
     'After 5 wrong attempts in a row at unlocking the vault (master password or recovery code), Jesse’s Archive makes you wait 30 seconds before the next try, doubling each time up to 15 minutes. The count survives restarting the app and is cleared by the first correct unlock.',

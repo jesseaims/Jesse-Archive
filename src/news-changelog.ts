@@ -16,9 +16,18 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'kaspersky-import',
+    addedAt: '2026-11-20T18:00:00+01:00',
+    version: 'Beta 1.4.0',
+    title: 'Importa da Kaspersky Password Manager',
+    description:
+      'Jesse’s Archive ora importa il file di testo (.txt) che Kaspersky Password Manager crea con «Esporta in file di testo»: siti web, applicazioni e altri account diventano account con nome, indirizzo, username, password e commenti, e le note di Kaspersky diventano note. Dopo l’import elimina il file esportato: contiene le tue password in chiaro.',
+    icon: 'package',
+  },
+  {
     id: 'unlock-throttling',
     addedAt: '2026-11-20T17:00:00+01:00',
-    version: 'Beta 1.3.1',
+    version: 'Beta 1.4.0',
     title: 'Protezione contro chi prova a indovinare la password',
     description:
       'Dopo 5 tentativi errati di fila di sbloccare il vault (password principale o codice di recupero), Jesse’s Archive fa attendere 30 secondi prima del tentativo successivo, il doppio ogni volta fino a 15 minuti. Il conteggio resta anche riavviando l’app e si azzera al primo sblocco corretto.',

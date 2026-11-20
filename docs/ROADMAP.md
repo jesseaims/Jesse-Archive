@@ -7,7 +7,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Applicazione desktop Tauri/React con vault JSON cifrato, master password e recupero, sei tipi di schede, cartelle, cestino e cronologia password.
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
-- Rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii (dalla Beta 1.3.1).
+- Rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii (dalla Beta 1.4.0).
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
 - Proposta di salvataggio degli account inviati sui siti (nuovi, login non salvati, password cambiate) con conferma nella mini finestra (dalla Beta 1.3.0).
 - Guida locale e registrazione host per Chrome, Edge, Brave, Opera, Vivaldi e Firefox; pacchetti delle estensioni locali.
@@ -64,7 +64,7 @@ Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e ba
 - Installazione offline su Windows pulito, WebView2 realmente incluso/disponibile, upgrade/disinstallazione, elevazione con un altro account e percorsi personalizzati. Un'installazione su un secondo PC (portatile) è riuscita; la prova senza rete non è documentata. Installer unico della Beta 1.2.0 collaudato su questo PC: aggiornamento dall'MSI 1.1.21 (una sola voce in «App installate», cartella mantenuta), collegamenti, estensione, disinstallazione con vault conservato, reinstallazione e aggiornamento silenzioso con riapertura dell'app; su un PC pulito **Da verificare**.
 - Compatibilità del prodotto completo su sistemi non Windows e minima versione Rust/browser realmente supportata; manifest e codice condizionale non bastano a certificarla.
 - Resistenza a interruzioni di scrittura, più istanze/writer esterni e servizi cloud che generano copie con timestamp inconsistente.
-- Copertura aggiuntiva dei test; clippy fa parte della CI dalla Beta 1.3.1, senza avvisi.
+- Copertura aggiuntiva dei test; clippy fa parte della CI dalla Beta 1.4.0, senza avvisi.
 
 - Passkey WebAuthn su siti reali (per esempio webauthn.io, GitHub, Google) in Chromium e Firefox ≥ 128: registrazione, accesso, fallback, abort, siti che richiedono attestazione o algoritmi diversi da ES256.
 - Dashboard nell'app reale: trascinamento col mouse e finestra piccola collaudati; provata con un vault sintetico di 238 elementi. Possibili estensioni: widget Documenti quando esisterà la categoria, più istanze dello stesso widget.

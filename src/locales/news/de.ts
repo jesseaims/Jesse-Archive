@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    'Import aus Kaspersky Password Manager',
+    'Jesse’s Archive importiert jetzt die Textdatei (.txt), die Kaspersky Password Manager mit „In Textdatei exportieren“ erstellt: Websites, Anwendungen und andere Konten werden zu Konten mit Name, Adresse, Benutzername, Passwort und Kommentaren, Kaspersky-Notizen zu Notizen. Lösche die exportierte Datei danach: Sie enthält deine Passwörter im Klartext.',
+  ],
   'unlock-throttling': [
     'Schutz gegen das Erraten des Passworts',
     'Nach 5 falschen Versuchen in Folge, den Tresor zu entsperren (Master-Passwort oder Wiederherstellungscode), lässt dich Jesse’s Archive 30 Sekunden bis zum nächsten Versuch warten, jedes Mal doppelt so lange bis zu 15 Minuten. Der Zähler bleibt auch nach einem Neustart der App erhalten und wird beim ersten richtigen Entsperren gelöscht.',

@@ -81,7 +81,7 @@ Non esiste una roadmap approvata per biometria, provider passkey di sistema o se
 
 Il contenuto del vault è cifrato con AES-256-GCM e DEK casuale di 32 byte. La master password e il codice di recupero derivano separatamente chiavi scrypt che proteggono due copie della stessa DEK. Parametri e layout esatti sono in [SECURITY](docs/SECURITY.md) e [DATABASE](docs/DATABASE.md).
 
-Il codice usa `Zeroizing` per alcune chiavi; non per tutto il JSON, i buffer, l'IPC o la memoria JavaScript. Il frontend principale riceve dati decifrati. Il campo password mascherato non è una protezione della memoria. Dalla Beta 1.3.1 lo sblocco rallenta dopo 5 tentativi errati (30 s che raddoppiano fino a 15 minuti, contatore nella configurazione del dispositivo).
+Il codice usa `Zeroizing` per alcune chiavi; non per tutto il JSON, i buffer, l'IPC o la memoria JavaScript. Il frontend principale riceve dati decifrati. Il campo password mascherato non è una protezione della memoria. Dalla Beta 1.4.0 lo sblocco rallenta dopo 5 tentativi errati (30 s che raddoppiano fino a 15 minuti, contatore nella configurazione del dispositivo).
 
 La scadenza (`expire_if_idle`) si verifica su ogni comando e in un thread ogni 5 secondi; ogni blocco emette `vault-locked` e la UI azzera il proprio stato. Non documentarla come cancellazione garantita della memoria JavaScript. La rotazione master/recovery riscrive i wrapper e conserva la DEK; i backup storici possono mantenere accessi precedenti. Non risultano autenticazione biometrica, keyring OS, firma del payload applicativo, anti-rollback o audit di sicurezza indipendente.
 

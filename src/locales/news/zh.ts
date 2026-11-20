@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    '从卡巴斯基密码管理器导入',
+    'Jesse’s Archive 现在可以导入卡巴斯基密码管理器通过“导出到文本文件”生成的文本文件（.txt）：网站、应用程序和其他账户会成为包含名称、地址、用户名、密码和备注的账户，卡巴斯基的笔记会成为笔记。导入后请删除导出的文件：其中的密码是明文。',
+  ],
   'unlock-throttling': [
     '防止猜测密码',
     '连续 5 次解锁保险库失败（主密码或恢复码）后，Jesse’s Archive 会让你等待 30 秒再试，之后每次等待时间加倍，最长 15 分钟。重启应用后计数仍然保留，首次正确解锁后清零。',

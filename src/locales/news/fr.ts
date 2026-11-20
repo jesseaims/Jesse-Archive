@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'kaspersky-import': [
+    'Importer depuis Kaspersky Password Manager',
+    'Jesse’s Archive importe désormais le fichier texte (.txt) que Kaspersky Password Manager crée avec « Exporter vers un fichier texte » : sites, applications et autres comptes deviennent des comptes avec nom, adresse, identifiant, mot de passe et commentaires, et les notes de Kaspersky deviennent des notes. Supprimez ensuite le fichier exporté : il contient vos mots de passe en clair.',
+  ],
   'unlock-throttling': [
     'Protection contre les tentatives de deviner le mot de passe',
     'Après 5 tentatives erronées d’affilée pour déverrouiller le coffre (mot de passe principal ou code de récupération), Jesse’s Archive vous fait attendre 30 secondes avant l’essai suivant, en doublant à chaque fois jusqu’à 15 minutes. Le compteur résiste au redémarrage de l’application et s’efface au premier déverrouillage réussi.',

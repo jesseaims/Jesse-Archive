@@ -166,7 +166,8 @@ fn read_file(path: String) -> Result<String, String> {
     if meta.len() > 20_000_000 {
         return Err("File oltre 20 MB".into());
     }
-    std::fs::read_to_string(file).map_err(|e| e.to_string())
+    // UTF-16 too: Kaspersky Password Manager saves its text export that way.
+    core::decode_text(&std::fs::read(file).map_err(|e| e.to_string())?)
 }
 #[tauri::command]
 fn save_file(name: String, text: String) -> Result<bool, String> {
