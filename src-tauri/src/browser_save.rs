@@ -424,7 +424,9 @@ pub fn browser_save_dismiss(app: tauri::AppHandle, never: bool) -> Result<(), St
         .lock()
         .unwrap_or_else(|e| e.into_inner())
         .take();
-    if let Some(p) = &pending {
+    // "Non ora" quiets the site for a while; "Mai" is permanent on its own, and must not
+    // leave a pause behind if the user removes the site from the list right away.
+    if let Some(p) = pending.as_ref().filter(|_| !never) {
         saves
             .quiet
             .lock()
@@ -469,6 +471,12 @@ pub fn browser_save_set_enabled(app: tauri::AppHandle, enabled: bool) -> Result<
 #[tauri::command]
 pub fn browser_save_forget(app: tauri::AppHandle, site: String) -> Result<(), String> {
     let (_, list) = vault_view(&app)?.ok_or("Vault bloccato")?;
+    // Removed from the exclusions: the next submit on the site asks again.
+    app.state::<Saves>()
+        .quiet
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .retain(|(s, _)| *s != site);
     set_never(
         &app,
         list.into_iter()
