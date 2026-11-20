@@ -1872,6 +1872,17 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         } else {
             let f = json!({"url": url, "username": username, "password": password, "totp": ""});
             push_imported(d, "login", &title, V::Null, f, &notes);
+            // Without an address the main list would group a web account by the domain
+            // of its email: Kaspersky applications become installed-app accounts and
+            // other accounts plain groups, both grouped by name.
+            if url.is_empty() {
+                let src = if section.contains("applica") || section.contains("application") {
+                    "app"
+                } else {
+                    "other"
+                };
+                group_by_title(d, src, &title);
+            }
         }
         n += 1;
     }
@@ -1879,6 +1890,29 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         return Err("Nessun account riconosciuto nel file di Kaspersky".into());
     }
     Ok(n)
+}
+/// Puts the last added item in the app/other group of its title, with the same key
+/// the UI computes (src/groups.ts `deriveGroupKey`) and the title as group name.
+fn group_by_title(d: &mut V, src: &str, title: &str) {
+    let key = format!(
+        "{src}:{}",
+        title
+            .trim()
+            .to_lowercase()
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join("-")
+    );
+    if let Some(it) = arr(d, "items").last_mut() {
+        it["src"] = json!(src);
+        it["gk"] = json!(key);
+    }
+    if d["groups"].get(&key).is_none() {
+        obj(d, "groups").insert(
+            key,
+            json!({"name": title.trim(), "src": src, "icon": "", "upd": now()}),
+        );
+    }
 }
 /// Adds one imported item (CSV, Kaspersky text) with its password history entry.
 fn push_imported(d: &mut V, typ: &str, title: &str, folder: V, f: V, notes: &str) {
@@ -2555,7 +2589,7 @@ mod vault_tests {
         fs::remove_dir_all(dir).unwrap();
     }
     /// Synthetic Kaspersky Password Manager text export (no real data).
-    const KASPERSKY_EN: &str = "Websites\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com/id/login\nLogin name: \nLogin: utente@example.com\nPassword: sëgreto-1🔑\nComment: prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto\n\n---\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com\nLogin name: Lavoro\nLogin: lavoro@example.com\nPassword: pw-2\nComment: \n\n---\n\nApplications\n\nApplication: Skype\nLogin name: \nLogin: utente.skype\nPassword: pw-3\nComment: \n\n---\n\nOther Accounts\n\nAccount name: Router di casa\nLogin name: \nLogin: admin\nPassword: pw-4\nComment: \n\n---\n\nNotes\n\nName: Codici Wi-Fi\nText: rete: casa\nseconda riga\n\n---\n";
+    const KASPERSKY_EN: &str = "Websites\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com/id/login\nLogin name: \nLogin: utente@example.com\nPassword: sëgreto-1🔑\nComment: prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto\n\n---\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com\nLogin name: Lavoro\nLogin: lavoro@example.com\nPassword: pw-2\nComment: \n\n---\n\nApplications\n\nApplication: Skype\nLogin name: \nLogin: utente.skype\nPassword: pw-3\nComment: \n\n---\n\nApplication: Feather Launcher\nLogin name: Principale\nLogin: uno@gmail.example\nPassword: pw-5\nComment: \n\n---\n\nApplication: Feather Launcher\nLogin name: Secondario\nLogin: due@outlook.example\nPassword: pw-6\nComment: \n\n---\n\nOther Accounts\n\nAccount name: Router di casa\nLogin name: \nLogin: admin\nPassword: pw-4\nComment: \n\n---\n\nNotes\n\nName: Codici Wi-Fi\nText: rete: casa\nseconda riga\n\n---\n";
     fn import_text(text: &str) -> (Vec<V>, Res<V>) {
         let (mut v, dir) = test_vault();
         v.call("create", json!({"password": "password-sintetica"}))
@@ -2574,7 +2608,7 @@ mod vault_tests {
     #[test]
     fn kaspersky_text_export_is_imported() {
         let (items, result) = import_text(KASPERSKY_EN);
-        assert_eq!(result.unwrap()["count"], 5);
+        assert_eq!(result.unwrap()["count"], 7);
         let epic = by_title(&items, "Epic Games");
         assert_eq!(s(epic, "type"), "login");
         assert_eq!(s(&epic["f"], "url"), "https://www.epicgames.com/id/login");
@@ -2593,6 +2627,22 @@ mod vault_tests {
         assert_eq!(s(work, "title"), "Epic Games");
         assert_eq!(s(work, "notes"), "Nome login: Lavoro");
         assert_eq!(s(&by_title(&items, "Skype")["f"], "password"), "pw-3");
+        // Applications: one group per app name, never per email domain.
+        let feather: Vec<&V> = items
+            .iter()
+            .filter(|i| s(i, "title") == "Feather Launcher")
+            .collect();
+        assert_eq!(feather.len(), 2);
+        for it in feather {
+            assert_eq!(s(it, "gk"), "app:feather-launcher");
+            assert_eq!(s(it, "src"), "app");
+        }
+        assert_eq!(
+            s(by_title(&items, "Router di casa"), "gk"),
+            "other:router-di-casa"
+        );
+        // Websites with an address keep the normal grouping by site.
+        assert_eq!(s(epic, "gk"), "");
         assert_eq!(
             s(&by_title(&items, "Router di casa")["f"], "username"),
             "admin"
