@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Mettre à jour le mot de passe',
+  'Aggiornare la password?': 'Mettre à jour le mot de passe ?',
+  'Campo {n}': 'Champ {n}',
+  Cognome: 'Nom de famille',
+  Facoltativo: 'Facultatif',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'Vous avez saisi des identifiants sur {site} : enregistrez-les chiffrés dans le coffre.',
+  'Invio Salva · Esc Non ora': 'Entrée Enregistrer · Échap Pas maintenant',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'Le mot de passe saisi sur {site} est différent de celui enregistré dans {account}.',
+  'Mai per questo sito': 'Jamais pour ce site',
+  'Niente viene salvato senza la tua conferma': 'Rien n’est enregistré sans votre confirmation',
+  Nome: 'Nom',
+  'Non ora': 'Pas maintenant',
+  Organizzazione: 'Organisation',
+  'Password: quella inserita nel modulo': 'Mot de passe : celui saisi dans le formulaire',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Proposer d’enregistrer les nouveaux comptes et les mots de passe modifiés sur les sites',
+  'Salva anche nelle note': 'Enregistrer aussi dans les notes',
+  'Salvare questo account?': 'Enregistrer ce compte ?',
+  'Salvataggio dei nuovi account attivato': 'Enregistrement des nouveaux comptes activé',
+  'Salvataggio dei nuovi account disattivato': 'Enregistrement des nouveaux comptes désactivé',
+  'Secondo nome': 'Deuxième prénom',
+  Sesso: 'Sexe',
+  'Siti in cui non proporre mai il salvataggio': 'Sites où l’enregistrement n’est jamais proposé',
+  'Sito rimosso dall’elenco': 'Site retiré de la liste',
+  Soprannome: 'Surnom',
+  'Username o email': 'Nom d’utilisateur ou e-mail',
+  'Richiesta di salvataggio scaduta.': 'La demande d’enregistrement a expiré.',
+  'L’account da aggiornare non esiste più.': 'Le compte à mettre à jour n’existe plus.',
+  'Elenco dei siti esclusi non valido': 'Liste des sites exclus non valide',
   ' · Condiviso': ' · Partagé',
   '…e altri {n}': '…et {n} de plus',
   '{n} account': '{n} comptes',

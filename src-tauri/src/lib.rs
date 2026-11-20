@@ -3,6 +3,7 @@ mod browser_installer;
 #[cfg(windows)]
 mod browser_navigation;
 mod browser_protocol;
+mod browser_save;
 mod clipboard;
 mod core;
 mod i18n;
@@ -216,6 +217,7 @@ pub fn run() {
         .manage(zoom::Zoom(Mutex::new(zoom::load())))
         .manage(window_state::WindowState::default())
         .manage(passkey::Passkeys(Mutex::new(None)))
+        .manage(browser_save::Saves::default())
         .setup(|app| {
             browser::setup(app.handle())?;
             quick_search::setup(app.handle())?;
@@ -345,6 +347,12 @@ pub fn run() {
             updater::update_set_auto,
             updater::update_check,
             updater::update_install,
+            browser_save::browser_save_state,
+            browser_save::browser_save_approve,
+            browser_save::browser_save_dismiss,
+            browser_save::browser_save_settings,
+            browser_save::browser_save_set_enabled,
+            browser_save::browser_save_forget,
             passkey::passkey_state,
             passkey::passkey_approve,
             passkey::passkey_fallback,

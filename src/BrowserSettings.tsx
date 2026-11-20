@@ -8,11 +8,21 @@ export default function BrowserSettings() {
     [shortcut, setShortcut] = useState('Ctrl+Alt+J'),
     [message, setMessage] = useState(''),
     [busy, setBusy] = useState(false),
-    [passkeys, setPasskeys] = useState(true);
+    [passkeys, setPasskeys] = useState(true),
+    [saving, setSaving] = useState(true),
+    [never, setNever] = useState<string[]>([]);
+  const loadSaving = () =>
+    invoke<{ enabled: boolean; never: string[] | null }>('browser_save_settings')
+      .then((s) => {
+        setSaving(s.enabled);
+        setNever(s.never || []);
+      })
+      .catch(() => {});
   useEffect(() => {
     void invoke<{ enabled: boolean }>('passkey_settings')
       .then((s) => setPasskeys(s.enabled))
       .catch(() => {});
+    void loadSaving();
   }, []);
   const refresh = async () => {
     const s = await invoke<Connection>('browser_status');
@@ -88,6 +98,49 @@ export default function BrowserSettings() {
         />
         {t('Usa Jesse’s Archive per le passkey dei siti (richiede l’estensione aggiornata)')}
       </label>
+      <label className="check-line">
+        <input
+          type="checkbox"
+          checked={saving}
+          onChange={(e) => {
+            const enabled = e.target.checked;
+            void run(
+              async () => {
+                await invoke('browser_save_set_enabled', { enabled });
+                setSaving(enabled);
+              },
+              enabled
+                ? t('Salvataggio dei nuovi account attivato')
+                : t('Salvataggio dei nuovi account disattivato'),
+            );
+          }}
+        />
+        {t('Proponi di salvare gli account nuovi e le password cambiate sui siti')}
+      </label>
+      {never.length > 0 && (
+        <div className="never-save">
+          <p>{t('Siti in cui non proporre mai il salvataggio')}</p>
+          <ul>
+            {never.map((site) => (
+              <li key={site}>
+                <span>{site}</span>
+                <button
+                  className="secondary"
+                  disabled={busy}
+                  onClick={() =>
+                    void run(async () => {
+                      await invoke('browser_save_forget', { site });
+                      await loadSaving();
+                    }, t('Sito rimosso dall’elenco'))
+                  }
+                >
+                  {t('Rimuovi')}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <button
         className="primary"
         disabled={busy}

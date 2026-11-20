@@ -35,13 +35,14 @@ L'interfaccia Tauri usa IPC nativo, non il server HTTP del vecchio client Python
 | [lib.rs](../src-tauri/src/lib.rs) | Builder, stato condiviso, registrazione comandi, eventi e integrazione OS |
 | [core.rs](../src-tauri/src/core.rs) | Modello dinamico, envelope crittografico, persistenza, dispatcher e utility |
 | [browser.rs](../src-tauri/src/browser.rs) | `Bridge`, listener, scorciatoie, selezione account e messaggi di riempimento |
+| [browser_save.rs](../src-tauri/src/browser_save.rs), [save-capture.js](../browser-extension/save-capture.js) | Salvataggio degli account inviati sui siti (dalla Beta 1.3.0): cattura nell'estensione, richiesta in memoria nel backend, conferma nella mini finestra |
 | [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) | Identificatori, directory e framing condiviso |
 | [jesse_browser_host.rs](../src-tauri/src/bin/jesse_browser_host.rs) | Secondo binario Cargo; relay tra browser e app già aperta |
 | [browser_installer.rs](../src-tauri/src/browser_installer.rs) | Catalogo fisso di sei browser, rilevamento e apertura guida |
 | [browser_navigation.rs](../src-tauri/src/browser_navigation.rs) | Navigazione Win32 controllata, compilata solo su Windows |
 | [src/main.tsx](../src/main.tsx) | Dispatch React secondo query string |
 | [App.tsx](../src/App.tsx) | Schermata auth, shell, pagine, editor e dialoghi condivisi |
-| [QuickFill.tsx](../src/QuickFill.tsx) | Sblocco e selezione account senza ricevere l'intero vault nel pannello |
+| [QuickFill.tsx](../src/QuickFill.tsx) | Sblocco e selezione account senza ricevere l'intero vault nel pannello; viste passkey e «Salvare questo account?» (priorità: passkey, salvataggio, inserimento) |
 | [BrowserInstaller.tsx](../src/BrowserInstaller.tsx), [BrowserSettings.tsx](../src/BrowserSettings.tsx) | Configurazione guidata e preferenze browser |
 | [NewsPanel.tsx](../src/NewsPanel.tsx), [news-changelog.ts](../src/news-changelog.ts), [commits.generated.json](../src/commits.generated.json) | Novità curate, cronologia Git e timestamp per voce |
 | [api.ts](../src/api.ts), [types.ts](../src/types.ts) | Wrapper `invoke` e tipi frontend; non validano da soli dati esterni |
@@ -128,7 +129,19 @@ A ogni collegamento l'estensione invia `hello` con la versione del proprio manif
 
 Il relay usa 4 byte little-endian di lunghezza e un oggetto JSON UTF-8, massimo 262144 byte. Il primo frame TCP porta il token per avvio. Il listener autentica entro 3 secondi e poi mantiene la connessione; non c'è TLS. L'helper legge il descrittore da AppData, controlla gli identificatori ammessi negli argomenti e inoltra i frame. Non avvia automaticamente l'app se è chiusa. Vedere [SECURITY](SECURITY.md) per il modello di fiducia locale.
 
-Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`, `update-progress`, `passkey-changed`, `language-changed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
+## Salvataggio degli account, passo per passo
+
+Dalla Beta 1.3.0.
+
+1. `save-capture.js` (mondo isolato, tutti i frame HTTPS, `document_start`) segna i campi che ricevono eventi `input`/`paste`/`keydown` fidati (`isTrusted`). Su `submit`, clic su un pulsante o Invio, cerca il modulo (o, senza `<form>`, l'antenato più vicino con una password digitata), anche dentro shadow root aperti.
+2. **Classificazione:** una password = login; due uguali o `new-password` = registrazione; attuale + nuova (+ conferma) o `current-password`/`new-password` = cambio, con `old`. Conferme diverse, coppie ambigue e password invariate vengono ignorate. Gli altri campi testuali compilati (al massimo 12) diventano `fields` con etichetta, token `autocomplete` e tipo; sono esclusi dati di pagamento, codici OTP, captcha, ricerche e campi nascosti. `user` indica il campo identificativo (username dichiarato, nome simile a username, email, ultimo campo prima della password).
+3. Il primo passo di un login in due passaggi (solo identificativo) invia `save-user`: il background lo tiene in memoria per la scheda e lo stesso host fino a 5 minuti e lo aggiunge al successivo `save` senza username.
+4. Il background accetta solo messaggi della propria estensione da una scheda HTTPS, prende `url` e `top` da `sender`, e inoltra `{kind:"save"}` solo se l'app ha inviato `{kind:"config",save:true}` (a ogni `hello` e quando l'opzione cambia); appena avviato attende la configurazione fino a 3 secondi, poi scarta.
+5. `browser_save::receive`: preferenza `save_logins` del dispositivo, `frame_allowed`, limiti di lunghezza e caratteri di controllo, `site` = dominio registrabile della scheda (PSL, con porta). Con vault sbloccato `decide` confronta gli account di quel sito (`matching`): stessa password per lo username (o per qualsiasi account se manca lo username) = niente; password attuale di un cambio o username già salvato = `Update`; altrimenti `New`; sito in `settings.never_save` = niente. Dopo «Non ora» lo stesso sito tace per 2 minuti.
+6. La richiesta resta in `Saves` (una sola, password in `Zeroizing`, scadenza 3 minuti); la mini finestra riceve `save-changed`. Una nuova richiesta di inserimento (scorciatoia) la scarta.
+7. **Comandi UI:** `browser_save_state` (sito, modalità, titolo suggerito, campi e indice dello username, mai la password; con vault bloccato solo il sito, la finestra chiede lo sblocco e poi ridecide), `browser_save_approve` (titolo, username, note scelte: crea l'account con `item`, URL `https://<dominio>`, gruppo `web:<dominio>` e richiesta del logo come dal salvataggio manuale, oppure aggiorna solo la password dell'account esistente, con la cronologia delle password), `browser_save_dismiss` (`never` aggiunge il sito a `settings.never_save`), `browser_save_settings`, `browser_save_set_enabled`, `browser_save_forget` (toglie il sito dall'elenco e anche dall'eventuale pausa di «Non ora»; «Mai per questo sito» non crea pause).
+
+Eventi principali: `vault-changed`, `vault-locked`, `browser-changed`, `browser-result`, `browser-dismissed`, `zoom-changed`, `update-progress`, `passkey-changed`, `save-changed`, `language-changed`. Il pannello rapido aggiorna i metadati ogni 3 secondi quando attivo; le impostazioni browser interrogano lo stato ogni 5 secondi.
 
 ## Guida e risorse di distribuzione
 

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    'ブラウザーから新しいアカウントを保存',
+    'サイトで登録したときや、まだ保管庫にないアカウントでログインしたときに、Jesse’s Archive が保存するかどうかを尋ねます。名前、ユーザー名またはメール、パスワード、必要に応じて入力したその他の情報が、そのサイトの新しいアカウントになります。サイトでパスワードを変更した場合は、保存済みのパスワードの更新を提案します。確認なしに保存されることはなく、設定でこの機能をオフにしたりサイトを除外したりできます。更新された拡張機能が必要です。',
+  ],
   'installer-sharper-images': [
     'インストーラーの画像をより鮮明に',
     'セットアップ画面の横に表示されるロゴと名前がくっきり表示されるようになりました。元のイラストから作成し、画面の拡大率ごとにぴったりのサイズで用意しているため、Windows が引き伸ばす必要がなくなりました。',

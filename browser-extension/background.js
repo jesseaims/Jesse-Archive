@@ -9,7 +9,7 @@ function connect() {
   port.onMessage.addListener(message => { void receive(message).catch(() => {}); });
   port.onDisconnect.addListener(() => {
     void api.runtime.lastError;
-    port = null; target = null;
+    port = null; target = null; saveEnabled = null;
     // App closed or host missing: the browser handles pending passkey requests.
     for (const request of [...passkeys.keys()]) finishPasskey(request, {action:'fallback'});
     clearTimeout(retry); retry = setTimeout(connect, 10000);
@@ -56,9 +56,55 @@ function onPasskeyMessage(message, sender, respond) {
   return true;
 }
 api.runtime.onMessage.addListener(onPasskeyMessage);
+/* Credentials submitted on a site, from save-capture.js. Forwarded only when the app
+ * has "offer to save" on (config); the page and frame addresses come from the browser
+ * (sender), never from the page. Nothing is kept except the identifier of a two-step
+ * login, in memory, for a few minutes. */
+let saveEnabled = null; // unknown until the app sends its config
+let queuedSave = null;
+const identifiers = new Map();
+function forwardSave(message) {
+  if (saveEnabled === null) {
+    // Service worker just woken up: wait briefly for the app's config.
+    clearTimeout(queuedSave?.timer);
+    queuedSave = {message, timer: setTimeout(() => { queuedSave = null; }, 3000)};
+    connect();
+    return;
+  }
+  if (saveEnabled) { connect(); send(message); }
+}
+function onSaveMessage(message, sender) {
+  if ((message?.kind !== 'save' && message?.kind !== 'save-user') || sender.id !== api.runtime.id) return false;
+  const url = sender.url || '', top = sender.tab?.url || '';
+  if (!sender.tab?.id || !url.startsWith('https://') || !top.startsWith('https://')) return false;
+  const tab = sender.tab.id, host = new URL(top).host;
+  for (const [id, saved] of identifiers) if (Date.now() - saved.at > 300000) identifiers.delete(id);
+  if (message.kind === 'save-user') {
+    if (saveEnabled !== false && typeof message.value === 'string' && message.value.length <= 200) identifiers.set(tab, {value: message.value, host, at: Date.now()});
+    return false;
+  }
+  if (typeof message.password !== 'string' || !Array.isArray(message.fields)) return false;
+  const fields = message.fields.slice(0, 12);
+  let user = Number.isInteger(message.user) && message.user < fields.length ? message.user : -1;
+  const remembered = identifiers.get(tab);
+  if (user < 0 && remembered?.host === host) {
+    fields.unshift({label: '', auto: 'username', type: 'text', value: remembered.value});
+    user = 0;
+  }
+  identifiers.delete(tab);
+  forwardSave({kind: 'save', url, top, password: message.password, old: typeof message.old === 'string' ? message.old : '', signup: message.signup === true, user, fields});
+  return false;
+}
+api.runtime.onMessage.addListener(onSaveMessage);
 function send(message) { port?.postMessage(message); }
 async function receive(message) {
   if (message.kind === 'reload') { api.runtime.reload(); return; }
+  if (message.kind === 'config') {
+    saveEnabled = message.save === true;
+    const queued = queuedSave; queuedSave = null;
+    if (queued) { clearTimeout(queued.timer); if (saveEnabled) send(queued.message); }
+    return;
+  }
   if (message.kind === 'passkey-result') { finishPasskey(message.request, message.result); return; }
   if (message.kind === 'context') {
     const win = await api.windows.getLastFocused();

@@ -1,7 +1,7 @@
 {
   "name": "jesse-archive-tauri",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "prebuild": "node scripts/generate-commits.mjs",
-    "test:browser": "node --test tests/browser-extension.test.mjs tests/passkey-extension.test.mjs",
+    "test:browser": "node --test tests/browser-extension.test.mjs tests/passkey-extension.test.mjs tests/save-capture.test.mjs",
     "test:i18n": "node --test tests/i18n.test.mjs",
     "test:dashboard": "node --test tests/dashboard.test.mjs tests/dashboard-ui.test.mjs",
     "test:quick-search": "node --test tests/quick-search.test.mjs tests/quick-search-ui.test.mjs",

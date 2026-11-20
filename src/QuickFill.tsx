@@ -10,6 +10,7 @@ import {
   Search,
   ShieldCheck,
   Smartphone,
+  UserPlus,
   X,
   ArrowRight,
 } from 'lucide-react';
@@ -29,8 +30,51 @@ type Passkey = {
   candidates?: Account[];
   existing?: boolean;
 };
+// Credentials submitted on a site, waiting for "save?" (src-tauri/src/browser_save.rs).
+// The password stays in the backend: only the other fields reach this window.
+type SaveField = { label: string; auto: string; type: string; value: string };
+type SaveRequest = {
+  active: boolean;
+  site?: string;
+  unlocked?: boolean;
+  mode?: 'new' | 'update';
+  title?: string;
+  user?: number | null;
+  fields?: SaveField[];
+  expires?: number;
+};
+// Labels of the standard autocomplete tokens; other fields keep the page's label.
+function fieldLabel(f: SaveField, index: number): string {
+  const known: Record<string, string> = {
+    username: t('Username'),
+    email: t('Email'),
+    name: t('Nome completo'),
+    'given-name': t('Nome'),
+    'additional-name': t('Secondo nome'),
+    'family-name': t('Cognome'),
+    nickname: t('Soprannome'),
+    tel: t('Telefono'),
+    bday: t('Data di nascita'),
+    sex: t('Sesso'),
+    'street-address': t('Indirizzo'),
+    'address-line1': t('Indirizzo'),
+    'address-level2': t('Città'),
+    'postal-code': t('CAP'),
+    country: t('Paese'),
+    'country-name': t('Paese'),
+    organization: t('Organizzazione'),
+  };
+  return (
+    known[f.auto] || (f.type === 'email' ? t('Email') : f.label) || t('Campo {n}', { n: index + 1 })
+  );
+}
 export default function QuickFill() {
   const [passkey, setPasskey] = useState<Passkey>({ active: false });
+  const [save, setSave] = useState<SaveRequest>({ active: false }),
+    [saveTitle, setSaveTitle] = useState(''),
+    [saveUser, setSaveUser] = useState(''),
+    [saveNotes, setSaveNotes] = useState<number[]>([]),
+    saveKey = useRef('');
   const [state, setState] = useState<Snapshot>({ available: false }),
     [password, setPassword] = useState(''),
     [query, setQuery] = useState(''),
@@ -44,6 +88,18 @@ export default function QuickFill() {
     try {
       setState(await invoke<Snapshot>('browser_accounts'));
       setPasskey(await invoke<Passkey>('passkey_state'));
+      const next = await invoke<SaveRequest>('browser_save_state');
+      setSave(next);
+      // New request (or just unlocked): start from the suggested values.
+      const key = next.active && next.unlocked ? `${next.site}|${next.mode}|${next.title}` : '';
+      if (key && key !== saveKey.current) {
+        const fields = next.fields || [];
+        const user = next.user ?? -1;
+        setSaveTitle(next.title || next.site || '');
+        setSaveUser(fields[user]?.value || '');
+        setSaveNotes(fields.map((_, i) => i).filter((i) => i !== user));
+      }
+      saveKey.current = key;
     } catch (e) {
       setError(translateMessage(e));
     }
@@ -115,6 +171,12 @@ export default function QuickFill() {
         setPassword('');
         void refresh();
       }),
+      listen('save-changed', () => {
+        setPassword('');
+        setError('');
+        setBusy(false);
+        void refresh();
+      }),
       listen('passkey-changed', () => {
         setPassword('');
         setError('');
@@ -155,7 +217,7 @@ export default function QuickFill() {
       <h2>{t('Sblocca il vault')}</h2>
       <p>{t('La password principale rimane nell’app.')}</p>
       <input
-        key={passkey.active ? passkey.rpId : state.domain}
+        key={passkey.active ? passkey.rpId : save.active ? save.site : state.domain}
         autoFocus
         type="password"
         autoComplete="off"
@@ -292,6 +354,198 @@ export default function QuickFill() {
       </main>
     );
   })();
+  const saveAction = async (command: string, args: Record<string, unknown>) => {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      await invoke(command, args);
+      setSave({ active: false });
+      saveKey.current = '';
+    } catch (e) {
+      setError(translateMessage(e));
+      void refresh();
+    } finally {
+      setBusy(false);
+    }
+  };
+  const approveSave = () => {
+    const fields = save.fields || [];
+    void saveAction('browser_save_approve', {
+      title: saveTitle,
+      username: saveUser,
+      notes: saveNotes.map((index) => ({ index, label: fieldLabel(fields[index], index) })),
+    });
+  };
+  // Built here, returned after the last hook below (hooks must keep their order).
+  const saveView = (() => {
+    if (!save.active) return null;
+    const fields = save.fields || [];
+    // Values that can be the login username.
+    const candidates = [
+      ...new Set(
+        fields
+          .filter((f) => ['text', 'email', 'tel'].includes(f.type) && f.value)
+          .map((f) => f.value),
+      ),
+    ];
+    const update = save.mode === 'update';
+    return (
+      <main
+        className="quick-fill quick-save"
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            void saveAction('browser_save_dismiss', { never: false });
+          }
+        }}
+      >
+        <header className="quick-heading">
+          <span className="quick-emblem">
+            <UserPlus size={23} />
+          </span>
+          <div>
+            <strong>{t('JesseArchive')}</strong>
+            <small>{update ? t('Aggiorna password') : t('Nuovo account')}</small>
+          </div>
+          <button
+            className="icon-button"
+            aria-label={t('Non ora')}
+            onClick={() => void saveAction('browser_save_dismiss', { never: false })}
+          >
+            <X size={19} />
+          </button>
+        </header>
+        <div className="quick-domain">
+          <ShieldCheck size={16} />
+          <strong>{save.site}</strong>
+          <span>{t('HTTPS')}</span>
+        </div>
+        {!save.unlocked ? (
+          unlockForm
+        ) : (
+          <form
+            className="quick-save-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              approveSave();
+            }}
+          >
+            <h2>{update ? t('Aggiornare la password?') : t('Salvare questo account?')}</h2>
+            <p>
+              {update
+                ? tRich(
+                    'La password inserita su {site} è diversa da quella salvata in {account}.',
+                    { site: save.site, account: <strong>{save.title}</strong> },
+                  )
+                : tRich('Hai inserito delle credenziali su {site}: salvale cifrate nel vault.', {
+                    site: <strong>{save.site}</strong>,
+                  })}
+            </p>
+            {!update && (
+              <>
+                <label>
+                  {t('Nome')}
+                  <input
+                    value={saveTitle}
+                    maxLength={120}
+                    onChange={(e) => setSaveTitle(e.target.value)}
+                  />
+                </label>
+                <label>
+                  {t('Username o email')}
+                  {candidates.length > 1 ? (
+                    <select
+                      value={saveUser}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSaveUser(value);
+                        // The field used as username is not repeated in the notes.
+                        setSaveNotes(
+                          fields.map((_, i) => i).filter((i) => fields[i].value !== value),
+                        );
+                      }}
+                    >
+                      {candidates.map((v) => (
+                        <option key={v} value={v}>
+                          {v}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      value={saveUser}
+                      maxLength={256}
+                      placeholder={t('Facoltativo')}
+                      onChange={(e) => setSaveUser(e.target.value)}
+                    />
+                  )}
+                </label>
+                <p className="quick-save-password">
+                  <KeyRound size={15} />
+                  {t('Password: quella inserita nel modulo')}
+                </p>
+                {fields.some((f) => f.value !== saveUser) && (
+                  <fieldset>
+                    <legend>{t('Salva anche nelle note')}</legend>
+                    {fields.map((f, i) =>
+                      f.value === saveUser ? null : (
+                        <label key={i} className="check-line">
+                          <input
+                            type="checkbox"
+                            checked={saveNotes.includes(i)}
+                            onChange={(e) =>
+                              setSaveNotes((n) =>
+                                e.target.checked ? [...n, i] : n.filter((x) => x !== i),
+                              )
+                            }
+                          />
+                          <span>
+                            {fieldLabel(f, i)}: <strong>{f.value}</strong>
+                          </span>
+                        </label>
+                      ),
+                    )}
+                  </fieldset>
+                )}
+              </>
+            )}
+            <button className="primary wide" autoFocus={update} disabled={busy}>
+              {update ? t('Aggiorna password') : t('Salva in Jesse’s Archive')}
+              <ArrowRight size={17} />
+            </button>
+            <div className="quick-save-actions">
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => void saveAction('browser_save_dismiss', { never: false })}
+              >
+                {t('Non ora')}
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => void saveAction('browser_save_dismiss', { never: true })}
+              >
+                {t('Mai per questo sito')}
+              </button>
+            </div>
+          </form>
+        )}
+        {error && (
+          <p className="quick-error" role="alert">
+            {error}
+          </p>
+        )}
+        <footer className="quick-footer">
+          <span>{busy ? t('Elaborazione…') : t('Invio Salva · Esc Non ora')}</span>
+          <small>{t('Niente viene salvato senza la tua conferma')}</small>
+        </footer>
+      </main>
+    );
+  })();
   const accounts = (state.accounts || []).filter((a) =>
     `${a.title} ${a.username}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
   );
@@ -299,7 +553,15 @@ export default function QuickFill() {
   useEffect(() => {
     document.querySelector('.quick-account.selected')?.scrollIntoView({ block: 'nearest' });
   }, [index]);
+  // The backend drops an unanswered save request after a few minutes.
+  const saveExpires = save.active ? save.expires : undefined;
+  useEffect(() => {
+    if (saveExpires === undefined) return;
+    const timeout = setTimeout(() => void refresh(), (saveExpires + 1) * 1000);
+    return () => clearTimeout(timeout);
+  }, [saveExpires, refresh]);
   if (passkeyView) return passkeyView;
+  if (saveView) return saveView;
   const fill = async (account: Account) => {
     if (busy) return;
     setBusy(true);

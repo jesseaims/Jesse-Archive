@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    'Enregistrez les nouveaux comptes depuis le navigateur',
+    'Quand vous vous inscrivez sur un site, ou vous connectez avec un compte qui n’est pas encore dans le coffre, Jesse’s Archive vous demande s’il faut l’enregistrer : nom, identifiant ou e-mail, mot de passe et, si vous le souhaitez, les autres données saisies forment un nouveau compte pour ce site. Si vous changez un mot de passe sur un site, il propose de mettre à jour celui enregistré. Rien n’est enregistré sans votre confirmation, et vous pouvez le désactiver ou exclure des sites dans les Paramètres. Nécessite l’extension mise à jour.',
+  ],
   'installer-sharper-images': [
     'Images de l’installateur plus nettes',
     'Le logo et le nom sur le côté de l’installateur sont désormais nets : ils proviennent de l’illustration d’origine et sont préparés à la taille exacte pour chaque mise à l’échelle de l’écran, Windows n’a donc plus à les étirer.',

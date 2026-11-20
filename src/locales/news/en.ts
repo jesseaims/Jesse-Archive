@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    'Save new accounts from the browser',
+    'When you sign up on a site, or sign in with an account that is not in the vault yet, Jesse’s Archive asks whether to save it: name, username or email, password and, if you want, the other details you entered go into a new account for that site. If you change a password on a site, it offers to update the saved one. Nothing is saved without your confirmation, and you can turn it off or exclude sites in Settings. Requires the updated extension.',
+  ],
   'installer-sharper-images': [
     'Sharper installer images',
     'The logo and the name on the side of the setup are now sharp: they come from the original artwork and are prepared at the exact size for every display scale, so Windows no longer has to stretch them.',

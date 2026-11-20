@@ -8,6 +8,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
+- Proposta di salvataggio degli account inviati sui siti (nuovi, login non salvati, password cambiate) con conferma nella mini finestra (dalla Beta 1.3.0).
 - Guida locale e registrazione host per Chrome, Edge, Brave, Opera, Vivaldi e Firefox; pacchetti delle estensioni locali.
 - Aggiornamento automatico verificato con firma Ed25519 (dalla Beta 1.1.13); controllo disattivabile e installazione solo su conferma.
 - Ricerca rapida globale con scorciatoia di sistema, raggruppamento degli account per servizio e copia sicura delle credenziali (dalla Beta 1.1.19).
@@ -28,6 +29,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 | Distribuzione browser | Guida automatizzata e registrazione host, installazione estensione ancora locale/manuale; Firefox temporanea | FEATURES; `browser_installer.rs` |
 | Compilazione nei siti | HTTPS e campi supportati, anche in shadow root aperti e in iframe dello stesso dominio registrabile (Beta 1.1.20); casi ambigui o frame di altri siti rifiutati; multistep richiede nuova invocazione. Provata su Brave: login in due passaggi su Epic Games e rifiuto al cambio pagina | FEATURES; background canonico |
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |
+| Salvataggio account | Dalla Beta 1.3.0: cattura solo con digitazione reale, conferma esplicita, note a scelta; test jsdom e Rust, collaudo su siti reali **Da verificare** | FEATURES, SECURITY; `browser_save.rs`, `save-capture.js` |
 | Passkey | WebAuthn tramite estensione dalla Beta 1.1.14: solo ES256, frame principale, niente autofill condizionale né PRF; UV dichiarato per vault sbloccato e conferma | FEATURES, SECURITY; `passkey.rs`, `passkey-page.js` |
 | Backup | Copia intero vault e singolo `.bak`; export non equivale a backup completo; niente catalogo versioni | DATABASE |
 | Copertura test | Test mirati, non intera matrice UI/browser/installazione/durabilità | [DEVELOPMENT](DEVELOPMENT.md) |

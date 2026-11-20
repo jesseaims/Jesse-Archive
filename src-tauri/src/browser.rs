@@ -55,7 +55,7 @@ pub fn host(value: &str) -> Option<String> {
         None => host,
     })
 }
-fn matching(item: &Value, url: &str) -> bool {
+pub(crate) fn matching(item: &Value, url: &str) -> bool {
     item["type"] == "login"
         && item["trashed"].is_null()
         && same_account_site(item["f"]["url"].as_str().unwrap_or(""), url)
@@ -111,7 +111,7 @@ fn same_account_site(saved: &str, target: &str) -> bool {
 /// belongs to the same registrable domain as the tab (connect.ubisoft.com inside
 /// www.ubisoft.com), same HTTPS port. A frame of another site (ads, widgets,
 /// alice.github.io inside bob.github.io) never receives a session.
-fn frame_allowed(url: &str, top: &str) -> bool {
+pub(crate) fn frame_allowed(url: &str, top: &str) -> bool {
     host(url).is_some() && (host(url) == host(top) || same_account_site(top, url))
 }
 pub(crate) fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Result<(), String> {
@@ -126,7 +126,23 @@ pub(crate) fn send(app: &tauri::AppHandle, client: &str, message: Value) -> Resu
     let mut stream = stream.lock().map_err(|_| "Connessione occupata")?;
     wire::write_frame(&mut *stream, &message).map_err(|_| "Browser disconnesso".into())
 }
+/// Sends a message to every connected browser.
+pub(crate) fn broadcast(app: &tauri::AppHandle, message: Value) {
+    let clients: Vec<_> = app
+        .state::<Bridge>()
+        .clients
+        .lock()
+        .unwrap()
+        .keys()
+        .cloned()
+        .collect();
+    for client in clients {
+        let _ = send(app, &client, message.clone());
+    }
+}
 pub fn request(app: &tauri::AppHandle) {
+    // The user moved on to filling a field: a pending "save this account?" is dropped.
+    crate::browser_save::clear(app);
     let bridge = app.state::<Bridge>();
     let id = random();
     *bridge.session.lock().unwrap() = None;
@@ -162,9 +178,9 @@ pub(crate) fn show(app: &tauri::AppHandle) {
         let _ = window.set_focus();
     }
 }
-/// Hides the panel unless a credential-fill session still needs it.
+/// Hides the panel unless a credential-fill session or a save request still needs it.
 pub(crate) fn hide(app: &tauri::AppHandle) {
-    if app.state::<Bridge>().session.lock().unwrap().is_some() {
+    if app.state::<Bridge>().session.lock().unwrap().is_some() || crate::browser_save::active(app) {
         return;
     }
     if let Some(window) = app.get_webview_window("quick-fill") {
@@ -185,7 +201,15 @@ fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
             {
                 let _ = send(app, client, json!({"kind":"reload"}));
             }
+            // Whether the extension should capture submitted credentials at all.
+            let _ = send(
+                app,
+                client,
+                json!({"kind":"config","save":crate::browser_save::enabled()}),
+            );
         }
+        // Credentials submitted on a site (save-capture.js): see browser_save.rs.
+        "save" => crate::browser_save::receive(app, &message),
         "open" => {
             // Only the extension's toolbar action sends this message.
             let id = random();

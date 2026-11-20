@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'パスワードを更新',
+  'Aggiornare la password?': 'パスワードを更新しますか？',
+  'Campo {n}': '項目 {n}',
+  Cognome: '姓',
+  Facoltativo: '任意',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    '{site} で認証情報が入力されました：暗号化して保管庫に保存します。',
+  'Invio Salva · Esc Non ora': 'Enter 保存 · Esc 今はしない',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    '{site} で入力したパスワードは {account} に保存されているものと異なります。',
+  'Mai per questo sito': 'このサイトでは保存しない',
+  'Niente viene salvato senza la tua conferma': '確認なしに保存されることはありません',
+  Nome: '名前',
+  'Non ora': '今はしない',
+  Organizzazione: '組織',
+  'Password: quella inserita nel modulo': 'パスワード：フォームに入力したもの',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'サイトで新しいアカウントと変更したパスワードの保存を提案する',
+  'Salva anche nelle note': 'メモにも保存',
+  'Salvare questo account?': 'このアカウントを保存しますか？',
+  'Salvataggio dei nuovi account attivato': '新しいアカウントの保存をオンにしました',
+  'Salvataggio dei nuovi account disattivato': '新しいアカウントの保存をオフにしました',
+  'Secondo nome': 'ミドルネーム',
+  Sesso: '性別',
+  'Siti in cui non proporre mai il salvataggio': '保存を提案しないサイト',
+  'Sito rimosso dall’elenco': 'サイトをリストから削除しました',
+  Soprannome: 'ニックネーム',
+  'Username o email': 'ユーザー名またはメール',
+  'Richiesta di salvataggio scaduta.': '保存リクエストの期限が切れました。',
+  'L’account da aggiornare non esiste più.': '更新するアカウントはもう存在しません。',
+  'Elenco dei siti esclusi non valido': '除外サイトのリストが無効です',
   ' · Condiviso': ' · 共有済み',
   '…e altri {n}': '…ほか {n} 件',
   '{n} account': '{n} 件のアカウント',

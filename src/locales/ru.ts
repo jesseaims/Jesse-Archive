@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Обновить пароль',
+  'Aggiornare la password?': 'Обновить пароль?',
+  'Campo {n}': 'Поле {n}',
+  Cognome: 'Фамилия',
+  Facoltativo: 'Необязательно',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'Вы ввели учётные данные на {site}: сохраните их в зашифрованном хранилище.',
+  'Invio Salva · Esc Non ora': 'Enter Сохранить · Esc Не сейчас',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'Пароль, введённый на {site}, отличается от сохранённого в {account}.',
+  'Mai per questo sito': 'Никогда для этого сайта',
+  'Niente viene salvato senza la tua conferma': 'Без вашего подтверждения ничего не сохраняется',
+  Nome: 'Имя',
+  'Non ora': 'Не сейчас',
+  Organizzazione: 'Организация',
+  'Password: quella inserita nel modulo': 'Пароль: тот, что введён в форме',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Предлагать сохранять новые аккаунты и изменённые пароли на сайтах',
+  'Salva anche nelle note': 'Сохранить также в заметках',
+  'Salvare questo account?': 'Сохранить этот аккаунт?',
+  'Salvataggio dei nuovi account attivato': 'Сохранение новых аккаунтов включено',
+  'Salvataggio dei nuovi account disattivato': 'Сохранение новых аккаунтов выключено',
+  'Secondo nome': 'Отчество',
+  Sesso: 'Пол',
+  'Siti in cui non proporre mai il salvataggio': 'Сайты, где сохранение никогда не предлагается',
+  'Sito rimosso dall’elenco': 'Сайт удалён из списка',
+  Soprannome: 'Псевдоним',
+  'Username o email': 'Имя пользователя или e-mail',
+  'Richiesta di salvataggio scaduta.': 'Срок запроса на сохранение истёк.',
+  'L’account da aggiornare non esiste più.': 'Аккаунт для обновления больше не существует.',
+  'Elenco dei siti esclusi non valido': 'Недопустимый список исключённых сайтов',
   ' · Condiviso': ' · Общий доступ',
   '…e altri {n}': '…и ещё {n}',
   '{n} account': 'Учётных записей: {n}',

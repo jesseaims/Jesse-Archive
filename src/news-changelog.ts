@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'save-new-logins',
+    addedAt: '2026-11-20T12:00:00+01:00',
+    version: 'Beta 1.3.0',
+    title: 'Salva i nuovi account dal browser',
+    description:
+      'Quando ti registri su un sito, o accedi con un account che non è ancora nel vault, Jesse’s Archive ti chiede se salvarlo: nome, username o email, password e, se vuoi, gli altri dati inseriti diventano un nuovo account per quel sito. Se cambi una password su un sito, propone di aggiornare quella salvata. Niente viene salvato senza la tua conferma, e nelle Impostazioni puoi disattivarlo o escludere dei siti. Richiede l’estensione aggiornata.',
+    icon: 'key',
+  },
+  {
     id: 'installer-sharper-images',
     addedAt: '2026-11-19T18:00:00+01:00',
     version: 'Beta 1.2.1',

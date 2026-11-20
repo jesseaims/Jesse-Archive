@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Update password',
+  'Aggiornare la password?': 'Update the password?',
+  'Campo {n}': 'Field {n}',
+  Cognome: 'Last name',
+  Facoltativo: 'Optional',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'You entered credentials on {site}: save them encrypted in the vault.',
+  'Invio Salva · Esc Non ora': 'Enter Save · Esc Not now',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'The password entered on {site} differs from the one saved in {account}.',
+  'Mai per questo sito': 'Never for this site',
+  'Niente viene salvato senza la tua conferma': 'Nothing is saved without your confirmation',
+  Nome: 'Name',
+  'Non ora': 'Not now',
+  Organizzazione: 'Organization',
+  'Password: quella inserita nel modulo': 'Password: the one entered in the form',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Offer to save new accounts and changed passwords on websites',
+  'Salva anche nelle note': 'Also save in the notes',
+  'Salvare questo account?': 'Save this account?',
+  'Salvataggio dei nuovi account attivato': 'Saving new accounts turned on',
+  'Salvataggio dei nuovi account disattivato': 'Saving new accounts turned off',
+  'Secondo nome': 'Middle name',
+  Sesso: 'Gender',
+  'Siti in cui non proporre mai il salvataggio': 'Sites where saving is never offered',
+  'Sito rimosso dall’elenco': 'Site removed from the list',
+  Soprannome: 'Nickname',
+  'Username o email': 'Username or email',
+  'Richiesta di salvataggio scaduta.': 'Save request expired.',
+  'L’account da aggiornare non esiste più.': 'The account to update no longer exists.',
+  'Elenco dei siti esclusi non valido': 'Invalid list of excluded sites',
   ' · Condiviso': ' · Shared',
   '…e altri {n}': '…and {n} more',
   '{n} account': '{n} accounts',
