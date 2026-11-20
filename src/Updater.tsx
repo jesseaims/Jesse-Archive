@@ -28,11 +28,17 @@ const IDLE_EVENT = 'jesse-update-idle';
 
 const megabytes = (bytes = 0) => `${(bytes / 1024 / 1024).toFixed(0)} MB`;
 
-// Release notes are plain text in the dialog; markdown markers are only tidied.
-function summary(notes = '') {
-  const text = notes
+// Release notes (scripts/release-notes.mjs) are Markdown, shown here as plain text:
+// only the "Novità" part (the "Installazione" steps are for manual downloads), with
+// headings, bold, italics and links reduced to their text.
+export function summary(notes = '') {
+  const news = /^##\s+Novità\s*$([\s\S]*?)(?=^##\s|$(?![\s\S]))/m.exec(notes);
+  const text = (news ? news[1] : notes)
     .replace(/^#+\s*/gm, '')
-    .replace(/\*\*/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+    .replace(/(^|[\s(«"'])[_*]([^_*\n]+?)[_*](?=$|[\s.,;:!?)»"'])/gm, '$1$2')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
   return text.length > 1200 ? `${text.slice(0, 1200).trimEnd()}…` : text;
 }
