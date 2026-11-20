@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    '브라우저에서 새 계정 저장',
+    '사이트에 가입하거나 아직 볼트에 없는 계정으로 로그인하면 Jesse’s Archive가 저장할지 묻습니다. 이름, 사용자 이름 또는 이메일, 비밀번호와 원하는 경우 입력한 다른 정보가 해당 사이트의 새 계정으로 저장됩니다. 사이트에서 비밀번호를 변경하면 저장된 비밀번호 업데이트를 제안합니다. 확인 없이는 아무것도 저장되지 않으며, 설정에서 기능을 끄거나 사이트를 제외할 수 있습니다. 업데이트된 확장 프로그램이 필요합니다.',
+  ],
   'installer-sharper-images': [
     '더 선명해진 설치 프로그램 이미지',
     '설치 화면 옆의 로고와 이름이 이제 선명하게 보입니다. 원본 그림에서 만들고 화면 배율마다 정확한 크기로 준비하므로 Windows가 더 이상 이미지를 늘리지 않습니다.',

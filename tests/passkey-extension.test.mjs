@@ -165,7 +165,10 @@ function background() {
   const dom = new JSDOM('', { url: 'https://extension.invalid/', runScripts: 'outside-only' });
   const w = dom.window;
   const sent = [];
-  let onMessage, onPortMessage, onDisconnect;
+  let onPortMessage, onDisconnect;
+  // Every runtime.onMessage listener sees each message, as in the browser (passkeys, saves).
+  const messageListeners = [];
+  const onMessage = (...args) => messageListeners.map((fn) => fn(...args)).some(Boolean);
   w.chrome = {
     runtime: {
       id: 'ext',
@@ -178,7 +181,7 @@ function background() {
       }),
       onStartup: { addListener() {} },
       onInstalled: { addListener() {} },
-      onMessage: { addListener: (fn) => (onMessage = fn) },
+      onMessage: { addListener: (fn) => messageListeners.push(fn) },
     },
     action: { onClicked: { addListener() {} } },
     tabs: { get: async () => ({ windowId: 1 }) },

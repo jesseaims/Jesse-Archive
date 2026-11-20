@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Spanish. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Actualizar contraseña',
+  'Aggiornare la password?': '¿Actualizar la contraseña?',
+  'Campo {n}': 'Campo {n}',
+  Cognome: 'Apellido',
+  Facoltativo: 'Opcional',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'Has introducido credenciales en {site}: guárdalas cifradas en el vault.',
+  'Invio Salva · Esc Non ora': 'Intro Guardar · Esc Ahora no',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'La contraseña introducida en {site} es distinta de la guardada en {account}.',
+  'Mai per questo sito': 'Nunca en este sitio',
+  'Niente viene salvato senza la tua conferma': 'No se guarda nada sin tu confirmación',
+  Nome: 'Nombre',
+  'Non ora': 'Ahora no',
+  Organizzazione: 'Organización',
+  'Password: quella inserita nel modulo': 'Contraseña: la introducida en el formulario',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Ofrecer guardar las cuentas nuevas y las contraseñas cambiadas en los sitios',
+  'Salva anche nelle note': 'Guardar también en las notas',
+  'Salvare questo account?': '¿Guardar esta cuenta?',
+  'Salvataggio dei nuovi account attivato': 'Guardado de cuentas nuevas activado',
+  'Salvataggio dei nuovi account disattivato': 'Guardado de cuentas nuevas desactivado',
+  'Secondo nome': 'Segundo nombre',
+  Sesso: 'Sexo',
+  'Siti in cui non proporre mai il salvataggio': 'Sitios en los que nunca se ofrece guardar',
+  'Sito rimosso dall’elenco': 'Sitio quitado de la lista',
+  Soprannome: 'Apodo',
+  'Username o email': 'Usuario o correo',
+  'Richiesta di salvataggio scaduta.': 'La solicitud de guardado ha caducado.',
+  'L’account da aggiornare non esiste più.': 'La cuenta que se iba a actualizar ya no existe.',
+  'Elenco dei siti esclusi non valido': 'Lista de sitios excluidos no válida',
   ' · Condiviso': ' · Compartido',
   '…e altri {n}': '…y {n} más',
   '{n} account': '{n} cuentas',

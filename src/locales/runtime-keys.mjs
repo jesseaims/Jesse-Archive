@@ -96,6 +96,10 @@ export const RUNTIME_KEYS = [
   'Questo account non ha una password salvata.',
   'Richiesta scaduta: richiama il pannello dal campo di accesso.',
   'Seleziona nuovamente il campo di accesso.',
+  // browser_save.rs and core.rs: saving accounts from the browser
+  'Richiesta di salvataggio scaduta.',
+  'L’account da aggiornare non esiste più.',
+  'Elenco dei siti esclusi non valido',
   // passkey.rs
   'Richiesta passkey scaduta.',
   'Vault bloccato.',

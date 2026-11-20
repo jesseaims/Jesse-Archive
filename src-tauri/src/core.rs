@@ -1055,6 +1055,19 @@ impl Vault {
                     };
                     self.data["settings"]["recent"] = json!(ids);
                 }
+                // Sites where the browser extension never offers to save accounts.
+                if let Some(n) = b.get("never_save") {
+                    let ok = n.as_array().is_some_and(|a| {
+                        a.len() <= 500
+                            && a.iter().all(|x| {
+                                x.as_str().is_some_and(|s| !s.is_empty() && s.len() <= 260)
+                            })
+                    });
+                    if !ok {
+                        return Err("Elenco dei siti esclusi non valido".into());
+                    }
+                    self.data["settings"]["never_save"] = n.clone();
+                }
                 self.data["settings_upd"] = json!(now());
                 self.save()?;
                 Ok(json!({"state":self.state()}))

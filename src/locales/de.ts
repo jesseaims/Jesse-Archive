@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // German. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Passwort aktualisieren',
+  'Aggiornare la password?': 'Passwort aktualisieren?',
+  'Campo {n}': 'Feld {n}',
+  Cognome: 'Nachname',
+  Facoltativo: 'Optional',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'Du hast auf {site} Zugangsdaten eingegeben: Speichere sie verschlüsselt im Tresor.',
+  'Invio Salva · Esc Non ora': 'Enter Speichern · Esc Nicht jetzt',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'Das auf {site} eingegebene Passwort unterscheidet sich von dem in {account} gespeicherten.',
+  'Mai per questo sito': 'Nie für diese Website',
+  'Niente viene salvato senza la tua conferma': 'Ohne deine Bestätigung wird nichts gespeichert',
+  Nome: 'Name',
+  'Non ora': 'Nicht jetzt',
+  Organizzazione: 'Organisation',
+  'Password: quella inserita nel modulo': 'Passwort: das im Formular eingegebene',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Speichern neuer Konten und geänderter Passwörter auf Websites anbieten',
+  'Salva anche nelle note': 'Auch in den Notizen speichern',
+  'Salvare questo account?': 'Dieses Konto speichern?',
+  'Salvataggio dei nuovi account attivato': 'Speichern neuer Konten aktiviert',
+  'Salvataggio dei nuovi account disattivato': 'Speichern neuer Konten deaktiviert',
+  'Secondo nome': 'Zweiter Vorname',
+  Sesso: 'Geschlecht',
+  'Siti in cui non proporre mai il salvataggio': 'Websites, auf denen nie Speichern angeboten wird',
+  'Sito rimosso dall’elenco': 'Website aus der Liste entfernt',
+  Soprannome: 'Spitzname',
+  'Username o email': 'Benutzername oder E-Mail',
+  'Richiesta di salvataggio scaduta.': 'Speicheranfrage abgelaufen.',
+  'L’account da aggiornare non esiste più.': 'Das zu aktualisierende Konto existiert nicht mehr.',
+  'Elenco dei siti esclusi non valido': 'Ungültige Liste ausgeschlossener Websites',
   ' · Condiviso': ' · Geteilt',
   '…e altri {n}': '…und {n} weitere',
   '{n} account': '{n} Konten',

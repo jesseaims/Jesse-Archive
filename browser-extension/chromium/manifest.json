@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "default_locale": "it",
   "name": "__MSG_extName__",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "__MSG_extDescription__",
   "permissions": [
     "nativeMessaging",
@@ -44,6 +44,16 @@
         "passkey-bridge.js"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "save-capture.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3dbZEfvGmR2n1bd1Qq4bm9gLGizNo5rCsjrQXdR/+CCilgMlU/Tn4kYHcWkVdQYaOgqTerTdn6uaY2os7B6hBKBwsn3+4+nYDM1fkKbnJ80bH/IyOHbv0PWv3zkdrpw/Sntbgi9Ili+M+Gjx5eYywiAVoPNhutRWU2O5enpW/TMKoRUYNKoxi7YGGvzJ+5tInX6zMDrW7tRCR/j5V1ANdjp5Pp9t6vvKIvdE93EXXecfiZkvnuH0gdgdDZBkcEzX/mF7uzjpg+9OU+0SpYzv5IYyAVbxnjLS49ujuybKhFfLLGsph69325p0TXrooJLQB0vyONAhTBPTYKD7FWNUuQIDAQAB",

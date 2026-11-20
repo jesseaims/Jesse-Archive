@@ -43,9 +43,19 @@ Limiti:
 
 Per disattivare la funzione: Impostazioni → Desktop → «Usa Jesse's Archive per le passkey dei siti».
 
+## Salvataggio dei nuovi account
+
+Dalla Beta 1.3.0, quando invii un modulo con una password su un sito HTTPS, la mini finestra di Jesse's Archive chiede cosa fare:
+
+- **Salvare questo account?** (registrazione, oppure accesso con un account che non è nel vault): puoi cambiare il nome, scegliere quale campo usare come username o email e quali altri dati inseriti (nome, telefono, data di nascita…) salvare nelle note. L'account viene creato per il dominio del sito, per esempio `epicgames.com`.
+- **Aggiornare la password?** (l'account è già salvato ma la password è diversa, o hai cambiato password sul sito).
+- **Non ora** chiude la richiesta; **Mai per questo sito** non la ripropone più.
+
+Se il vault è bloccato, la finestra chiede prima di sbloccarlo. Niente viene salvato senza conferma, la password non passa dalla finestra, e numeri di carta, codici OTP e campi nascosti non vengono mai proposti. Per disattivare la funzione o rimuovere un sito escluso: Impostazioni → Desktop → «Proponi di salvare gli account nuovi e le password cambiate sui siti».
+
 ## Limiti e verifica
 
-Sono esclusi HTTP, pagine interne del browser, iframe con origine diversa dalla pagina principale, campi non modificabili e moduli ambigui con più password o password nuova. L'integrazione non implementa CAPTCHA, MFA o un login automatico. Le pagine che bloccano le estensioni e alcuni controlli personalizzati richiedono la copia manuale dall'app.
+Per l'inserimento sono esclusi HTTP, pagine interne del browser, iframe con origine diversa dalla pagina principale, campi non modificabili e moduli ambigui con più password o password nuova. L'integrazione non implementa CAPTCHA, MFA o un login automatico. Le pagine che bloccano le estensioni e alcuni controlli personalizzati richiedono la copia manuale dall'app.
 
 Il codice usa le API WebExtensions per Chromium e Firefox. La compatibilità effettiva deve essere verificata nelle versioni installate dei sei browser: la compilazione non sostituisce questo collaudo.
 
@@ -56,6 +66,7 @@ Checklist manuale con account sintetici:
 - Login nella stessa pagina e in due passaggi; Unicode nello username/password; input React controllati.
 - Cambio URL, cambio scheda, chiusura browser, timeout e disconnessione prima della scelta.
 - Nessuna proposta per domini simili, HTTP, iframe estranei, cestino e moduli di registrazione.
+- Salvataggio: registrazione, login con account non salvato, login già salvato (nessuna richiesta), cambio password, login in due passaggi, «Non ora», «Mai per questo sito», vault bloccato, opzione disattivata.
 - Installazione/aggiornamento/disinstallazione del setup e riavvio del browser.
 
 ## Architettura e riferimenti

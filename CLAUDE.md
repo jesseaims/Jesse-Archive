@@ -20,6 +20,7 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `src/main.tsx`, `src/App.tsx` | Selezione della UI per finestra; stato e schermate principali React |
 | `src/api.ts`, `src/types.ts`, `src/theme.ts`, `src/style.css` | Contratti IPC, tipi, palette e stile condiviso |
 | `src-tauri/src/browser.rs` | Scorciatoia globale, connessioni locali, sessione di compilazione, ricerca e rilascio delle credenziali |
+| `src-tauri/src/browser_save.rs`, `browser-extension/save-capture.js` | Proposta di salvataggio degli account inviati sui siti: cattura, decisione nuovo/aggiorna, conferma nella mini finestra |
 | `src-tauri/src/browser_protocol.rs`, `src-tauri/src/bin/jesse_browser_host.rs` | Framing JSON e relay tra Native Messaging e socket loopback |
 | `src-tauri/src/browser_installer.rs`, `src-tauri/src/browser_navigation.rs` | Rilevamento browser e guida Windows con navigazione controllata via Win32 |
 | `src/QuickFill.tsx`, `src/BrowserInstaller.tsx`, `src/BrowserSettings.tsx` | Mini finestra, guida di configurazione e relative impostazioni |
@@ -69,6 +70,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Lingua dell'interfaccia | Implementata: pulsante «Lingua», dieci lingue, preferenza `lang` del dispositivo, tray/titoli/messaggi del backend, News, installer ed estensione tradotti; `npm run test:i18n` verifica la completezza |
 | Tray, avvio Windows, clipboard e temi | Implementati con limiti di piattaforma e di durata del processo; dimensione, posizione e stato massimizzato della finestra ricordati per dispositivo (`window_state.rs`) |
 | Inserimento browser | Parziale: login HTTPS, selezione esplicita, PSL e due passaggi manuali; campi in shadow root aperti e iframe dello stesso dominio registrabile (`frame_allowed`); provato su Brave, altri siti e browser da collaudare |
+| Salvataggio account dal browser | Parziale/da collaudare sui siti (Beta 1.3.0): registrazione, login non salvati e password cambiate; solo digitazione reale, conferma nella mini finestra, note a scelta, «Mai per questo sito» in `settings.never_save` |
 | Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
 | Guida estensioni | Implementata; caricamento iniziale ancora manuale, Firefox locale temporaneo |
 | News e commit offline con orari individuali | Implementati in `NewsPanel.tsx`, changelog e snapshot generato |

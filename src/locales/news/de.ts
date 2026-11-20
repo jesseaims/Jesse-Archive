@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    'Neue Konten direkt aus dem Browser speichern',
+    'Wenn du dich auf einer Website registrierst oder mit einem Konto anmeldest, das noch nicht im Tresor ist, fragt Jesse’s Archive, ob es gespeichert werden soll: Name, Benutzername oder E-Mail, Passwort und auf Wunsch die übrigen eingegebenen Daten werden ein neues Konto für diese Website. Wenn du auf einer Website ein Passwort änderst, bietet es an, das gespeicherte zu aktualisieren. Ohne deine Bestätigung wird nichts gespeichert; in den Einstellungen kannst du die Funktion ausschalten oder Websites ausschließen. Erfordert die aktualisierte Erweiterung.',
+  ],
   'installer-sharper-images': [
     'Schärfere Bilder im Installationsprogramm',
     'Logo und Name an der Seite des Setups sind jetzt scharf: Sie stammen aus der Originalgrafik und werden für jede Anzeigeskalierung in genau der passenden Größe erstellt, sodass Windows sie nicht mehr strecken muss.',

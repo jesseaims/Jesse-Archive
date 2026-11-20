@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'save-new-logins': [
+    'Guarda contas novas a partir do navegador',
+    'Quando te registas num site, ou inicias sessão com uma conta que ainda não está no cofre, o Jesse’s Archive pergunta se a queres guardar: nome, utilizador ou email, palavra-passe e, se quiseres, os outros dados introduzidos passam a uma conta nova para esse site. Se mudares uma palavra-passe num site, propõe atualizar a guardada. Nada é guardado sem a tua confirmação, e podes desativar a função ou excluir sites nas Definições. Requer a extensão atualizada.',
+  ],
   'installer-sharper-images': [
     'Imagens do instalador mais nítidas',
     'O logotipo e o nome na lateral do instalador agora aparecem nítidos: vêm da ilustração original e são preparados no tamanho exato para cada escala de ecrã, por isso o Windows já não precisa de os esticar.',

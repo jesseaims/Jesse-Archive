@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': 'Atualizar palavra-passe',
+  'Aggiornare la password?': 'Atualizar a palavra-passe?',
+  'Campo {n}': 'Campo {n}',
+  Cognome: 'Apelido',
+  Facoltativo: 'Opcional',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    'Introduziste credenciais em {site}: guarda-as cifradas no cofre.',
+  'Invio Salva · Esc Non ora': 'Enter Guardar · Esc Agora não',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    'A palavra-passe introduzida em {site} é diferente da guardada em {account}.',
+  'Mai per questo sito': 'Nunca neste site',
+  'Niente viene salvato senza la tua conferma': 'Nada é guardado sem a tua confirmação',
+  Nome: 'Nome',
+  'Non ora': 'Agora não',
+  Organizzazione: 'Organização',
+  'Password: quella inserita nel modulo': 'Palavra-passe: a introduzida no formulário',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    'Oferecer guardar contas novas e palavras-passe alteradas nos sites',
+  'Salva anche nelle note': 'Guardar também nas notas',
+  'Salvare questo account?': 'Guardar esta conta?',
+  'Salvataggio dei nuovi account attivato': 'Guardar contas novas ativado',
+  'Salvataggio dei nuovi account disattivato': 'Guardar contas novas desativado',
+  'Secondo nome': 'Nome do meio',
+  Sesso: 'Sexo',
+  'Siti in cui non proporre mai il salvataggio': 'Sites onde nunca é oferecido guardar',
+  'Sito rimosso dall’elenco': 'Site removido da lista',
+  Soprannome: 'Alcunha',
+  'Username o email': 'Nome de utilizador ou email',
+  'Richiesta di salvataggio scaduta.': 'O pedido para guardar expirou.',
+  'L’account da aggiornare non esiste più.': 'A conta a atualizar já não existe.',
+  'Elenco dei siti esclusi non valido': 'Lista de sites excluídos inválida',
   ' · Condiviso': ' · Compartilhado',
   '…e altri {n}': '…e mais {n}',
   '{n} account': '{n} contas',

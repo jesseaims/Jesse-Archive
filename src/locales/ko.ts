@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': '비밀번호 업데이트',
+  'Aggiornare la password?': '비밀번호를 업데이트할까요?',
+  'Campo {n}': '항목 {n}',
+  Cognome: '성',
+  Facoltativo: '선택 사항',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    '{site}에서 로그인 정보를 입력했습니다: 볼트에 암호화하여 저장하세요.',
+  'Invio Salva · Esc Non ora': 'Enter 저장 · Esc 나중에',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    '{site}에 입력한 비밀번호가 {account}에 저장된 비밀번호와 다릅니다.',
+  'Mai per questo sito': '이 사이트에서는 사용 안 함',
+  'Niente viene salvato senza la tua conferma': '확인 없이는 아무것도 저장되지 않습니다',
+  Nome: '이름',
+  'Non ora': '나중에',
+  Organizzazione: '조직',
+  'Password: quella inserita nel modulo': '비밀번호: 양식에 입력한 비밀번호',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    '사이트에서 새 계정과 변경된 비밀번호 저장 제안',
+  'Salva anche nelle note': '메모에도 저장',
+  'Salvare questo account?': '이 계정을 저장할까요?',
+  'Salvataggio dei nuovi account attivato': '새 계정 저장이 켜졌습니다',
+  'Salvataggio dei nuovi account disattivato': '새 계정 저장이 꺼졌습니다',
+  'Secondo nome': '중간 이름',
+  Sesso: '성별',
+  'Siti in cui non proporre mai il salvataggio': '저장을 제안하지 않는 사이트',
+  'Sito rimosso dall’elenco': '목록에서 사이트를 삭제했습니다',
+  Soprannome: '닉네임',
+  'Username o email': '사용자 이름 또는 이메일',
+  'Richiesta di salvataggio scaduta.': '저장 요청이 만료되었습니다.',
+  'L’account da aggiornare non esiste più.': '업데이트할 계정이 더 이상 없습니다.',
+  'Elenco dei siti esclusi non valido': '제외된 사이트 목록이 올바르지 않습니다',
   ' · Condiviso': ' · 공유됨',
   '…e altri {n}': '…외 {n}개',
   '{n} account': '계정 {n}개',

@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Aggiorna password': '更新密码',
+  'Aggiornare la password?': '更新密码？',
+  'Campo {n}': '字段 {n}',
+  Cognome: '姓',
+  Facoltativo: '可选',
+  'Hai inserito delle credenziali su {site}: salvale cifrate nel vault.':
+    '你在 {site} 输入了登录信息：将其加密保存到保险库。',
+  'Invio Salva · Esc Non ora': 'Enter 保存 · Esc 暂不',
+  'La password inserita su {site} è diversa da quella salvata in {account}.':
+    '在 {site} 输入的密码与 {account} 中保存的不同。',
+  'Mai per questo sito': '此网站永不',
+  'Niente viene salvato senza la tua conferma': '未经你确认不会保存任何内容',
+  Nome: '名称',
+  'Non ora': '暂不',
+  Organizzazione: '组织',
+  'Password: quella inserita nel modulo': '密码：表单中输入的密码',
+  'Proponi di salvare gli account nuovi e le password cambiate sui siti':
+    '在网站上提议保存新账户和已更改的密码',
+  'Salva anche nelle note': '同时保存到备注',
+  'Salvare questo account?': '保存此账户？',
+  'Salvataggio dei nuovi account attivato': '已开启保存新账户',
+  'Salvataggio dei nuovi account disattivato': '已关闭保存新账户',
+  'Secondo nome': '中间名',
+  Sesso: '性别',
+  'Siti in cui non proporre mai il salvataggio': '从不提议保存的网站',
+  'Sito rimosso dall’elenco': '已从列表中移除网站',
+  Soprannome: '昵称',
+  'Username o email': '用户名或电子邮件',
+  'Richiesta di salvataggio scaduta.': '保存请求已过期。',
+  'L’account da aggiornare non esiste più.': '要更新的账户已不存在。',
+  'Elenco dei siti esclusi non valido': '排除网站列表无效',
   ' · Condiviso': ' · 已共享',
   '…e altri {n}': '…还有 {n} 个',
   '{n} account': '{n} 个账户',
