@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    '不要直接用 Excel 或其他电子表格打开 CSV：以 =、+、- 或 @ 开头的值会被当作公式执行。',
+  'Scegli di nuovo il file da importare': '请重新选择要导入的文件',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    '下载的安装程序已被修改：安装已取消。',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    '下载的安装程序正被其他程序使用：安装已取消。',
   'Troppi tentativi errati: riprova tra {n} secondi': '错误尝试次数过多：请在 {n} 秒后重试',
   'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
     '密码或恢复码不正确。尝试次数过多：请在 {n} 秒后重试',

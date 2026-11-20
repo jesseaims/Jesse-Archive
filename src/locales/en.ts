@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'Do not open the CSV directly with Excel or another spreadsheet: values starting with =, +, - or @ would run as formulas.',
+  'Scegli di nuovo il file da importare': 'Choose the file to import again',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'The downloaded setup was modified: installation cancelled.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'The downloaded setup is in use by another program: installation cancelled.',
   'Troppi tentativi errati: riprova tra {n} secondi':
     'Too many wrong attempts: try again in {n} seconds',
   'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':

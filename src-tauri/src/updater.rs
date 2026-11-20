@@ -31,6 +31,9 @@ const MAX_INSTALLER: u64 = 1024 * 1024 * 1024;
 const USER_AGENT: &str = "JesseArchive-Updater";
 
 static INSTALLING: AtomicBool = AtomicBool::new(false);
+/// The verified installer, opened so that no other process can change, rename or
+/// delete it, kept until the app exits (see `lock_verified`).
+static LOCKED_INSTALLER: std::sync::Mutex<Option<std::fs::File>> = std::sync::Mutex::new(None);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Manifest {
@@ -293,6 +296,46 @@ fn download(app: &AppHandle, release: &Release, manifest: &Manifest) -> Result<P
     Ok(path)
 }
 
+/// Reopens the downloaded installer denying write and delete access to every other
+/// process, then checks size and hash again through that handle. The file sits in the
+/// user's temporary folder: without this, a program running as the same user could
+/// replace it between the check and the elevated start, and get its own executable
+/// approved in the UAC prompt of the update.
+#[cfg(windows)]
+fn lock_verified(path: &Path, manifest: &Manifest) -> Result<std::fs::File, String> {
+    use std::os::windows::fs::OpenOptionsExt;
+    const FILE_SHARE_READ: u32 = 0x1;
+    let changed = || "Il setup scaricato è stato modificato: installazione annullata.".to_string();
+    let mut file = std::fs::OpenOptions::new()
+        .read(true)
+        .share_mode(FILE_SHARE_READ)
+        .open(path)
+        .map_err(|_| {
+            "Il setup scaricato è in uso da un altro programma: installazione annullata."
+                .to_string()
+        })?;
+    let mut hasher = Sha256::new();
+    let mut total: u64 = 0;
+    let mut buf = vec![0u8; 256 * 1024];
+    loop {
+        let n = file.read(&mut buf).map_err(|_| changed())?;
+        if n == 0 {
+            break;
+        }
+        total += n as u64;
+        hasher.update(&buf[..n]);
+    }
+    let digest: [u8; 32] = hasher.finalize().into();
+    if total != manifest.size || digest != manifest.sha256 {
+        return Err(changed());
+    }
+    Ok(file)
+}
+#[cfg(not(windows))]
+fn lock_verified(path: &Path, _manifest: &Manifest) -> Result<std::fs::File, String> {
+    std::fs::File::open(path).map_err(|e| e.to_string())
+}
+
 /// Starts the installer through ShellExecute, which shows the UAC prompt required by
 /// the setup. It installs silently in the current program folder and restarts the app.
 #[cfg(windows)]
@@ -376,7 +419,10 @@ pub async fn update_install(app: AppHandle, version: String) -> Result<(), Strin
             );
         }
         let installer = download(&handle, &release, &manifest)?;
-        launch(&installer)
+        let locked = lock_verified(&installer, &manifest)?;
+        launch(&installer)?;
+        *LOCKED_INSTALLER.lock().unwrap_or_else(|e| e.into_inner()) = Some(locked);
+        Ok(())
     })
     .await
     .map_err(|_| "Aggiornamento interrotto.".to_string())
@@ -405,6 +451,33 @@ pub async fn update_install(app: AppHandle, version: String) -> Result<(), Strin
 mod tests {
     use super::*;
     use ed25519_dalek::{Signer, SigningKey};
+
+    #[cfg(windows)]
+    #[test]
+    fn verified_installer_cannot_be_replaced_before_launch() {
+        let dir = std::env::temp_dir().join(format!("jesse-update-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("setup-sintetico.exe");
+        let content = b"setup sintetico per il test".repeat(1000);
+        std::fs::write(&path, &content).unwrap();
+        let manifest = Manifest {
+            version: "9.9.9".into(),
+            size: content.len() as u64,
+            sha256: Sha256::digest(&content).into(),
+        };
+        let locked = lock_verified(&path, &manifest).unwrap();
+        // While locked, nothing can write, truncate, rename or delete it.
+        assert!(std::fs::OpenOptions::new().write(true).open(&path).is_err());
+        assert!(std::fs::remove_file(&path).is_err());
+        assert!(std::fs::rename(&path, dir.join("altro.exe")).is_err());
+        // It can still be read (ShellExecute and the setup itself open it for reading).
+        assert_eq!(std::fs::read(&path).unwrap(), content);
+        drop(locked);
+        // A modified file is refused.
+        std::fs::write(&path, b"contenuto sostituito").unwrap();
+        assert!(lock_verified(&path, &manifest).is_err());
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     fn key() -> SigningKey {
         SigningKey::from_bytes(&[7u8; 32])

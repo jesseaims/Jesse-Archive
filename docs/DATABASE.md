@@ -124,7 +124,7 @@ Limiti: orologi dei dispositivi non sincronizzati, collisioni di timestamp, copi
 | Operazione | Dati e comportamento |
 |---|---|
 | Export JSON | In chiaro: marker `kind`, cartelle, elementi e password, inclusi record non filtrati come nel CSV; non comprende impostazioni/gruppi/tombstone come backup completo |
-| Export CSV | In chiaro: elementi non cestinati, campi strutturati, note e nome cartella; niente storico password indipendente |
+| Export CSV | In chiaro: elementi non cestinati, campi strutturati, note e nome cartella; niente storico password indipendente. I valori non vengono modificati: quelli che iniziano con `=`, `+`, `-` o `@` diventano formule se il file è aperto con un foglio di calcolo, e la UI lo avverte (dalla Beta 1.3.1) |
 | Import JSON | `merge_import`: mappa cartelle per nome, aggiorna elementi per ID/`updated`, aggiunge password per ID; non equivale al merge cloud |
 | Import CSV | Alias per intestazioni comuni, creazione cartelle/ID e riconoscimento tipi; importa valori non vuoti e salta righe senza titolo/URL/username |
 | `pack` | Envelope `.jshare` con marker `jessamine`, sale e blob; contiene cartelle, elementi scelti e storico collegato; selezione vuota include tutti gli elementi e password indipendenti |

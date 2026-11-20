@@ -86,6 +86,9 @@ fn spawn_idle_lock(app: tauri::AppHandle) {
     });
 }
 
+/// File picked by the user for an import: the only path `read_file` will read, once.
+/// A webview cannot ask the backend to read arbitrary files of the user.
+static CHOSEN_IMPORT: Mutex<Option<std::path::PathBuf>> = Mutex::new(None);
 #[tauri::command]
 fn choose_file(mode: String) -> Result<Option<String>, String> {
     let dialog = rfd::FileDialog::new();
@@ -99,6 +102,9 @@ fn choose_file(mode: String) -> Result<Option<String>, String> {
             .pick_file(),
         _ => dialog.pick_file(),
     };
+    if mode == "import" {
+        *CHOSEN_IMPORT.lock().unwrap_or_else(|e| e.into_inner()) = p.clone();
+    }
     Ok(p.map(|p| p.to_string_lossy().to_string()))
 }
 #[tauri::command]
@@ -148,6 +154,13 @@ fn choose_icon_data() -> Result<Option<String>, String> {
 
 #[tauri::command]
 fn read_file(path: String) -> Result<String, String> {
+    let chosen = CHOSEN_IMPORT
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .take();
+    if chosen.as_deref() != Some(std::path::Path::new(&path)) {
+        return Err("Scegli di nuovo il file da importare".into());
+    }
     let file = std::path::Path::new(&path);
     let meta = std::fs::metadata(file).map_err(|e| e.to_string())?;
     if meta.len() > 20_000_000 {

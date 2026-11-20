@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'CSV를 Excel 또는 다른 스프레드시트로 바로 열지 마세요. =, +, - 또는 @로 시작하는 값이 수식으로 실행됩니다.',
+  'Scegli di nuovo il file da importare': '가져올 파일을 다시 선택하세요',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    '다운로드한 설치 프로그램이 변경되었습니다: 설치를 취소했습니다.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    '다운로드한 설치 프로그램을 다른 프로그램이 사용 중입니다: 설치를 취소했습니다.',
   'Troppi tentativi errati: riprova tra {n} secondi':
     '잘못된 시도가 너무 많습니다: {n}초 후에 다시 시도하세요',
   'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':

@@ -111,6 +111,8 @@ export const RUNTIME_KEYS = [
   "Per questo account esiste già una passkey in Jesse's Archive.",
   'Salvataggio della passkey non riuscito: {e}',
   'Operazione non riuscita.',
+  // lib.rs: import
+  'Scegli di nuovo il file da importare',
   // updater.rs
   'Impossibile preparare la connessione.',
   'Impossibile contattare GitHub per gli aggiornamenti.',
@@ -126,6 +128,8 @@ export const RUNTIME_KEYS = [
   "Download dell'aggiornamento non riuscito.",
   'Il setup scaricato è più grande di quello firmato.',
   'Il setup scaricato non corrisponde alla firma: installazione annullata.',
+  'Il setup scaricato è stato modificato: installazione annullata.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.',
   'Cartella del programma non individuata.',
   'Installazione annullata o non avviata (autorizzazione negata?).',
   'Aggiornamento automatico disponibile solo su Windows.',

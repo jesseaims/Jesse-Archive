@@ -3217,6 +3217,9 @@ function SettingsPage({
             <p className="sensitive-warning">
               {t(
                 'Attenzione: le esportazioni JSON e CSV contengono segreti in chiaro. Non salvarle in percorsi pubblici.',
+              )}{' '}
+              {t(
+                'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.',
               )}
             </p>
             <div className="split-actions">

@@ -2,6 +2,13 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'CSV を Excel などの表計算ソフトで直接開かないでください。=、+、-、@ で始まる値が数式として実行されます。',
+  'Scegli di nuovo il file da importare': 'インポートするファイルをもう一度選択してください',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'ダウンロードしたセットアップが変更されています：インストールを中止しました。',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'ダウンロードしたセットアップが別のプログラムで使用中です：インストールを中止しました。',
   'Troppi tentativi errati: riprova tra {n} secondi':
     '誤った試行が多すぎます：{n} 秒後にもう一度お試しください',
   'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':

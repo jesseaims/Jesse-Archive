@@ -62,7 +62,7 @@ Non risultano `mlock`/`VirtualLock`, memoria non paginabile, integrazione DPAPI/
 
 [tauri.conf.json](../src-tauri/tauri.conf.json) applica CSP: sorgenti script locali, immagini locali/data, connessione IPC, oggetti disabilitati e stile inline consentito. [capabilities/default.json](../src-tauri/capabilities/default.json) include `main`, `quick-fill`, `browser-setup` con `core:default`.
 
-La CSP è una misura utile; non equivale a isolamento dei comandi per finestra. I comandi applicativi sono tutti registrati nel Builder. `api` applica il gate del core, ma `read_file`, `save_file`, picker, clipboard e vari comandi browser non richiedono lo stesso stato sbloccato né verificano un'etichetta di finestra. `read_file` accetta un percorso e limita a 20.000.000 byte al controllo dei metadati; non ha una allowlist di directory. La valutazione della superficie IPC dipende quindi dalla fiducia nella webview locale.
+La CSP è una misura utile; non equivale a isolamento dei comandi per finestra. I comandi applicativi sono tutti registrati nel Builder. `api` applica il gate del core, ma `read_file`, `save_file`, picker, clipboard e vari comandi browser non richiedono lo stesso stato sbloccato né verificano un'etichetta di finestra. Dalla Beta 1.3.1 `read_file` legge solo il file appena scelto dall'utente nel selettore dell'import (`choose_file` con modalità `import`), una volta sola, fino a 20.000.000 byte: una webview non può chiedere al backend di leggere altri file. La valutazione della superficie IPC dipende quindi dalla fiducia nella webview locale.
 
 `choose_icon_data` limita il file a 150000 byte e controlla il magic number dei formati ammessi. Altri percorsi che accettano icone data URI non applicano necessariamente lo stesso controllo. I documenti non devono promettere validazione uniforme su tutti gli ingressi.
 
@@ -134,7 +134,7 @@ Un account GitHub compromesso, da solo, non può quindi far installare un setup 
 Limiti:
 - non c'è protezione anti-rollback oltre al confronto di versione;
 - non c'è rotazione della chiave: una chiave persa richiede un'installazione manuale con una chiave nuova;
-- il file scaricato in `%TEMP%` non è protetto da processi malevoli dello stesso utente fra la verifica e l'avvio;
+- il file scaricato in `%TEMP%` è, dalla Beta 1.3.1, riaperto negando scrittura, rinomina e cancellazione agli altri processi, ricontrollato (dimensione e SHA-256) tramite quello stesso handle e tenuto bloccato fino alla chiusura dell'app (`lock_verified`): un programma dello stesso utente non può sostituirlo fra la verifica e l'avvio con privilegi. Resta il caso in cui il setup in esecuzione rilegga il proprio file dopo la chiusura dell'app;
 - il setup non ha Authenticode, quindi l'avviso di Windows dipende dalla reputazione SmartScreen.
 
 ### Ricerca rapida globale
@@ -175,7 +175,7 @@ Le priorità seguenti sono valutazioni documentali per orientare una futura revi
 | SEC-03 | `Value`, buffer, IPC, `draft`, timer clipboard: azzeramento parziale | Alta: mappa delle copie e policy esplicita di rimozione dei dati sensibili |
 | SEC-04 | Header fuori AAD, stessa DEK dopo rotazione, backup storici | Alta: definire modello di revoca/rollback e compatibilità prima di qualsiasi cambiamento |
 | SEC-05 | Attenuata: `validate_import` rifiuta payload malformati, `ensure_shape` garantisce la forma usata da `arr`/`obj`, `import`/`unpack` ripristinano la memoria se falliscono, e un mutex del vault avvelenato da un panic viene recuperato da `AppState::vault` bloccando il vault (dati su disco intatti). Restano `unwrap` interni e nessuno schema completo dei campi | Media: estendere i controlli alle altre route (`item`, `bulk`) e ai mutex di `browser.rs` |
-| SEC-06 | Comandi nativi condivisi dalle tre finestre, I/O file generico | Rivedere autorizzazione per comando e confini delle webview |
+| SEC-06 | Comandi nativi condivisi dalle finestre; `read_file` limitato al file scelto per l'import dalla Beta 1.3.1 | Rivedere autorizzazione per comando e confini delle webview |
 | SEC-07 | Token locale in chiaro e worker non limitati; fiducia nello stesso utente | Documentare ACL effettive e limiti; testare abuso/riconnessioni su profili sintetici |
 | SEC-08 | Permessi estensione ampi e confronto PSL tra sottodomini, usato dalla Beta 1.1.20 anche per gli iframe di accesso | Revisionare superficie e casi di delega, preservando scelta esplicita e il rifiuto degli iframe di altri domini registrabili |
 | SEC-09 | Generatori/`bits`: stime euristiche; PIN usa modulo, passphrase a sillabe | Verificare distribuzioni, vincoli e accuratezza delle stime; nessuna certificazione di entropia |
