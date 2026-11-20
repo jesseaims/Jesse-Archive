@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    'Import aus den wichtigsten Passwort-Managern',
+    'Der Import erkennt jetzt die Dateien von Bitwarden (CSV und unverschlüsseltes JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass und KeePassXC (CSV und XML), RoboForm sowie von Chrome, Edge, Brave, Opera, Firefox und Apple Passwörter. Vor dem Import zeigt eine Vorschau das erkannte Programm und die Anzahl der gefundenen Elemente; bei CSV-Dateien kannst du prüfen und ändern, welchem Feld jede Spalte zugeordnet wird – so funktionieren auch Dateien anderer Programme.',
+  ],
   'bulk-select-accounts': [
     'Viele Konten auf einmal auswählen',
     'Unter „Alle Elemente“ und „Konten“ kannst du jetzt ganze Gruppen oder einzelne Konten mit ihrem Kästchen auswählen oder mit „Alle auswählen“ alles Sichtbare (auch Suchergebnisse) und sie auf einmal in den Papierkorb oder in einen Ordner verschieben.',

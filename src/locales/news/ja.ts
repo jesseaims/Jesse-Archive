@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    '主要なパスワードマネージャーからのインポート',
+    'Bitwarden（CSV と暗号化なしの JSON）、LastPass、1Password、Dashlane、NordPass、Proton Pass、KeePass と KeePassXC（CSV と XML）、RoboForm、さらに Chrome、Edge、Brave、Opera、Firefox、Apple パスワードのファイルを認識できるようになりました。インポートの前に、認識したプログラムと見つかった項目数をプレビューで表示します。CSV では各列の対応項目を確認・変更できるため、他のプログラムのファイルも読み込めます。',
+  ],
   'bulk-select-accounts': [
     '複数のアカウントをまとめて選択',
     '「すべての項目」と「アカウント」で、チェックボックスからグループ全体や個別のアカウントを、または「すべて選択」で表示中のすべて（検索結果も含む）を選択し、まとめてごみ箱やフォルダーに移動できるようになりました。',

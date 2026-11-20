@@ -7,6 +7,7 @@ mod browser_save;
 mod clipboard;
 mod core;
 mod i18n;
+mod importers;
 mod passkey;
 mod quick_search;
 mod updater;
@@ -95,7 +96,7 @@ fn choose_file(mode: String) -> Result<Option<String>, String> {
     let p = match mode.as_str() {
         "vault_folder" => dialog.pick_folder(),
         "import" => dialog
-            .add_filter("Importazione", &["csv", "json", "jshare", "txt"])
+            .add_filter("Importazione", &["csv", "json", "xml", "jshare", "txt"])
             .pick_file(),
         "icon" => dialog
             .add_filter("Immagini", &["png", "jpg", "jpeg", "ico"])

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Russian titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    'Импорт из популярных менеджеров паролей',
+    'Импорт теперь распознаёт файлы Bitwarden (CSV и незашифрованный JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass и KeePassXC (CSV и XML), RoboForm, а также Chrome, Edge, Brave, Opera, Firefox и «Паролей» Apple. Перед импортом предпросмотр показывает распознанную программу и число найденных элементов; для CSV можно проверить и изменить, в какое поле идёт каждый столбец, поэтому подойдут и файлы других программ.',
+  ],
   'bulk-select-accounts': [
     'Выбор многих аккаунтов сразу',
     'В разделах «Все элементы» и «Аккаунты» теперь можно выбрать целые группы или отдельные аккаунты флажком либо всё видимое кнопкой «Выбрать все» (включая результаты поиска) и за один раз переместить их в корзину или в папку.',

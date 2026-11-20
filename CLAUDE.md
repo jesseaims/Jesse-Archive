@@ -41,7 +41,7 @@ Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup` (tutte in 
 | `serde_json` | Modello dinamico del vault e messaggi; nessun database SQL/ORM |
 | `aes-gcm`, `scrypt`, `rand`, `zeroize` | AES-256-GCM, derivazione, casualità OS e cancellazione delle chiavi Rust protette |
 | `hmac`, `sha1`, `sha2`, `data-encoding` | TOTP, verifica Pwned Passwords e hash della copia del vault |
-| `url`, `psl`, `csv`, `reqwest` | URL/PSL offline, import/export e richieste HTTP opzionali |
+| `url`, `psl`, `csv`, `roxmltree`, `reqwest` | URL/PSL offline, import/export (anche XML di KeePass) e richieste HTTP opzionali |
 | `ed25519-dalek` | Verifica della firma degli aggiornamenti automatici (`updater.rs`) |
 | `p256` | Passkey WebAuthn ES256 (`passkey.rs`) |
 | `rfd`, `clipboard-win`, `winreg`, `windows-sys` | Dialoghi e integrazione Windows |

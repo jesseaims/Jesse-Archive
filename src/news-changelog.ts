@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'universal-import',
+    addedAt: '2026-11-20T21:00:00+01:00',
+    version: 'Beta 1.5.0',
+    title: 'Importa dai principali password manager',
+    description:
+      'L’import ora riconosce i file di Bitwarden (CSV e JSON non cifrato), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass e KeePassXC (CSV e XML), RoboForm e di Chrome, Edge, Brave, Opera, Firefox e Password di Apple. Prima di importare, un’anteprima mostra il programma riconosciuto e quanti elementi ha trovato; nei CSV puoi controllare e cambiare a quale campo va ogni colonna, così funzionano anche i file di altri programmi.',
+    icon: 'package',
+  },
+  {
     id: 'bulk-select-accounts',
     addedAt: '2026-11-20T19:00:00+01:00',
     version: 'Beta 1.4.0',
