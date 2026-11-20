@@ -149,6 +149,45 @@ p {
 .folders-label {
   margin-top: 26px;
 }
+/* Right-click menu of a sidebar folder. */
+.context-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.context-menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  justify-content: flex-start;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ui-text);
+  font-size: 13px;
+  text-align: left;
+}
+.context-menu button:hover {
+  background: var(--ui-hover);
+}
+.context-menu button.danger {
+  color: #ff9898;
+}
+.heading-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+}
 .sidebar nav {
   display: flex;
   flex-direction: column;

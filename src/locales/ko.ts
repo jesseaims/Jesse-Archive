@@ -2,6 +2,7 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': '폴더를 삭제했습니다',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     '시작 메뉴의 애플리케이션입니다. 없으면 “찾아보기…”로 파일을 선택하세요.',
   'Scegli il file .exe o il collegamento dell’applicazione':

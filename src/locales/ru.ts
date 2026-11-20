@@ -2,6 +2,7 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Папка удалена',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Приложения из меню «Пуск». Если нужного нет, выберите его файл кнопкой «Обзор…».',
   'Scegli il file .exe o il collegamento dell’applicazione':

@@ -2,6 +2,7 @@ import type { Dictionary } from '../i18n';
 
 // Spanish. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Carpeta eliminada',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Aplicaciones del menú Inicio. Si falta alguna, elige su archivo con «Examinar…».',
   'Scegli il file .exe o il collegamento dell’applicazione':

@@ -792,6 +792,43 @@ export default function App() {
     const r = await mutate('bulk', { ids: multi, op: 'move', folder }, t('Elementi spostati'));
     if (r) setMulti([]);
   };
+  // Folder actions shared by the sidebar context menu, the folder page and Settings.
+  const [folderMenu, setFolderMenu] = useState<{ x: number; y: number; id: string } | null>(null);
+  useEffect(() => {
+    if (!folderMenu) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e.type === 'mousedown' && (e.target as Element).closest?.('.context-menu')) return;
+      setFolderMenu(null);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    window.addEventListener('blur', close);
+    window.addEventListener('resize', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+      window.removeEventListener('blur', close);
+      window.removeEventListener('resize', close);
+    };
+  }, [folderMenu]);
+  const renameFolder = async (f: { id: string; name: string }) => {
+    setFolderMenu(null);
+    const n = await askText(t('Nuovo nome della cartella'), f.name);
+    if (n?.trim()) await mutate('folder', { id: f.id, name: n.trim() });
+  };
+  const deleteFolder = async (f: { id: string; name: string }) => {
+    setFolderMenu(null);
+    if (
+      !(await askConfirm(
+        t('Eliminare la cartella {name}? Gli elementi resteranno nel vault.', { name: f.name }),
+        { title: t('Elimina cartella'), danger: true, confirmLabel: t('Elimina cartella') },
+      ))
+    )
+      return;
+    const r = await mutate('folder', { id: f.id, delete: true }, t('Cartella eliminata'));
+    if (r && page === 'folder' && folderId === f.id) selectPage('all');
+  };
   const moveToNewFolder = async () => {
     setMoveOpen(false);
     const name = (await askText(t('Nome della nuova cartella')))?.trim();
@@ -1349,9 +1386,37 @@ export default function App() {
               icon={Folder}
               title={f.name}
               onClick={() => selectPage('folder', f.id)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setFolderMenu({ x: e.clientX, y: e.clientY, id: f.id });
+              }}
             />
           ))}
         </nav>
+        {folderMenu &&
+          (() => {
+            const f = vault.folders.find((x) => x.id === folderMenu.id);
+            if (!f) return null;
+            return (
+              <div
+                className="context-menu"
+                role="menu"
+                style={{
+                  left: Math.min(folderMenu.x, window.innerWidth - 220),
+                  top: Math.min(folderMenu.y, window.innerHeight - 110),
+                }}
+              >
+                <button role="menuitem" onClick={() => void renameFolder(f)}>
+                  <SettingsIcon size={15} />
+                  {t('Rinomina')}
+                </button>
+                <button role="menuitem" className="danger" onClick={() => void deleteFolder(f)}>
+                  <Trash2 size={15} />
+                  {t('Elimina cartella')}
+                </button>
+              </div>
+            );
+          })()}
         <div className="sidebar-label">{t('STRUMENTI')}</div>
         <nav>
           <Nav
@@ -1453,10 +1518,33 @@ export default function App() {
                   <h1>{page === 'folder' ? folderName : t(sectionLabels[page])}</h1>
                   <p>{t('Organizza i tuoi dati sensibili in uno spazio privato e cifrato.')}</p>
                 </div>
-                <button className="primary" onClick={openNewItem}>
-                  <Plus size={18} />
-                  {t('Nuovo elemento')}
-                </button>
+                <div className="heading-actions">
+                  {page === 'folder' &&
+                    (() => {
+                      const f = vault.folders.find((x) => x.id === folderId);
+                      return (
+                        f && (
+                          <>
+                            <button className="secondary" onClick={() => void renameFolder(f)}>
+                              <SettingsIcon size={16} />
+                              {t('Rinomina')}
+                            </button>
+                            <button
+                              className="secondary danger-soft"
+                              onClick={() => void deleteFolder(f)}
+                            >
+                              <Trash2 size={16} />
+                              {t('Elimina cartella')}
+                            </button>
+                          </>
+                        )
+                      );
+                    })()}
+                  <button className="primary" onClick={openNewItem}>
+                    <Plus size={18} />
+                    {t('Nuovo elemento')}
+                  </button>
+                </div>
               </div>
               <div className="stats-grid">
                 <Stat
@@ -2376,15 +2464,21 @@ function Nav({
   active,
   onClick,
   count,
+  onContextMenu,
 }: {
   icon: typeof LayoutGrid;
   title: string;
   active: boolean;
   onClick: () => void;
   count?: number;
+  onContextMenu?: (e: React.MouseEvent) => void;
 }) {
   return (
-    <button className={`nav-item ${active ? 'active' : ''}`} onClick={onClick}>
+    <button
+      className={`nav-item ${active ? 'active' : ''}`}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+    >
       <Icon size={18} />
       <span>{title}</span>
       {count !== undefined && <span className="nav-count">{count}</span>}
@@ -3601,6 +3695,7 @@ function SettingsPage({
                 </button>
                 <button
                   className="icon-button danger"
+                  title={t('Elimina cartella')}
                   onClick={async () => {
                     if (
                       await askConfirm(
