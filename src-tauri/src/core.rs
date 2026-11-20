@@ -1879,7 +1879,7 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         if named && src != "other" {
             title = login_name.clone();
         } else if named {
-            notes.insert(0, format!("Nome login: {login_name}"));
+            notes.insert(0, format!("Nome account: {login_name}"));
         }
         let notes = notes.join("\n\n");
         if is_note {
