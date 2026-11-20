@@ -2,6 +2,40 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': '폴더를 삭제했습니다',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    '시작 메뉴의 애플리케이션입니다. 없으면 “찾아보기…”로 파일을 선택하세요.',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    '애플리케이션의 .exe 파일 또는 바로 가기를 선택하세요',
+  'Sfoglia…': '찾아보기…',
+  'Cartella creata': '폴더를 만들었습니다',
+  'Cerca applicazione': '애플리케이션 검색',
+  'Cerca applicazione…': '애플리케이션 검색…',
+  'Elementi spostati': '항목을 옮겼습니다',
+  'Nome della nuova cartella': '새 폴더 이름',
+  'Nuova cartella…': '새 폴더…',
+  'Sposta in': '이동',
+  'Deseleziona tutti': '모두 선택 해제',
+  "Seleziona l'account {name}": '{name} 계정 선택',
+  'Seleziona tutti': '모두 선택',
+  'Seleziona tutti gli account di {name}': '{name}의 모든 계정 선택',
+  'Spostare nel cestino {n} elementi selezionati?': '선택한 {n}개 항목을 휴지통으로 옮길까요?',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'CSV / JSON / .jshare / 카스퍼스키 TXT 가져오기',
+  'File di testo non valido': '올바르지 않은 텍스트 파일입니다',
+  'Il file non è testo UTF-8 o UTF-16': '파일이 UTF-8 또는 UTF-16 텍스트가 아닙니다',
+  'Nessun account riconosciuto nel file di Kaspersky': '카스퍼스키 파일에서 계정을 찾지 못했습니다',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'CSV를 Excel 또는 다른 스프레드시트로 바로 열지 마세요. =, +, - 또는 @로 시작하는 값이 수식으로 실행됩니다.',
+  'Scegli di nuovo il file da importare': '가져올 파일을 다시 선택하세요',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    '다운로드한 설치 프로그램이 변경되었습니다: 설치를 취소했습니다.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    '다운로드한 설치 프로그램을 다른 프로그램이 사용 중입니다: 설치를 취소했습니다.',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    '잘못된 시도가 너무 많습니다: {n}초 후에 다시 시도하세요',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    '비밀번호 또는 복구 코드가 올바르지 않습니다. 시도가 너무 많습니다: {n}초 후에 다시 시도하세요',
   'Aggiorna password': '비밀번호 업데이트',
   'Aggiornare la password?': '비밀번호를 업데이트할까요?',
   'Campo {n}': '항목 {n}',
@@ -304,7 +338,6 @@ const dictionary: Dictionary = {
     '파일에서 보관함을 다시 읽고 같은 폴더의 사본과 비교했습니다.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '보관함이 잠겨 있어(예: 사용하지 않아서) 데이터를 다시 불러오지 못했습니다.\n\n마스터 비밀번호로 보관함을 다시 잠금 해제하세요.',
-  'Importa CSV / JSON / .jshare': 'CSV / JSON / .jshare 가져오기',
   'Importa dati nel vault': '보관함으로 데이터 가져오기',
   'Importa pacchetto cifrato': '암호화된 패키지 가져오기',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -573,8 +606,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '변경 사항을 찾았습니다(예: 클라우드 폴더를 통한 다른 기기의 변경):',
   'Sostituire la password dell’account?': '계정의 비밀번호를 바꿀까요?',
-  Sposta: '이동',
-  'Sposta in...': '이동할 위치...',
   'Sposta nel cestino': '휴지통으로 이동',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     '"{name}"{detail} 계정을 휴지통으로 이동할까요?',

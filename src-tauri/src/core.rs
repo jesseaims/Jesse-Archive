@@ -444,6 +444,17 @@ fn write_config_key(path: &Path, k: &str, val: V) -> Res<()> {
     fs::create_dir_all(path.parent().ok_or("config path")?).map_err(err)?;
     fs::write(path, serde_json::to_vec(&c).map_err(err)?).map_err(err)
 }
+/// Wrong unlock attempts (password or recovery code) allowed without waiting; after
+/// them each attempt waits 30 s, doubling up to 15 minutes. Against someone using the
+/// app on this PC: a copy of the vault file is protected by scrypt, not by this.
+const FREE_UNLOCK_ATTEMPTS: u32 = 5;
+const MAX_UNLOCK_WAIT: f64 = 900.;
+fn unlock_wait(fails: u32) -> f64 {
+    match fails.checked_sub(FREE_UNLOCK_ATTEMPTS) {
+        None => 0.,
+        Some(extra) => (30. * 2f64.powi(extra.min(10) as i32)).min(MAX_UNLOCK_WAIT),
+    }
+}
 /// Per-device preference that must work while the vault is locked (e.g. zoom).
 pub fn device_pref(k: &str) -> V {
     read_config_key(&device_config_path(), k)
@@ -696,6 +707,26 @@ impl Vault {
                 if !self.path.exists() {
                     return Err("Nessun vault trovato".into());
                 }
+                // Wrong attempts are counted in the device configuration, so restarting
+                // the app does not reset them. The remaining wait is bounded, so moving
+                // the clock back cannot lock the user out for longer.
+                let fails = self.fails.max(
+                    read_config_key(&self.config, "unlock_fails")
+                        .as_u64()
+                        .unwrap_or(0)
+                        .min(u32::MAX as u64) as u32,
+                );
+                let last_fail = read_config_key(&self.config, "unlock_last_fail")
+                    .as_f64()
+                    .unwrap_or(0.);
+                let wait = unlock_wait(fails);
+                let remaining = (last_fail + wait - now()).clamp(0., wait);
+                if remaining > 0. {
+                    return Err(format!(
+                        "Troppi tentativi errati: riprova tra {} secondi",
+                        remaining.ceil() as u64
+                    ));
+                }
                 let h: V =
                     serde_json::from_slice(&fs::read(&self.path).map_err(err)?).map_err(err)?;
                 let is_rec = !s(&b, "recovery").is_empty();
@@ -724,11 +755,26 @@ impl Vault {
                 let (dek, mut data) = match decryption {
                     Ok(x) => x,
                     Err(_) => {
-                        self.fails += 1;
+                        self.fails = fails.saturating_add(1);
+                        // Best effort: if the configuration cannot be written, the count
+                        // still applies in memory until the app closes.
+                        let _ = write_config_key(&self.config, "unlock_fails", json!(self.fails));
+                        let _ = write_config_key(&self.config, "unlock_last_fail", json!(now()));
+                        let wait = unlock_wait(self.fails);
+                        if wait > 0. {
+                            return Err(format!(
+                                "Password o codice di recupero non corretti. Troppi tentativi: riprova tra {} secondi",
+                                wait as u64
+                            ));
+                        }
                         return Err("Password o codice di recupero non corretti".into());
                     }
                 };
                 ensure_shape(&mut data)?;
+                if fails > 0 {
+                    let _ = write_config_key(&self.config, "unlock_fails", json!(0));
+                    let _ = write_config_key(&self.config, "unlock_last_fail", V::Null);
+                }
                 self.header = h;
                 self.header.as_object_mut().unwrap().remove("data");
                 self.key = Some(dek);
@@ -1158,6 +1204,8 @@ impl Vault {
                     let pl: V = serde_json::from_str(text).map_err(|_| "JSON non valido")?;
                     validate_import(&pl)?;
                     self.transact(|d| Ok(merge_import(d, &pl)))?
+                } else if is_kaspersky(text) {
+                    self.transact(|d| import_kaspersky(d, text))?
                 } else {
                     self.transact(|d| import_csv(d, text))?
                 };
@@ -1240,6 +1288,11 @@ impl Vault {
             }
             "apps" => Ok(json!({"apps":installed_apps()})),
             "app_icon" => Ok(json!({"icon":app_icon(s(&b,"path"))?})),
+            // Application chosen by hand ("Sfoglia…"): its display name and icon.
+            "app_info" => {
+                let p = s(&b, "path");
+                Ok(json!({"name":app_name(p)?,"icon":app_icon(p)?}))
+            }
             "prefs_set" => {
                 if let Some(c) = b.get("close_action").and_then(V::as_str) {
                     if c != "quit" && c != "tray" {
@@ -1602,22 +1655,292 @@ fn import_csv(d: &mut V, text: &str) -> Res<usize> {
                 f[*k] = json!(v)
             }
         }
-        let it = json!({"id":id(),"created":now(),"updated":now(),"trashed":null,"shared":false,"type":typ,"title":title,"folder":fid,"fav":false,"notes":r.get("notes").cloned().unwrap_or_default(),"f":f});
-        arr(d, "items").push(it.clone());
-        if let Some(sf) = secret(typ) {
-            if !s(&it["f"], sf).is_empty() {
-                link(d, &it, s(&it["f"], sf));
-                if let Some(p) = arr(d, "passwords")
-                    .iter_mut()
-                    .find(|p| s(p, "item_id") == s(&it, "id") && p["active"] == true)
-                {
-                    p["source"] = json!("imported")
-                }
-            }
-        }
+        let notes = r.get("notes").cloned().unwrap_or_default();
+        push_imported(d, typ, title, fid, f, &notes);
         n += 1
     }
     Ok(n)
+}
+/// Text of an imported file: UTF-8 (with or without BOM) or UTF-16 with BOM, as
+/// Windows programs (Kaspersky Password Manager) often save their text exports.
+pub fn decode_text(bytes: &[u8]) -> Res<String> {
+    let utf16 = |be: bool| -> Res<String> {
+        let body = &bytes[2..];
+        if !body.len().is_multiple_of(2) {
+            return Err("File di testo non valido".into());
+        }
+        let units: Vec<u16> = body
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|&c| {
+                if be {
+                    u16::from_be_bytes(c)
+                } else {
+                    u16::from_le_bytes(c)
+                }
+            })
+            .collect();
+        String::from_utf16(&units).map_err(|_| "File di testo non valido".into())
+    };
+    match bytes {
+        [0xff, 0xfe, ..] => utf16(false),
+        [0xfe, 0xff, ..] => utf16(true),
+        _ => String::from_utf8(bytes.to_vec())
+            .map(|t| t.trim_start_matches('\u{feff}').to_string())
+            .map_err(|_| "Il file non è testo UTF-8 o UTF-16".into()),
+    }
+}
+
+/// Field of the Kaspersky Password Manager text export ("Website name: …"), in English
+/// or Italian.
+#[derive(Clone, Copy, PartialEq)]
+enum KField {
+    Title,
+    Url,
+    LoginName,
+    Username,
+    Password,
+    Notes,
+    Text,
+}
+fn kaspersky_field(label: &str) -> Option<KField> {
+    let l = label.trim().to_lowercase();
+    Some(match l.as_str() {
+        "website name"
+        | "application"
+        | "account name"
+        | "name"
+        | "nome sito web"
+        | "nome del sito web"
+        | "nome sito"
+        | "applicazione"
+        | "nome account"
+        | "nome dell'account"
+        | "nome dell’account"
+        | "nome"
+        | "titolo" => KField::Title,
+        "website url" | "url" | "url sito web" | "url del sito web" | "indirizzo"
+        | "indirizzo web" => KField::Url,
+        "login name"
+        | "nome login"
+        | "nome di accesso"
+        | "nome dell'accesso"
+        | "nome dell’accesso" => KField::LoginName,
+        "login" | "username" | "user name" | "nome utente" | "utente" | "accesso" => {
+            KField::Username
+        }
+        "password" => KField::Password,
+        "comment" | "comments" | "commento" | "commenti" | "notes" | "note" => KField::Notes,
+        "text" | "testo" => KField::Text,
+        _ => return None,
+    })
+}
+/// "Label: value" with a short label (no URL scheme mistaken for a label).
+fn label_line(line: &str) -> Option<(&str, &str)> {
+    let (label, value) = line.split_once(':')?;
+    let ok = !label.is_empty()
+        && label.chars().count() <= 40
+        && !label.starts_with(' ')
+        && !value.starts_with("//")
+        && label
+            .chars()
+            .all(|c| c.is_alphabetic() || matches!(c, ' ' | '\'' | '’' | '-'));
+    ok.then(|| (label, value.strip_prefix(' ').unwrap_or(value)))
+}
+/// Whether `text` looks like a Kaspersky Password Manager text export: entries
+/// separated by "---" lines and known field labels.
+fn is_kaspersky(text: &str) -> bool {
+    let mut separators = false;
+    let mut fields = false;
+    for line in text.lines() {
+        let line = line.trim_end();
+        separators |= line == "---";
+        fields |= label_line(line).is_some_and(|(l, _)| {
+            matches!(
+                kaspersky_field(l),
+                Some(KField::Password | KField::Url | KField::Title)
+            )
+        });
+    }
+    separators && fields
+}
+/// Imports a Kaspersky Password Manager text export. Sections (Websites, Applications,
+/// Other accounts) become logins and the Notes section notes; multi-line comments are
+/// kept; labels repeated in the file but unknown go into the notes instead of being lost.
+fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
+    // Labels used on several lines are fields even if unknown (another language).
+    let mut seen: HashMap<String, usize> = HashMap::new();
+    for line in text.lines() {
+        if let Some((label, _)) = label_line(line.trim_end()) {
+            *seen.entry(label.to_lowercase()).or_default() += 1;
+        }
+    }
+    let is_field = |label: &str| {
+        kaspersky_field(label).is_some() || seen.get(&label.to_lowercase()) >= Some(&2)
+    };
+    let note_sections = ["notes", "note"];
+    let mut section = String::new();
+    let mut entries: Vec<(String, Vec<(String, String)>)> = Vec::new();
+    let mut current: Vec<(String, String)> = Vec::new();
+    let flush = |current: &mut Vec<(String, String)>,
+                 section: &str,
+                 out: &mut Vec<(String, Vec<(String, String)>)>| {
+        if !current.is_empty() {
+            out.push((section.to_string(), std::mem::take(current)));
+        }
+    };
+    for raw in text.lines() {
+        let line = raw.trim_end();
+        if line.trim() == "---" {
+            flush(&mut current, &section, &mut entries);
+            continue;
+        }
+        if let Some((label, value)) = label_line(line).filter(|(l, _)| is_field(l)) {
+            current.push((label.trim().to_string(), value.to_string()));
+            continue;
+        }
+        if current.is_empty() {
+            // A heading between entries ("Websites", "Notes"): the section of the next ones.
+            if !line.trim().is_empty() {
+                section = line.trim().to_lowercase();
+            }
+            continue;
+        }
+        // Continuation of a multi-line value (comments, note text).
+        if let Some((_, value)) = current.last_mut() {
+            value.push('\n');
+            value.push_str(line);
+        }
+    }
+    flush(&mut current, &section, &mut entries);
+    let mut n = 0;
+    for (section, fields) in entries {
+        let mut title = String::new();
+        let mut url = String::new();
+        let mut login_name = String::new();
+        let mut username = String::new();
+        let mut password = String::new();
+        let mut notes: Vec<String> = Vec::new();
+        // In every Kaspersky entry the first field is its name, whatever the language.
+        let first = fields
+            .first()
+            .map(|(_, v)| v.trim().chars().take(120).collect::<String>())
+            .unwrap_or_default();
+        for (label, value) in fields {
+            let value = value.trim().to_string();
+            if value.is_empty() {
+                continue;
+            }
+            match kaspersky_field(&label) {
+                Some(KField::Title) => title = value,
+                Some(KField::Url) => url = value,
+                Some(KField::LoginName) => login_name = value,
+                Some(KField::Username) => username = value,
+                Some(KField::Password) => password = value,
+                Some(KField::Notes | KField::Text) => notes.push(value),
+                None => notes.push(format!("{label}: {value}")),
+            }
+        }
+        let is_note = note_sections.contains(&section.as_str())
+            || (password.is_empty() && username.is_empty() && url.is_empty());
+        let mut title = if !title.is_empty() {
+            title
+        } else if !first.is_empty() && first != password {
+            first
+        } else if !url.is_empty() {
+            url.clone()
+        } else {
+            username.clone()
+        };
+        if title.is_empty() && is_note {
+            title = notes
+                .first()
+                .and_then(|n| n.lines().next())
+                .unwrap_or("")
+                .chars()
+                .take(60)
+                .collect();
+        }
+        if title.is_empty() {
+            continue;
+        }
+        // Without an address the main list would group a web account by the domain of
+        // its email: Kaspersky applications become installed-app accounts grouped by
+        // the app, other accounts plain groups by name.
+        let src = if !url.is_empty() {
+            "web"
+        } else if section.contains("applica") {
+            "app"
+        } else {
+            "other"
+        };
+        // Kaspersky's "Login name" is the name the user gave to each account of a site or
+        // app ("Sea of thieves" inside "Microsoft Store"): it becomes the title, while the
+        // site/app stays the group. Only "other" accounts are grouped by their own title,
+        // so there it goes to the notes instead.
+        let group_name = title.clone();
+        let named = !login_name.is_empty() && login_name != username && login_name != title;
+        if named && src != "other" {
+            title = login_name.clone();
+        } else if named {
+            notes.insert(0, format!("Nome account: {login_name}"));
+        }
+        let notes = notes.join("\n\n");
+        if is_note {
+            push_imported(d, "note", &title, V::Null, json!({}), &notes);
+        } else {
+            let f = json!({"url": url, "username": username, "password": password, "totp": ""});
+            push_imported(d, "login", &title, V::Null, f, &notes);
+            if src != "web" {
+                group_by_title(d, src, &group_name);
+            }
+        }
+        n += 1;
+    }
+    if n == 0 {
+        return Err("Nessun account riconosciuto nel file di Kaspersky".into());
+    }
+    Ok(n)
+}
+/// Puts the last added item in the app/other group named `title`, with the same key
+/// the UI computes (src/groups.ts `deriveGroupKey`) and `title` as group name.
+fn group_by_title(d: &mut V, src: &str, title: &str) {
+    let key = format!(
+        "{src}:{}",
+        title
+            .trim()
+            .to_lowercase()
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join("-")
+    );
+    if let Some(it) = arr(d, "items").last_mut() {
+        it["src"] = json!(src);
+        it["gk"] = json!(key);
+    }
+    if d["groups"].get(&key).is_none() {
+        obj(d, "groups").insert(
+            key,
+            json!({"name": title.trim(), "src": src, "icon": "", "upd": now()}),
+        );
+    }
+}
+/// Adds one imported item (CSV, Kaspersky text) with its password history entry.
+fn push_imported(d: &mut V, typ: &str, title: &str, folder: V, f: V, notes: &str) {
+    let it = json!({"id":id(),"created":now(),"updated":now(),"trashed":null,"shared":false,"type":typ,"title":title,"folder":folder,"fav":false,"notes":notes,"f":f});
+    arr(d, "items").push(it.clone());
+    if let Some(sf) = secret(typ) {
+        if !s(&it["f"], sf).is_empty() {
+            link(d, &it, s(&it["f"], sf));
+            if let Some(p) = arr(d, "passwords")
+                .iter_mut()
+                .find(|p| s(p, "item_id") == s(&it, "id") && p["active"] == true)
+            {
+                p["source"] = json!("imported")
+            }
+        }
+    }
 }
 fn bits(p: &str) -> f64 {
     if p.is_empty() {
@@ -2056,6 +2379,46 @@ fn walk_lnk(p: &Path, out: &mut HashMap<String, V>, depth: usize) {
 fn installed_apps() -> Vec<V> {
     Vec::new()
 }
+/// Display name of an executable or shortcut: the file description or product name
+/// from its version information ("Feather Launcher" for FeatherLauncher.exe), else
+/// the file name without extension.
+fn app_name(p: &str) -> Res<String> {
+    let path = Path::new(p);
+    if !path.is_file() {
+        return Err("File non trovato".into());
+    }
+    let stem = path
+        .file_stem()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .trim()
+        .to_string();
+    #[cfg(windows)]
+    {
+        let ps = r#"$v=(Get-Item -LiteralPath $env:JA_PATH).VersionInfo;if($v.FileDescription){$v.FileDescription}elseif($v.ProductName){$v.ProductName}"#;
+        use std::os::windows::process::CommandExt;
+        // A shortcut keeps its own name: it is the one shown in the Start menu.
+        if !p.to_ascii_lowercase().ends_with(".lnk") {
+            if let Ok(out) = std::process::Command::new("powershell")
+                .args(["-NoProfile", "-NonInteractive", "-Command", ps])
+                .env("JA_PATH", p)
+                .creation_flags(0x08000000)
+                .output()
+            {
+                let name: String = String::from_utf8_lossy(&out.stdout)
+                    .trim()
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(80)
+                    .collect();
+                if !name.is_empty() {
+                    return Ok(name);
+                }
+            }
+        }
+    }
+    Ok(stem)
+}
 fn app_icon(p: &str) -> Res<String> {
     #[cfg(windows)]
     {
@@ -2071,11 +2434,11 @@ fn app_icon(p: &str) -> Res<String> {
             .output()
             .map_err(err)?;
         let b = String::from_utf8_lossy(&out.stdout).trim().to_string();
-        return Ok(if b.len() > 100 {
+        Ok(if b.len() > 100 {
             format!("data:image/png;base64,{b}")
         } else {
             String::new()
-        });
+        })
     }
     #[cfg(not(windows))]
     {
@@ -2199,7 +2562,7 @@ mod legacy_python_vectors {
             serde_json::from_str(include_str!("../../fixtures/legacy_v1_synthetic.json")).unwrap();
         let h = &f["header"];
         let got = kdf(s(&f, "password"), &decode(h, "salt").unwrap()).unwrap();
-        assert_eq!(hex::encode(&*got), s(&f, "expected_kdf_hex"));
+        assert_eq!(hex::encode(*got), s(&f, "expected_kdf_hex"));
         let dek = unseal(&got, s(h, "wrap")).unwrap();
         assert_eq!(hex::encode(&dek), s(&f, "expected_dek_hex"));
         let dek: [u8; 32] = dek.try_into().unwrap();
@@ -2230,6 +2593,192 @@ mod vault_tests {
             fails: 0,
         };
         (v, dir)
+    }
+    #[test]
+    fn unlock_wait_grows_and_is_capped() {
+        for fails in 0..FREE_UNLOCK_ATTEMPTS {
+            assert_eq!(unlock_wait(fails), 0.);
+        }
+        assert_eq!(unlock_wait(5), 30.);
+        assert_eq!(unlock_wait(6), 60.);
+        assert_eq!(unlock_wait(9), 480.);
+        assert_eq!(unlock_wait(10), MAX_UNLOCK_WAIT);
+        assert_eq!(unlock_wait(u32::MAX), MAX_UNLOCK_WAIT);
+    }
+    #[test]
+    fn wrong_unlock_attempts_are_throttled_and_survive_a_restart() {
+        let (mut v, dir) = test_vault();
+        let good = json!({"password": "password-sintetica"});
+        let bad = json!({"password": "sbagliata-sintetica"});
+        v.call("create", good.clone()).unwrap();
+        v.call("lock", json!({})).unwrap();
+        for attempt in 1..=FREE_UNLOCK_ATTEMPTS {
+            let e = v.call("unlock", bad.clone()).unwrap_err();
+            assert_eq!(
+                e.contains("riprova tra 30 secondi"),
+                attempt == FREE_UNLOCK_ATTEMPTS,
+                "{attempt}: {e}"
+            );
+        }
+        // Even the right password waits, also after a restart (new Vault, same config).
+        let e = v.call("unlock", good.clone()).unwrap_err();
+        assert!(e.starts_with("Troppi tentativi errati: riprova tra"), "{e}");
+        let (mut restarted, other) = test_vault();
+        restarted.path = v.path.clone();
+        restarted.config = v.config.clone();
+        assert!(restarted.call("unlock", good.clone()).is_err());
+        fs::remove_dir_all(other).unwrap();
+        // A clock moved back never makes the wait longer than the current step.
+        write_config_key(&v.config, "unlock_last_fail", json!(now() + 1e6)).unwrap();
+        let e = v.call("unlock", good.clone()).unwrap_err();
+        assert!(e.contains("riprova tra 30 secondi"), "{e}");
+        // After the wait the right password works and clears the count.
+        write_config_key(&v.config, "unlock_last_fail", json!(now() - 31.)).unwrap();
+        v.call("unlock", good.clone()).unwrap();
+        assert_eq!(read_config_key(&v.config, "unlock_fails"), json!(0));
+        v.call("lock", json!({})).unwrap();
+        assert!(v.call("unlock", bad).unwrap_err().ends_with("non corretti"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[cfg(windows)]
+    #[test]
+    fn app_name_reads_the_file_description() {
+        let windir = std::env::var("WINDIR").unwrap_or_else(|_| "C:\\Windows".into());
+        let notepad = format!("{windir}\\System32\\notepad.exe");
+        let name = app_name(&notepad).unwrap();
+        // The description ("Notepad", "Blocco note"…) rather than the bare file name.
+        assert!(!name.is_empty() && name != "notepad", "{name}");
+        assert!(app_name("C:\\percorso\\inesistente.exe").is_err());
+    }
+    #[test]
+    fn new_folders_are_kept() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        let item = v
+            .call("item", json!({"type": "login", "title": "Sito", "f": {}}))
+            .unwrap()["id"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        let state = v.call("folder", json!({"name": "Lavoro"})).unwrap()["state"].clone();
+        let folders = array(&state, "folders");
+        assert_eq!(folders.len(), 1, "{state}");
+        let fid = s(&folders[0], "id").to_string();
+        v.call("bulk", json!({"ids": [item], "op": "move", "folder": fid}))
+            .unwrap();
+        v.call("lock", json!({})).unwrap();
+        v.call("unlock", json!({"password": "password-sintetica"}))
+            .unwrap();
+        assert_eq!(array(&v.data, "folders").len(), 1);
+        assert_eq!(s(&array(&v.data, "items")[0], "folder"), fid);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    /// Synthetic Kaspersky Password Manager text export (no real data).
+    const KASPERSKY_EN: &str = "Websites\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com/id/login\nLogin name: \nLogin: utente@example.com\nPassword: sëgreto-1🔑\nComment: prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto\n\n---\n\nWebsite name: Epic Games\nWebsite URL: https://www.epicgames.com\nLogin name: Lavoro\nLogin: lavoro@example.com\nPassword: pw-2\nComment: \n\n---\n\nApplications\n\nApplication: Skype\nLogin name: \nLogin: utente.skype\nPassword: pw-3\nComment: \n\n---\n\nApplication: Feather Launcher\nLogin name: Principale\nLogin: uno@gmail.example\nPassword: pw-5\nComment: \n\n---\n\nApplication: Feather Launcher\nLogin name: Secondario\nLogin: due@outlook.example\nPassword: pw-6\nComment: \n\n---\n\nOther Accounts\n\nAccount name: Router di casa\nLogin name: \nLogin: admin\nPassword: pw-4\nComment: \n\n---\n\nNotes\n\nName: Codici Wi-Fi\nText: rete: casa\nseconda riga\n\n---\n";
+    fn import_text(text: &str) -> (Vec<V>, Res<V>) {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        let result = v.call("import", json!({"text": text}));
+        let items = array(&v.data, "items").to_vec();
+        fs::remove_dir_all(dir).unwrap();
+        (items, result)
+    }
+    fn by_title<'a>(items: &'a [V], title: &str) -> &'a V {
+        items
+            .iter()
+            .find(|i| s(i, "title") == title)
+            .unwrap_or_else(|| panic!("{title} non importato"))
+    }
+    #[test]
+    fn kaspersky_text_export_is_imported() {
+        let (items, result) = import_text(KASPERSKY_EN);
+        assert_eq!(result.unwrap()["count"], 7);
+        let epic = by_title(&items, "Epic Games");
+        assert_eq!(s(epic, "type"), "login");
+        assert_eq!(s(&epic["f"], "url"), "https://www.epicgames.com/id/login");
+        assert_eq!(s(&epic["f"], "username"), "utente@example.com");
+        assert_eq!(s(&epic["f"], "password"), "sëgreto-1🔑");
+        // Multi-line comment kept, including lines with ':' and URLs.
+        assert_eq!(
+            s(epic, "notes"),
+            "prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto"
+        );
+        // The login name is the title of that account; the site stays its group.
+        let work = items
+            .iter()
+            .find(|i| s(&i["f"], "username") == "lavoro@example.com")
+            .unwrap();
+        assert_eq!(s(work, "title"), "Lavoro");
+        assert_eq!(s(work, "notes"), "");
+        assert_eq!(s(&work["f"], "url"), "https://www.epicgames.com");
+        assert_eq!(s(&by_title(&items, "Skype")["f"], "password"), "pw-3");
+        // Applications: one group per app name, never per email domain.
+        // Titled by their login names, both in the group of the app.
+        let feather: Vec<&V> = items
+            .iter()
+            .filter(|i| s(i, "gk") == "app:feather-launcher")
+            .collect();
+        assert_eq!(feather.len(), 2);
+        for (it, title) in feather.iter().zip(["Principale", "Secondario"]) {
+            assert_eq!(s(it, "title"), title);
+            assert_eq!(s(it, "src"), "app");
+        }
+        assert_eq!(
+            s(by_title(&items, "Router di casa"), "gk"),
+            "other:router-di-casa"
+        );
+        // Websites with an address keep the normal grouping by site.
+        assert_eq!(s(epic, "gk"), "");
+        assert_eq!(
+            s(&by_title(&items, "Router di casa")["f"], "username"),
+            "admin"
+        );
+        let note = by_title(&items, "Codici Wi-Fi");
+        assert_eq!(s(note, "type"), "note");
+        assert_eq!(s(note, "notes"), "rete: casa\nseconda riga");
+    }
+    #[test]
+    fn kaspersky_export_in_italian_or_unknown_labels() {
+        let it = "Siti web\n\nNome sito web: Banca\nURL sito web: https://banca.example\nNome login: \nLogin: cliente\nPassword: pw-it\nCommento: nota\n\n---\n";
+        let (items, result) = import_text(it);
+        assert_eq!(result.unwrap()["count"], 1);
+        let bank = by_title(&items, "Banca");
+        assert_eq!(s(&bank["f"], "url"), "https://banca.example");
+        assert_eq!(s(&bank["f"], "username"), "cliente");
+        assert_eq!(s(bank, "notes"), "nota");
+        // Labels of another language: password still recognized, the rest kept in notes.
+        let other = "Websites\n\nSitio: Uno\nPassword: p1\nClave extra: a\n\n---\n\nSitio: Due\nPassword: p2\nClave extra: b\n\n---\n";
+        let (items, result) = import_text(other);
+        assert_eq!(result.unwrap()["count"], 2);
+        let uno = items
+            .iter()
+            .find(|i| s(&i["f"], "password") == "p1")
+            .unwrap();
+        assert!(s(uno, "notes").contains("Sitio: Uno"));
+        assert!(s(uno, "notes").contains("Clave extra: a"));
+    }
+    #[test]
+    fn utf16_text_files_are_decoded_and_csv_is_not_mistaken() {
+        let mut le = vec![0xff, 0xfe];
+        le.extend(KASPERSKY_EN.encode_utf16().flat_map(u16::to_le_bytes));
+        assert_eq!(decode_text(&le).unwrap(), KASPERSKY_EN);
+        let mut be = vec![0xfe, 0xff];
+        be.extend("ciao".encode_utf16().flat_map(u16::to_be_bytes));
+        assert_eq!(decode_text(&be).unwrap(), "ciao");
+        assert_eq!(decode_text("\u{feff}a,b".as_bytes()).unwrap(), "a,b");
+        assert!(decode_text(&[0xff, 0xfe, 0x41]).is_err());
+        assert!(decode_text(&[0xc3, 0x28]).is_err());
+        let csv = "name,url,username,password\nSito,https://a.example,u,p\n";
+        assert!(!is_kaspersky(csv));
+        assert!(is_kaspersky(KASPERSKY_EN));
+        let (items, result) = import_text(csv);
+        assert_eq!(result.unwrap()["count"], 1);
+        assert_eq!(s(&items[0]["f"], "password"), "p");
+        // A text file that is neither: nothing is imported, the vault is unchanged.
+        let (items, _) = import_text("solo testo\n---\nsenza campi\n");
+        assert!(items.is_empty());
     }
     // 7 characters but 14 UTF-8 bytes, and 8 characters / 16 bytes.
     const SHORT_ACCENTED: &str = "àèìòùéç";

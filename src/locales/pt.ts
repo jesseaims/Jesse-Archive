@@ -2,6 +2,42 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Pasta eliminada',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'Aplicações do menu Iniciar. Se faltar alguma, escolhe o ficheiro com «Procurar…».',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'Escolhe o ficheiro .exe ou o atalho da aplicação',
+  'Sfoglia…': 'Procurar…',
+  'Cartella creata': 'Pasta criada',
+  'Cerca applicazione': 'Procurar aplicação',
+  'Cerca applicazione…': 'Procurar aplicação…',
+  'Elementi spostati': 'Elementos movidos',
+  'Nome della nuova cartella': 'Nome da nova pasta',
+  'Nuova cartella…': 'Nova pasta…',
+  'Sposta in': 'Mover para',
+  'Deseleziona tutti': 'Desmarcar tudo',
+  "Seleziona l'account {name}": 'Selecionar a conta {name}',
+  'Seleziona tutti': 'Selecionar tudo',
+  'Seleziona tutti gli account di {name}': 'Selecionar todas as contas de {name}',
+  'Spostare nel cestino {n} elementi selezionati?':
+    'Mover para o lixo os {n} elementos selecionados?',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'Importar CSV / JSON / .jshare / TXT do Kaspersky',
+  'File di testo non valido': 'Ficheiro de texto inválido',
+  'Il file non è testo UTF-8 o UTF-16': 'O ficheiro não é texto UTF-8 nem UTF-16',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'Nenhuma conta reconhecida no ficheiro do Kaspersky',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'Não abras o CSV diretamente com o Excel ou outra folha de cálculo: os valores que começam por =, +, - ou @ seriam executados como fórmulas.',
+  'Scegli di nuovo il file da importare': 'Escolhe novamente o ficheiro a importar',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'O instalador transferido foi modificado: instalação cancelada.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'O instalador transferido está a ser usado por outro programa: instalação cancelada.',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    'Demasiadas tentativas erradas: tenta novamente dentro de {n} segundos',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'Palavra-passe ou código de recuperação incorretos. Demasiadas tentativas: tenta novamente dentro de {n} segundos',
   'Aggiorna password': 'Atualizar palavra-passe',
   'Aggiornare la password?': 'Atualizar a palavra-passe?',
   'Campo {n}': 'Campo {n}',
@@ -312,7 +348,6 @@ const dictionary: Dictionary = {
     'O cofre foi relido a partir do arquivo e comparado com eventuais cópias na mesma pasta.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     'O cofre está bloqueado (por exemplo, por inatividade), então não foi possível recarregar os dados.\n\nDesbloqueie o cofre novamente com a senha mestra.',
-  'Importa CSV / JSON / .jshare': 'Importar CSV / JSON / .jshare',
   'Importa dati nel vault': 'Importar dados para o cofre',
   'Importa pacchetto cifrato': 'Importar pacote criptografado',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -586,8 +621,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Foram encontradas alterações (por exemplo, de outro dispositivo pela pasta na nuvem):',
   'Sostituire la password dell’account?': 'Substituir a senha da conta?',
-  Sposta: 'Mover',
-  'Sposta in...': 'Mover para...',
   'Sposta nel cestino': 'Mover para a lixeira',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Mover a conta "{name}"{detail} para a lixeira?',

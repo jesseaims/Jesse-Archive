@@ -2,6 +2,42 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Папка удалена',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'Приложения из меню «Пуск». Если нужного нет, выберите его файл кнопкой «Обзор…».',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'Выберите .exe-файл или ярлык приложения',
+  'Sfoglia…': 'Обзор…',
+  'Cartella creata': 'Папка создана',
+  'Cerca applicazione': 'Поиск приложения',
+  'Cerca applicazione…': 'Поиск приложения…',
+  'Elementi spostati': 'Элементы перемещены',
+  'Nome della nuova cartella': 'Название новой папки',
+  'Nuova cartella…': 'Новая папка…',
+  'Sposta in': 'Переместить в',
+  'Deseleziona tutti': 'Снять выделение',
+  "Seleziona l'account {name}": 'Выбрать аккаунт {name}',
+  'Seleziona tutti': 'Выбрать все',
+  'Seleziona tutti gli account di {name}': 'Выбрать все аккаунты {name}',
+  'Spostare nel cestino {n} elementi selezionati?':
+    'Переместить в корзину выбранные элементы ({n})?',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'Импорт CSV / JSON / .jshare / TXT из Kaspersky',
+  'File di testo non valido': 'Недопустимый текстовый файл',
+  'Il file non è testo UTF-8 o UTF-16': 'Файл не является текстом в UTF-8 или UTF-16',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'В файле Kaspersky не найдено ни одного аккаунта',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'Не открывайте CSV напрямую в Excel или другой электронной таблице: значения, начинающиеся с =, +, - или @, будут выполнены как формулы.',
+  'Scegli di nuovo il file da importare': 'Выберите файл для импорта ещё раз',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'Скачанный установщик был изменён: установка отменена.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'Скачанный установщик используется другой программой: установка отменена.',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    'Слишком много неверных попыток: повторите через {n} с',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'Неверный пароль или код восстановления. Слишком много попыток: повторите через {n} с',
   'Aggiorna password': 'Обновить пароль',
   'Aggiornare la password?': 'Обновить пароль?',
   'Campo {n}': 'Поле {n}',
@@ -311,7 +347,6 @@ const dictionary: Dictionary = {
     'Хранилище перечитано из файла и сравнено с возможными копиями в той же папке.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     'Хранилище заблокировано (например, из-за бездействия), поэтому данные не удалось перезагрузить.\n\nСнова разблокируйте хранилище мастер-паролем.',
-  'Importa CSV / JSON / .jshare': 'Импорт CSV / JSON / .jshare',
   'Importa dati nel vault': 'Импортировать данные в хранилище',
   'Importa pacchetto cifrato': 'Импортировать зашифрованный пакет',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -584,8 +619,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Найдены изменения (например, с другого устройства через облачную папку):',
   'Sostituire la password dell’account?': 'Заменить пароль учётной записи?',
-  Sposta: 'Переместить',
-  'Sposta in...': 'Переместить в...',
   'Sposta nel cestino': 'В корзину',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Переместить учётную запись «{name}»{detail} в корзину?',

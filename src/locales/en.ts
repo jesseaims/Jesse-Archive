@@ -2,6 +2,40 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Folder deleted',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'Applications from the Start menu. If one is missing, choose its file with “Browse…”.',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'Choose the application’s .exe file or shortcut',
+  'Sfoglia…': 'Browse…',
+  'Cartella creata': 'Folder created',
+  'Cerca applicazione': 'Search application',
+  'Cerca applicazione…': 'Search application…',
+  'Elementi spostati': 'Items moved',
+  'Nome della nuova cartella': 'Name of the new folder',
+  'Nuova cartella…': 'New folder…',
+  'Sposta in': 'Move to',
+  'Deseleziona tutti': 'Deselect all',
+  "Seleziona l'account {name}": 'Select the account {name}',
+  'Seleziona tutti': 'Select all',
+  'Seleziona tutti gli account di {name}': 'Select all accounts of {name}',
+  'Spostare nel cestino {n} elementi selezionati?': 'Move the {n} selected items to the trash?',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky': 'Import CSV / JSON / .jshare / Kaspersky TXT',
+  'File di testo non valido': 'Invalid text file',
+  'Il file non è testo UTF-8 o UTF-16': 'The file is not UTF-8 or UTF-16 text',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'No account recognized in the Kaspersky file',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'Do not open the CSV directly with Excel or another spreadsheet: values starting with =, +, - or @ would run as formulas.',
+  'Scegli di nuovo il file da importare': 'Choose the file to import again',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'The downloaded setup was modified: installation cancelled.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'The downloaded setup is in use by another program: installation cancelled.',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    'Too many wrong attempts: try again in {n} seconds',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'Wrong password or recovery code. Too many attempts: try again in {n} seconds',
   'Aggiorna password': 'Update password',
   'Aggiornare la password?': 'Update the password?',
   'Campo {n}': 'Field {n}',
@@ -308,7 +342,6 @@ const dictionary: Dictionary = {
     'The vault was reloaded from the file and compared with any copies in the same folder.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     'The vault is locked (for example after inactivity), so the data could not be reloaded.\n\nUnlock the vault again with the master password.',
-  'Importa CSV / JSON / .jshare': 'Import CSV / JSON / .jshare',
   'Importa dati nel vault': 'Import data into the vault',
   'Importa pacchetto cifrato': 'Import encrypted package',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -580,8 +613,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Changes were found (for example from another device through the cloud folder):',
   'Sostituire la password dell’account?': 'Replace the account password?',
-  Sposta: 'Move',
-  'Sposta in...': 'Move to...',
   'Sposta nel cestino': 'Move to trash',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Move the account "{name}"{detail} to the trash?',

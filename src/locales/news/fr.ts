@@ -2,6 +2,18 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Sélectionnez plusieurs comptes à la fois',
+    'Dans « Tous les éléments » et « Comptes », vous pouvez désormais sélectionner des groupes entiers ou des comptes isolés avec leur case, ou tout ce qui est affiché avec « Tout sélectionner » (y compris les résultats d’une recherche), puis les mettre à la corbeille ou dans un dossier en une fois.',
+  ],
+  'kaspersky-import': [
+    'Importer depuis Kaspersky Password Manager',
+    'Jesse’s Archive importe désormais le fichier texte (.txt) que Kaspersky Password Manager crée avec « Exporter vers un fichier texte » : sites, applications et autres comptes deviennent des comptes avec nom, adresse, identifiant, mot de passe et commentaires, et les notes de Kaspersky deviennent des notes. Supprimez ensuite le fichier exporté : il contient vos mots de passe en clair.',
+  ],
+  'unlock-throttling': [
+    'Protection contre les tentatives de deviner le mot de passe',
+    'Après 5 tentatives erronées d’affilée pour déverrouiller le coffre (mot de passe principal ou code de récupération), Jesse’s Archive vous fait attendre 30 secondes avant l’essai suivant, en doublant à chaque fois jusqu’à 15 minutes. Le compteur résiste au redémarrage de l’application et s’efface au premier déverrouillage réussi.',
+  ],
   'save-new-logins': [
     'Enregistrez les nouveaux comptes depuis le navigateur',
     'Quand vous vous inscrivez sur un site, ou vous connectez avec un compte qui n’est pas encore dans le coffre, Jesse’s Archive vous demande s’il faut l’enregistrer : nom, identifiant ou e-mail, mot de passe et, si vous le souhaitez, les autres données saisies forment un nouveau compte pour ce site. Si vous changez un mot de passe sur un site, il propose de mettre à jour celui enregistré. Rien n’est enregistré sans votre confirmation, et vous pouvez le désactiver ou exclure des sites dans les Paramètres. Nécessite l’extension mise à jour.',

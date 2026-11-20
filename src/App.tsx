@@ -57,7 +57,7 @@ import {
   type State,
   type Status,
 } from './types';
-import { Newspaper } from 'lucide-react';
+import { CheckSquare, ChevronDown, Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
 import { groupFor, savedGroupKey } from './groups';
@@ -178,6 +178,8 @@ function AccountGroups({
   copy,
   onDeleteAccount,
   onDeleteGroup,
+  selected,
+  onSelect,
 }: {
   items: Item[];
   vault: State;
@@ -185,6 +187,9 @@ function AccountGroups({
   copy: (v: string) => Promise<void>;
   onDeleteAccount: (it: Item) => Promise<void>;
   onDeleteGroup: (key: string, label: string) => Promise<void>;
+  // Multiple selection shared with the page's bulk bar (move, trash, restore).
+  selected: string[];
+  onSelect: (ids: string[], on: boolean) => void;
 }) {
   const groups = useMemo(() => {
     const m = new Map<string, Item[]>();
@@ -213,9 +218,22 @@ function AccountGroups({
             : first.title);
         const index = Math.min(pageBy[key] || 0, rows.length - 1);
         const it = rows[index];
+        const ids = rows.map((r) => r.id);
+        const picked = ids.filter((id) => selected.includes(id)).length;
         return (
-          <section className="account-group" key={key}>
+          <section className={`account-group ${picked ? 'picked' : ''}`} key={key}>
             <div className="account-group-head">
+              <input
+                type="checkbox"
+                className="group-select"
+                aria-label={t('Seleziona tutti gli account di {name}', { name: label })}
+                title={t('Seleziona tutti gli account di {name}', { name: label })}
+                checked={picked === ids.length}
+                ref={(el) => {
+                  if (el) el.indeterminate = picked > 0 && picked < ids.length;
+                }}
+                onChange={(e) => onSelect(ids, e.target.checked)}
+              />
               <GroupLogo icon={g?.icon} groupKey={key} name={label} />
               <div className="group-title">
                 <strong>{label}</strong>
@@ -232,9 +250,20 @@ function AccountGroups({
               </button>
             </div>
             <div className="account-group-body">
-              <button className="account-name" onClick={() => openItem(it)}>
-                {it.title}
-              </button>
+              <div className="account-name-row">
+                {rows.length > 1 && (
+                  <input
+                    type="checkbox"
+                    aria-label={t("Seleziona l'account {name}", { name: it.title })}
+                    title={t("Seleziona l'account {name}", { name: it.title })}
+                    checked={selected.includes(it.id)}
+                    onChange={(e) => onSelect([it.id], e.target.checked)}
+                  />
+                )}
+                <button className="account-name" onClick={() => openItem(it)}>
+                  {it.title}
+                </button>
+              </div>
               <div className="group-credential">
                 <span>{t('Utente')}</span>
                 <strong title={it.f.username || ''}>{it.f.username || t('Non impostato')}</strong>
@@ -524,8 +553,9 @@ export default function App() {
     [showSecrets, setShowSecrets] = useState<string[]>([]),
     [mobileMenu, setMobileMenu] = useState(false),
     [appsList, setAppsList] = useState<{ name: string; path: string }[] | null>(null),
+    [appsQuery, setAppsQuery] = useState(''),
     [groupIcon, setGroupIcon] = useState(''),
-    [bulkFolder, setBulkFolder] = useState(''),
+    [moveOpen, setMoveOpen] = useState(false),
     [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     if (!vault) applyPalette({ preset: 'night' });
@@ -737,6 +767,76 @@ export default function App() {
       notify(message);
     }
     return r;
+  };
+  // Bulk bar "Sposta in": moves the selection to a folder, or to a new one.
+  const moveMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!moveOpen) return;
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (
+        e instanceof KeyboardEvent
+          ? e.key === 'Escape'
+          : !moveMenuRef.current?.contains(e.target as Node)
+      )
+        setMoveOpen(false);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, [moveOpen]);
+  const moveSelected = async (folder: string) => {
+    setMoveOpen(false);
+    const r = await mutate('bulk', { ids: multi, op: 'move', folder }, t('Elementi spostati'));
+    if (r) setMulti([]);
+  };
+  // Folder actions shared by the sidebar context menu, the folder page and Settings.
+  const [folderMenu, setFolderMenu] = useState<{ x: number; y: number; id: string } | null>(null);
+  useEffect(() => {
+    if (!folderMenu) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e.type === 'mousedown' && (e.target as Element).closest?.('.context-menu')) return;
+      setFolderMenu(null);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', close);
+    window.addEventListener('blur', close);
+    window.addEventListener('resize', close);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', close);
+      window.removeEventListener('blur', close);
+      window.removeEventListener('resize', close);
+    };
+  }, [folderMenu]);
+  const renameFolder = async (f: { id: string; name: string }) => {
+    setFolderMenu(null);
+    const n = await askText(t('Nuovo nome della cartella'), f.name);
+    if (n?.trim()) await mutate('folder', { id: f.id, name: n.trim() });
+  };
+  const deleteFolder = async (f: { id: string; name: string }) => {
+    setFolderMenu(null);
+    if (
+      !(await askConfirm(
+        t('Eliminare la cartella {name}? Gli elementi resteranno nel vault.', { name: f.name }),
+        { title: t('Elimina cartella'), danger: true, confirmLabel: t('Elimina cartella') },
+      ))
+    )
+      return;
+    const r = await mutate('folder', { id: f.id, delete: true }, t('Cartella eliminata'));
+    if (r && page === 'folder' && folderId === f.id) selectPage('all');
+  };
+  const moveToNewFolder = async () => {
+    setMoveOpen(false);
+    const name = (await askText(t('Nome della nuova cartella')))?.trim();
+    if (!name) return;
+    const before = new Set((vault?.folders || []).map((f) => f.id));
+    const r = await mutate('folder', { name }, t('Cartella creata'));
+    const created = r?.state?.folders.find((f) => !before.has(f.id));
+    if (created) await moveSelected(created.id);
   };
   // "Usati di recente": item ids in the encrypted vault settings, shared with the
   // Global Quick Search. A convenience: a failed save changes nothing.
@@ -1286,9 +1386,37 @@ export default function App() {
               icon={Folder}
               title={f.name}
               onClick={() => selectPage('folder', f.id)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setFolderMenu({ x: e.clientX, y: e.clientY, id: f.id });
+              }}
             />
           ))}
         </nav>
+        {folderMenu &&
+          (() => {
+            const f = vault.folders.find((x) => x.id === folderMenu.id);
+            if (!f) return null;
+            return (
+              <div
+                className="context-menu"
+                role="menu"
+                style={{
+                  left: Math.min(folderMenu.x, window.innerWidth - 220),
+                  top: Math.min(folderMenu.y, window.innerHeight - 110),
+                }}
+              >
+                <button role="menuitem" onClick={() => void renameFolder(f)}>
+                  <SettingsIcon size={15} />
+                  {t('Rinomina')}
+                </button>
+                <button role="menuitem" className="danger" onClick={() => void deleteFolder(f)}>
+                  <Trash2 size={15} />
+                  {t('Elimina cartella')}
+                </button>
+              </div>
+            );
+          })()}
         <div className="sidebar-label">{t('STRUMENTI')}</div>
         <nav>
           <Nav
@@ -1390,10 +1518,33 @@ export default function App() {
                   <h1>{page === 'folder' ? folderName : t(sectionLabels[page])}</h1>
                   <p>{t('Organizza i tuoi dati sensibili in uno spazio privato e cifrato.')}</p>
                 </div>
-                <button className="primary" onClick={openNewItem}>
-                  <Plus size={18} />
-                  {t('Nuovo elemento')}
-                </button>
+                <div className="heading-actions">
+                  {page === 'folder' &&
+                    (() => {
+                      const f = vault.folders.find((x) => x.id === folderId);
+                      return (
+                        f && (
+                          <>
+                            <button className="secondary" onClick={() => void renameFolder(f)}>
+                              <SettingsIcon size={16} />
+                              {t('Rinomina')}
+                            </button>
+                            <button
+                              className="secondary danger-soft"
+                              onClick={() => void deleteFolder(f)}
+                            >
+                              <Trash2 size={16} />
+                              {t('Elimina cartella')}
+                            </button>
+                          </>
+                        )
+                      );
+                    })()}
+                  <button className="primary" onClick={openNewItem}>
+                    <Plus size={18} />
+                    {t('Nuovo elemento')}
+                  </button>
+                </div>
               </div>
               <div className="stats-grid">
                 <Stat
@@ -1444,6 +1595,23 @@ export default function App() {
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
+                    {filtered.length > 0 && (
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          setMulti(
+                            filtered.every((i) => multi.includes(i.id))
+                              ? []
+                              : filtered.map((i) => i.id),
+                          )
+                        }
+                      >
+                        <CheckSquare size={16} />
+                        {filtered.every((i) => multi.includes(i.id))
+                          ? t('Deseleziona tutti')
+                          : t('Seleziona tutti')}
+                      </button>
+                    )}
                     <button className="secondary" onClick={openNewItem}>
                       <Plus size={17} />
                     </button>
@@ -1452,65 +1620,110 @@ export default function App() {
                 {multi.length > 0 && (
                   <div className="bulkbar">
                     <strong>{t('Selezionati: {n}', { n: multi.length })}</strong>
-                    <button
-                      onClick={() =>
-                        void mutate('bulk', {
-                          ids: multi,
-                          op: page === 'trash' ? 'restore' : 'trash',
-                        }).then(() => setMulti([]))
-                      }
-                    >
-                      {page === 'trash' ? t('Ripristina') : t('Nel cestino')}
-                    </button>
-                    {page === 'trash' && (
-                      <button
-                        onClick={async () => {
-                          if (
-                            await askConfirm(
-                              t('Eliminare definitivamente gli elementi selezionati?'),
-                              {
-                                title: t('Eliminazione definitiva'),
-                                danger: true,
-                                confirmLabel: t('Elimina definitivamente'),
-                              },
-                            )
-                          )
-                            await mutate('bulk', { ids: multi, op: 'delete' }).then(() =>
-                              setMulti([]),
-                            );
-                        }}
-                      >
-                        {t('Elimina')}
+                    <div className="bulkbar-actions">
+                      {page === 'trash' ? (
+                        <>
+                          <button
+                            className="secondary"
+                            onClick={() =>
+                              void mutate('bulk', { ids: multi, op: 'restore' }).then(() =>
+                                setMulti([]),
+                              )
+                            }
+                          >
+                            <RefreshCw size={16} />
+                            {t('Ripristina')}
+                          </button>
+                          <button
+                            className="secondary danger-soft"
+                            onClick={async () => {
+                              if (
+                                await askConfirm(
+                                  t('Eliminare definitivamente gli elementi selezionati?'),
+                                  {
+                                    title: t('Eliminazione definitiva'),
+                                    danger: true,
+                                    confirmLabel: t('Elimina definitivamente'),
+                                  },
+                                )
+                              )
+                                await mutate('bulk', { ids: multi, op: 'delete' }).then(() =>
+                                  setMulti([]),
+                                );
+                            }}
+                          >
+                            <Trash2 size={16} />
+                            {t('Elimina')}
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="icon-button danger bulk-trash"
+                            title={t('Sposta nel cestino')}
+                            aria-label={t('Sposta nel cestino')}
+                            onClick={async () => {
+                              // Moving many items at once is confirmed with the count.
+                              if (
+                                multi.length > 1 &&
+                                !(await askConfirm(
+                                  t('Spostare nel cestino {n} elementi selezionati?', {
+                                    n: multi.length,
+                                  }),
+                                  { title: t('Nel cestino'), confirmLabel: t('Nel cestino') },
+                                ))
+                              )
+                                return;
+                              await mutate('bulk', { ids: multi, op: 'trash' }).then(() =>
+                                setMulti([]),
+                              );
+                            }}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                          <div className="bulk-move" ref={moveMenuRef}>
+                            <button
+                              className="secondary"
+                              aria-haspopup="menu"
+                              aria-expanded={moveOpen}
+                              onClick={() => setMoveOpen((o) => !o)}
+                            >
+                              <Folder size={16} />
+                              {t('Sposta in')}
+                              <ChevronDown size={15} />
+                            </button>
+                            {moveOpen && (
+                              <div className="bulk-move-menu" role="menu">
+                                {vault.folders.map((f) => (
+                                  <button
+                                    key={f.id}
+                                    role="menuitem"
+                                    onClick={() => void moveSelected(f.id)}
+                                  >
+                                    <Folder size={15} />
+                                    <span>{f.name}</span>
+                                  </button>
+                                ))}
+                                {!vault.folders.length && (
+                                  <p className="bulk-move-empty">{t('Nessuna cartella')}</p>
+                                )}
+                                <button
+                                  role="menuitem"
+                                  className="bulk-move-new"
+                                  onClick={() => void moveToNewFolder()}
+                                >
+                                  <FolderPlus size={15} />
+                                  <span>{t('Nuova cartella…')}</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                      <button className="secondary" onClick={() => setMulti([])}>
+                        {t('Annulla')}
                       </button>
-                    )}
-                    {page !== 'trash' && (
-                      <>
-                        <select value={bulkFolder} onChange={(e) => setBulkFolder(e.target.value)}>
-                          <option value="">{t('Sposta in...')}</option>
-                          {vault.folders.map((f) => (
-                            <option key={f.id} value={f.id}>
-                              {f.name}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          disabled={!bulkFolder}
-                          onClick={() =>
-                            void mutate('bulk', {
-                              ids: multi,
-                              op: 'move',
-                              folder: bulkFolder,
-                            }).then(() => {
-                              setMulti([]);
-                              setBulkFolder('');
-                            })
-                          }
-                        >
-                          {t('Sposta')}
-                        </button>
-                      </>
-                    )}
-                    <button onClick={() => setMulti([])}>{t('Annulla')}</button>
+                    </div>
                   </div>
                 )}
                 {(page === 'all' || page === 'login') && (
@@ -1521,6 +1734,12 @@ export default function App() {
                     copy={copy}
                     onDeleteAccount={deleteItem}
                     onDeleteGroup={deleteGroup}
+                    selected={multi}
+                    onSelect={(ids, on) =>
+                      setMulti((x) =>
+                        on ? [...new Set([...x, ...ids])] : x.filter((id) => !ids.includes(id)),
+                      )
+                    }
                   />
                 )}
                 <div className="items-list">
@@ -1937,7 +2156,10 @@ export default function App() {
                           className="secondary"
                           onClick={async () => {
                             const r = await run<{ apps: { name: string; path: string }[] }>('apps');
-                            if (r) setAppsList(r.apps);
+                            if (r) {
+                              setAppsQuery('');
+                              setAppsList(r.apps);
+                            }
                           }}
                         >
                           <Folder size={16} />
@@ -1946,30 +2168,82 @@ export default function App() {
                       )}
                       {appsList && (
                         <div className="apps-picker">
-                          {appsList.length ? (
-                            appsList.slice(0, 150).map((a) => (
-                              <button
-                                key={a.path}
-                                onClick={async () => {
-                                  const r = await run<{ icon: string }>('app_icon', {
-                                    path: a.path,
-                                  });
-                                  setGroupIcon(r?.icon || '');
-                                  setDraft((x) => ({
-                                    ...x,
-                                    gk: 'app:' + a.name.toLowerCase().trim().replace(/\s+/g, '-'),
-                                    src: 'app',
-                                    title: x.title || a.name,
-                                  }));
-                                  setAppsList(null);
-                                }}
-                              >
-                                {a.name}
-                              </button>
-                            ))
-                          ) : (
-                            <span>{t('Nessuna applicazione individuata')}</span>
-                          )}
+                          <div className="apps-picker-top">
+                            <input
+                              autoFocus
+                              className="apps-picker-search"
+                              aria-label={t('Cerca applicazione')}
+                              placeholder={t('Cerca applicazione…')}
+                              value={appsQuery}
+                              onChange={(e) => setAppsQuery(e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              className="secondary"
+                              title={t('Scegli il file .exe o il collegamento dell’applicazione')}
+                              onClick={async () => {
+                                const path = await picker('app');
+                                if (!path) return;
+                                const r = await run<{ name: string; icon: string }>('app_info', {
+                                  path,
+                                });
+                                if (!r) return;
+                                setGroupIcon(r.icon || '');
+                                setDraft((x) => ({
+                                  ...x,
+                                  gk: 'app:' + r.name.toLowerCase().trim().replace(/\s+/g, '-'),
+                                  src: 'app',
+                                  title: x.title || r.name,
+                                }));
+                                setAppsList(null);
+                              }}
+                            >
+                              <Folder size={15} />
+                              {t('Sfoglia…')}
+                            </button>
+                          </div>
+                          <p className="apps-picker-hint">
+                            {t(
+                              'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».',
+                            )}
+                          </p>
+                          <div className="apps-picker-list" role="listbox">
+                            {appsList.length ? (
+                              appsList
+                                .filter((a) =>
+                                  a.name
+                                    .toLocaleLowerCase()
+                                    .includes(appsQuery.trim().toLocaleLowerCase()),
+                                )
+                                .slice(0, 300)
+                                .map((a) => (
+                                  <button
+                                    key={a.path}
+                                    onClick={async () => {
+                                      const r = await run<{ icon: string }>('app_icon', {
+                                        path: a.path,
+                                      });
+                                      setGroupIcon(r?.icon || '');
+                                      setDraft((x) => ({
+                                        ...x,
+                                        gk:
+                                          'app:' + a.name.toLowerCase().trim().replace(/\s+/g, '-'),
+                                        src: 'app',
+                                        title: x.title || a.name,
+                                      }));
+                                      setAppsList(null);
+                                    }}
+                                    title={a.name}
+                                    role="option"
+                                    aria-selected={false}
+                                  >
+                                    <span>{a.name}</span>
+                                  </button>
+                                ))
+                            ) : (
+                              <span>{t('Nessuna applicazione individuata')}</span>
+                            )}
+                          </div>
                         </div>
                       )}
                       {draft.f.totp && (
@@ -2190,15 +2464,21 @@ function Nav({
   active,
   onClick,
   count,
+  onContextMenu,
 }: {
   icon: typeof LayoutGrid;
   title: string;
   active: boolean;
   onClick: () => void;
   count?: number;
+  onContextMenu?: (e: React.MouseEvent) => void;
 }) {
   return (
-    <button className={`nav-item ${active ? 'active' : ''}`} onClick={onClick}>
+    <button
+      className={`nav-item ${active ? 'active' : ''}`}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+    >
       <Icon size={18} />
       <span>{title}</span>
       {count !== undefined && <span className="nav-count">{count}</span>}
@@ -3217,6 +3497,9 @@ function SettingsPage({
             <p className="sensitive-warning">
               {t(
                 'Attenzione: le esportazioni JSON e CSV contengono segreti in chiaro. Non salvarle in percorsi pubblici.',
+              )}{' '}
+              {t(
+                'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.',
               )}
             </p>
             <div className="split-actions">
@@ -3231,7 +3514,7 @@ function SettingsPage({
             </div>
             <button className="secondary" onClick={() => void importData()}>
               <Upload size={16} />
-              {t('Importa CSV / JSON / .jshare')}
+              {t('Importa CSV / JSON / .jshare / TXT di Kaspersky')}
             </button>
             <button className="secondary" onClick={() => setDialog('share')}>
               <ShieldCheck size={16} />
@@ -3412,6 +3695,7 @@ function SettingsPage({
                 </button>
                 <button
                   className="icon-button danger"
+                  title={t('Elimina cartella')}
                   onClick={async () => {
                     if (
                       await askConfirm(

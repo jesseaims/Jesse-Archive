@@ -2,6 +2,42 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'Dossier supprimé',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'Applications du menu Démarrer. S’il en manque une, choisissez son fichier avec « Parcourir… ».',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'Choisissez le fichier .exe ou le raccourci de l’application',
+  'Sfoglia…': 'Parcourir…',
+  'Cartella creata': 'Dossier créé',
+  'Cerca applicazione': 'Rechercher une application',
+  'Cerca applicazione…': 'Rechercher une application…',
+  'Elementi spostati': 'Éléments déplacés',
+  'Nome della nuova cartella': 'Nom du nouveau dossier',
+  'Nuova cartella…': 'Nouveau dossier…',
+  'Sposta in': 'Déplacer vers',
+  'Deseleziona tutti': 'Tout désélectionner',
+  "Seleziona l'account {name}": 'Sélectionner le compte {name}',
+  'Seleziona tutti': 'Tout sélectionner',
+  'Seleziona tutti gli account di {name}': 'Sélectionner tous les comptes de {name}',
+  'Spostare nel cestino {n} elementi selezionati?':
+    'Mettre à la corbeille les {n} éléments sélectionnés ?',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'Importer CSV / JSON / .jshare / TXT de Kaspersky',
+  'File di testo non valido': 'Fichier texte non valide',
+  'Il file non è testo UTF-8 o UTF-16': 'Le fichier n’est pas du texte UTF-8 ou UTF-16',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'Aucun compte reconnu dans le fichier de Kaspersky',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'N’ouvrez pas le CSV directement avec Excel ou un autre tableur : les valeurs commençant par =, +, - ou @ seraient exécutées comme des formules.',
+  'Scegli di nuovo il file da importare': 'Choisissez à nouveau le fichier à importer',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'Le programme d’installation téléchargé a été modifié : installation annulée.',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'Le programme d’installation téléchargé est utilisé par un autre programme : installation annulée.',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    'Trop de tentatives erronées : réessayez dans {n} secondes',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'Mot de passe ou code de récupération incorrect. Trop de tentatives : réessayez dans {n} secondes',
   'Aggiorna password': 'Mettre à jour le mot de passe',
   'Aggiornare la password?': 'Mettre à jour le mot de passe ?',
   'Campo {n}': 'Champ {n}',
@@ -313,7 +349,6 @@ const dictionary: Dictionary = {
     'Le coffre a été relu depuis le fichier et comparé aux éventuelles copies du même dossier.',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     'Le coffre est verrouillé (par exemple après une inactivité), les données n’ont donc pas pu être rechargées.\n\nDéverrouillez à nouveau le coffre avec le mot de passe principal.',
-  'Importa CSV / JSON / .jshare': 'Importer CSV / JSON / .jshare',
   'Importa dati nel vault': 'Importer des données dans le coffre',
   'Importa pacchetto cifrato': 'Importer un paquet chiffré',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -588,8 +623,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     'Des modifications ont été trouvées (par exemple depuis un autre appareil via le dossier cloud) :',
   'Sostituire la password dell’account?': 'Remplacer le mot de passe du compte ?',
-  Sposta: 'Déplacer',
-  'Sposta in...': 'Déplacer vers...',
   'Sposta nel cestino': 'Placer dans la corbeille',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'Placer le compte « {name} »{detail} dans la corbeille ?',

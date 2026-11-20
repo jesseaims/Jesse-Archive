@@ -2,6 +2,37 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': '文件夹已删除',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    '“开始”菜单中的应用程序。如果没有，请用“浏览…”选择其文件。',
+  'Scegli il file .exe o il collegamento dell’applicazione': '选择应用程序的 .exe 文件或快捷方式',
+  'Sfoglia…': '浏览…',
+  'Cartella creata': '文件夹已创建',
+  'Cerca applicazione': '搜索应用程序',
+  'Cerca applicazione…': '搜索应用程序…',
+  'Elementi spostati': '项目已移动',
+  'Nome della nuova cartella': '新文件夹名称',
+  'Nuova cartella…': '新建文件夹…',
+  'Sposta in': '移动到',
+  'Deseleziona tutti': '取消全选',
+  "Seleziona l'account {name}": '选择账户 {name}',
+  'Seleziona tutti': '全选',
+  'Seleziona tutti gli account di {name}': '选择 {name} 的所有账户',
+  'Spostare nel cestino {n} elementi selezionati?': '将选中的 {n} 个项目移到回收站？',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky': '导入 CSV / JSON / .jshare / 卡巴斯基 TXT',
+  'File di testo non valido': '文本文件无效',
+  'Il file non è testo UTF-8 o UTF-16': '该文件不是 UTF-8 或 UTF-16 文本',
+  'Nessun account riconosciuto nel file di Kaspersky': '在卡巴斯基文件中未识别到任何账户',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    '不要直接用 Excel 或其他电子表格打开 CSV：以 =、+、- 或 @ 开头的值会被当作公式执行。',
+  'Scegli di nuovo il file da importare': '请重新选择要导入的文件',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    '下载的安装程序已被修改：安装已取消。',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    '下载的安装程序正被其他程序使用：安装已取消。',
+  'Troppi tentativi errati: riprova tra {n} secondi': '错误尝试次数过多：请在 {n} 秒后重试',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    '密码或恢复码不正确。尝试次数过多：请在 {n} 秒后重试',
   'Aggiorna password': '更新密码',
   'Aggiornare la password?': '更新密码？',
   'Campo {n}': '字段 {n}',
@@ -296,7 +327,6 @@ const dictionary: Dictionary = {
     '已从文件重新读取保险库，并与同一文件夹中的可能副本进行了比较。',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '保险库已锁定（例如因长时间未操作），因此无法重新加载数据。\n\n请使用主密码重新解锁保险库。',
-  'Importa CSV / JSON / .jshare': '导入 CSV / JSON / .jshare',
   'Importa dati nel vault': '将数据导入保险库',
   'Importa pacchetto cifrato': '导入加密数据包',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -556,8 +586,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '发现了更改（例如来自通过云文件夹同步的其他设备）：',
   'Sostituire la password dell’account?': '替换该账户的密码？',
-  Sposta: '移动',
-  'Sposta in...': '移动到...',
   'Sposta nel cestino': '移至回收站',
   'Spostare nel cestino l\'account "{name}"{detail}?': '将账户“{name}”{detail}移至回收站？',
   'Spostare nel cestino l\'elemento "{name}"{detail}?': '将项目“{name}”{detail}移至回收站？',

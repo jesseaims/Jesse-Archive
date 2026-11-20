@@ -56,7 +56,7 @@ Il test dell'host richiede il relativo EXE compilato; in sua assenza viene salta
 
 Ogni aggiornamento per gli utenti include nella stessa PR il bump di versione (package.json, Cargo, Tauri, Inno, manifest, `NewsPanel`) e la voce in `src/news-changelog.ts`. Dopo il merge eseguire `git fetch origin` nella repository locale: l'automazione locale (attività `JesseArchive-AutoPublish`) attende CI verde e app chiusa, poi compila e pubblica da questo PC con [Publish-Release.ps1](Publish-Release.ps1) la release "Beta X.Y.Z" con `JesseArchive-Setup.exe`. Non avviare a mano un secondo `Publish-Release.ps1` in parallelo (un blocco di sistema lo fermerebbe con exit code 75). Non creare tag `v*` o release a mano e non pubblicare da branch non uniti.
 
-La CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) esegue tipi, build frontend, test Rust e Node su Windows a ogni push/PR verso `main`: ogni modifica deve lasciarla verde.
+La CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) esegue tipi, build frontend, test Rust e Node e clippy senza avvisi (`-D warnings`) su Windows a ogni push/PR verso `main`: ogni modifica deve lasciarla verde.
 
 Una build non sostituisce il collaudo di login, recupero, conflitti cloud, installazione e browser. Registrare esito, controlli saltati e motivi. Per modifiche soltanto documentali bastano controlli di riferimenti, coerenza e perimetro delle modifiche: non ricompilare l'app per abitudine.
 

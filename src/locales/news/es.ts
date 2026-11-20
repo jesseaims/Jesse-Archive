@@ -2,6 +2,18 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Selecciona muchas cuentas a la vez',
+    'En «Todos los elementos» y «Cuentas» ahora puedes seleccionar grupos enteros o cuentas sueltas con su casilla, o todo lo que ves con «Seleccionar todo» (también los resultados de una búsqueda), y moverlos de una vez a la papelera o a una carpeta.',
+  ],
+  'kaspersky-import': [
+    'Importar desde Kaspersky Password Manager',
+    'Jesse’s Archive ya importa el archivo de texto (.txt) que crea Kaspersky Password Manager con «Exportar a archivo de texto»: sitios web, aplicaciones y otras cuentas pasan a ser cuentas con nombre, dirección, usuario, contraseña y comentarios, y las notas de Kaspersky pasan a ser notas. Después borra el archivo exportado: contiene tus contraseñas en claro.',
+  ],
+  'unlock-throttling': [
+    'Protección contra quien intenta adivinar la contraseña',
+    'Tras 5 intentos fallidos seguidos de desbloquear el vault (contraseña maestra o código de recuperación), Jesse’s Archive te hace esperar 30 segundos antes del siguiente, el doble cada vez hasta 15 minutos. El recuento se mantiene al reiniciar la app y se borra con el primer desbloqueo correcto.',
+  ],
   'save-new-logins': [
     'Guarda las cuentas nuevas desde el navegador',
     'Cuando te registras en un sitio, o inicias sesión con una cuenta que aún no está en el vault, Jesse’s Archive te pregunta si quieres guardarla: nombre, usuario o correo, contraseña y, si quieres, los demás datos introducidos pasan a una cuenta nueva para ese sitio. Si cambias una contraseña en un sitio, te ofrece actualizar la guardada. No se guarda nada sin tu confirmación, y puedes desactivarlo o excluir sitios en Ajustes. Requiere la extensión actualizada.',

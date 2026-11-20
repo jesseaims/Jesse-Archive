@@ -45,9 +45,8 @@ async fn api(
     name: String,
     body: Value,
 ) -> Result<Value, String> {
-    let mut core = state.vault().map_err(|e| {
+    let mut core = state.vault().inspect_err(|_| {
         let _ = app.emit("vault-locked", ());
-        e
     })?;
     let was_unlocked = core.unlocked();
     let result = core.call(&name, body);
@@ -87,6 +86,9 @@ fn spawn_idle_lock(app: tauri::AppHandle) {
     });
 }
 
+/// File picked by the user for an import: the only path `read_file` will read, once.
+/// A webview cannot ask the backend to read arbitrary files of the user.
+static CHOSEN_IMPORT: Mutex<Option<std::path::PathBuf>> = Mutex::new(None);
 #[tauri::command]
 fn choose_file(mode: String) -> Result<Option<String>, String> {
     let dialog = rfd::FileDialog::new();
@@ -98,8 +100,14 @@ fn choose_file(mode: String) -> Result<Option<String>, String> {
         "icon" => dialog
             .add_filter("Immagini", &["png", "jpg", "jpeg", "ico"])
             .pick_file(),
+        "app" => dialog
+            .add_filter("Applicazioni", &["exe", "lnk"])
+            .pick_file(),
         _ => dialog.pick_file(),
     };
+    if mode == "import" {
+        *CHOSEN_IMPORT.lock().unwrap_or_else(|e| e.into_inner()) = p.clone();
+    }
     Ok(p.map(|p| p.to_string_lossy().to_string()))
 }
 #[tauri::command]
@@ -149,12 +157,20 @@ fn choose_icon_data() -> Result<Option<String>, String> {
 
 #[tauri::command]
 fn read_file(path: String) -> Result<String, String> {
+    let chosen = CHOSEN_IMPORT
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .take();
+    if chosen.as_deref() != Some(std::path::Path::new(&path)) {
+        return Err("Scegli di nuovo il file da importare".into());
+    }
     let file = std::path::Path::new(&path);
     let meta = std::fs::metadata(file).map_err(|e| e.to_string())?;
     if meta.len() > 20_000_000 {
         return Err("File oltre 20 MB".into());
     }
-    std::fs::read_to_string(file).map_err(|e| e.to_string())
+    // UTF-16 too: Kaspersky Password Manager saves its text export that way.
+    core::decode_text(&std::fs::read(file).map_err(|e| e.to_string())?)
 }
 #[tauri::command]
 fn save_file(name: String, text: String) -> Result<bool, String> {

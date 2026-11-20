@@ -63,8 +63,8 @@ node --test tests/browser-host.test.mjs
 npm run format
 npm run format:check
 
-# Diagnostica statica: warning da valutare, non assunti puliti
-cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets
+# Diagnostica statica: deve restare senza avvisi (controllata dalla CI)
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 ```
 
 Vite da solo non fornisce `invoke` Tauri: un errore IPC in un browser ordinario non dimostra un difetto del core. La build helper produce `jesse_browser_host.exe`, mentre il pacchetto installato usa `jesse-browser-host.exe`; il rename/copy è responsabilità dello script di distribuzione. Controllare il percorso cercato dai test prima di interpretare uno skip. Per sviluppo integrazione browser usare il flusso che prepara risorse e manifest, non presumere che `tauri dev` lo faccia.
@@ -118,7 +118,7 @@ Ogni testo visibile nell'interfaccia passa da `t('…')`, `tRich('…', {…})` 
 
 ## Integrazione continua
 
-[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `npm run test:browser`, `npm run test:i18n`, `npm run test:dashboard`, `npm run test:quick-search`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Clippy, il setup MSI/Inno e i test GUI ignorati non sono eseguiti. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
+[.github/workflows/ci.yml](../.github/workflows/ci.yml) gira su `windows-latest` a ogni push e pull request verso `main`: Node 24, Rust stable, `npm ci`, `npx tsc --noEmit`, `npm run format:check`, `npx vite build` (richiesto da `tauri::generate_context!` per `../dist`; non usa `npm run build`, che riscriverebbe lo snapshot dei commit), `cargo test`, `cargo clippy --all-targets -- -D warnings` (dalla Beta 1.4.0: ogni avviso blocca la CI), `npm run test:browser`, `npm run test:i18n`, `npm run test:dashboard`, `npm run test:quick-search`, build release di `jesse_browser_host` e `node --test tests/browser-host.test.mjs`, che così non viene saltato. Il setup Inno e i test GUI ignorati non sono eseguiti. La CI usa Rust stable: una nuova versione di clippy può introdurre avvisi nuovi e far fallire una PR che non li ha causati; in quel caso vanno corretti in una modifica a parte. Ogni modifica deve lasciare la CI verde; una CI verde non sostituisce i collaudi manuali elencati sopra.
 
 ## Pubblicazione delle release
 

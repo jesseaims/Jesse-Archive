@@ -2,6 +2,41 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cartella eliminata': 'フォルダーを削除しました',
+  'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
+    'スタートメニューのアプリケーションです。見つからない場合は「参照…」でファイルを選択してください。',
+  'Scegli il file .exe o il collegamento dell’applicazione':
+    'アプリケーションの .exe ファイルまたはショートカットを選択',
+  'Sfoglia…': '参照…',
+  'Cartella creata': 'フォルダーを作成しました',
+  'Cerca applicazione': 'アプリケーションを検索',
+  'Cerca applicazione…': 'アプリケーションを検索…',
+  'Elementi spostati': '項目を移動しました',
+  'Nome della nuova cartella': '新しいフォルダーの名前',
+  'Nuova cartella…': '新しいフォルダー…',
+  'Sposta in': '移動先',
+  'Deseleziona tutti': 'すべて選択解除',
+  "Seleziona l'account {name}": 'アカウント {name} を選択',
+  'Seleziona tutti': 'すべて選択',
+  'Seleziona tutti gli account di {name}': '{name} のすべてのアカウントを選択',
+  'Spostare nel cestino {n} elementi selezionati?': '選択した {n} 件の項目をごみ箱に移動しますか？',
+  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
+    'CSV / JSON / .jshare / カスペルスキー TXT をインポート',
+  'File di testo non valido': '無効なテキストファイルです',
+  'Il file non è testo UTF-8 o UTF-16': 'ファイルが UTF-8 または UTF-16 のテキストではありません',
+  'Nessun account riconosciuto nel file di Kaspersky':
+    'カスペルスキーのファイルでアカウントが見つかりませんでした',
+  'Non aprire il CSV direttamente con Excel o un altro foglio di calcolo: i valori che iniziano con =, +, - o @ verrebbero eseguiti come formule.':
+    'CSV を Excel などの表計算ソフトで直接開かないでください。=、+、-、@ で始まる値が数式として実行されます。',
+  'Scegli di nuovo il file da importare': 'インポートするファイルをもう一度選択してください',
+  'Il setup scaricato è stato modificato: installazione annullata.':
+    'ダウンロードしたセットアップが変更されています：インストールを中止しました。',
+  'Il setup scaricato è in uso da un altro programma: installazione annullata.':
+    'ダウンロードしたセットアップが別のプログラムで使用中です：インストールを中止しました。',
+  'Troppi tentativi errati: riprova tra {n} secondi':
+    '誤った試行が多すぎます：{n} 秒後にもう一度お試しください',
+  'Password o codice di recupero non corretti. Troppi tentativi: riprova tra {n} secondi':
+    'パスワードまたは復旧コードが正しくありません。試行が多すぎます：{n} 秒後にもう一度お試しください',
   'Aggiorna password': 'パスワードを更新',
   'Aggiornare la password?': 'パスワードを更新しますか？',
   'Campo {n}': '項目 {n}',
@@ -308,7 +343,6 @@ const dictionary: Dictionary = {
     'ファイルから保管庫を再読み込みし、同じフォルダー内のコピーと比較しました。',
   'Il vault risulta bloccato (per esempio per inattività), quindi non è stato possibile ricaricare i dati.\n\nSblocca di nuovo il vault con la password principale.':
     '保管庫がロックされているため (無操作など)、データを再読み込みできませんでした。\n\nマスター パスワードで保管庫のロックを解除し直してください。',
-  'Importa CSV / JSON / .jshare': 'CSV / JSON / .jshare をインポート',
   'Importa dati nel vault': '保管庫にデータをインポート',
   'Importa pacchetto cifrato': '暗号化パッケージをインポート',
   'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
@@ -580,8 +614,6 @@ const dictionary: Dictionary = {
   'Sono state trovate modifiche (per esempio da un altro dispositivo tramite la cartella cloud):':
     '変更が見つかりました (クラウド フォルダー経由のほかのデバイスからなど):',
   'Sostituire la password dell’account?': 'アカウントのパスワードを置き換えますか?',
-  Sposta: '移動',
-  'Sposta in...': '移動先...',
   'Sposta nel cestino': 'ごみ箱に移動',
   'Spostare nel cestino l\'account "{name}"{detail}?':
     'アカウント「{name}」{detail}をごみ箱に移動しますか?',

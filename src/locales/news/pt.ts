@@ -2,6 +2,18 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Seleciona muitas contas de uma vez',
+    'Em «Todos os elementos» e «Contas» já podes selecionar grupos inteiros ou contas individuais com a respetiva caixa, ou tudo o que vês com «Selecionar tudo» (também os resultados de uma pesquisa), e movê-los de uma vez para o lixo ou para uma pasta.',
+  ],
+  'kaspersky-import': [
+    'Importar do Kaspersky Password Manager',
+    'O Jesse’s Archive importa agora o ficheiro de texto (.txt) que o Kaspersky Password Manager cria com «Exportar para ficheiro de texto»: sites, aplicações e outras contas passam a contas com nome, endereço, utilizador, palavra-passe e comentários, e as notas do Kaspersky passam a notas. Depois apaga o ficheiro exportado: contém as tuas palavras-passe em claro.',
+  ],
+  'unlock-throttling': [
+    'Proteção contra quem tenta adivinhar a palavra-passe',
+    'Após 5 tentativas erradas seguidas de desbloquear o cofre (palavra-passe principal ou código de recuperação), o Jesse’s Archive faz-te esperar 30 segundos antes da seguinte, o dobro de cada vez até 15 minutos. A contagem mantém-se ao reiniciar a app e é apagada no primeiro desbloqueio correto.',
+  ],
   'save-new-logins': [
     'Guarda contas novas a partir do navegador',
     'Quando te registas num site, ou inicias sessão com uma conta que ainda não está no cofre, o Jesse’s Archive pergunta se a queres guardar: nome, utilizador ou email, palavra-passe e, se quiseres, os outros dados introduzidos passam a uma conta nova para esse site. Se mudares uma palavra-passe num site, propõe atualizar a guardada. Nada é guardado sem a tua confirmação, e podes desativar a função ou excluir sites nas Definições. Requer a extensão atualizada.',
