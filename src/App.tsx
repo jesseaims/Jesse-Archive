@@ -586,6 +586,7 @@ export default function App() {
     [password, setPassword] = useState(''),
     [recovery, setRecovery] = useState(''),
     [recoveryNew, setRecoveryNew] = useState(''),
+    [rotateKey, setRotateKey] = useState(false),
     [viewRecovery, setViewRecovery] = useState(''),
     [error, setError] = useState(''),
     [toast, setToast] = useState(''),
@@ -2449,15 +2450,37 @@ export default function App() {
                     onChange={setRecoveryNew}
                     secret
                   />
+                  <label className="check-line rotate-key">
+                    <input
+                      type="checkbox"
+                      checked={rotateKey}
+                      onChange={(e) => setRotateKey(e.target.checked)}
+                    />
+                    <span>
+                      <strong>{t('La vecchia password potrebbe essere stata scoperta')}</strong>
+                      <small>
+                        {t(
+                          'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.',
+                        )}
+                      </small>
+                    </span>
+                  </label>
                 </>
               )}
               {dialog === 'recovery_new' && (
-                <Field
-                  label={t('Conferma password principale')}
-                  value={password}
-                  onChange={setPassword}
-                  secret
-                />
+                <>
+                  <p className="helper">
+                    {t(
+                      'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.',
+                    )}
+                  </p>
+                  <Field
+                    label={t('Conferma password principale')}
+                    value={password}
+                    onChange={setPassword}
+                    secret
+                  />
+                </>
               )}
               {dialog === 'recover' && (
                 <div className="recovery-panel">
@@ -2507,11 +2530,22 @@ export default function App() {
                   if (dialog === 'group')
                     r = await mutate('group_edit', groupDraft, t('Gruppo aggiornato'));
                   if (dialog === 'master') {
-                    r = await run('master', { old: password, new: recoveryNew });
+                    r = await run<{ recovery?: string }>('master', {
+                      old: password,
+                      new: recoveryNew,
+                      rotate: rotateKey,
+                    });
                     if (r) {
                       setPassword('');
                       setRecoveryNew('');
+                      setRotateKey(false);
                       notify(t('Password principale aggiornata'));
+                      // New data key: the new recovery code must be saved now.
+                      if (r.recovery) {
+                        setViewRecovery(r.recovery);
+                        setDialog('recover');
+                        return;
+                      }
                     }
                   }
                   if (dialog === 'recovery_new') {

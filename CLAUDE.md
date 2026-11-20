@@ -79,7 +79,7 @@ Non esiste una roadmap approvata per biometria, provider passkey di sistema o se
 
 ## E. Security Architecture
 
-Il contenuto del vault è cifrato con AES-256-GCM e DEK casuale di 32 byte. La master password e il codice di recupero derivano separatamente chiavi scrypt che proteggono due copie della stessa DEK. Parametri e layout esatti sono in [SECURITY](docs/SECURITY.md) e [DATABASE](docs/DATABASE.md).
+Il contenuto del vault è cifrato con AES-256-GCM e DEK casuale di 32 byte. La master password e il codice di recupero derivano separatamente chiavi scrypt che proteggono due copie della stessa DEK. Dalla Beta 1.6.0 l'header è autenticato con un HMAC derivato dalla DEK (`mac`), adottato da altre copie solo se valido; il cambio master con la spunta «La vecchia password potrebbe essere stata scoperta» e «Nuovo codice di recupero» cambiano la DEK (`rotate_key`) e generano un nuovo codice di recupero. Parametri e layout esatti sono in [SECURITY](docs/SECURITY.md) e [DATABASE](docs/DATABASE.md).
 
 Il codice usa `Zeroizing` per alcune chiavi; non per tutto il JSON, i buffer, l'IPC o la memoria JavaScript. Il frontend principale riceve dati decifrati. Il campo password mascherato non è una protezione della memoria. Dalla Beta 1.4.0 lo sblocco rallenta dopo 5 tentativi errati (30 s che raddoppiano fino a 15 minuti, contatore nella configurazione del dispositivo).
 

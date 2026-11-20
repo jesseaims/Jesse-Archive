@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'Besserer Schutz beim Ändern des Master-Passworts',
+    'Der Tresor-Header ist jetzt mit einem Schlüssel signiert, den nur du erhalten kannst: Eine alte Kopie im Tresorordner (etwa von jemandem mit Zugriff auf deine Cloud) kann kein altes Master-Passwort mehr zurückbringen. Beim Ändern des Master-Passworts kannst du „Das alte Passwort könnte bekannt geworden sein“ ankreuzen: Dann ändert sich auch der Schlüssel, der die Daten verschlüsselt, das alte Passwort öffnet den Tresor nicht mehr, auch nicht aus einer Kopie, und du erhältst einen neuen Wiederherstellungscode zum Speichern. Ein neuer Wiederherstellungscode ändert immer auch den Schlüssel. Wenn du den Tresor auf mehreren PCs nutzt, aktualisiere zuerst alle.',
+  ],
   'universal-import': [
     'Import aus den wichtigsten Passwort-Managern',
     'Der Import erkennt jetzt die Dateien von Bitwarden (CSV und unverschlüsseltes JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass und KeePassXC (CSV und XML), RoboForm sowie von Chrome, Edge, Brave, Opera, Firefox und Apple Passwörter. Vor dem Import zeigt eine Vorschau das erkannte Programm und die Anzahl der gefundenen Elemente; bei CSV-Dateien kannst du prüfen und ändern, welchem Feld jede Spalte zugeordnet wird – so funktionieren auch Dateien anderer Programme.',

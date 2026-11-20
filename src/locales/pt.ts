@@ -2,6 +2,14 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
+    'Mudar também a chave que cifra os dados: a palavra-passe antiga deixa de abrir o cofre, mesmo a partir de uma cópia. Vais receber um novo código de recuperação para guardar. Se usas o cofre noutros PC, atualiza-os para esta versão: os que estiverem abertos bloqueiam-se e pedem a nova palavra-passe.',
+  'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':
+    'O código de recuperação antigo deixa de funcionar: a chave que cifra os dados também muda.',
+  'La vecchia password potrebbe essere stata scoperta':
+    'A palavra-passe antiga pode ter sido descoberta',
+  'La chiave del vault è stata cambiata su un altro dispositivo: sbloccalo con la password principale attuale.':
+    'A chave do cofre foi alterada noutro dispositivo: desbloqueia-o com a palavra-passe principal atual.',
   'Importa da un altro password manager o da un file':
     'Importar de outro gestor de palavras-passe ou de um ficheiro',
   'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':

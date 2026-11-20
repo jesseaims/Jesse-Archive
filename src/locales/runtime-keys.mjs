@@ -8,6 +8,7 @@ export const RUNTIME_KEYS = [
   'Vault bloccato',
   'Sessione scaduta: vault bloccato',
   'Autenticazione AES-GCM fallita',
+  'La chiave del vault è stata cambiata su un altro dispositivo: sbloccalo con la password principale attuale.',
   'Blob cifrato non valido',
   'DEK non valida',
   'Dati del vault non validi',

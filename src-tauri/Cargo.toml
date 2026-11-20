@@ -1,6 +1,6 @@
 [package]
 name = "jesse_archive"
-version = "1.5.0"
+version = "1.6.0"
 description = "Jesse's Archive — local encrypted password manager"
 authors = ["Jesse's Archive"]
 edition = "2021"
@@ -18,7 +18,8 @@ tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-single-instance = "2"
 tauri-plugin-global-shortcut = "2"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+# float_roundtrip: decimals (header `hv`) read back exactly, as the header mac needs.
+serde_json = { version = "1", features = ["float_roundtrip"] }
 base64 = "0.22"
 aes-gcm = "0.10"
 scrypt = "0.11"

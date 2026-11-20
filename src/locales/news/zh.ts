@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    '更改主密码时的更强保护',
+    '保险库头部现在使用只有你能获得的密钥签名：放入保险库文件夹的旧副本（例如能访问你云端的人放入的）无法再恢复旧的主密码。更改主密码时，你可以勾选“旧密码可能已经泄露”：加密数据的密钥也会更换，旧密码即使通过副本也无法再打开保险库，你还会收到一个需要保存的新恢复码。生成新恢复码时也总会更换密钥。如果你在多台电脑上使用保险库，请先全部更新。',
+  ],
   'universal-import': [
     '从主流密码管理器导入',
     '导入功能现在可以识别 Bitwarden（CSV 和未加密 JSON）、LastPass、1Password、Dashlane、NordPass、Proton Pass、KeePass 和 KeePassXC（CSV 和 XML）、RoboForm，以及 Chrome、Edge、Brave、Opera、Firefox 和 Apple 密码的文件。导入前会预览识别出的程序和找到的项目数量；对于 CSV 文件，你可以检查并更改每一列对应的字段，因此其他程序的文件也能导入。',

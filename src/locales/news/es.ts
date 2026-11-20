@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'Más protección al cambiar la contraseña maestra',
+    'El encabezado del vault ahora está firmado con una clave que solo tú puedes obtener: una copia antigua colocada en la carpeta del vault (por ejemplo, por alguien con acceso a tu nube) ya no puede devolver una contraseña maestra antigua. Al cambiar la contraseña maestra puedes marcar «Puede que alguien haya descubierto la contraseña anterior»: también cambia la clave que cifra los datos, así la contraseña anterior ya no abre el vault, ni siquiera desde una copia, y recibes un nuevo código de recuperación para guardar. Un nuevo código de recuperación siempre cambia también la clave. Si usas el vault en varios PC, actualízalos todos antes.',
+  ],
   'universal-import': [
     'Importa desde los principales gestores de contraseñas',
     'La importación reconoce ahora los archivos de Bitwarden (CSV y JSON sin cifrar), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass y KeePassXC (CSV y XML), RoboForm y de Chrome, Edge, Brave, Opera, Firefox y Contraseñas de Apple. Antes de importar, una vista previa muestra el programa reconocido y cuántos elementos ha encontrado; en los CSV puedes revisar y cambiar a qué campo va cada columna, así también funcionan archivos de otros programas.',

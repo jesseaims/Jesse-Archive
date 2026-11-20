@@ -3998,3 +3998,19 @@ input[type='password']::-webkit-credentials-auto-fill-button {
 .import-column > span {
   color: var(--ui-muted);
 }
+/* Change master password: "the old password may have been discovered". */
+.check-line.rotate-key {
+  align-items: flex-start;
+}
+.check-line.rotate-key input {
+  margin-top: 3px;
+}
+.check-line.rotate-key span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.check-line.rotate-key small {
+  color: var(--ui-muted);
+  line-height: 1.5;
+}

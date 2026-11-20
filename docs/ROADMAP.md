@@ -7,6 +7,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Applicazione desktop Tauri/React con vault JSON cifrato, master password e recupero, sei tipi di schede, cartelle, cestino e cronologia password.
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
+- Header del vault autenticato (HMAC dalla DEK) e cambio della chiave dati facoltativo nel cambio master, sempre con un nuovo codice di recupero (dalla Beta 1.6.0).
 - Rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii (dalla Beta 1.4.0).
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
 - Proposta di salvataggio degli account inviati sui siti (nuovi, login non salvati, password cambiate) con conferma nella mini finestra (dalla Beta 1.3.0).
@@ -48,7 +49,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 | Rafforzare confini IPC e gestione memoria | Valutare comandi accessibili alle finestre, copie plaintext, cleanup di draft/state e buffer; non promettere wipe assoluto |
 | Validazione strutturale e migrazioni | Rifiutare dati malformati senza panic o mutazioni parziali; mantenere compatibilità con vault e fixture v1 |
 | Durabilità, concorrenza e merge | Test di guasto e rollback, writer concorrenti, timestamp conflittuali e interazione UI/revisione prima di cambiare formato |
-| Documentare/rafforzare modello chiave e rotazione | Distinguere cambio master da nuova chiave dati; studiare compatibilità di header autenticati e revoca delle vecchie copie |
+| Documentare/rafforzare modello chiave e rotazione | Dalla Beta 1.6.0 header autenticato e cambio della chiave dati facoltativo (vedi SECURITY). Restano: parametri scrypt più alti (N=2^17) con migrazione, contatore anti-rollback |
 | Verificare bridge locale | ACL, limiti di connessioni/frame/thread, processi dello stesso utente, gestione errori e app assente |
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
 | Ridurre debito di organizzazione | Formattazione uniforme applicata e verificata dalla CI; `core.rs`/`App.tsx` restano monolitici e il CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |

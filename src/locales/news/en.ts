@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-header-key-rotation': [
+    'Stronger protection when you change the master password',
+    'The vault header is now signed with a key only you can obtain: an old copy placed in the vault folder (for example by someone with access to your cloud) can no longer bring back an old master password. When you change the master password you can tick “The old password may have been discovered”: the key that encrypts the data changes too, so the old password no longer opens the vault, not even from a copy, and you get a new recovery code to save. A new recovery code always changes the key as well. If you use the vault on several PCs, update all of them first.',
+  ],
   'universal-import': [
     'Import from the main password managers',
     'The import now recognizes the files of Bitwarden (CSV and unencrypted JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass and KeePassXC (CSV and XML), RoboForm and of Chrome, Edge, Brave, Opera, Firefox and Apple Passwords. Before importing, a preview shows the program it recognized and how many items it found; for CSV files you can check and change which field each column goes to, so files from other programs work too.',
