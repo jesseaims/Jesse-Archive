@@ -2,6 +2,12 @@ import type { Dictionary } from '../i18n';
 
 // Spanish. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Deseleziona tutti': 'Deseleccionar todo',
+  "Seleziona l'account {name}": 'Seleccionar la cuenta {name}',
+  'Seleziona tutti': 'Seleccionar todo',
+  'Seleziona tutti gli account di {name}': 'Seleccionar todas las cuentas de {name}',
+  'Spostare nel cestino {n} elementi selezionati?':
+    '¿Mover a la papelera los {n} elementos seleccionados?',
   'Importa CSV / JSON / .jshare / TXT di Kaspersky':
     'Importar CSV / JSON / .jshare / TXT de Kaspersky',
   'File di testo non valido': 'Archivo de texto no válido',

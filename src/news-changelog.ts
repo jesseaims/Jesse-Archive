@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'bulk-select-accounts',
+    addedAt: '2026-11-20T19:00:00+01:00',
+    version: 'Beta 1.4.0',
+    title: 'Seleziona più account insieme',
+    description:
+      'In «Tutti gli elementi» e «Account» ora puoi selezionare interi gruppi o singoli account con la loro casella, oppure tutto ciò che vedi con «Seleziona tutti» (anche i risultati di una ricerca), e spostarli in un colpo nel cestino o in una cartella.',
+    icon: 'folder',
+  },
+  {
     id: 'kaspersky-import',
     addedAt: '2026-11-20T18:00:00+01:00',
     version: 'Beta 1.4.0',

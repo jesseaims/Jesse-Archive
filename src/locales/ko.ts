@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Deseleziona tutti': '모두 선택 해제',
+  "Seleziona l'account {name}": '{name} 계정 선택',
+  'Seleziona tutti': '모두 선택',
+  'Seleziona tutti gli account di {name}': '{name}의 모든 계정 선택',
+  'Spostare nel cestino {n} elementi selezionati?': '선택한 {n}개 항목을 휴지통으로 옮길까요?',
   'Importa CSV / JSON / .jshare / TXT di Kaspersky':
     'CSV / JSON / .jshare / 카스퍼스키 TXT 가져오기',
   'File di testo non valido': '올바르지 않은 텍스트 파일입니다',

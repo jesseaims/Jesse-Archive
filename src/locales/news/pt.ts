@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Seleciona muitas contas de uma vez',
+    'Em «Todos os elementos» e «Contas» já podes selecionar grupos inteiros ou contas individuais com a respetiva caixa, ou tudo o que vês com «Selecionar tudo» (também os resultados de uma pesquisa), e movê-los de uma vez para o lixo ou para uma pasta.',
+  ],
   'kaspersky-import': [
     'Importar do Kaspersky Password Manager',
     'O Jesse’s Archive importa agora o ficheiro de texto (.txt) que o Kaspersky Password Manager cria com «Exportar para ficheiro de texto»: sites, aplicações e outras contas passam a contas com nome, endereço, utilizador, palavra-passe e comentários, e as notas do Kaspersky passam a notas. Depois apaga o ficheiro exportado: contém as tuas palavras-passe em claro.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    '一次选择多个账户',
+    '在“所有项目”和“账户”中，现在可以用复选框选择整个分组或单个账户，或用“全选”选择所有可见内容（包括搜索结果），然后一次性移到回收站或文件夹。',
+  ],
   'kaspersky-import': [
     '从卡巴斯基密码管理器导入',
     'Jesse’s Archive 现在可以导入卡巴斯基密码管理器通过“导出到文本文件”生成的文本文件（.txt）：网站、应用程序和其他账户会成为包含名称、地址、用户名、密码和备注的账户，卡巴斯基的笔记会成为笔记。导入后请删除导出的文件：其中的密码是明文。',

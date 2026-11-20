@@ -2,6 +2,12 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Deseleziona tutti': 'Снять выделение',
+  "Seleziona l'account {name}": 'Выбрать аккаунт {name}',
+  'Seleziona tutti': 'Выбрать все',
+  'Seleziona tutti gli account di {name}': 'Выбрать все аккаунты {name}',
+  'Spostare nel cestino {n} elementi selezionati?':
+    'Переместить в корзину выбранные элементы ({n})?',
   'Importa CSV / JSON / .jshare / TXT di Kaspersky':
     'Импорт CSV / JSON / .jshare / TXT из Kaspersky',
   'File di testo non valido': 'Недопустимый текстовый файл',

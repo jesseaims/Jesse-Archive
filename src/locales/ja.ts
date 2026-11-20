@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Deseleziona tutti': 'すべて選択解除',
+  "Seleziona l'account {name}": 'アカウント {name} を選択',
+  'Seleziona tutti': 'すべて選択',
+  'Seleziona tutti gli account di {name}': '{name} のすべてのアカウントを選択',
+  'Spostare nel cestino {n} elementi selezionati?': '選択した {n} 件の項目をごみ箱に移動しますか？',
   'Importa CSV / JSON / .jshare / TXT di Kaspersky':
     'CSV / JSON / .jshare / カスペルスキー TXT をインポート',
   'File di testo non valido': '無効なテキストファイルです',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    '여러 계정을 한 번에 선택',
+    '이제 “모든 항목”과 “계정”에서 체크박스로 그룹 전체나 개별 계정을 선택하거나 “모두 선택”으로 보이는 모든 항목(검색 결과 포함)을 선택해 한 번에 휴지통이나 폴더로 옮길 수 있습니다.',
+  ],
   'kaspersky-import': [
     '카스퍼스키 패스워드 매니저에서 가져오기',
     '이제 Jesse’s Archive에서 카스퍼스키 패스워드 매니저의 “텍스트 파일로 내보내기”로 만든 텍스트 파일(.txt)을 가져올 수 있습니다. 웹사이트, 애플리케이션, 기타 계정은 이름, 주소, 사용자 이름, 비밀번호, 메모가 있는 계정이 되고, 카스퍼스키 노트는 노트가 됩니다. 가져온 후에는 내보낸 파일을 삭제하세요. 비밀번호가 평문으로 들어 있습니다.',

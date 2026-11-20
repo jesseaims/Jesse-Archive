@@ -1321,6 +1321,22 @@ select,
   gap: 9px;
   flex: 1;
 }
+/* Multiple selection of groups and accounts (bulk bar of the page). */
+.account-group.picked {
+  border-color: var(--ui-accent);
+}
+.group-select,
+.account-name-row input {
+  flex: none;
+  margin: 0;
+  accent-color: var(--ui-accent);
+}
+.account-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
 .account-name {
   padding: 0;
   border: 0;

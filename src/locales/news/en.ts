@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Select many accounts at once',
+    'In “All items” and “Accounts” you can now select whole groups or single accounts with their checkbox, or everything you see with “Select all” (search results too), then move them to the trash or to a folder in one go.',
+  ],
   'kaspersky-import': [
     'Import from Kaspersky Password Manager',
     'Jesse’s Archive now imports the text file (.txt) that Kaspersky Password Manager creates with “Export to text file”: websites, applications and other accounts become accounts with name, address, username, password and comments, and Kaspersky notes become notes. Delete the exported file afterwards: it contains your passwords in clear text.',

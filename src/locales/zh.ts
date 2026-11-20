@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Deseleziona tutti': '取消全选',
+  "Seleziona l'account {name}": '选择账户 {name}',
+  'Seleziona tutti': '全选',
+  'Seleziona tutti gli account di {name}': '选择 {name} 的所有账户',
+  'Spostare nel cestino {n} elementi selezionati?': '将选中的 {n} 个项目移到回收站？',
   'Importa CSV / JSON / .jshare / TXT di Kaspersky': '导入 CSV / JSON / .jshare / 卡巴斯基 TXT',
   'File di testo non valido': '文本文件无效',
   'Il file non è testo UTF-8 o UTF-16': '该文件不是 UTF-8 或 UTF-16 文本',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'bulk-select-accounts': [
+    'Viele Konten auf einmal auswählen',
+    'Unter „Alle Elemente“ und „Konten“ kannst du jetzt ganze Gruppen oder einzelne Konten mit ihrem Kästchen auswählen oder mit „Alle auswählen“ alles Sichtbare (auch Suchergebnisse) und sie auf einmal in den Papierkorb oder in einen Ordner verschieben.',
+  ],
   'kaspersky-import': [
     'Import aus Kaspersky Password Manager',
     'Jesse’s Archive importiert jetzt die Textdatei (.txt), die Kaspersky Password Manager mit „In Textdatei exportieren“ erstellt: Websites, Anwendungen und andere Konten werden zu Konten mit Name, Adresse, Benutzername, Passwort und Kommentaren, Kaspersky-Notizen zu Notizen. Lösche die exportierte Datei danach: Sie enthält deine Passwörter im Klartext.',

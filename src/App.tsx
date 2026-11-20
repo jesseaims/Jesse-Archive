@@ -57,7 +57,7 @@ import {
   type State,
   type Status,
 } from './types';
-import { Newspaper } from 'lucide-react';
+import { CheckSquare, Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
 import { groupFor, savedGroupKey } from './groups';
@@ -178,6 +178,8 @@ function AccountGroups({
   copy,
   onDeleteAccount,
   onDeleteGroup,
+  selected,
+  onSelect,
 }: {
   items: Item[];
   vault: State;
@@ -185,6 +187,9 @@ function AccountGroups({
   copy: (v: string) => Promise<void>;
   onDeleteAccount: (it: Item) => Promise<void>;
   onDeleteGroup: (key: string, label: string) => Promise<void>;
+  // Multiple selection shared with the page's bulk bar (move, trash, restore).
+  selected: string[];
+  onSelect: (ids: string[], on: boolean) => void;
 }) {
   const groups = useMemo(() => {
     const m = new Map<string, Item[]>();
@@ -213,9 +218,22 @@ function AccountGroups({
             : first.title);
         const index = Math.min(pageBy[key] || 0, rows.length - 1);
         const it = rows[index];
+        const ids = rows.map((r) => r.id);
+        const picked = ids.filter((id) => selected.includes(id)).length;
         return (
-          <section className="account-group" key={key}>
+          <section className={`account-group ${picked ? 'picked' : ''}`} key={key}>
             <div className="account-group-head">
+              <input
+                type="checkbox"
+                className="group-select"
+                aria-label={t('Seleziona tutti gli account di {name}', { name: label })}
+                title={t('Seleziona tutti gli account di {name}', { name: label })}
+                checked={picked === ids.length}
+                ref={(el) => {
+                  if (el) el.indeterminate = picked > 0 && picked < ids.length;
+                }}
+                onChange={(e) => onSelect(ids, e.target.checked)}
+              />
               <GroupLogo icon={g?.icon} groupKey={key} name={label} />
               <div className="group-title">
                 <strong>{label}</strong>
@@ -232,9 +250,20 @@ function AccountGroups({
               </button>
             </div>
             <div className="account-group-body">
-              <button className="account-name" onClick={() => openItem(it)}>
-                {it.title}
-              </button>
+              <div className="account-name-row">
+                {rows.length > 1 && (
+                  <input
+                    type="checkbox"
+                    aria-label={t("Seleziona l'account {name}", { name: it.title })}
+                    title={t("Seleziona l'account {name}", { name: it.title })}
+                    checked={selected.includes(it.id)}
+                    onChange={(e) => onSelect([it.id], e.target.checked)}
+                  />
+                )}
+                <button className="account-name" onClick={() => openItem(it)}>
+                  {it.title}
+                </button>
+              </div>
               <div className="group-credential">
                 <span>{t('Utente')}</span>
                 <strong title={it.f.username || ''}>{it.f.username || t('Non impostato')}</strong>
@@ -1444,6 +1473,23 @@ export default function App() {
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
+                    {filtered.length > 0 && (
+                      <button
+                        className="secondary"
+                        onClick={() =>
+                          setMulti(
+                            filtered.every((i) => multi.includes(i.id))
+                              ? []
+                              : filtered.map((i) => i.id),
+                          )
+                        }
+                      >
+                        <CheckSquare size={16} />
+                        {filtered.every((i) => multi.includes(i.id))
+                          ? t('Deseleziona tutti')
+                          : t('Seleziona tutti')}
+                      </button>
+                    )}
                     <button className="secondary" onClick={openNewItem}>
                       <Plus size={17} />
                     </button>
@@ -1453,12 +1499,24 @@ export default function App() {
                   <div className="bulkbar">
                     <strong>{t('Selezionati: {n}', { n: multi.length })}</strong>
                     <button
-                      onClick={() =>
-                        void mutate('bulk', {
+                      onClick={async () => {
+                        // Moving many items to the trash at once is confirmed with the count.
+                        if (
+                          page !== 'trash' &&
+                          multi.length > 1 &&
+                          !(await askConfirm(
+                            t('Spostare nel cestino {n} elementi selezionati?', {
+                              n: multi.length,
+                            }),
+                            { title: t('Nel cestino'), confirmLabel: t('Nel cestino') },
+                          ))
+                        )
+                          return;
+                        await mutate('bulk', {
                           ids: multi,
                           op: page === 'trash' ? 'restore' : 'trash',
-                        }).then(() => setMulti([]))
-                      }
+                        }).then(() => setMulti([]));
+                      }}
                     >
                       {page === 'trash' ? t('Ripristina') : t('Nel cestino')}
                     </button>
@@ -1521,6 +1579,12 @@ export default function App() {
                     copy={copy}
                     onDeleteAccount={deleteItem}
                     onDeleteGroup={deleteGroup}
+                    selected={multi}
+                    onSelect={(ids, on) =>
+                      setMulti((x) =>
+                        on ? [...new Set([...x, ...ids])] : x.filter((id) => !ids.includes(id)),
+                      )
+                    }
                   />
                 )}
                 <div className="items-list">

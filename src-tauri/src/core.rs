@@ -1860,9 +1860,11 @@ fn import_kaspersky(d: &mut V, text: &str) -> Res<usize> {
         if title.is_empty() {
             continue;
         }
-        // Several logins of one site are told apart by Kaspersky's "Login name".
+        // Kaspersky's "Login name" tells several logins of one site or app apart. The
+        // title stays the site/app name: without an address the main list groups by
+        // title, so a changed title would put every account in a group of its own.
         if !login_name.is_empty() && login_name != username && login_name != title {
-            title = format!("{title} ({login_name})");
+            notes.insert(0, format!("Nome login: {login_name}"));
         }
         let notes = notes.join("\n\n");
         if is_note {
@@ -2583,11 +2585,13 @@ mod vault_tests {
             s(epic, "notes"),
             "prima riga\nseconda riga: con due punti\nhttps://example.com/aiuto"
         );
-        // Two logins of one site told apart by Kaspersky's login name.
-        assert_eq!(
-            s(&by_title(&items, "Epic Games (Lavoro)")["f"], "username"),
-            "lavoro@example.com"
-        );
+        // Two logins of one site: same title (one group), login name in the notes.
+        let work = items
+            .iter()
+            .find(|i| s(&i["f"], "username") == "lavoro@example.com")
+            .unwrap();
+        assert_eq!(s(work, "title"), "Epic Games");
+        assert_eq!(s(work, "notes"), "Nome login: Lavoro");
         assert_eq!(s(&by_title(&items, "Skype")["f"], "password"), "pw-3");
         assert_eq!(
             s(&by_title(&items, "Router di casa")["f"], "username"),
