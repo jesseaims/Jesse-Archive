@@ -585,6 +585,8 @@ export default function App() {
     [search, setSearch] = useState(''),
     [password, setPassword] = useState(''),
     [recovery, setRecovery] = useState(''),
+    // The unlock screen asks for the recovery code instead of the master password.
+    [recoveryMode, setRecoveryMode] = useState(false),
     [recoveryNew, setRecoveryNew] = useState(''),
     [rotateKey, setRotateKey] = useState(false),
     [viewRecovery, setViewRecovery] = useState(''),
@@ -1243,14 +1245,15 @@ export default function App() {
               e.preventDefault();
               if (status.exists) {
                 const r = await run('unlock', {
-                  password: recovery ? '' : password,
-                  recovery,
+                  password: recoveryMode ? '' : password,
+                  recovery: recoveryMode ? recovery : '',
                   new_password: recoveryNew,
                 });
                 if (r) {
                   setPassword('');
                   setRecovery('');
                   setRecoveryNew('');
+                  setRecoveryMode(false);
                   await refresh();
                 }
               } else {
@@ -1265,13 +1268,15 @@ export default function App() {
             }}
           >
             <Field
-              label={recovery ? t('Codice di recupero') : t('Password principale')}
-              value={recovery || password}
-              onChange={(v) => (recovery ? setRecovery(v) : setPassword(v))}
-              secret={!recovery}
-              placeholder={t('Inserisci la tua password')}
+              label={recoveryMode ? t('Codice di recupero') : t('Password principale')}
+              value={recoveryMode ? recovery : password}
+              onChange={(v) => (recoveryMode ? setRecovery(v) : setPassword(v))}
+              secret={!recoveryMode}
+              placeholder={
+                recoveryMode ? 'XXXX-XXXX-XXXX-XXXX-XXXX-XXXX' : t('Inserisci la tua password')
+              }
             />
-            {recovery && (
+            {recoveryMode && (
               <Field
                 label={t('Nuova password principale (facoltativa)')}
                 value={recoveryNew}
@@ -1293,16 +1298,13 @@ export default function App() {
             <button
               className="subtle link-btn"
               onClick={() => {
-                if (recovery) {
-                  setRecovery('');
-                  setRecoveryNew('');
-                } else {
-                  setRecovery('RECOVERY-');
-                  setPassword('');
-                }
+                setRecovery('');
+                setRecoveryNew('');
+                setPassword('');
+                setRecoveryMode(!recoveryMode);
               }}
             >
-              {recovery ? t('Torna alla password') : t('Usa il codice di recupero')}
+              {recoveryMode ? t('Torna alla password') : t('Usa il codice di recupero')}
             </button>
           )}
           <button
