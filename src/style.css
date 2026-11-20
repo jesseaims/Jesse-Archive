@@ -146,6 +146,15 @@ p {
 .sidebar-label button {
   padding: 2px;
 }
+/* The "+" of FOLDERS must not make its label taller than the others: a smaller
+   button whose extra height overlaps the margins instead of the layout. */
+.sidebar-label .icon-button {
+  width: 22px;
+  height: 22px;
+  margin: -6px -4px;
+  display: grid;
+  place-items: center;
+}
 .folders-label {
   margin-top: 26px;
 }
