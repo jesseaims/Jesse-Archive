@@ -2,6 +2,30 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    '다른 비밀번호 관리자 또는 파일에서 가져오기',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    '암호화된 Bitwarden 내보내기입니다: 암호화하지 않은 JSON 또는 CSV로 내보내세요',
+  'File XML di KeePass non valido': '올바르지 않은 KeePass XML 파일입니다',
+  'Aggiungi alle note': '메모에 추가',
+  'Campo in Jesse’s Archive': 'Jesse’s Archive의 항목',
+  'Campo per la colonna {name}': '{name} 열의 항목',
+  'Codice 2FA (TOTP)': '2단계 인증 코드(TOTP)',
+  'Colonna del file': '파일의 열',
+  Credenziale: '자격 증명',
+  'Elementi da importare: {n}': '가져올 항목: {n}',
+  Esempio: '예시',
+  'Formato riconosciuto: {source}': '인식된 형식: {source}',
+  Ignora: '무시',
+  Importa: '가져오기',
+  'Indirizzo web': '웹 주소',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    '인식된 항목이 없습니다: 각 열이 어떤 항목에 해당하는지 선택하세요.',
+  'Numero della carta': '카드 번호',
+  'Prima della scrittura viene creato un backup del vault.': '쓰기 전에 볼트 백업을 만듭니다.',
+  Seed: '시드',
+  Tipo: '유형',
+  'Titolare della carta': '카드 소유자',
   'Cartella eliminata': '폴더를 삭제했습니다',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     '시작 메뉴의 애플리케이션입니다. 없으면 “찾아보기…”로 파일을 선택하세요.',
@@ -20,8 +44,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti': '모두 선택',
   'Seleziona tutti gli account di {name}': '{name}의 모든 계정 선택',
   'Spostare nel cestino {n} elementi selezionati?': '선택한 {n}개 항목을 휴지통으로 옮길까요?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'CSV / JSON / .jshare / 카스퍼스키 TXT 가져오기',
   'File di testo non valido': '올바르지 않은 텍스트 파일입니다',
   'Il file non è testo UTF-8 o UTF-16': '파일이 UTF-8 또는 UTF-16 텍스트가 아닙니다',
   'Nessun account riconosciuto nel file di Kaspersky': '카스퍼스키 파일에서 계정을 찾지 못했습니다',
@@ -340,8 +362,6 @@ const dictionary: Dictionary = {
     '보관함이 잠겨 있어(예: 사용하지 않아서) 데이터를 다시 불러오지 못했습니다.\n\n마스터 비밀번호로 보관함을 다시 잠금 해제하세요.',
   'Importa dati nel vault': '보관함으로 데이터 가져오기',
   'Importa pacchetto cifrato': '암호화된 패키지 가져오기',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    '보관함으로 데이터를 가져올까요? 쓰기 전에 백업이 만들어집니다.',
   'Importazione effettuata': '가져오기 완료',
   'Imposta lo zoom al massimo, {n}%': '확대/축소를 최대로 설정, {n}%',
   'Imposta lo zoom al minimo, {n}%': '확대/축소를 최소로 설정, {n}%',

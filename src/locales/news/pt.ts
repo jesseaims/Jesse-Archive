@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    'Importa dos principais gestores de palavras-passe',
+    'A importação reconhece agora os ficheiros do Bitwarden (CSV e JSON não cifrado), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass e KeePassXC (CSV e XML), RoboForm e do Chrome, Edge, Brave, Opera, Firefox e Palavras-passe da Apple. Antes de importar, uma pré-visualização mostra o programa reconhecido e quantos elementos encontrou; nos CSV podes verificar e mudar o campo de cada coluna, por isso também funcionam ficheiros de outros programas.',
+  ],
   'bulk-select-accounts': [
     'Seleciona muitas contas de uma vez',
     'Em «Todos os elementos» e «Contas» já podes selecionar grupos inteiros ou contas individuais com a respetiva caixa, ou tudo o que vês com «Selecionar tudo» (também os resultados de uma pesquisa), e movê-los de uma vez para o lixo ou para uma pasta.',

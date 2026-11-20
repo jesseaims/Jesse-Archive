@@ -1200,16 +1200,72 @@ impl Vault {
             }
             "import" => {
                 let text = s(&b, "text").trim_start_matches('\u{feff}');
-                let n = if text.trim_start().starts_with(['{', '[']) {
-                    let pl: V = serde_json::from_str(text).map_err(|_| "JSON non valido")?;
-                    validate_import(&pl)?;
-                    self.transact(|d| Ok(merge_import(d, &pl)))?
-                } else if is_kaspersky(text) {
-                    self.transact(|d| import_kaspersky(d, text))?
-                } else {
-                    self.transact(|d| import_csv(d, text))?
+                let mapping = import_mapping(&b);
+                let n = match import_format(text)? {
+                    ImportFormat::Own(pl) => {
+                        validate_import(&pl)?;
+                        self.transact(|d| Ok(merge_import(d, &pl)))?
+                    }
+                    ImportFormat::Bitwarden(pl) => {
+                        let entries = crate::importers::parse_bitwarden(&pl)?;
+                        self.transact(|d| Ok(add_entries(d, entries)))?
+                    }
+                    ImportFormat::KeePass => {
+                        let entries = crate::importers::parse_keepass(text)?;
+                        self.transact(|d| Ok(add_entries(d, entries)))?
+                    }
+                    ImportFormat::Kaspersky => self.transact(|d| import_kaspersky(d, text))?,
+                    ImportFormat::Csv => {
+                        self.transact(|d| import_csv(d, text, mapping.as_ref()))?
+                    }
                 };
                 Ok(json!({"count":n,"state":self.state()}))
+            }
+            // What an import would do, without writing: program recognized, number of
+            // items and, for a CSV, the columns with their field (passwords never shown).
+            "import_preview" => {
+                let text = s(&b, "text").trim_start_matches('\u{feff}');
+                let mapping = import_mapping(&b);
+                let (format, source, count, columns) = match import_format(text)? {
+                    ImportFormat::Own(pl) => {
+                        validate_import(&pl)?;
+                        (
+                            "json",
+                            "Jesse's Archive",
+                            array(&pl, "items").len(),
+                            V::Null,
+                        )
+                    }
+                    ImportFormat::Bitwarden(pl) => (
+                        "json",
+                        "Bitwarden",
+                        crate::importers::parse_bitwarden(&pl)?.len(),
+                        V::Null,
+                    ),
+                    ImportFormat::KeePass => (
+                        "xml",
+                        "KeePass / KeePassXC",
+                        crate::importers::parse_keepass(text)?.len(),
+                        V::Null,
+                    ),
+                    ImportFormat::Kaspersky => (
+                        "txt",
+                        "Kaspersky Password Manager",
+                        import_kaspersky(&mut empty(), text)?,
+                        V::Null,
+                    ),
+                    ImportFormat::Csv => {
+                        let columns = crate::importers::csv_columns(text, mapping.as_ref())?;
+                        let headers: Vec<String> = columns.iter().map(|c| c.0.clone()).collect();
+                        (
+                            "csv",
+                            crate::importers::csv_source(&headers),
+                            crate::importers::parse_csv(text, &columns)?.len(),
+                            crate::importers::column_preview(text, &columns),
+                        )
+                    }
+                };
+                Ok(json!({"format":format,"source":source,"count":count,"columns":columns}))
             }
             "group_edit" => {
                 let k = s(&b, "key");
@@ -1579,87 +1635,85 @@ fn export_text(d: &V, format: &str) -> Res<String> {
     }
     String::from_utf8(out.into_inner().map_err(err)?).map_err(err)
 }
-fn import_csv(d: &mut V, text: &str) -> Res<usize> {
-    let mut rdr = csv::ReaderBuilder::new()
-        .flexible(true)
-        .from_reader(text.as_bytes());
-    let headers = rdr.headers().map_err(err)?.clone();
-    let mut n = 0;
-    for row in rdr.records() {
-        let row = row.map_err(err)?;
-        let mut r: HashMap<String, String> = HashMap::new();
-        for (k, v) in headers.iter().zip(row.iter()) {
-            let k = k.trim().to_lowercase();
-            let dest = match k.as_str() {
-                "name" | "title" => "title",
-                "website" | "login_uri" | "url" => "url",
-                "login_username" | "username" => "username",
-                "login_password" | "password" => "password",
-                "note" | "notes" | "extra" => "notes",
-                "login_totp" | "totp" => "totp",
-                "cardholdername" | "holder" => "holder",
-                "cardnumber" | "number" => "number",
-                "cvc" | "cvv" => "cvv",
-                "expirydate" | "expiry" => "expiry",
-                "full_name" | "fullname" => "fullname",
-                "phone_number" | "phone" => "phone",
-                "address1" | "address" => "address",
-                "grouping" | "folder" => "folder",
-                "type" => "type",
-                "platform" => "platform",
-                "seed" => "seed",
-                "credential" => "credential",
-                "birthday" => "birthday",
-                "city" => "city",
-                "zip" => "zip",
-                "country" => "country",
-                "email" => "email",
-                "pin" => "pin",
-                _ => continue,
-            };
-            if !v.is_empty() {
-                r.entry(dest.into()).or_insert(v.into());
-            }
-        }
-        let typ = r.get("type").map(String::as_str).unwrap_or("");
-        let typ = match typ {
-            "credit_card" => "card",
-            "secure_note" => "note",
-            t if fields(t).is_some() => t,
-            _ if r.contains_key("number") => "card",
-            _ => "login",
-        };
-        let title = r
-            .get("title")
-            .or_else(|| r.get("url"))
-            .or_else(|| r.get("username"))
-            .map(String::as_str)
-            .unwrap_or("");
-        if title.is_empty() {
-            continue;
-        }
-        let fid = if let Some(folder) = r.get("folder") {
-            if let Some(f) = array(d, "folders").iter().find(|f| s(f, "name") == folder) {
-                json!(s(f, "id"))
-            } else {
-                let uuid = id();
-                arr(d, "folders").push(json!({"id":uuid,"name":folder,"upd":now()}));
-                json!(uuid)
-            }
+/// CSV of Jesse's Archive or another password manager / browser. `mapping` (column
+/// -> field) is the user's choice in the import preview; without it the columns are
+/// recognized by name (src-tauri/src/importers.rs).
+fn import_csv(d: &mut V, text: &str, mapping: Option<&HashMap<String, String>>) -> Res<usize> {
+    let columns = crate::importers::csv_columns(text, mapping)?;
+    let entries = crate::importers::parse_csv(text, &columns)?;
+    Ok(add_entries(d, entries))
+}
+enum ImportFormat {
+    /// Jesse's Archive JSON export.
+    Own(V),
+    /// Bitwarden JSON export.
+    Bitwarden(V),
+    KeePass,
+    Kaspersky,
+    Csv,
+}
+fn import_format(text: &str) -> Res<ImportFormat> {
+    if text.trim_start().starts_with(['{', '[']) {
+        let pl: V = serde_json::from_str(text).map_err(|_| "JSON non valido")?;
+        Ok(if crate::importers::is_bitwarden(&pl) {
+            ImportFormat::Bitwarden(pl)
         } else {
+            ImportFormat::Own(pl)
+        })
+    } else if crate::importers::is_keepass(text) {
+        Ok(ImportFormat::KeePass)
+    } else if is_kaspersky(text) {
+        Ok(ImportFormat::Kaspersky)
+    } else {
+        Ok(ImportFormat::Csv)
+    }
+}
+/// Column mapping chosen in the import preview ({"Column": "field"}), if any.
+fn import_mapping(b: &V) -> Option<HashMap<String, String>> {
+    b.get("mapping").and_then(V::as_object).map(|m| {
+        m.iter()
+            .take(200)
+            .filter_map(|(k, v)| v.as_str().map(|v| (k.clone(), v.to_string())))
+            .collect()
+    })
+}
+/// Adds records read from another program: folders by name (created if missing),
+/// only the fields of each item type, favorites and the password history.
+fn add_entries(d: &mut V, entries: Vec<crate::importers::Entry>) -> usize {
+    let mut n = 0;
+    for e in entries {
+        let typ = if fields(&e.kind).is_some() {
+            e.kind.as_str()
+        } else {
+            "login"
+        };
+        let folder = if e.folder.is_empty() {
             V::Null
+        } else if let Some(f) = array(d, "folders")
+            .iter()
+            .find(|f| s(f, "name") == e.folder)
+        {
+            json!(s(f, "id"))
+        } else {
+            let uuid = id();
+            arr(d, "folders").push(json!({"id":uuid,"name":e.folder,"upd":now()}));
+            json!(uuid)
         };
         let mut f = json!({});
         for k in fields(typ).unwrap_or(&[]) {
-            if let Some(v) = r.get(*k) {
+            if let Some(v) = e.fields.get(*k) {
                 f[*k] = json!(v)
             }
         }
-        let notes = r.get("notes").cloned().unwrap_or_default();
-        push_imported(d, typ, title, fid, f, &notes);
+        push_imported(d, typ, &e.title, folder, f, &e.notes);
+        if e.fav {
+            if let Some(it) = arr(d, "items").last_mut() {
+                it["fav"] = json!(true);
+            }
+        }
         n += 1
     }
-    Ok(n)
+    n
 }
 /// Text of an imported file: UTF-8 (with or without BOM) or UTF-16 with BOM, as
 /// Windows programs (Kaspersky Password Manager) often save their text exports.
@@ -2649,6 +2703,57 @@ mod vault_tests {
         // The description ("Notepad", "Blocco note"…) rather than the bare file name.
         assert!(!name.is_empty() && name != "notepad", "{name}");
         assert!(app_name("C:\\percorso\\inesistente.exe").is_err());
+    }
+    #[test]
+    fn import_preview_and_other_programs_through_the_vault() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-sintetica"}))
+            .unwrap();
+        // Preview of an unknown CSV: nothing written, columns offered for mapping.
+        let csv = "Sito web,Chi,Segreto\nesempio.it,utente,pw-csv\n";
+        let preview = v.call("import_preview", json!({"text": csv})).unwrap();
+        assert_eq!(preview["source"], "CSV");
+        // No column recognized: nothing importable until the user maps them.
+        assert_eq!(preview["count"], 0);
+        assert_eq!(preview["columns"][2]["target"], "ignore");
+        assert!(array(&v.data, "items").is_empty());
+        // Import with the mapping chosen by the user.
+        let mapping = json!({"Sito web": "url", "Chi": "username", "Segreto": "password"});
+        assert_eq!(
+            v.call("import_preview", json!({"text": csv, "mapping": mapping}))
+                .unwrap()["count"],
+            1
+        );
+        v.call("import", json!({"text": csv, "mapping": mapping}))
+            .unwrap();
+        let it = &array(&v.data, "items")[0];
+        assert_eq!(s(&it["f"], "password"), "pw-csv");
+        assert_eq!(s(it, "title"), "esempio.it");
+        // Bitwarden JSON: folder created, favorite kept.
+        let bw = r#"{"encrypted":false,"folders":[{"id":"f","name":"Social"}],"items":[{"type":1,"name":"BW","favorite":true,"folderId":"f","login":{"username":"u","password":"pw-bw","uris":[{"uri":"https://bw.example"}]}}]}"#;
+        assert_eq!(
+            v.call("import_preview", json!({"text": bw})).unwrap()["source"],
+            "Bitwarden"
+        );
+        v.call("import", json!({"text": bw})).unwrap();
+        let it = array(&v.data, "items")
+            .iter()
+            .find(|i| s(i, "title") == "BW")
+            .unwrap()
+            .clone();
+        assert_eq!(it["fav"], true);
+        let folder = array(&v.data, "folders")
+            .iter()
+            .find(|f| s(f, "name") == "Social")
+            .unwrap();
+        assert_eq!(s(&it, "folder"), s(folder, "id"));
+        // KeePass XML.
+        let xml = "<?xml version=\"1.0\"?><KeePassFile><Root><Group><Name>DB</Name><Group><Name>Email</Name><Entry><String><Key>Title</Key><Value>KP</Value></String><String><Key>Password</Key><Value>pw-kp</Value></String></Entry></Group></Group></Root></KeePassFile>";
+        assert_eq!(v.call("import", json!({"text": xml})).unwrap()["count"], 1);
+        assert!(array(&v.data, "folders")
+            .iter()
+            .any(|f| s(f, "name") == "Email"));
+        fs::remove_dir_all(dir).unwrap();
     }
     #[test]
     fn new_folders_are_kept() {

@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    'Import from another password manager or a file',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Encrypted Bitwarden export: export it as unencrypted JSON or CSV',
+  'File XML di KeePass non valido': 'Invalid KeePass XML file',
+  'Aggiungi alle note': 'Add to notes',
+  'Campo in Jesse’s Archive': 'Field in Jesse’s Archive',
+  'Campo per la colonna {name}': 'Field for the column {name}',
+  'Codice 2FA (TOTP)': '2FA code (TOTP)',
+  'Colonna del file': 'Column in the file',
+  Credenziale: 'Credential',
+  'Elementi da importare: {n}': 'Items to import: {n}',
+  Esempio: 'Example',
+  'Formato riconosciuto: {source}': 'Format recognized: {source}',
+  Ignora: 'Ignore',
+  Importa: 'Import',
+  'Indirizzo web': 'Web address',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    'No item recognized: choose which field each column corresponds to.',
+  'Numero della carta': 'Card number',
+  'Prima della scrittura viene creato un backup del vault.':
+    'A backup of the vault is made before writing.',
+  Seed: 'Seed',
+  Tipo: 'Type',
+  'Titolare della carta': 'Cardholder',
   'Cartella eliminata': 'Folder deleted',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Applications from the Start menu. If one is missing, choose its file with “Browse…”.',
@@ -20,7 +45,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti': 'Select all',
   'Seleziona tutti gli account di {name}': 'Select all accounts of {name}',
   'Spostare nel cestino {n} elementi selezionati?': 'Move the {n} selected items to the trash?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky': 'Import CSV / JSON / .jshare / Kaspersky TXT',
   'File di testo non valido': 'Invalid text file',
   'Il file non è testo UTF-8 o UTF-16': 'The file is not UTF-8 or UTF-16 text',
   'Nessun account riconosciuto nel file di Kaspersky':
@@ -344,8 +368,6 @@ const dictionary: Dictionary = {
     'The vault is locked (for example after inactivity), so the data could not be reloaded.\n\nUnlock the vault again with the master password.',
   'Importa dati nel vault': 'Import data into the vault',
   'Importa pacchetto cifrato': 'Import encrypted package',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    'Import the data into the vault? A backup is made before writing.',
   'Importazione effettuata': 'Import completed',
   'Imposta lo zoom al massimo, {n}%': 'Set zoom to the maximum, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Set zoom to the minimum, {n}%',

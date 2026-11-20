@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    '从主流密码管理器导入',
+    '导入功能现在可以识别 Bitwarden（CSV 和未加密 JSON）、LastPass、1Password、Dashlane、NordPass、Proton Pass、KeePass 和 KeePassXC（CSV 和 XML）、RoboForm，以及 Chrome、Edge、Brave、Opera、Firefox 和 Apple 密码的文件。导入前会预览识别出的程序和找到的项目数量；对于 CSV 文件，你可以检查并更改每一列对应的字段，因此其他程序的文件也能导入。',
+  ],
   'bulk-select-accounts': [
     '一次选择多个账户',
     '在“所有项目”和“账户”中，现在可以用复选框选择整个分组或单个账户，或用“全选”选择所有可见内容（包括搜索结果），然后一次性移到回收站或文件夹。',

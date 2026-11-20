@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    '他のパスワードマネージャーまたはファイルからインポート',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Bitwarden のエクスポートが暗号化されています：暗号化なしの JSON または CSV でエクスポートしてください',
+  'File XML di KeePass non valido': '無効な KeePass XML ファイルです',
+  'Aggiungi alle note': 'メモに追加',
+  'Campo in Jesse’s Archive': 'Jesse’s Archive の項目',
+  'Campo per la colonna {name}': '列 {name} の項目',
+  'Codice 2FA (TOTP)': '2FA コード（TOTP）',
+  'Colonna del file': 'ファイルの列',
+  Credenziale: '認証情報',
+  'Elementi da importare: {n}': 'インポートする項目：{n}',
+  Esempio: '例',
+  'Formato riconosciuto: {source}': '認識された形式：{source}',
+  Ignora: '無視',
+  Importa: 'インポート',
+  'Indirizzo web': 'ウェブアドレス',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    '項目が認識されませんでした。各列がどの項目に対応するか選択してください。',
+  'Numero della carta': 'カード番号',
+  'Prima della scrittura viene creato un backup del vault.':
+    '書き込みの前に保管庫のバックアップを作成します。',
+  Seed: 'シード',
+  Tipo: '種類',
+  'Titolare della carta': 'カード名義人',
   'Cartella eliminata': 'フォルダーを削除しました',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'スタートメニューのアプリケーションです。見つからない場合は「参照…」でファイルを選択してください。',
@@ -20,8 +45,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti': 'すべて選択',
   'Seleziona tutti gli account di {name}': '{name} のすべてのアカウントを選択',
   'Spostare nel cestino {n} elementi selezionati?': '選択した {n} 件の項目をごみ箱に移動しますか？',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'CSV / JSON / .jshare / カスペルスキー TXT をインポート',
   'File di testo non valido': '無効なテキストファイルです',
   'Il file non è testo UTF-8 o UTF-16': 'ファイルが UTF-8 または UTF-16 のテキストではありません',
   'Nessun account riconosciuto nel file di Kaspersky':
@@ -345,8 +368,6 @@ const dictionary: Dictionary = {
     '保管庫がロックされているため (無操作など)、データを再読み込みできませんでした。\n\nマスター パスワードで保管庫のロックを解除し直してください。',
   'Importa dati nel vault': '保管庫にデータをインポート',
   'Importa pacchetto cifrato': '暗号化パッケージをインポート',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    '保管庫にデータをインポートしますか? 書き込み前にバックアップが作成されます。',
   'Importazione effettuata': 'インポートが完了しました',
   'Imposta lo zoom al massimo, {n}%': 'ズームを最大にする、{n}%',
   'Imposta lo zoom al minimo, {n}%': 'ズームを最小にする、{n}%',

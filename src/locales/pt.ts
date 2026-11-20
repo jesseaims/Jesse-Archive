@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    'Importar de outro gestor de palavras-passe ou de um ficheiro',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Exportação do Bitwarden cifrada: exporta-a em JSON não cifrado ou em CSV',
+  'File XML di KeePass non valido': 'Ficheiro XML do KeePass inválido',
+  'Aggiungi alle note': 'Adicionar às notas',
+  'Campo in Jesse’s Archive': 'Campo no Jesse’s Archive',
+  'Campo per la colonna {name}': 'Campo para a coluna {name}',
+  'Codice 2FA (TOTP)': 'Código 2FA (TOTP)',
+  'Colonna del file': 'Coluna do ficheiro',
+  Credenziale: 'Credencial',
+  'Elementi da importare: {n}': 'Elementos a importar: {n}',
+  Esempio: 'Exemplo',
+  'Formato riconosciuto: {source}': 'Formato reconhecido: {source}',
+  Ignora: 'Ignorar',
+  Importa: 'Importar',
+  'Indirizzo web': 'Endereço web',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    'Nenhum elemento reconhecido: escolhe a que campo corresponde cada coluna.',
+  'Numero della carta': 'Número do cartão',
+  'Prima della scrittura viene creato un backup del vault.':
+    'Antes de escrever é criada uma cópia de segurança do cofre.',
+  Seed: 'Seed',
+  Tipo: 'Tipo',
+  'Titolare della carta': 'Titular do cartão',
   'Cartella eliminata': 'Pasta eliminada',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Aplicações do menu Iniciar. Se faltar alguma, escolhe o ficheiro com «Procurar…».',
@@ -21,8 +46,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti gli account di {name}': 'Selecionar todas as contas de {name}',
   'Spostare nel cestino {n} elementi selezionati?':
     'Mover para o lixo os {n} elementos selecionados?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'Importar CSV / JSON / .jshare / TXT do Kaspersky',
   'File di testo non valido': 'Ficheiro de texto inválido',
   'Il file non è testo UTF-8 o UTF-16': 'O ficheiro não é texto UTF-8 nem UTF-16',
   'Nessun account riconosciuto nel file di Kaspersky':
@@ -350,8 +373,6 @@ const dictionary: Dictionary = {
     'O cofre está bloqueado (por exemplo, por inatividade), então não foi possível recarregar os dados.\n\nDesbloqueie o cofre novamente com a senha mestra.',
   'Importa dati nel vault': 'Importar dados para o cofre',
   'Importa pacchetto cifrato': 'Importar pacote criptografado',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    'Importar os dados para o cofre? Um backup será criado antes da gravação.',
   'Importazione effettuata': 'Importação concluída',
   'Imposta lo zoom al massimo, {n}%': 'Definir o zoom no máximo, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Definir o zoom no mínimo, {n}%',

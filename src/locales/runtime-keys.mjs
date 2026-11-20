@@ -23,6 +23,8 @@ export const RUNTIME_KEYS = [
   'Importazione non valida: elemento n. {n} ha campi non validi',
   'Importazione non valida: password n. {n} non valida',
   'JSON non valido',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV',
+  'File XML di KeePass non valido',
   'File di testo non valido',
   'Il file non è testo UTF-8 o UTF-16',
   'Nessun account riconosciuto nel file di Kaspersky',

@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // Spanish. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    'Importar desde otro gestor de contraseñas o un archivo',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Exportación de Bitwarden cifrada: expórtala en JSON sin cifrar o en CSV',
+  'File XML di KeePass non valido': 'Archivo XML de KeePass no válido',
+  'Aggiungi alle note': 'Añadir a las notas',
+  'Campo in Jesse’s Archive': 'Campo en Jesse’s Archive',
+  'Campo per la colonna {name}': 'Campo para la columna {name}',
+  'Codice 2FA (TOTP)': 'Código 2FA (TOTP)',
+  'Colonna del file': 'Columna del archivo',
+  Credenziale: 'Credencial',
+  'Elementi da importare: {n}': 'Elementos para importar: {n}',
+  Esempio: 'Ejemplo',
+  'Formato riconosciuto: {source}': 'Formato reconocido: {source}',
+  Ignora: 'Ignorar',
+  Importa: 'Importar',
+  'Indirizzo web': 'Dirección web',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    'No se ha reconocido ningún elemento: elige a qué campo corresponde cada columna.',
+  'Numero della carta': 'Número de la tarjeta',
+  'Prima della scrittura viene creato un backup del vault.':
+    'Antes de escribir se crea una copia de seguridad del vault.',
+  Seed: 'Semilla',
+  Tipo: 'Tipo',
+  'Titolare della carta': 'Titular de la tarjeta',
   'Cartella eliminata': 'Carpeta eliminada',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Aplicaciones del menú Inicio. Si falta alguna, elige su archivo con «Examinar…».',
@@ -21,8 +46,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti gli account di {name}': 'Seleccionar todas las cuentas de {name}',
   'Spostare nel cestino {n} elementi selezionati?':
     '¿Mover a la papelera los {n} elementos seleccionados?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'Importar CSV / JSON / .jshare / TXT de Kaspersky',
   'File di testo non valido': 'Archivo de texto no válido',
   'Il file non è testo UTF-8 o UTF-16': 'El archivo no es texto UTF-8 ni UTF-16',
   'Nessun account riconosciuto nel file di Kaspersky':
@@ -348,8 +371,6 @@ const dictionary: Dictionary = {
     'La bóveda está bloqueada (por ejemplo, por inactividad), así que no se pudieron recargar los datos.\n\nDesbloquea de nuevo la bóveda con la contraseña maestra.',
   'Importa dati nel vault': 'Importar datos en la bóveda',
   'Importa pacchetto cifrato': 'Importar paquete cifrado',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    '¿Importar los datos en la bóveda? Se hará una copia de seguridad antes de escribir.',
   'Importazione effettuata': 'Importación completada',
   'Imposta lo zoom al massimo, {n}%': 'Ajustar el zoom al máximo, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Ajustar el zoom al mínimo, {n}%',

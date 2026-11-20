@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    'Импорт из другого менеджера паролей или файла',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Зашифрованный экспорт Bitwarden: экспортируйте его в незашифрованный JSON или CSV',
+  'File XML di KeePass non valido': 'Недопустимый XML-файл KeePass',
+  'Aggiungi alle note': 'Добавить в заметки',
+  'Campo in Jesse’s Archive': 'Поле в Jesse’s Archive',
+  'Campo per la colonna {name}': 'Поле для столбца {name}',
+  'Codice 2FA (TOTP)': 'Код 2FA (TOTP)',
+  'Colonna del file': 'Столбец файла',
+  Credenziale: 'Учётные данные',
+  'Elementi da importare: {n}': 'Элементов для импорта: {n}',
+  Esempio: 'Пример',
+  'Formato riconosciuto: {source}': 'Распознанный формат: {source}',
+  Ignora: 'Игнорировать',
+  Importa: 'Импортировать',
+  'Indirizzo web': 'Веб-адрес',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    'Элементы не распознаны: выберите, какому полю соответствует каждый столбец.',
+  'Numero della carta': 'Номер карты',
+  'Prima della scrittura viene creato un backup del vault.':
+    'Перед записью создаётся резервная копия хранилища.',
+  Seed: 'Сид-фраза',
+  Tipo: 'Тип',
+  'Titolare della carta': 'Владелец карты',
   'Cartella eliminata': 'Папка удалена',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Приложения из меню «Пуск». Если нужного нет, выберите его файл кнопкой «Обзор…».',
@@ -21,8 +46,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti gli account di {name}': 'Выбрать все аккаунты {name}',
   'Spostare nel cestino {n} elementi selezionati?':
     'Переместить в корзину выбранные элементы ({n})?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'Импорт CSV / JSON / .jshare / TXT из Kaspersky',
   'File di testo non valido': 'Недопустимый текстовый файл',
   'Il file non è testo UTF-8 o UTF-16': 'Файл не является текстом в UTF-8 или UTF-16',
   'Nessun account riconosciuto nel file di Kaspersky':
@@ -349,8 +372,6 @@ const dictionary: Dictionary = {
     'Хранилище заблокировано (например, из-за бездействия), поэтому данные не удалось перезагрузить.\n\nСнова разблокируйте хранилище мастер-паролем.',
   'Importa dati nel vault': 'Импортировать данные в хранилище',
   'Importa pacchetto cifrato': 'Импортировать зашифрованный пакет',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    'Импортировать данные в хранилище? Перед записью будет создана резервная копия.',
   'Importazione effettuata': 'Импорт завершён',
   'Imposta lo zoom al massimo, {n}%': 'Установить максимальный масштаб, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Установить минимальный масштаб, {n}%',

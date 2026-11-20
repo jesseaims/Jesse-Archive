@@ -1,4 +1,4 @@
-import { locale, msg, t, translateMessage } from './i18n';
+import { locale, msg, t, tRich, translateMessage } from './i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { listen } from '@tauri-apps/api/event';
@@ -71,7 +71,54 @@ import { UpdateProgress, UpdateSettings, useAutoUpdate } from './Updater';
 
 type Dict = Record<string, unknown>;
 type Dialog =
-  'item' | 'folder' | 'share' | 'import' | 'recover' | 'master' | 'recovery_new' | 'group' | null;
+  | 'item'
+  | 'folder'
+  | 'share'
+  | 'import'
+  | 'preview'
+  | 'recover'
+  | 'master'
+  | 'recovery_new'
+  | 'group'
+  | null;
+// Import preview (`import_preview` in core.rs): program recognized, items found and, for
+// a CSV, the field of each column, which the user can change.
+type ImportPreview = {
+  text: string;
+  source: string;
+  count: number;
+  columns: { header: string; target: string; sample: string }[] | null;
+  mapping: Record<string, string>;
+};
+const IMPORT_TARGETS: [string, string][] = [
+  ['title', msg('Nome')],
+  ['url', msg('Indirizzo web')],
+  ['username', msg('Username')],
+  ['password', msg('Password')],
+  ['notes', msg('Note')],
+  ['notes+', msg('Aggiungi alle note')],
+  ['totp', msg('Codice 2FA (TOTP)')],
+  ['folder', msg('Cartella')],
+  ['fav', msg('Preferito')],
+  ['type', msg('Tipo')],
+  ['email', msg('Email')],
+  ['holder', msg('Titolare della carta')],
+  ['number', msg('Numero della carta')],
+  ['cvv', msg('CVV')],
+  ['expiry', msg('Scadenza')],
+  ['pin', msg('PIN')],
+  ['fullname', msg('Nome completo')],
+  ['phone', msg('Telefono')],
+  ['address', msg('Indirizzo')],
+  ['city', msg('Città')],
+  ['zip', msg('CAP')],
+  ['country', msg('Paese')],
+  ['birthday', msg('Data di nascita')],
+  ['platform', msg('Piattaforma')],
+  ['seed', msg('Seed')],
+  ['credential', msg('Credenziale')],
+  ['ignore', msg('Ignora')],
+];
 
 const icons = {
   login: KeyRound,
@@ -550,6 +597,7 @@ export default function App() {
     [multi, setMulti] = useState<string[]>([]),
     [sharePass, setSharePass] = useState(''),
     [shareImport, setShareImport] = useState(''),
+    [importPreview, setImportPreview] = useState<ImportPreview | null>(null),
     [showSecrets, setShowSecrets] = useState<string[]>([]),
     [mobileMenu, setMobileMenu] = useState(false),
     [appsList, setAppsList] = useState<{ name: string; path: string }[] | null>(null),
@@ -1141,14 +1189,20 @@ export default function App() {
       setDialog('import');
       return;
     }
-    if (
-      !(await askConfirm(
-        t('Importare i dati nel vault? Verrà creato un backup prima della scrittura.'),
-        { title: t('Importa dati nel vault') },
-      ))
-    )
-      return;
-    await mutate('import', { text }, t('Importazione effettuata'));
+    // Preview first: which program, how many items, and the CSV columns to check.
+    const r = await run<Omit<ImportPreview, 'text' | 'mapping'>>('import_preview', { text });
+    if (!r) return;
+    setImportPreview({ ...r, text, mapping: {} });
+    setDialog('preview');
+  };
+  const remapColumn = async (header: string, target: string) => {
+    if (!importPreview) return;
+    const mapping = { ...importPreview.mapping, [header]: target };
+    const r = await run<Omit<ImportPreview, 'text' | 'mapping'>>('import_preview', {
+      text: importPreview.text,
+      mapping,
+    });
+    if (r) setImportPreview({ ...importPreview, ...r, mapping });
   };
   useAutoUpdate(!!vault, { askConfirm, showNotice });
   if (!status)
@@ -1988,6 +2042,7 @@ export default function App() {
                       folder: msg('Cartella'),
                       share: msg('Condivisione cifrata'),
                       import: msg('Importa pacchetto cifrato'),
+                      preview: msg('Importa dati nel vault'),
                       recover: msg('Codice di recupero'),
                       master: msg('Cambia password principale'),
                       recovery_new: msg('Nuovo codice di recupero'),
@@ -2324,6 +2379,52 @@ export default function App() {
                   secret
                 />
               )}
+              {dialog === 'preview' && importPreview && (
+                <div className="import-preview">
+                  <p>
+                    {tRich('Formato riconosciuto: {source}', {
+                      source: <strong>{importPreview.source}</strong>,
+                    })}
+                  </p>
+                  <p className={importPreview.count ? '' : 'import-preview-empty'}>
+                    {importPreview.count
+                      ? t('Elementi da importare: {n}', { n: importPreview.count })
+                      : t(
+                          'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.',
+                        )}
+                  </p>
+                  {importPreview.columns && (
+                    <div className="import-columns" role="table">
+                      <div className="import-column head" role="row">
+                        <span>{t('Colonna del file')}</span>
+                        <span>{t('Esempio')}</span>
+                        <span>{t('Campo in Jesse’s Archive')}</span>
+                      </div>
+                      {importPreview.columns.map((c) => (
+                        <div className="import-column" role="row" key={c.header}>
+                          <strong title={c.header}>{c.header}</strong>
+                          <span title={c.sample}>{c.sample || '—'}</span>
+                          <select
+                            aria-label={t('Campo per la colonna {name}', { name: c.header })}
+                            value={c.target}
+                            disabled={busy}
+                            onChange={(e) => void remapColumn(c.header, e.target.value)}
+                          >
+                            {IMPORT_TARGETS.map(([value, label]) => (
+                              <option key={value} value={value}>
+                                {t(label)}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="helper">
+                    {t('Prima della scrittura viene creato un backup del vault.')}
+                  </p>
+                </div>
+              )}
               {dialog === 'import' && (
                 <>
                   <p>
@@ -2376,8 +2477,20 @@ export default function App() {
               )}
               <button
                 className="primary"
-                disabled={busy}
+                disabled={busy || (dialog === 'preview' && !importPreview?.count)}
                 onClick={async () => {
+                  if (dialog === 'preview' && importPreview) {
+                    const r = await mutate(
+                      'import',
+                      { text: importPreview.text, mapping: importPreview.mapping },
+                      t('Importazione effettuata'),
+                    );
+                    if (r) {
+                      setDialog(null);
+                      setImportPreview(null);
+                    }
+                    return;
+                  }
                   if (dialog === 'recover') {
                     setViewRecovery('');
                     setDialog(null);
@@ -2437,9 +2550,11 @@ export default function App() {
                 <Check size={17} />
                 {dialog === 'recover'
                   ? t('Ho salvato il codice')
-                  : dialog === 'share'
-                    ? t('Esporta pacchetto')
-                    : t('Conferma')}
+                  : dialog === 'preview'
+                    ? t('Importa')
+                    : dialog === 'share'
+                      ? t('Esporta pacchetto')
+                      : t('Conferma')}
               </button>
             </div>
           </div>
@@ -3514,7 +3629,7 @@ function SettingsPage({
             </div>
             <button className="secondary" onClick={() => void importData()}>
               <Upload size={16} />
-              {t('Importa CSV / JSON / .jshare / TXT di Kaspersky')}
+              {t('Importa da un altro password manager o da un file')}
             </button>
             <button className="secondary" onClick={() => setDialog('share')}>
               <ShieldCheck size={16} />

@@ -34,6 +34,7 @@ L'interfaccia Tauri usa IPC nativo, non il server HTTP del vecchio client Python
 | [main.rs](../src-tauri/src/main.rs) | Entry point desktop, soppressione console nelle build release |
 | [lib.rs](../src-tauri/src/lib.rs) | Builder, stato condiviso, registrazione comandi, eventi e integrazione OS |
 | [core.rs](../src-tauri/src/core.rs) | Modello dinamico, envelope crittografico, persistenza, dispatcher e utility |
+| [importers.rs](../src-tauri/src/importers.rs) | Lettori degli export di altri programmi (dalla Beta 1.5.0): CSV con riconoscimento delle colonne e mappatura scelta dall'utente, JSON di Bitwarden, XML di KeePass. Producono record `Entry` puri; `core.rs` (`import_format`, `add_entries`, comandi `import` e `import_preview`) li aggiunge al vault in una transazione |
 | [browser.rs](../src-tauri/src/browser.rs) | `Bridge`, listener, scorciatoie, selezione account e messaggi di riempimento |
 | [browser_save.rs](../src-tauri/src/browser_save.rs), [save-capture.js](../browser-extension/save-capture.js) | Salvataggio degli account inviati sui siti (dalla Beta 1.3.0): cattura nell'estensione, richiesta in memoria nel backend, conferma nella mini finestra |
 | [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) | Identificatori, directory e framing condiviso |

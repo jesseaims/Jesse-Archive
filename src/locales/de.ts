@@ -2,6 +2,31 @@ import type { Dictionary } from '../i18n';
 
 // German. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file':
+    'Aus einem anderen Passwort-Manager oder einer Datei importieren',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Verschlüsselter Bitwarden-Export: exportiere ihn als unverschlüsseltes JSON oder CSV',
+  'File XML di KeePass non valido': 'Ungültige KeePass-XML-Datei',
+  'Aggiungi alle note': 'Zu den Notizen hinzufügen',
+  'Campo in Jesse’s Archive': 'Feld in Jesse’s Archive',
+  'Campo per la colonna {name}': 'Feld für die Spalte {name}',
+  'Codice 2FA (TOTP)': '2FA-Code (TOTP)',
+  'Colonna del file': 'Spalte der Datei',
+  Credenziale: 'Anmeldedaten',
+  'Elementi da importare: {n}': 'Zu importierende Elemente: {n}',
+  Esempio: 'Beispiel',
+  'Formato riconosciuto: {source}': 'Erkanntes Format: {source}',
+  Ignora: 'Ignorieren',
+  Importa: 'Importieren',
+  'Indirizzo web': 'Webadresse',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    'Kein Element erkannt: Wähle, welchem Feld jede Spalte entspricht.',
+  'Numero della carta': 'Kartennummer',
+  'Prima della scrittura viene creato un backup del vault.':
+    'Vor dem Schreiben wird eine Sicherung des Tresors erstellt.',
+  Seed: 'Seed',
+  Tipo: 'Typ',
+  'Titolare della carta': 'Karteninhaber',
   'Cartella eliminata': 'Ordner gelöscht',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     'Anwendungen aus dem Startmenü. Fehlt eine, wähle ihre Datei mit „Durchsuchen…“.',
@@ -21,8 +46,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti gli account di {name}': 'Alle Konten von {name} auswählen',
   'Spostare nel cestino {n} elementi selezionati?':
     'Die {n} ausgewählten Elemente in den Papierkorb verschieben?',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky':
-    'CSV / JSON / .jshare / Kaspersky-TXT importieren',
   'File di testo non valido': 'Ungültige Textdatei',
   'Il file non è testo UTF-8 o UTF-16': 'Die Datei ist kein UTF-8- oder UTF-16-Text',
   'Nessun account riconosciuto nel file di Kaspersky': 'Kein Konto in der Kaspersky-Datei erkannt',
@@ -347,8 +370,6 @@ const dictionary: Dictionary = {
     'Der Tresor ist gesperrt (zum Beispiel wegen Inaktivität), daher konnten die Daten nicht neu geladen werden.\n\nEntsperre den Tresor erneut mit dem Master-Passwort.',
   'Importa dati nel vault': 'Daten in den Tresor importieren',
   'Importa pacchetto cifrato': 'Verschlüsseltes Paket importieren',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    'Daten in den Tresor importieren? Vor dem Schreiben wird eine Sicherung erstellt.',
   'Importazione effettuata': 'Import abgeschlossen',
   'Imposta lo zoom al massimo, {n}%': 'Zoom auf das Maximum setzen, {n} %',
   'Imposta lo zoom al minimo, {n}%': 'Zoom auf das Minimum setzen, {n} %',

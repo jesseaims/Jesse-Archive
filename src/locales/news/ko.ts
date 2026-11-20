@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'universal-import': [
+    '주요 비밀번호 관리자에서 가져오기',
+    '이제 Bitwarden(CSV 및 암호화되지 않은 JSON), LastPass, 1Password, Dashlane, NordPass, Proton Pass, KeePass와 KeePassXC(CSV 및 XML), RoboForm, 그리고 Chrome, Edge, Brave, Opera, Firefox, Apple 암호의 파일을 인식합니다. 가져오기 전에 미리 보기에서 인식한 프로그램과 찾은 항목 수를 보여 줍니다. CSV는 각 열이 어느 항목으로 들어갈지 확인하고 바꿀 수 있어 다른 프로그램의 파일도 가져올 수 있습니다.',
+  ],
   'bulk-select-accounts': [
     '여러 계정을 한 번에 선택',
     '이제 “모든 항목”과 “계정”에서 체크박스로 그룹 전체나 개별 계정을 선택하거나 “모두 선택”으로 보이는 모든 항목(검색 결과 포함)을 선택해 한 번에 휴지통이나 폴더로 옮길 수 있습니다.',

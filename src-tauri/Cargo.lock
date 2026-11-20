@@ -2233,7 +2233,7 @@ dependencies = [
 
 [[package]]
 name = "jesse_archive"
-version = "1.4.0"
+version = "1.5.0"
 dependencies = [
  "aes-gcm",
  "base64 0.22.1",
@@ -2249,6 +2249,7 @@ dependencies = [
  "regex",
  "reqwest 0.12.28",
  "rfd",
+ "roxmltree",
  "scrypt",
  "serde",
  "serde_json",
@@ -3717,6 +3718,15 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "roxmltree"
+version = "0.21.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9da7f59328b09405b181fee1018925fad50f157afb43c0c0f5c522c256dd5907"
+dependencies = [
+ "memchr",
 ]
 
 [[package]]

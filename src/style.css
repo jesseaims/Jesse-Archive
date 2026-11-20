@@ -3954,3 +3954,47 @@ input[type='password']::-webkit-credentials-auto-fill-button {
     animation: none;
   }
 }
+/* Import preview: recognized program and the field of each CSV column. */
+.import-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.import-preview p {
+  margin: 0;
+}
+.import-preview-empty {
+  color: #ffb86b;
+}
+.import-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: min(340px, 45vh);
+  overflow-y: auto;
+  border: 1px solid var(--ui-border);
+  border-radius: 9px;
+  padding: 8px;
+}
+.import-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(150px, 1fr);
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  flex: none;
+}
+.import-column.head {
+  color: var(--ui-muted);
+  font-weight: 700;
+}
+.import-column > strong,
+.import-column > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.import-column > span {
+  color: var(--ui-muted);
+}

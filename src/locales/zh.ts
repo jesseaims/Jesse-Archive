@@ -2,6 +2,29 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Importa da un altro password manager o da un file': '从其他密码管理器或文件导入',
+  'Export di Bitwarden cifrato: esportalo in formato JSON non cifrato oppure CSV':
+    'Bitwarden 导出已加密：请导出为未加密的 JSON 或 CSV',
+  'File XML di KeePass non valido': 'KeePass XML 文件无效',
+  'Aggiungi alle note': '添加到备注',
+  'Campo in Jesse’s Archive': 'Jesse’s Archive 中的字段',
+  'Campo per la colonna {name}': '列 {name} 对应的字段',
+  'Codice 2FA (TOTP)': '双重验证码（TOTP）',
+  'Colonna del file': '文件中的列',
+  Credenziale: '凭据',
+  'Elementi da importare: {n}': '要导入的项目：{n}',
+  Esempio: '示例',
+  'Formato riconosciuto: {source}': '识别的格式：{source}',
+  Ignora: '忽略',
+  Importa: '导入',
+  'Indirizzo web': '网址',
+  'Nessun elemento riconosciuto: scegli a quale campo corrisponde ogni colonna.':
+    '未识别到任何项目：请选择每一列对应的字段。',
+  'Numero della carta': '卡号',
+  'Prima della scrittura viene creato un backup del vault.': '写入前会创建保险库备份。',
+  Seed: '助记词',
+  Tipo: '类型',
+  'Titolare della carta': '持卡人',
   'Cartella eliminata': '文件夹已删除',
   'Elenco delle applicazioni del menu Start. Se manca, scegli il suo file con «Sfoglia…».':
     '“开始”菜单中的应用程序。如果没有，请用“浏览…”选择其文件。',
@@ -19,7 +42,6 @@ const dictionary: Dictionary = {
   'Seleziona tutti': '全选',
   'Seleziona tutti gli account di {name}': '选择 {name} 的所有账户',
   'Spostare nel cestino {n} elementi selezionati?': '将选中的 {n} 个项目移到回收站？',
-  'Importa CSV / JSON / .jshare / TXT di Kaspersky': '导入 CSV / JSON / .jshare / 卡巴斯基 TXT',
   'File di testo non valido': '文本文件无效',
   'Il file non è testo UTF-8 o UTF-16': '该文件不是 UTF-8 或 UTF-16 文本',
   'Nessun account riconosciuto nel file di Kaspersky': '在卡巴斯基文件中未识别到任何账户',
@@ -329,8 +351,6 @@ const dictionary: Dictionary = {
     '保险库已锁定（例如因长时间未操作），因此无法重新加载数据。\n\n请使用主密码重新解锁保险库。',
   'Importa dati nel vault': '将数据导入保险库',
   'Importa pacchetto cifrato': '导入加密数据包',
-  'Importare i dati nel vault? Verrà creato un backup prima della scrittura.':
-    '将数据导入保险库？写入前会先创建备份。',
   'Importazione effettuata': '导入完成',
   'Imposta lo zoom al massimo, {n}%': '将缩放设为最大值，{n}%',
   'Imposta lo zoom al minimo, {n}%': '将缩放设为最小值，{n}%',
