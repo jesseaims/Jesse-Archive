@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    'Extensión con menos permisos y avisos de subdominios',
+    'La extensión del navegador ya no pide permiso para leer todas las pestañas abiertas, que no necesitaba: al instalarla desaparece el aviso sobre el historial de navegación, y el rellenado, el guardado de cuentas y las passkeys funcionan como antes. En la miniventana, las cuentas guardadas para la dirección exacta de la página aparecen primero; las guardadas para otro subdominio del mismo sitio indican dónde están guardadas (por ejemplo «Guardado para accounts.google.com»), y si el campo está en un marco de otra dirección la miniventana lo indica.',
+  ],
   'browser-channel-hardening': [
     'Conexión con el navegador más protegida',
     'El archivo con el código de acceso que la extensión usa para conectarse a la app ahora solo puede leerlo tu usuario de Windows, aunque la carpeta permita leer a otros, y se elimina al cerrar la app. Además, la app cierra las conexiones que no se identifican a tiempo, las que sobran y las que envían demasiados mensajes. El rellenado de credenciales funciona como antes y sigue siendo siempre tu elección en la miniventana.',

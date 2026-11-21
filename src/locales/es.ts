@@ -652,6 +652,8 @@ const dictionary: Dictionary = {
   'Seleziona password': 'Seleccionar contraseña',
   'Seleziona un account...': 'Selecciona una cuenta...',
   'Seleziona un campo di accesso': 'Selecciona un campo de inicio de sesión',
+  'Il campo è in un riquadro di {host}': 'El campo está en un marco de {host}',
+  'Salvato per {host}': 'Guardado para {host}',
   "Seleziona un'app installata oppure inserisci il suo nome come titolo dell'account. Puoi assegnare un logo dal PC.":
     'Selecciona una aplicación instalada o escribe su nombre como título de la cuenta. Puedes asignar un logotipo desde el PC.',
   'Selezionati: {n}': 'Seleccionados: {n}',

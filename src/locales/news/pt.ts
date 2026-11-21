@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    'Extensão com menos permissões e avisos de subdomínios',
+    'A extensão do navegador não pede mais permissão para ler todas as abas abertas, da qual não precisava: o aviso sobre o histórico de navegação desaparece na instalação, e o preenchimento, o salvamento de contas e as passkeys funcionam como antes. Na minijanela, as contas salvas para o endereço exato da página aparecem primeiro; as salvas para outro subdomínio do mesmo site mostram onde estão salvas (por exemplo «Salvo para accounts.google.com»), e se o campo estiver em um quadro de outro endereço a minijanela avisa.',
+  ],
   'browser-channel-hardening': [
     'Conexão com o navegador mais protegida',
     'O arquivo com o código de acesso que a extensão usa para se conectar ao app agora só pode ser lido pelo seu usuário do Windows, mesmo que a pasta permita a leitura por outros, e é excluído quando você fecha o app. O app também fecha as conexões que não se identificam a tempo, as que excedem o limite e as que enviam mensagens demais. O preenchimento de credenciais funciona como antes e continua sempre sendo uma escolha sua na minijanela.',

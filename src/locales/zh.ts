@@ -617,6 +617,8 @@ const dictionary: Dictionary = {
   'Seleziona password': '选择密码',
   'Seleziona un account...': '选择一个账户...',
   'Seleziona un campo di accesso': '选择登录字段',
+  'Il campo è in un riquadro di {host}': '该字段位于 {host} 的框架中',
+  'Salvato per {host}': '保存于 {host}',
   "Seleziona un'app installata oppure inserisci il suo nome come titolo dell'account. Puoi assegnare un logo dal PC.":
     '选择一个已安装的应用，或输入其名称作为账户标题。你可以从电脑中指定徽标。',
   'Selezionati: {n}': '已选择：{n}',

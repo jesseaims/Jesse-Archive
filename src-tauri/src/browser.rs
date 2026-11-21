@@ -107,6 +107,36 @@ fn same_account_site(saved: &str, target: &str) -> bool {
         _ => false,
     }
 }
+/// Host an account is saved for, without "www." (as `host` does for pages).
+fn saved_host(item: &Value) -> Option<String> {
+    let url = account_url(item["f"]["url"].as_str().unwrap_or(""), true)?;
+    let host = url.host_str()?.trim_end_matches('.');
+    Some(host.trim_start_matches("www.").to_string())
+}
+/// Accounts offered for a page (the frame of the focused field): the ones saved
+/// for its exact host first; the others, saved for another subdomain of the same
+/// site, carry that host in `saved` so the mini window can show it
+/// (accounts.google.com offered on sites.google.com).
+pub(crate) fn offered_accounts(items: &[Value], url: &str) -> Vec<Value> {
+    let page = host(url)
+        .map(|h| h.split(':').next().unwrap_or("").to_string())
+        .unwrap_or_default();
+    let mut out: Vec<(bool, Value)> = items
+        .iter()
+        .filter(|i| matching(i, url))
+        .map(|i| {
+            let other = saved_host(i).filter(|h| *h != page);
+            let mut entry = json!({"id":i["id"],"title":i["title"],"username":i["f"]["username"]});
+            if let Some(h) = &other {
+                entry["saved"] = json!(h);
+            }
+            (other.is_some(), entry)
+        })
+        .collect();
+    // Stable: within each group the vault order is kept.
+    out.sort_by_key(|(other, _)| *other);
+    out.into_iter().map(|(_, e)| e).collect()
+}
 /// The focused login field may be in a frame of another origin only when it
 /// belongs to the same registrable domain as the tab (connect.ubisoft.com inside
 /// www.ubisoft.com), same HTTPS port. A frame of another site (ads, widgets,
@@ -407,17 +437,16 @@ pub fn browser_accounts(app: tauri::AppHandle) -> Result<Value, String> {
     let state = app.state::<AppState>();
     let mut vault = state.vault()?;
     let status = vault.call("status", json!({}))?;
-    let mut result = json!({"available":true,"url":s.url,"domain":host(&s.url),"unlocked":status["unlocked"],"accounts":[]});
+    // The tab's site, and the frame's when the field is in a frame of another host.
+    let frame = Some(host(&s.url)).filter(|f| *f != host(&s.top)).flatten();
+    let mut result = json!({"available":true,"url":s.url,"domain":host(&s.top).or(host(&s.url)),"frame":frame,"unlocked":status["unlocked"],"accounts":[]});
     if status["unlocked"] == true {
         match vault.call("browser_state", json!({})) {
             Ok(data) => {
-                result["accounts"] = json!(data["items"]
-                    .as_array()
-                    .unwrap_or(&Vec::new())
-                    .iter()
-                    .filter(|i| matching(i, &s.url))
-                    .map(|i| json!({"id":i["id"],"title":i["title"],"username":i["f"]["username"]}))
-                    .collect::<Vec<_>>())
+                result["accounts"] = json!(offered_accounts(
+                    data["items"].as_array().map_or(&[][..], |v| v),
+                    &s.url
+                ))
             }
             Err(_) => result["unlocked"] = json!(false),
         }
@@ -606,6 +635,23 @@ mod tests {
             host("https://store.epicgames.com"),
             host("https://accounts.epicgames.com")
         );
+    }
+    #[test]
+    fn accounts_of_another_subdomain_come_after_and_say_where_they_are_saved() {
+        let login = |id: &str, url: &str| json!({"id":id,"type":"login","title":id,"f":{"url":url,"username":"utente"}});
+        let items = [
+            login("altro", "https://accounts.google.com"),
+            login("esatto", "https://sites.google.com/accesso"),
+            login("senza-www", "www.sites.google.com"),
+            login("estraneo", "https://example.com"),
+        ];
+        let offered = offered_accounts(&items, "https://sites.google.com/pagina");
+        let ids: Vec<&str> = offered.iter().map(|a| a["id"].as_str().unwrap()).collect();
+        assert_eq!(ids, ["esatto", "senza-www", "altro"]);
+        assert!(offered[0].get("saved").is_none() && offered[1].get("saved").is_none());
+        assert_eq!(offered[2]["saved"], "accounts.google.com");
+        // The mini window never receives the password.
+        assert!(offered.iter().all(|a| a.get("password").is_none()));
     }
     #[test]
     fn related_site_matching_respects_suffix_boundaries_and_protocols() {

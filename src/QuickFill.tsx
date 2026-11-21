@@ -16,8 +16,16 @@ import {
 } from 'lucide-react';
 import { api } from './api';
 import { applyPalette } from './theme';
-type Account = { id: string; title: string; username: string };
-type Snapshot = { available: boolean; unlocked?: boolean; domain?: string; accounts?: Account[] };
+// `saved`: the host the account is saved for, when it is another subdomain of the page's site.
+type Account = { id: string; title: string; username: string; saved?: string };
+// `frame`: host of the frame holding the field, when it differs from the tab's.
+type Snapshot = {
+  available: boolean;
+  unlocked?: boolean;
+  domain?: string;
+  frame?: string | null;
+  accounts?: Account[];
+};
 // WebAuthn request from a site (src-tauri/src/passkey.rs).
 type Passkey = {
   active: boolean;
@@ -620,6 +628,11 @@ export default function QuickFill() {
           <span>{t('HTTPS')}</span>
         </div>
       )}
+      {state.available && state.frame && (
+        <p className="quick-note">
+          {tRich('Il campo è in un riquadro di {host}', { host: <strong>{state.frame}</strong> })}
+        </p>
+      )}
       {notice ? (
         <div className="quick-message" role="status">
           <ShieldCheck size={32} />
@@ -669,6 +682,11 @@ export default function QuickFill() {
                 <span>
                   <strong>{a.title}</strong>
                   <small>{a.username || t('Username non impostato')}</small>
+                  {a.saved && (
+                    <small className="quick-saved">
+                      {t('Salvato per {host}', { host: a.saved })}
+                    </small>
+                  )}
                 </span>
                 <ArrowRight size={16} />
               </button>

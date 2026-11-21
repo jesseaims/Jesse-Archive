@@ -67,3 +67,19 @@ test('greets the app with its version and reloads itself when the app asks',asyn
  onPort({kind:'reload'});await new Promise(r=>setTimeout(r,0));
  assert.equal(reloads,1);w.close();
 });
+test('manifests ask only for the permissions the extension uses (SEC-08)',()=>{
+ const read=b=>JSON.parse(readFileSync(new URL(`../browser-extension/${b}/manifest.json`,import.meta.url),'utf8'));
+ const generator=readFileSync(new URL('../scripts/package-browser-extension.mjs',import.meta.url),'utf8');
+ assert.doesNotMatch(generator,/'tabs'/);
+ for (const b of ['chromium','firefox']) {
+  const m=read(b);
+  // No "tabs": the URL of HTTPS tabs comes with the host permission; with "tabs" the
+  // extension could read the address and title of every tab, also non-HTTPS ones.
+  assert.deepEqual(m.permissions,['nativeMessaging','scripting'],b);
+  assert.deepEqual(m.host_permissions,['https://*/*'],b);
+  assert.ok(m.content_scripts.every(c=>c.matches.every(x=>x==='https://*/*')),b);
+ }
+ // The code never relies on a permission it does not have.
+ for (const f of ['background.js','save-capture.js','passkey-bridge.js','passkey-page.js'])
+  assert.doesNotMatch(readFileSync(new URL(`../browser-extension/${f}`,import.meta.url),'utf8'),/\b(api|chrome|browser)\.(history|cookies|webRequest|storage|downloads)\b/,f);
+});

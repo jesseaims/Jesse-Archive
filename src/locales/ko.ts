@@ -637,6 +637,8 @@ const dictionary: Dictionary = {
   'Seleziona password': '비밀번호 선택',
   'Seleziona un account...': '계정 선택...',
   'Seleziona un campo di accesso': '로그인 필드를 선택하세요',
+  'Il campo è in un riquadro di {host}': '이 필드는 {host}의 프레임 안에 있습니다',
+  'Salvato per {host}': '{host}용으로 저장됨',
   "Seleziona un'app installata oppure inserisci il suo nome come titolo dell'account. Puoi assegnare un logo dal PC.":
     '설치된 앱을 선택하거나 앱 이름을 계정 제목으로 입력하세요. PC에서 로고를 지정할 수 있습니다.',
   'Selezionati: {n}': '선택됨: {n}',

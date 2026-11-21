@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'extension-permissions',
+    addedAt: '2026-11-21T17:47:00+01:00',
+    version: 'Beta 1.9.3',
+    title: 'Estensione con meno permessi e avvisi sui sottodomini',
+    description:
+      'L’estensione del browser non chiede più il permesso di leggere tutte le schede aperte, che non le serviva: all’installazione sparisce l’avviso sulla cronologia di navigazione, e inserimento, salvataggio degli account e passkey funzionano come prima. Nella mini finestra gli account salvati per l’indirizzo esatto della pagina compaiono per primi; quelli salvati per un altro sottodominio dello stesso sito indicano dove sono salvati (per esempio «Salvato per accounts.google.com»), e se il campo è in un riquadro di un altro indirizzo la mini finestra lo segnala.',
+    icon: 'shield',
+  },
+  {
     id: 'browser-channel-hardening',
     addedAt: '2026-11-21T17:03:00+01:00',
     version: 'Beta 1.9.2',

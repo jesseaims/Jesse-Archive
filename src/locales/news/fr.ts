@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    'Extension avec moins de permissions et avis sur les sous-domaines',
+    'L’extension du navigateur ne demande plus l’autorisation de lire tous les onglets ouverts, dont elle n’avait pas besoin : l’avertissement sur l’historique de navigation disparaît à l’installation, et le remplissage, l’enregistrement des comptes et les passkeys fonctionnent comme avant. Dans la mini-fenêtre, les comptes enregistrés pour l’adresse exacte de la page apparaissent en premier ; ceux enregistrés pour un autre sous-domaine du même site indiquent où ils sont enregistrés (par exemple « Enregistré pour accounts.google.com »), et si le champ se trouve dans un cadre d’une autre adresse, la mini-fenêtre le signale.',
+  ],
   'browser-channel-hardening': [
     'Connexion avec le navigateur mieux protégée',
     'Le fichier contenant le code d’accès que l’extension utilise pour se connecter à l’application ne peut désormais être lu que par votre utilisateur Windows, même si le dossier permet à d’autres de le lire, et il est supprimé à la fermeture de l’application. L’application ferme aussi les connexions qui ne s’identifient pas à temps, celles en trop et celles qui envoient trop de messages. Le remplissage des identifiants fonctionne comme avant et reste toujours votre choix dans la mini-fenêtre.',

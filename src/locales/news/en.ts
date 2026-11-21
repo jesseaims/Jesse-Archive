@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    'Extension with fewer permissions and subdomain notices',
+    'The browser extension no longer asks for permission to read every open tab, which it did not need: the browsing history notice disappears at installation, and filling, account saving and passkeys work as before. In the mini window, accounts saved for the page’s exact address come first; those saved for another subdomain of the same site show where they are saved (for example «Saved for accounts.google.com»), and if the field is in a frame of another address the mini window says so.',
+  ],
   'browser-channel-hardening': [
     'Better protected browser connection',
     'The file with the access code the extension uses to connect to the app can now be read only by your Windows user, even when the folder lets others read, and it is deleted when you close the app. The app also closes connections that do not identify themselves in time, those in excess and those sending too many messages. Filling in credentials works as before and is always your choice in the mini window.',
