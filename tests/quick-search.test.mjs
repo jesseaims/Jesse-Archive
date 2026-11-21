@@ -180,10 +180,12 @@ test('edit distance counts transpositions as one change', () => {
 });
 
 test('the quick-search window may call the backend (Tauri capability)', async () => {
-  // Without its label here every invoke from the window is refused in the real app.
+  // Without its own capability every invoke from the window is refused in the real
+  // app; tests/capabilities.test.mjs checks the exact list of commands.
   const { readFile } = await import('node:fs/promises');
   const cap = JSON.parse(
-    await readFile(new URL('../src-tauri/capabilities/default.json', import.meta.url), 'utf8'),
+    await readFile(new URL('../src-tauri/capabilities/quick-search.json', import.meta.url), 'utf8'),
   );
-  assert.ok(cap.windows.includes('quick-search'));
+  assert.deepEqual(cap.windows, ['quick-search']);
+  assert.ok(cap.permissions.includes('allow-quick-search-data'));
 });

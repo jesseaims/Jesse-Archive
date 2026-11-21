@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    'Exported files keep groups and favorites',
+    'When you export the vault as CSV and import it again, accounts of apps and services without a website (for example several accounts of the same game) go back into their named group instead of each ending up in a separate group, and favorites stay favorites. The JSON export now also keeps group names and icons. Also, items deleted and then imported again from a JSON file no longer disappear at the next save.',
+  ],
+  'window-permissions': [
+    'Each window can only do its own job',
+    'The browser mini window, Quick Search and the extension guide can now use only the functions each one needs: for example, they can no longer export the vault, read passwords they do not show, edit items or change the master password. All of this is still possible only from the main window. Nothing changes in everyday use.',
+  ],
   'group-favorites': [
     'Favorites straight from the account groups',
     'In the grouped view of accounts, each account has a star to add it to or remove it from favorites, and the star next to the group name adds or removes all its accounts at once, without opening them one by one.',

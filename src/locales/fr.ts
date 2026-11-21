@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // French. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Éléments importés : {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'Aucun élément importé : ceux du fichier sont déjà dans le coffre.',
+  'Gruppo (app o servizio senza sito)': 'Groupe (application ou service sans site)',
+  'Tipo di gruppo (app o altro)': 'Type de groupe (application ou autre)',
   'Rimuovi dai preferiti': 'Retirer des favoris',
   'Aggiungi il gruppo {name} ai preferiti': 'Ajouter le groupe {name} aux favoris',
   'Rimuovi il gruppo {name} dai preferiti': 'Retirer le groupe {name} des favoris',
@@ -390,7 +395,6 @@ const dictionary: Dictionary = {
     'Le coffre est verrouillé (par exemple après une inactivité), les données n’ont donc pas pu être rechargées.\n\nDéverrouillez à nouveau le coffre avec le mot de passe principal.',
   'Importa dati nel vault': 'Importer des données dans le coffre',
   'Importa pacchetto cifrato': 'Importer un paquet chiffré',
-  'Importazione effettuata': 'Importation terminée',
   'Imposta lo zoom al massimo, {n}%': 'Régler le zoom au maximum, {n} %',
   'Imposta lo zoom al minimo, {n}%': 'Régler le zoom au minimum, {n} %',
   'Imposta password': 'Définir le mot de passe',

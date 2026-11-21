@@ -1904,12 +1904,22 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
         .iter()
         .map(|f| (s(f, "name").to_string(), s(f, "id").to_string()))
         .collect();
+    // An item deleted from this vault keeps a tombstone (for the other devices): the
+    // imported copy, older than the deletion, would be removed again at the next save.
+    // Importing it is a new change, so it counts from now and wins everywhere.
+    let tomb = d["deleted"].clone();
+    let revived = |mut x: V, k: &str| {
+        if num(&tomb, s(&x, "id")) >= ts(&x) {
+            x[k] = json!(now());
+        }
+        x
+    };
     let mut n = 0;
     for item in array(pl, "items") {
         if !item.is_object() {
             continue;
         }
-        let mut it = item.clone();
+        let mut it = revived(item.clone(), "updated");
         let fname = fs_remote.get(s(&it, "folder"));
         it["folder"] = fname
             .and_then(|n| local.get(n))
@@ -1919,7 +1929,12 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
             .iter_mut()
             .find(|x| s(x, "id") == s(&it, "id"))
         {
-            if num(&it, "updated") > num(old, "updated") {
+            // In the trash here and not in the file: the import brings it back.
+            let restore = !old["trashed"].is_null() && it["trashed"].is_null();
+            if restore {
+                it["updated"] = json!(now());
+            }
+            if restore || num(&it, "updated") > num(old, "updated") {
                 *old = it;
                 n += 1
             }
@@ -1928,20 +1943,28 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
             n += 1
         }
     }
+    // Names and icons of the groups, only those this vault does not have yet.
+    if let Some(groups) = pl.get("groups").and_then(V::as_object) {
+        for (k, g) in groups {
+            if g.is_object() && d["groups"].get(k).is_none() {
+                obj(d, "groups").insert(k.clone(), g.clone());
+            }
+        }
+    }
     let existing: HashSet<String> = array(d, "passwords")
         .iter()
         .map(|p| s(p, "id").to_string())
         .collect();
     for p in array(pl, "passwords") {
         if !existing.contains(s(p, "id")) {
-            arr(d, "passwords").push(p.clone())
+            arr(d, "passwords").push(revived(p.clone(), "upd"))
         }
     }
     n
 }
 fn export_text(d: &V, format: &str) -> Res<String> {
     if format == "json" {
-        return serde_json::to_string_pretty(&json!({"kind":"jessamine-export","folders":d["folders"],"items":d["items"],"passwords":d["passwords"]})).map_err(err);
+        return serde_json::to_string_pretty(&json!({"kind":"jessamine-export","folders":d["folders"],"items":d["items"],"passwords":d["passwords"],"groups":d["groups"]})).map_err(err);
     }
     let mut columns = vec![];
     for t in ["card", "crypto", "login", "passkey", "personal"] {
@@ -1955,6 +1978,9 @@ fn export_text(d: &V, format: &str) -> Res<String> {
     let mut out = csv::Writer::from_writer(Vec::new());
     let mut head = vec!["name", "type", "folder", "notes"];
     head.extend(columns.iter().copied());
+    // Favorite and, for accounts grouped by app or service instead of by website,
+    // the group name: an import of this file puts them back together.
+    head.extend(["fav", "app_group", "app_group_type"]);
     out.write_record(head).map_err(err)?;
     for i in array(d, "items") {
         if !i["trashed"].is_null() {
@@ -1967,6 +1993,22 @@ fn export_text(d: &V, format: &str) -> Res<String> {
             .unwrap_or("");
         let mut row = vec![s(i, "title"), s(i, "type"), folder, s(i, "notes")];
         row.extend(columns.iter().map(|k| s(&i["f"], k)));
+        let gk = s(i, "gk");
+        let kind = gk.split(':').next().unwrap_or("");
+        let (group, kind) = if s(i, "type") == "login" && matches!(kind, "app" | "other") {
+            let name = s(&d["groups"][gk], "name");
+            (
+                if name.is_empty() {
+                    &gk[kind.len() + 1..]
+                } else {
+                    name
+                },
+                kind,
+            )
+        } else {
+            ("", "")
+        };
+        row.extend([if i["fav"] == true { "true" } else { "" }, group, kind]);
         out.write_record(row).map_err(err)?
     }
     String::from_utf8(out.into_inner().map_err(err)?).map_err(err)
@@ -2042,6 +2084,14 @@ fn add_entries(d: &mut V, entries: Vec<crate::importers::Entry>) -> usize {
             }
         }
         push_imported(d, typ, &e.title, folder, f, &e.notes);
+        if typ == "login" && !e.group.trim().is_empty() {
+            let kind = if e.group_kind == "other" {
+                "other"
+            } else {
+                "app"
+            };
+            group_by_title(d, kind, &e.group);
+        }
         if e.fav {
             if let Some(it) = arr(d, "items").last_mut() {
                 it["fav"] = json!(true);
@@ -3601,6 +3651,132 @@ mod vault_tests {
         v.call("bulk", json!({"ids": [ids[0]], "op": "fav", "fav": false}))
             .unwrap();
         assert!(!fav(&v, &ids[0]) && fav(&v, &ids[1]));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn an_export_reimported_keeps_groups_and_favorites() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let group = json!({"key": "app:primo", "name": "Gioco Bello", "src": "app", "icon": ""});
+        for title in ["Primo", "Secondo"] {
+            v.call("item", json!({"type": "login", "title": title, "f": {"username": title, "password": "pw-gioco"}, "group": group}))
+                .unwrap();
+        }
+        let other =
+            json!({"key": "other:router", "name": "Router di casa", "src": "other", "icon": ""});
+        v.call(
+            "item",
+            json!({"type": "login", "title": "Router", "f": {"username": "admin"}, "group": other}),
+        )
+        .unwrap();
+        v.call("item", json!({"type": "login", "title": "Sito", "fav": true, "f": {"url": "https://sito.example", "username": "io"}}))
+            .unwrap();
+        for format in ["csv", "json"] {
+            let text = v.call("export", json!({"format": format})).unwrap();
+            let (mut w, wdir) = test_vault();
+            w.call("create", json!({"password": "password-due"}))
+                .unwrap();
+            w.call("import", json!({"text": s(&text, "text")})).unwrap();
+            let items = array(&w.data, "items");
+            let by = |t: &str| items.iter().find(|i| s(i, "title") == t).unwrap();
+            // Both accounts of the app in one group, with its name.
+            let gk = s(by("Primo"), "gk").to_string();
+            assert!(gk.starts_with("app:"), "{format}: {gk}");
+            assert_eq!(s(by("Secondo"), "gk"), gk, "{format}");
+            assert_eq!(s(&w.data["groups"][&gk], "name"), "Gioco Bello", "{format}");
+            let rk = s(by("Router"), "gk").to_string();
+            assert!(rk.starts_with("other:"), "{format}: {rk}");
+            assert_eq!(
+                s(&w.data["groups"][&rk], "name"),
+                "Router di casa",
+                "{format}"
+            );
+            // A website account stays grouped by its site, and favorites come back.
+            assert_eq!(s(by("Sito"), "gk"), "", "{format}");
+            assert_eq!(by("Sito")["fav"], json!(true), "{format}");
+            assert_ne!(by("Primo")["fav"], json!(true), "{format}");
+            fs::remove_dir_all(wdir).unwrap();
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_json_export_reimported_after_deleting_everything_comes_back() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let text = v.call("export", json!({"format": "json"})).unwrap();
+        // Deleted for good (tombstones), then the export is imported again.
+        for id in &ids {
+            v.call("delete", json!({"id": id})).unwrap();
+        }
+        assert!(array(&v.data, "items").is_empty());
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(ids.len()));
+        let count = |v: &Vault| array(&v.data, "items").len();
+        assert_eq!(count(&v), ids.len());
+        // Still there after the synchronization, on disk and at the next unlock...
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(count(&v), ids.len());
+        assert_eq!(array(&data_on_disk(&v), "items").len(), ids.len());
+        v.lock();
+        v.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(count(&v), ids.len());
+        // ...with the password history, and the secrets intact.
+        assert!(array(&v.data, "passwords")
+            .iter()
+            .any(|p| s(p, "value") == "segreto-login-1"));
+        assert_eq!(
+            s(&v.find(&ids[0]).unwrap()["f"], "password"),
+            "segreto-login-1"
+        );
+        // A synchronization merges the copies and applies every tombstone again: the
+        // imported items must win over the deletion on both PCs.
+        let (mut other, odir) = other_device(&v);
+        other
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut other, "da un altro PC").unwrap();
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(count(&v), ids.len() + 1);
+        other.call("ping", json!({})).unwrap();
+        assert_eq!(count(&other), ids.len() + 1);
+        fs::remove_dir_all(odir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_json_export_reimported_brings_items_back_from_the_trash() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let text = v.call("export", json!({"format": "json"})).unwrap();
+        v.call("bulk", json!({"ids": ids, "op": "trash"})).unwrap();
+        let active = |v: &Vault| {
+            array(&v.data, "items")
+                .iter()
+                .filter(|i| i["trashed"].is_null())
+                .count()
+        };
+        assert_eq!(active(&v), 0);
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(ids.len()));
+        assert_eq!(active(&v), ids.len());
+        // Not duplicated, and a second import of the same file changes nothing.
+        assert_eq!(array(&v.data, "items").len(), ids.len());
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(0));
+        // It stays restored after a synchronization with another PC.
+        let (mut other, odir) = other_device(&v);
+        other
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut other, "da un altro PC").unwrap();
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(active(&v), ids.len() + 1);
+        fs::remove_dir_all(odir).unwrap();
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

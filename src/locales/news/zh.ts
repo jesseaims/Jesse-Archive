@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    '导出文件会保留分组和收藏',
+    '将保险库导出为 CSV 再重新导入时，没有网站的应用和服务的账户（例如同一款游戏的多个账户）会回到带有名称的原分组，而不是各自分到单独的分组，收藏也会保留。JSON 导出现在也会保留分组的名称和图标。此外，删除后又从 JSON 文件重新导入的条目，在下次保存时不会再消失。',
+  ],
+  'window-permissions': [
+    '每个窗口只能做自己的工作',
+    '浏览器迷你窗口、快速搜索和扩展指南现在只能使用各自需要的功能：例如，它们无法再导出保险库、读取未显示的密码、修改条目或更改主密码。这些操作仍然只能在主窗口中进行。日常使用没有任何变化。',
+  ],
   'group-favorites': [
     '直接在账户分组中设置收藏',
     '在账户的分组视图中，每个账户都有一颗星标，可将其加入或移出收藏；分组名称旁的星标可一次性将该组所有账户加入或移出收藏，无需逐个打开。',

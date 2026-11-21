@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    'Los archivos exportados conservan grupos y favoritos',
+    'Al exportar el vault a CSV y volver a importarlo, las cuentas de apps y servicios sin sitio web (por ejemplo, varias cuentas del mismo juego) vuelven a su grupo con su nombre en lugar de acabar cada una en un grupo separado, y los favoritos se mantienen. La exportación JSON ahora también conserva los nombres e iconos de los grupos. Además, los elementos eliminados y luego importados de nuevo desde un archivo JSON ya no desaparecen al guardar.',
+  ],
+  'window-permissions': [
+    'Cada ventana solo puede hacer su propio trabajo',
+    'La miniventana del navegador, la búsqueda rápida y la guía de las extensiones ahora solo pueden usar las funciones que necesita cada una: por ejemplo, ya no pueden exportar el vault, leer contraseñas que no muestran, modificar elementos ni cambiar la contraseña maestra. Todo esto sigue siendo posible solo desde la ventana principal. No cambia nada en el uso diario.',
+  ],
   'group-favorites': [
     'Favoritos directamente desde los grupos de cuentas',
     'En la vista por grupos de las cuentas, cada cuenta tiene una estrella para añadirla o quitarla de favoritos, y la estrella junto al nombre del grupo añade o quita todas sus cuentas a la vez, sin abrirlas una por una.',

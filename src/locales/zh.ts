@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': '已导入条目：{n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    '未导入任何条目：文件中的条目已在保险库中。',
+  'Gruppo (app o servizio senza sito)': '分组（无网站的应用或服务）',
+  'Tipo di gruppo (app o altro)': '分组类型（应用或其他）',
   'Rimuovi dai preferiti': '从收藏中移除',
   'Aggiungi il gruppo {name} ai preferiti': '将 {name} 组加入收藏',
   'Rimuovi il gruppo {name} dai preferiti': '将 {name} 组从收藏中移除',
@@ -366,7 +371,6 @@ const dictionary: Dictionary = {
     '保险库已锁定（例如因长时间未操作），因此无法重新加载数据。\n\n请使用主密码重新解锁保险库。',
   'Importa dati nel vault': '将数据导入保险库',
   'Importa pacchetto cifrato': '导入加密数据包',
-  'Importazione effettuata': '导入完成',
   'Imposta lo zoom al massimo, {n}%': '将缩放设为最大值，{n}%',
   'Imposta lo zoom al minimo, {n}%': '将缩放设为最小值，{n}%',
   'Imposta password': '设置密码',

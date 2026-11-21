@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    'Les fichiers exportés conservent groupes et favoris',
+    'En exportant le coffre en CSV puis en le réimportant, les comptes des applications et services sans site (par exemple plusieurs comptes du même jeu) retrouvent leur groupe et son nom au lieu de finir chacun dans un groupe séparé, et les favoris restent favoris. L’export JSON conserve désormais aussi les noms et icônes des groupes. De plus, les éléments supprimés puis réimportés depuis un fichier JSON ne disparaissent plus à l’enregistrement suivant.',
+  ],
+  'window-permissions': [
+    'Chaque fenêtre ne peut faire que son propre travail',
+    'La mini-fenêtre du navigateur, la recherche rapide et le guide des extensions ne peuvent désormais utiliser que les fonctions dont chacune a besoin : par exemple, elles ne peuvent plus exporter le coffre, lire des mots de passe qu’elles n’affichent pas, modifier des éléments ou changer le mot de passe principal. Tout cela reste possible uniquement depuis la fenêtre principale. Rien ne change dans l’usage quotidien.',
+  ],
   'group-favorites': [
     'Favoris directement depuis les groupes de comptes',
     'Dans la vue par groupes des comptes, chaque compte a une étoile pour l’ajouter aux favoris ou l’en retirer, et l’étoile à côté du nom du groupe ajoute ou retire tous ses comptes d’un coup, sans les ouvrir un par un.',

@@ -29,7 +29,7 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `scripts/`, `installer/`, script PowerShell in root | Generazione metadati e pacchetti; setup unico Inno (dalla Beta 1.2.0, niente MSI) |
 | `legacy-python/` | Applicazione precedente indipendente; non chiamata dal client Rust |
 
-Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup` (tutte in `capabilities/default.json`). Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
+Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup`, ognuna con i soli permessi dei comandi che usa (`capabilities/<finestra>.json`, comandi dichiarati in `build.rs`, `api` limitato per finestra da `api_allowed`; `npm run test:capabilities`). Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
 
 ## C. Technology Stack
 

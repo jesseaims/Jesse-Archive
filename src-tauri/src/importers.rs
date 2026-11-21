@@ -20,6 +20,11 @@ pub struct Entry {
     /// Structured fields (url, username, password, totp, holder, number…).
     pub fields: HashMap<String, String>,
     pub notes: String,
+    /// Group of an account without a website (an app or another service), by name:
+    /// Jesse's Archive CSV columns `app_group` / `app_group_type`.
+    pub group: String,
+    /// "app" or "other".
+    pub group_kind: String,
 }
 
 /// Where a CSV column goes. `notes+` appends "Column: value" to the notes.
@@ -49,6 +54,8 @@ pub const TARGETS: &[&str] = &[
     "platform",
     "seed",
     "credential",
+    "app_group",
+    "app_group_type",
     "notes+",
     "ignore",
 ];
@@ -95,6 +102,8 @@ pub fn csv_target(header: &str) -> &'static str {
         "platform" => "platform",
         "seed" => "seed",
         "credential" => "credential",
+        "appgroup" => "app_group",
+        "appgrouptype" => "app_group_type",
         _ => "ignore",
     }
 }
@@ -212,6 +221,7 @@ pub fn parse_csv(text: &str, columns: &[(String, String)]) -> Result<Vec<Entry>,
             String::new(),
             Vec::new(),
         );
+        let (mut group, mut group_kind) = (String::new(), String::new());
         for ((header, target), value) in columns.iter().zip(row.iter()) {
             let value = value.trim();
             if value.is_empty() {
@@ -223,6 +233,8 @@ pub fn parse_csv(text: &str, columns: &[(String, String)]) -> Result<Vec<Entry>,
                 "folder" if folder.is_empty() => folder = value.into(),
                 "fav" => fav |= truthy(value),
                 "type" => kind = value.into(),
+                "app_group" => group = value.into(),
+                "app_group_type" => group_kind = value.into(),
                 "notes" => notes.push(value.to_string()),
                 "notes+" => extra.push(format!("{header}: {value}")),
                 "title" | "folder" => extra.push(format!("{header}: {value}")),
@@ -257,6 +269,8 @@ pub fn parse_csv(text: &str, columns: &[(String, String)]) -> Result<Vec<Entry>,
             fav,
             fields,
             notes: notes.join("\n"),
+            group,
+            group_kind,
         });
     }
     Ok(out)

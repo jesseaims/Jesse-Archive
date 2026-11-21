@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Spanish. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Elementos importados: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'No se importó ningún elemento: los del archivo ya están en el vault.',
+  'Gruppo (app o servizio senza sito)': 'Grupo (app o servicio sin sitio web)',
+  'Tipo di gruppo (app o altro)': 'Tipo de grupo (app u otro)',
   'Rimuovi dai preferiti': 'Quitar de favoritos',
   'Aggiungi il gruppo {name} ai preferiti': 'Añadir el grupo {name} a favoritos',
   'Rimuovi il gruppo {name} dai preferiti': 'Quitar el grupo {name} de favoritos',
@@ -387,7 +392,6 @@ const dictionary: Dictionary = {
     'La bóveda está bloqueada (por ejemplo, por inactividad), así que no se pudieron recargar los datos.\n\nDesbloquea de nuevo la bóveda con la contraseña maestra.',
   'Importa dati nel vault': 'Importar datos en la bóveda',
   'Importa pacchetto cifrato': 'Importar paquete cifrado',
-  'Importazione effettuata': 'Importación completada',
   'Imposta lo zoom al massimo, {n}%': 'Ajustar el zoom al máximo, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Ajustar el zoom al mínimo, {n}%',
   'Imposta password': 'Establecer contraseña',

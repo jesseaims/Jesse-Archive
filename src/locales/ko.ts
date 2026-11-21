@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': '가져온 항목: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    '가져온 항목이 없습니다. 파일의 항목이 이미 볼트에 있습니다.',
+  'Gruppo (app o servizio senza sito)': '그룹(웹사이트가 없는 앱 또는 서비스)',
+  'Tipo di gruppo (app o altro)': '그룹 유형(앱 또는 기타)',
   'Rimuovi dai preferiti': '즐겨찾기에서 제거',
   'Aggiungi il gruppo {name} ai preferiti': '{name} 그룹을 즐겨찾기에 추가',
   'Rimuovi il gruppo {name} dai preferiti': '{name} 그룹을 즐겨찾기에서 제거',
@@ -377,7 +382,6 @@ const dictionary: Dictionary = {
     '보관함이 잠겨 있어(예: 사용하지 않아서) 데이터를 다시 불러오지 못했습니다.\n\n마스터 비밀번호로 보관함을 다시 잠금 해제하세요.',
   'Importa dati nel vault': '보관함으로 데이터 가져오기',
   'Importa pacchetto cifrato': '암호화된 패키지 가져오기',
-  'Importazione effettuata': '가져오기 완료',
   'Imposta lo zoom al massimo, {n}%': '확대/축소를 최대로 설정, {n}%',
   'Imposta lo zoom al minimo, {n}%': '확대/축소를 최소로 설정, {n}%',
   'Imposta password': '비밀번호 설정',

@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Items imported: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'No items imported: those in the file are already in the vault.',
+  'Gruppo (app o servizio senza sito)': 'Group (app or service without a website)',
+  'Tipo di gruppo (app o altro)': 'Group type (app or other)',
   'Rimuovi dai preferiti': 'Remove from favorites',
   'Aggiungi il gruppo {name} ai preferiti': 'Add the {name} group to favorites',
   'Rimuovi il gruppo {name} dai preferiti': 'Remove the {name} group from favorites',
@@ -383,7 +388,6 @@ const dictionary: Dictionary = {
     'The vault is locked (for example after inactivity), so the data could not be reloaded.\n\nUnlock the vault again with the master password.',
   'Importa dati nel vault': 'Import data into the vault',
   'Importa pacchetto cifrato': 'Import encrypted package',
-  'Importazione effettuata': 'Import completed',
   'Imposta lo zoom al massimo, {n}%': 'Set zoom to the maximum, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Set zoom to the minimum, {n}%',
   'Imposta password': 'Set password',

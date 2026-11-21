@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Elementos importados: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'Nenhum elemento importado: os do ficheiro já estão no cofre.',
+  'Gruppo (app o servizio senza sito)': 'Grupo (app ou serviço sem site)',
+  'Tipo di gruppo (app o altro)': 'Tipo de grupo (app ou outro)',
   'Rimuovi dai preferiti': 'Remover dos favoritos',
   'Aggiungi il gruppo {name} ai preferiti': 'Adicionar o grupo {name} aos favoritos',
   'Rimuovi il gruppo {name} dai preferiti': 'Remover o grupo {name} dos favoritos',
@@ -389,7 +394,6 @@ const dictionary: Dictionary = {
     'O cofre está bloqueado (por exemplo, por inatividade), então não foi possível recarregar os dados.\n\nDesbloqueie o cofre novamente com a senha mestra.',
   'Importa dati nel vault': 'Importar dados para o cofre',
   'Importa pacchetto cifrato': 'Importar pacote criptografado',
-  'Importazione effettuata': 'Importação concluída',
   'Imposta lo zoom al massimo, {n}%': 'Definir o zoom no máximo, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Definir o zoom no mínimo, {n}%',
   'Imposta password': 'Definir senha',

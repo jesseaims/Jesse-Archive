@@ -1,0 +1,25 @@
+{
+  "identifier": "quick-fill",
+  "description": "Browser mini window: account choice and fill, save and passkey confirmations; api only for unlock (lib.rs api_allowed). tests/capabilities.test.mjs checks this list against the window code.",
+  "windows": [
+    "quick-fill"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-api",
+    "allow-browser-accounts",
+    "allow-browser-cancel",
+    "allow-browser-fill",
+    "allow-browser-save-approve",
+    "allow-browser-save-dismiss",
+    "allow-browser-save-state",
+    "allow-language-get",
+    "allow-language-set",
+    "allow-passkey-approve",
+    "allow-passkey-cancel",
+    "allow-passkey-fallback",
+    "allow-passkey-state",
+    "allow-zoom-change",
+    "allow-zoom-get"
+  ]
+}

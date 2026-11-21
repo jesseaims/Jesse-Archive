@@ -125,6 +125,8 @@ const IMPORT_TARGETS: [string, string][] = [
   ['platform', msg('Piattaforma')],
   ['seed', msg('Seed')],
   ['credential', msg('Credenziale')],
+  ['app_group', msg('Gruppo (app o servizio senza sito)')],
+  ['app_group_type', msg('Tipo di gruppo (app o altro)')],
   ['ignore', msg('Ignora')],
 ];
 
@@ -2619,12 +2621,18 @@ export default function App() {
                 disabled={busy || (dialog === 'preview' && !importPreview?.count)}
                 onClick={async () => {
                   if (dialog === 'preview' && importPreview) {
-                    const r = await mutate(
-                      'import',
-                      { text: importPreview.text, mapping: importPreview.mapping },
-                      t('Importazione effettuata'),
-                    );
+                    const r = await run<{ state: State; count: number }>('import', {
+                      text: importPreview.text,
+                      mapping: importPreview.mapping,
+                    });
                     if (r) {
+                      setVault(r.state);
+                      // Items already in the vault with the same data are not imported again.
+                      notify(
+                        r.count
+                          ? t('Elementi importati: {n}', { n: r.count })
+                          : t('Nessun elemento importato: quelli del file sono già nel vault.'),
+                      );
                       setDialog(null);
                       setImportPreview(null);
                     }
