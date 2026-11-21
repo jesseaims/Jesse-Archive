@@ -2,7 +2,7 @@
 
 *English version below.*
 
-Ultimo aggiornamento: 21 novembre 2026.
+Ultimo aggiornamento: 21 novembre 2026. Versione pubblicata: <https://jessearchive.it/privacy-estensione/>.
 
 Questa informativa riguarda l'estensione per browser **JesseArchive · Inserimento rapido** e l'app desktop **Jesse's Archive**. L'estensione funziona solo insieme all'app desktop, installata sullo stesso computer.
 
@@ -39,13 +39,13 @@ I dati restano nel vault finché non li elimini dall'app. Disinstallando l'esten
 
 ## Contatti
 
-Domande o segnalazioni: <https://github.com/jesseaims/Jesse-Archive/issues>
+Domande sulla privacy: le email indicate in <https://jessearchive.it/supporto/>. Segnalazioni tecniche: <https://github.com/jesseaims/Jesse-Archive/issues>
 
 ---
 
 # Privacy policy — Jesse's Archive
 
-Last updated: 21 November 2026.
+Last updated: 21 November 2026. Published version: <https://jessearchive.it/en/privacy-estensione/>.
 
 This policy covers the browser extension **JesseArchive · Quick fill** and the desktop app **Jesse's Archive**. The extension only works together with the desktop app, installed on the same computer.
 
@@ -82,4 +82,4 @@ Data stays in the vault until you delete it in the app. Uninstalling the extensi
 
 ## Contact
 
-Questions or reports: <https://github.com/jesseaims/Jesse-Archive/issues>
+Privacy questions: the email addresses listed at <https://jessearchive.it/supporto/>. Technical reports: <https://github.com/jesseaims/Jesse-Archive/issues>
