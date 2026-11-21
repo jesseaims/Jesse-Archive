@@ -4,7 +4,8 @@ Testi pronti da copiare nel Chrome Web Store, nel sito dei componenti aggiuntivi
 
 - **Pacchetti:** `npm run package:store` crea in `store/out/` lo zip per Chrome/Edge (senza il campo `key`) e quello per Firefox.
 - **Immagini:** sono in `store/images/`.
-- **Informativa privacy:** [PRIVACY.md](../PRIVACY.md), indirizzo pubblico <https://github.com/jesseaims/Jesse-Archive/blob/main/PRIVACY.md>.
+- **Informativa privacy:** pubblicata sul sito, <https://jessearchive.it/privacy-estensione/> (inglese: <https://jessearchive.it/en/privacy-estensione/>). [PRIVACY.md](../PRIVACY.md) ne è la copia di riferimento: tenerli allineati.
+- **Supporto:** <https://jessearchive.it/supporto/>; sito: <https://jessearchive.it>.
 
 Nome e descrizione breve vengono dal manifest, tradotti in `browser-extension/_locales/`: lo store li prende da lì e non vanno riscritti.
 
@@ -14,7 +15,7 @@ Nome e descrizione breve vengono dal manifest, tradotti in `browser-extension/_l
 
 Inserisci, salva e usa le passkey dei tuoi account direttamente dal vault di Jesse's Archive, il password manager per Windows che tiene i dati cifrati sul tuo computer.
 
-**Richiede l'app desktop Jesse's Archive per Windows**, gratuita: <https://github.com/jesseaims/Jesse-Archive/releases/latest>. L'estensione da sola non contiene né salva password: fa da ponte fra la pagina e l'app.
+**Richiede l'app desktop Jesse's Archive per Windows**, gratuita: <https://jessearchive.it/download/>. L'estensione da sola non contiene né salva password: fa da ponte fra la pagina e l'app.
 
 Cosa fa:
 • Inserimento rapido: seleziona il campo di accesso, premi la scorciatoia (Ctrl+Alt+J) o il pulsante dell'estensione e scegli l'account nella finestra dell'app. Vengono proposti solo gli account del sito aperto, e il login non viene mai inviato da solo.
@@ -27,13 +28,13 @@ Privacy e sicurezza:
 • Le credenziali restano nel vault cifrato con AES-256-GCM.
 • Un riquadro di un altro sito non riceve mai le credenziali, e gli account salvati per un altro sottodominio sono segnalati.
 
-Informativa: <https://github.com/jesseaims/Jesse-Archive/blob/main/PRIVACY.md>
+Informativa: <https://jessearchive.it/privacy-estensione/>
 
 ## Descrizione lunga — English
 
 Fill in, save and use passkeys for your accounts straight from the vault of Jesse's Archive, the Windows password manager that keeps your data encrypted on your computer.
 
-**Requires the free Jesse's Archive desktop app for Windows**: <https://github.com/jesseaims/Jesse-Archive/releases/latest>. On its own the extension holds and saves no passwords: it is the bridge between the page and the app.
+**Requires the free Jesse's Archive desktop app for Windows**: <https://jessearchive.it/en/download/>. On its own the extension holds and saves no passwords: it is the bridge between the page and the app.
 
 What it does:
 • Quick fill: select the sign-in field, press the shortcut (Ctrl+Alt+J) or the extension button and pick the account in the app window. Only the accounts of the open site are offered, and the sign-in is never submitted for you.
@@ -46,7 +47,7 @@ Privacy and security:
 • Credentials stay in the AES-256-GCM encrypted vault.
 • A frame of another site never receives credentials, and accounts saved for another subdomain are flagged.
 
-Privacy policy: <https://github.com/jesseaims/Jesse-Archive/blob/main/PRIVACY.md>
+Privacy policy: <https://jessearchive.it/en/privacy-estensione/>
 
 ---
 
@@ -54,7 +55,7 @@ Privacy policy: <https://github.com/jesseaims/Jesse-Archive/blob/main/PRIVACY.md
 
 **Categoria:** Strumenti (Tools); in Edge: Produttività.
 **Lingua predefinita:** italiano; le altre lingue arrivano dal manifest.
-**Sito / assistenza:** <https://github.com/jesseaims/Jesse-Archive>, problemi: <https://github.com/jesseaims/Jesse-Archive/issues>
+**URL home page:** <https://jessearchive.it> · **URL assistenza:** <https://jessearchive.it/supporto/> · **URL ufficiale:** «Nessuno» finché `jessearchive.it` non è verificato in Google Search Console, poi `jessearchive.it`.
 
 ### Scheda «Privacy»
 
@@ -83,7 +84,7 @@ Lascia senza spunta tutto il resto: dati personali identificativi, salute, finan
 - non uso né trasferisco i dati per scopi estranei allo scopo unico dell'estensione;
 - non uso né trasferisco i dati per valutare l'affidabilità creditizia o per prestiti.
 
-**URL informativa privacy:** <https://github.com/jesseaims/Jesse-Archive/blob/main/PRIVACY.md>
+**URL informativa privacy:** <https://jessearchive.it/privacy-estensione/>
 
 ### Istruzioni per i revisori (campo «Test instructions» / note)
 
@@ -107,7 +108,7 @@ Lascia senza spunta tutto il resto: dati personali identificativi, salute, finan
 
 **Descrizione:** la stessa descrizione lunga di sopra.
 **Licenza:** da scegliere tu. Se non vuoi una licenza open source, scegli «Tutti i diritti riservati».
-**Informativa privacy:** incolla il testo di [PRIVACY.md](../PRIVACY.md).
+**Informativa privacy:** incolla il testo di [PRIVACY.md](../PRIVACY.md) (lo stesso della pagina <https://jessearchive.it/privacy-estensione/>); come sito di assistenza <https://jessearchive.it/supporto/>.
 **Raccolta dati:** il manifest dichiara `data_collection_permissions: none`. L'estensione non trasmette dati allo sviluppatore né a terzi, solo all'app locale tramite native messaging.
 
 **Note per i revisori**
