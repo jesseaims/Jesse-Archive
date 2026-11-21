@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'css-cleanup': [
+    '스타일시트 정리',
+    '인터페이스 스타일에서 더 이상 효과가 없던 규칙을 제거했습니다. 이후 규칙에 항상 덮어써지던 속성과 더 이상 존재하지 않는 요소의 스타일입니다. 앱 모양은 완전히 같으며, 자동 검사로 규칙마다 확인했습니다.',
+  ],
   'legacy-python-removed': [
     '오래된 Python 버전을 소스 코드에서 제거',
     'Python으로 작성된 Jesse’s Archive의 첫 버전은 더 이상 소스 코드에 포함되지 않습니다. 앱에서 사용하지 않았고 유지 관리를 어렵게 했습니다. 프로젝트 기록에서는 계속 볼 수 있습니다. 그 버전으로 만든 볼트는 여전히 열리며, 변경할 때마다 테스트로 확인합니다. 앱 사용자에게는 달라지는 것이 없습니다.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'css-cleanup': [
+    'スタイルシートを整理',
+    'インターフェースのスタイルから、効果のなくなったルールを削除しました。後のルールで常に上書きされていたプロパティと、存在しなくなった要素のスタイルです。アプリの見た目はまったく変わらず、自動チェックでルールごとに確認しました。',
+  ],
   'legacy-python-removed': [
     '古い Python 版をソースコードから削除',
     'Python で書かれた Jesse’s Archive の最初のバージョンは、ソースコードに含まれなくなりました。アプリでは使われておらず、保守を難しくしていました。プロジェクトの履歴では引き続き参照できます。そのバージョンで作成した保管庫は今後も開け、変更のたびにテストで確認しています。アプリの利用者にとっては何も変わりません。',

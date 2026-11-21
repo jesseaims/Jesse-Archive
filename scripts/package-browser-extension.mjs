@@ -10,7 +10,7 @@ if (!existsSync(keyFile)) {
 const key=readFileSync(keyFile,'utf8').trim();
 const id=[...createHash('sha256').update(Buffer.from(key,'base64')).digest().subarray(0,16)].map(b=>String.fromCharCode(97+(b>>4),97+(b&15))).join('');
 writeFileSync(new URL('chromium-id.txt',root),id+'\n');
-const shared={manifest_version:3,default_locale:'it',name:'__MSG_extName__',version:'1.8.2',description:'__MSG_extDescription__',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],icons:{16:'icons/icon-16.png',32:'icons/icon-32.png',48:'icons/icon-48.png',128:'icons/icon-128.png'},action:{default_title:'__MSG_actionTitle__',default_icon:{16:'icons/icon-16.png',32:'icons/icon-32.png'}},
+const shared={manifest_version:3,default_locale:'it',name:'__MSG_extName__',version:'1.8.3',description:'__MSG_extDescription__',permissions:['nativeMessaging','tabs','scripting'],host_permissions:['https://*/*'],icons:{16:'icons/icon-16.png',32:'icons/icon-32.png',48:'icons/icon-48.png',128:'icons/icon-128.png'},action:{default_title:'__MSG_actionTitle__',default_icon:{16:'icons/icon-16.png',32:'icons/icon-32.png'}},
   // Passkeys (WebAuthn): page hook in the MAIN world + isolated bridge, top frame of HTTPS pages.
   content_scripts:[{matches:['https://*/*'],js:['passkey-page.js'],run_at:'document_start',world:'MAIN'},{matches:['https://*/*'],js:['passkey-bridge.js'],run_at:'document_start'},
     // Offer to save submitted credentials: every frame (same-site login frames), isolated world.

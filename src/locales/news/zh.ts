@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'css-cleanup': [
+    '样式表已清理',
+    '已从界面样式中移除不再生效的规则：总是被后续规则覆盖的属性，以及一个已不存在元素的样式。应用外观完全不变，自动检查已逐条规则进行了验证。',
+  ],
   'legacy-python-removed': [
     '从源代码中移除旧的 Python 版本',
     'Jesse’s Archive 最早用 Python 编写的版本不再是源代码的一部分：应用并未使用它，而且它增加了维护难度。它仍可在项目历史中查看。用该版本创建的保险库仍可打开，每次修改都会有测试进行验证。对应用用户而言没有任何变化。',

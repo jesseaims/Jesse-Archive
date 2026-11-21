@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'css-cleanup',
+    addedAt: '2026-11-21T05:40:00+01:00',
+    version: 'Beta 1.8.3',
+    title: 'Foglio di stile ripulito',
+    description:
+      'Tolte dallo stile dell’interfaccia le regole che non avevano più effetto: proprietà sempre sovrascritte da regole successive e lo stile di un elemento che non esiste più. L’aspetto dell’app resta identico, e un controllo automatico lo ha verificato regola per regola.',
+    icon: 'palette',
+  },
+  {
     id: 'legacy-python-removed',
     addedAt: '2026-11-21T05:10:00+01:00',
     version: 'Beta 1.8.2',
