@@ -1,0 +1,21 @@
+{
+  "identifier": "quick-search",
+  "description": "Global Quick Search: metadata, copy and show in the backend, open; api only for unlock (lib.rs api_allowed). tests/capabilities.test.mjs checks this list against the window code.",
+  "windows": [
+    "quick-search"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-api",
+    "allow-language-get",
+    "allow-language-set",
+    "allow-quick-search-copy",
+    "allow-quick-search-data",
+    "allow-quick-search-hide",
+    "allow-quick-search-open",
+    "allow-quick-search-open-url",
+    "allow-quick-search-reveal",
+    "allow-zoom-change",
+    "allow-zoom-get"
+  ]
+}

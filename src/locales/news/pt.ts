@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-permissions': [
+    'Cada janela só pode fazer o seu próprio trabalho',
+    'A minijanela do navegador, a pesquisa rápida e o guia das extensões passam a poder usar apenas as funções de que cada uma precisa: por exemplo, já não podem exportar o cofre, ler palavras-passe que não mostram, alterar elementos nem mudar a palavra-passe principal. Tudo isto continua possível apenas a partir da janela principal. Nada muda no uso diário.',
+  ],
   'group-favorites': [
     'Favoritos diretamente nos grupos de contas',
     'Na vista por grupos das contas, cada conta tem uma estrela para a adicionar ou remover dos favoritos, e a estrela junto ao nome do grupo adiciona ou remove todas as suas contas de uma vez, sem as abrir uma a uma.',

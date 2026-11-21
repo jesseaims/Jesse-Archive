@@ -7,6 +7,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Applicazione desktop Tauri/React con vault JSON cifrato, master password e recupero, sei tipi di schede, cartelle, cestino e cronologia password.
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
+- Permessi per finestra: ogni finestra chiama solo i comandi nativi che usa e le finestre secondarie non accedono ai comandi del vault (dalla Beta 1.8.1).
 - Finestra principale senza segreti nello stato: password, PIN, CVV, seed, TOTP, chiavi delle passkey e note arrivano solo su richiesta; copia dalle schede e dallo storico nel backend (dalla Beta 1.8.0).
 - Wrapper master a scrypt N=2^17 con migrazione automatica, avviso se il file del vault viene sostituito con una copia più vecchia, nuovo tentativo delle scritture fallite e test di concorrenza fra due PC (dalla Beta 1.7.0).
 - Header del vault autenticato (HMAC dalla DEK) e cambio della chiave dati facoltativo nel cambio master, sempre con un nuovo codice di recupero (dalla Beta 1.6.0).
@@ -48,7 +49,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 
 | Proposta | Motivazione e cautela |
 |---|---|
-| Rafforzare confini IPC e gestione memoria | Dalla Beta 1.8.0 la finestra principale riceve i segreti solo su richiesta e `browser_state` non è accessibile alle webview. Restano: comandi accessibili alle finestre, copia dall'editor con il valore nella webview; non promettere wipe assoluto |
+| Rafforzare confini IPC e gestione memoria | Dalla Beta 1.8.0 la finestra principale riceve i segreti solo su richiesta e `browser_state` non è accessibile alle webview; dalla Beta 1.8.1 permessi dei comandi per finestra. Resta: copia dall'editor con il valore nella webview; non promettere wipe assoluto |
 | Validazione strutturale e migrazioni | Rifiutare dati malformati senza panic o mutazioni parziali; mantenere compatibilità con vault e fixture v1 |
 | Durabilità, concorrenza e merge | Dalla Beta 1.7.0 test di scrittori concorrenti, conflitti fra due PC e scrittura fallita (con nuovo tentativo alla sincronizzazione). Restano: collaudo reale con client cloud (OneDrive, Dropbox), interazione UI/revisione |
 | Documentare/rafforzare modello chiave e rotazione | Dalla Beta 1.6.0 header autenticato e cambio della chiave dati facoltativo (vedi SECURITY). Dalla Beta 1.7.0 scrypt `log_n=17` con migrazione e avviso anti-rollback per dispositivo. Resta: riferimento anti-rollback in una configurazione non protetta |

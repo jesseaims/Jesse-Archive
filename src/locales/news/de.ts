@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-permissions': [
+    'Jedes Fenster kann nur seine eigene Aufgabe erledigen',
+    'Das Browser-Minifenster, die Schnellsuche und die Erweiterungsanleitung können jetzt nur noch die Funktionen nutzen, die sie jeweils brauchen: Sie können zum Beispiel den Tresor nicht mehr exportieren, keine Passwörter lesen, die sie nicht anzeigen, keine Einträge ändern und das Master-Passwort nicht ändern. All das ist weiterhin nur im Hauptfenster möglich. Im Alltag ändert sich nichts.',
+  ],
   'group-favorites': [
     'Favoriten direkt in den Kontogruppen',
     'In der gruppierten Ansicht der Konten hat jedes Konto einen Stern, um es zu den Favoriten hinzuzufügen oder daraus zu entfernen, und der Stern neben dem Gruppennamen fügt alle Konten der Gruppe auf einmal hinzu oder entfernt sie, ohne sie einzeln zu öffnen.',

@@ -73,7 +73,7 @@ Non ci sono directory service/repository/domain separate: molte responsabilità 
 | `quick-search` | `QuickSearch`, query `?quick-search` | Nascosta perdendo il focus, con Esc o con la chiusura (Alt+F4); l'evento `quick-search-hidden` fa scartare risultati e password mostrata |
 | `browser-setup` | `BrowserInstaller`, query `?browser-setup` | Nasconde la guida; il processo può rimanere nel tray. Il pulsante "Ho installato l'estensione" chiama `browser_setup_finish`, che mostra e mette a fuoco `main` e poi nasconde la guida |
 
-Tutte e quattro compaiono in [capabilities/default.json](../src-tauri/capabilities/default.json) (una finestra assente lì non può chiamare alcun comando), con `core:default`. I comandi applicativi registrati nel Builder non hanno un ulteriore controllo per etichetta della finestra.
+Dalla Beta 1.8.1 ognuna ha il proprio file in [capabilities/](../src-tauri/capabilities/) (`main.json`, `quick-fill.json`, `quick-search.json`, `browser-setup.json`) con `core:default` e i soli permessi `allow-<comando>` dei comandi che il suo codice usa; una finestra senza file non può chiamare alcun comando. I permessi esistono perché `build.rs` dichiara tutti i comandi registrati (`AppManifest::commands`): Tauri li controlla a ogni chiamata. Inoltre `api` accetta dalla mini finestra e dalla ricerca rapida solo `unlock` e dalla guida estensioni nessun comando del vault (`api_allowed` in `lib.rs`). Vedere [SECURITY](SECURITY.md) (SEC-06) e `tests/capabilities.test.mjs`.
 
 ## Interfaccia principale e dispatcher
 

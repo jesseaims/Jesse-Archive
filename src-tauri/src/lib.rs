@@ -39,15 +39,29 @@ impl AppState {
     }
 }
 
+/// Vault commands (`Vault::call`) a window may send through `api`. The mini window
+/// and the Quick Search get their data from their own commands and only unlock here;
+/// the browser setup guide sends none. `browser_state` (the whole decrypted vault) is
+/// for the backend only. Which native commands each window may call at all is in
+/// capabilities/<window>.json.
+fn api_allowed(window: &str, name: &str) -> bool {
+    match (window, name) {
+        (_, "browser_state") => false,
+        ("main", _) => true,
+        ("quick-fill" | "quick-search", "unlock") => true,
+        _ => false,
+    }
+}
+
 #[tauri::command]
 async fn api(
     app: tauri::AppHandle,
+    window: tauri::Window,
     state: tauri::State<'_, AppState>,
     name: String,
     body: Value,
 ) -> Result<Value, String> {
-    // The whole decrypted vault is for the backend bridge only.
-    if name == "browser_state" {
+    if !api_allowed(window.label(), &name) {
         return Err("Operazione non disponibile per questo elemento".into());
     }
     let mut core = state.vault().inspect_err(|_| {
@@ -426,4 +440,36 @@ pub fn run() {
                 window_state::save(app);
             }
         });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::api_allowed;
+    #[test]
+    fn each_window_sends_only_its_vault_commands() {
+        for name in ["state", "secret", "export", "master", "item", "unlock"] {
+            assert!(api_allowed("main", name), "{name}");
+        }
+        for window in ["quick-fill", "quick-search"] {
+            assert!(api_allowed(window, "unlock"));
+            for name in [
+                "state",
+                "secret",
+                "item_full",
+                "export",
+                "master",
+                "pack",
+                "lock",
+            ] {
+                assert!(!api_allowed(window, name), "{window} {name}");
+            }
+        }
+        for name in ["unlock", "state", "status"] {
+            assert!(!api_allowed("browser-setup", name));
+            assert!(!api_allowed("sconosciuta", name));
+        }
+        for window in ["main", "quick-fill", "quick-search"] {
+            assert!(!api_allowed(window, "browser_state"));
+        }
+    }
 }

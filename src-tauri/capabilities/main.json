@@ -1,0 +1,39 @@
+{
+  "identifier": "main",
+  "description": "Main window: the whole vault interface (vault commands through api, files, clipboard, browser, update and Quick Search settings). tests/capabilities.test.mjs checks this list against the window code.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-api",
+    "allow-browser-install",
+    "allow-browser-open-extensions",
+    "allow-browser-save-forget",
+    "allow-browser-save-set-enabled",
+    "allow-browser-save-settings",
+    "allow-browser-setup-show",
+    "allow-browser-shortcut",
+    "allow-browser-status",
+    "allow-choose-file",
+    "allow-choose-icon-data",
+    "allow-clear-secret-if-unchanged",
+    "allow-copy-secret",
+    "allow-copy-vault-secret",
+    "allow-language-get",
+    "allow-language-set",
+    "allow-passkey-set-enabled",
+    "allow-passkey-settings",
+    "allow-quick-search-clear-recent",
+    "allow-quick-search-configure",
+    "allow-quick-search-settings",
+    "allow-read-file",
+    "allow-save-file",
+    "allow-update-check",
+    "allow-update-install",
+    "allow-update-set-auto",
+    "allow-update-settings",
+    "allow-zoom-change",
+    "allow-zoom-get"
+  ]
+}

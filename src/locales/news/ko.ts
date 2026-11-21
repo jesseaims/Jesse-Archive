@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'window-permissions': [
+    '각 창은 자신의 일만 할 수 있습니다',
+    '브라우저 미니 창, 빠른 검색, 확장 프로그램 안내는 이제 각자 필요한 기능만 사용할 수 있습니다. 예를 들어 볼트 내보내기, 표시하지 않는 비밀번호 읽기, 항목 수정, 마스터 비밀번호 변경을 더 이상 할 수 없습니다. 이 모든 작업은 계속 메인 창에서만 가능합니다. 일상적인 사용에는 아무 변화가 없습니다.',
+  ],
   'group-favorites': [
     '계정 그룹에서 바로 즐겨찾기',
     '계정의 그룹 보기에서 각 계정에 별이 있어 즐겨찾기에 추가하거나 제거할 수 있고, 그룹 이름 옆의 별은 하나씩 열지 않고도 그룹의 모든 계정을 한 번에 추가하거나 제거합니다.',

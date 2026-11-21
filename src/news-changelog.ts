@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'window-permissions',
+    addedAt: '2026-11-21T04:20:00+01:00',
+    version: 'Beta 1.8.1',
+    title: 'Ogni finestra può fare solo il proprio lavoro',
+    description:
+      'La mini finestra del browser, la ricerca rapida e la guida delle estensioni possono ora usare solo le funzioni che servono a ciascuna: per esempio non possono più esportare il vault, leggere password che non mostrano, modificare elementi o cambiare la password principale. Tutto questo resta possibile solo dalla finestra principale. Non cambia niente nell’uso di tutti i giorni.',
+    icon: 'shield',
+  },
+  {
     id: 'group-favorites',
     addedAt: '2026-11-21T04:00:00+01:00',
     version: 'Beta 1.8.0',
