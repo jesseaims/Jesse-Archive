@@ -8,7 +8,7 @@ Baseline analizzata: **Beta 1.1.4**, commit `1f09624`, revisione documentale del
 
 **JesseArchive**, denominato anche **Jesse's Archive** nell'interfaccia e nei bundle, è un password manager desktop orientato a Windows. Archivia account, note e altre informazioni sensibili in un file locale cifrato. Il prodotto non richiede un account online proprio e non offre un servizio cloud gestito dal progetto.
 
-Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e React/TypeScript per l'interfaccia, scritta in italiano e tradotta in nove lingue (`src/i18n.ts`, `src/locales/`). Esiste una copia Python storica per confronto e compatibilità. La filosofia da preservare è: dati locali, compatibilità del vault v1, cambiamenti limitati allo scopo, operazioni sui dati esplicite e test su fixture sintetiche. La dicitura Beta non costituisce una certificazione di sicurezza.
+Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e React/TypeScript per l'interfaccia, scritta in italiano e tradotta in nove lingue (`src/i18n.ts`, `src/locales/`). La vecchia applicazione Python è stata rimossa dalla Beta 1.8.2 (resta nella cronologia Git); la compatibilità con i suoi vault v1 è verificata da una fixture sintetica. La filosofia da preservare è: dati locali, compatibilità del vault v1, cambiamenti limitati allo scopo, operazioni sui dati esplicite e test su fixture sintetiche. La dicitura Beta non costituisce una certificazione di sicurezza.
 
 ## B. Project Architecture
 
@@ -27,7 +27,6 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `src-tauri/src/quick_search.rs`, `src-tauri/src/clipboard.rs`, `src/quick-search/` | Ricerca rapida globale: scorciatoia, finestra `quick-search`, solo metadati alla webview, copia nel backend; motore di ricerca puro in `engine.ts` |
 | `browser-extension/background.js` | Contesto della pagina e riempimento dei campi; sorgente delle copie Chromium/Firefox |
 | `scripts/`, `installer/`, script PowerShell in root | Generazione metadati e pacchetti; setup unico Inno (dalla Beta 1.2.0, niente MSI) |
-| `legacy-python/` | Applicazione precedente indipendente; non chiamata dal client Rust |
 
 Finestre Tauri: `main`, `quick-fill`, `quick-search`, `browser-setup`, ognuna con i soli permessi dei comandi che usa (`capabilities/<finestra>.json`, comandi dichiarati in `build.rs`, `api` limitato per finestra da `api_allowed`; `npm run test:capabilities`). Il frontend sceglie il componente tramite la query string. Il flusso principale è UI → `invoke('api')` → `Vault::call` → JSON cifrato su disco. Quello browser è estensione → helper → socket autenticato → selezione nella mini finestra → credenziale selezionata → campo DOM. Vedere [ARCHITECTURE](docs/ARCHITECTURE.md) per eventi, comandi e confini di fiducia.
 
@@ -135,6 +134,6 @@ Nel resoconto finale dichiarare quali documenti sono cambiati e perché; se ness
 
 Il repository contiene una Beta Windows con core, UI e integrazione browser operativi nel codice. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
 
-Limiti principali: azzeramento dei segreti incompleto; validazione limitata agli import e alla forma del vault, senza schema completo; assenza di transazioni e test estesi di concorrenza; duplicazione storica Python/Rust e CSS stratificato; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
+Limiti principali: azzeramento dei segreti incompleto; validazione limitata agli import e alla forma del vault, senza schema completo; assenza di transazioni e test estesi di concorrenza; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
 
 Vedere [ROADMAP](docs/ROADMAP.md) per stato, criticità e proposte separate dagli impegni effettivi. Nessuna proposta contenuta nella documentazione autorizza da sola una modifica al codice.

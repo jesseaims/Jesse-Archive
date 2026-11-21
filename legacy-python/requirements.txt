@@ -1,5 +1,0 @@
-cryptography>=41
-# finestra nativa e icona nel system tray:
-pywebview
-pystray
-Pillow

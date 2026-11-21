@@ -77,7 +77,7 @@ Per la sola fixture interoperabile Python, in un ambiente Python separato con `c
 python tests/test_legacy_fixture.py
 ```
 
-Il test legge dati sintetici; non importare il modulo dell'app storica per provarlo. Le dipendenze del client Python sono in `legacy-python/requirements*.txt`, ma non servono al runtime Rust.
+Il test legge dati sintetici e non richiede la vecchia app Python, rimossa dalla repository nella Beta 1.8.2.
 
 ## Test presenti e lacune
 
@@ -185,10 +185,10 @@ La soglia di 100 MB sull'installer WebView2 è un'euristica, non prova che ogni 
 - `scripts/package-browser-extension.mjs` copia il background canonico nelle due directory, prepara manifest e identità Chromium. Preservare la chiave **pubblica** e l'identità esistenti: rigenerarle cambia il collegamento Native Messaging. Non introdurre chiavi private nel repository.
 - `src-tauri/resources/` e la configurazione browser merge sono artefatti ignorati. I profili dei test e gli output di compilazione non sono sorgenti.
 - La versione compare in package.json/Cargo/Tauri/Inno e nei manifest generati; lockfile e fallback UI vanno valutati se si modifica la versione. Non eseguire un bump per una richiesta soltanto documentale.
-- Il codice Rust e `src/` sono formattati (rustfmt predefinito, Prettier 3 con `.prettierrc.json`); la CI esegue `npm run format:check`. Il commit di formattazione iniziale è in `.git-blame-ignore-revs`: usare `git config blame.ignoreRevsFile .git-blame-ignore-revs` per un blame utile. `browser-extension/` e `legacy-python/` non sono formattati da Prettier. Clippy non è un gate certificato.
+- Il codice Rust e `src/` sono formattati (rustfmt predefinito, Prettier 3 con `.prettierrc.json`); la CI esegue `npm run format:check`. Il commit di formattazione iniziale è in `.git-blame-ignore-revs`: usare `git config blame.ignoreRevsFile .git-blame-ignore-revs` per un blame utile. `browser-extension/` non è formattato da Prettier. Clippy non è un gate certificato.
 
 ## Metodo di lavoro
 
-Individuare prima comando IPC, UI e persistenza coinvolti; leggere le funzioni chiamate e i test. Separare matcher UI da matcher autorizzativo, client Rust da Python storico, sorgenti canonici da copie generate. Preservare il formato v1 e aggiungere fixture compatibili prima di cambiarlo. Non usare `unwrap` come validazione di input esterno e non registrare segreti. Per comportamento e limiti attuali vedere [SECURITY](SECURITY.md) e [DATABASE](DATABASE.md), senza interpretarli come autorizzazione a correggerli fuori scope.
+Individuare prima comando IPC, UI e persistenza coinvolti; leggere le funzioni chiamate e i test. Separare matcher UI da matcher autorizzativo, sorgenti canonici da copie generate. Preservare il formato v1 e aggiungere fixture compatibili prima di cambiarlo. Non usare `unwrap` come validazione di input esterno e non registrare segreti. Per comportamento e limiti attuali vedere [SECURITY](SECURITY.md) e [DATABASE](DATABASE.md), senza interpretarli come autorizzazione a correggerli fuori scope.
 
 Dopo una modifica eseguire i controlli pertinenti, compilare quando appropriato e controllare `git diff` per artefatti inattesi. Aggiornare solo i documenti influenzati secondo [AGENTS](../AGENTS.md); dichiarare nel resoconto quelli aggiornati e perché, oppure esplicitare che non servono aggiornamenti. Una modifica puramente documentale richiede verifica di link, nomi e coerenza, senza rigenerare build o toccare dati reali. I vecchi README sono contesto storico: affermazioni come “mai compilato” o “nessun remoto” non descrivono necessariamente la baseline attuale.

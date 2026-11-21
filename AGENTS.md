@@ -8,7 +8,7 @@ Queste istruzioni valgono per Codex, Claude Code e qualsiasi altro agente che la
 - `src-tauri/src/core.rs` contiene dati, cifratura e dispatcher `Vault::call`; `src-tauri/src/lib.rs` espone IPC, clipboard e ciclo di vita.
 - `src/App.tsx` gestisce l'interfaccia principale; `src/QuickFill.tsx` il pannello rapido; `src/BrowserInstaller.tsx` la guida browser. Il routing delle finestre è in `src/main.tsx`.
 - L'integrazione browser attraversa i moduli `browser*.rs`, il binario `jesse_browser_host` e `browser-extension/background.js`. Non confondere il socket locale con un server HTTP del vault.
-- `legacy-python/` è una copia storica eseguibile, non una dipendenza del client Tauri. Non avviarla su dati reali: spostamento e gestione dei conflitti differiscono dal Rust.
+- Dalla Beta 1.8.2 la vecchia applicazione Python (`legacy-python/`) non è più nella repository e resta nella cronologia Git (commit `388f0e4`, ultima versione nel commit precedente alla rimozione). La compatibilità con i vault v1 creati da quella versione resta verificata da `fixtures/legacy_v1_synthetic.json` (test Rust `legacy_python_vectors` e `tests/test_legacy_fixture.py`): non rimuoverla.
 - I documenti `AGGIORNAMENTO-*`, `CORREZIONI-*`, `FIX-*` e parte dei README conservano descrizioni di revisioni precedenti. Verificare ogni affermazione nel codice corrente; vedere [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Prima di una modifica significativa
@@ -35,7 +35,7 @@ Queste istruzioni valgono per Codex, Claude Code e qualsiasi altro agente che la
 
 - Usare fixture sintetiche e directory di prova isolate. Nessun avvio, import, ripristino, spostamento o modifica di un vault reale senza autorizzazione esplicita.
 - Non leggere o riportare password, codici di recupero, token, chiavi private o dati personali. Non inserirli in log, screenshot, documenti o commit.
-- Non eseguire operazioni distruttive, reset Git o pulizie ricorsive non richieste. `legacy-python/Crea-EXE.bat` contiene pulizie: non usarlo come script del prodotto corrente.
+- Non eseguire operazioni distruttive, reset Git o pulizie ricorsive non richieste.
 - La chiave privata che firma gli aggiornamenti (`%APPDATA%\JesseArchive-Release\update-signing-key.dpapi`) non va letta, stampata, copiata né committata; usare solo `scripts/Update-SigningKey.ps1` e `Publish-Release.ps1`. Cambiare `src-tauri/update-public-key.txt` interrompe gli aggiornamenti automatici delle installazioni esistenti.
 - Non aggiungere stampe diagnostiche su stdout del Native Messaging host: stdout è il protocollo binario incorniciato e può trasportare credenziali.
 - Non dichiarare garantiti azzeramento JavaScript, blocco immediato per inattività, firma del setup o protezione anti-rollback: i limiti reali sono in [docs/SECURITY.md](docs/SECURITY.md).

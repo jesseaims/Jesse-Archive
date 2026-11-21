@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'legacy-python-removed': [
+    'Alte Python-Version aus dem Quellcode entfernt',
+    'Die erste, in Python geschriebene Version von Jesse’s Archive ist nicht mehr Teil des Quellcodes: Die App nutzte sie nicht, und sie erschwerte die Wartung. Sie bleibt im Projektverlauf einsehbar. Mit dieser Version erstellte Tresore lassen sich weiterhin öffnen, und ein Test prüft das bei jeder Änderung. Für die Nutzung der App ändert sich nichts.',
+  ],
   'export-keeps-groups': [
     'Exportierte Dateien behalten Gruppen und Favoriten',
     'Wenn du den Tresor als CSV exportierst und wieder importierst, kommen Konten von Apps und Diensten ohne Website (zum Beispiel mehrere Konten desselben Spiels) zurück in ihre benannte Gruppe, statt jeweils in einer eigenen Gruppe zu landen, und Favoriten bleiben Favoriten. Auch der JSON-Export behält jetzt Namen und Symbole der Gruppen. Außerdem verschwinden gelöschte und dann aus einer JSON-Datei erneut importierte Einträge beim nächsten Speichern nicht mehr.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'legacy-python-removed': [
+    'Eliminada del código fuente la antigua versión en Python',
+    'La primera versión de Jesse’s Archive, escrita en Python, ya no forma parte del código fuente: la app no la usaba y dificultaba el mantenimiento. Sigue disponible en el historial del proyecto. Los vaults creados con esa versión se siguen abriendo, y una prueba lo comprueba en cada cambio. Para quien usa la app no cambia nada.',
+  ],
   'export-keeps-groups': [
     'Los archivos exportados conservan grupos y favoritos',
     'Al exportar el vault a CSV y volver a importarlo, las cuentas de apps y servicios sin sitio web (por ejemplo, varias cuentas del mismo juego) vuelven a su grupo con su nombre en lugar de acabar cada una en un grupo separado, y los favoritos se mantienen. La exportación JSON ahora también conserva los nombres e iconos de los grupos. Además, los elementos eliminados y luego importados de nuevo desde un archivo JSON ya no desaparecen al guardar.',

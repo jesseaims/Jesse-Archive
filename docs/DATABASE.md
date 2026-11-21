@@ -139,7 +139,7 @@ I nomi delle intestazioni CSV realmente supportate sono nel match di `import_csv
 
 L'export JSON e `pack` non filtrano tutti i dati come il CSV: un pacchetto completo può comprendere cestino e storico. Il flag `shared` è metadato locale, non un'autorizzazione remota o la prova che il file sia stato consegnato. `pack` può modificare quel flag prima della successiva scelta di salvataggio.
 
-La UI principale importa i file `.jshare` tramite `unpack`; altre estensioni sono trattate come import JSON/CSV. Il flusso `.jbackup` e il foglio stampabile appartengono alla UI Python storica, non a una schermata equivalente del client React corrente.
+La UI principale importa i file `.jshare` tramite `unpack`; altre estensioni sono trattate come import JSON/CSV. Il flusso `.jbackup` e il foglio stampabile appartenevano alla UI Python storica (rimossa dalla repository nella Beta 1.8.2), non a una schermata equivalente del client React corrente.
 
 Prima del merge, `validate_import` controlla l'intero payload JSON/`.jshare` e lo **rifiuta tutto** al primo record non valido, indicandone il numero: radice oggetto; `folders`/`items`/`passwords` elenchi; cartelle con `name` stringa; elementi oggetto con `id` non vuoto, `type` tra le sei categorie, `title` stringa o assente, `f` oggetto o assente; password oggetto con `id` non vuoto e `value` stringa. Le proprietà sconosciute dei record validi sono conservate. Un testo che inizia con `{` o `[` è trattato come JSON, il resto come CSV. Non è uno schema completo dei campi di ogni categoria (per esempio formati di data o URL). Vedere SEC-05 in [SECURITY](SECURITY.md).
 

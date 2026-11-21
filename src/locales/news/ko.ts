@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'legacy-python-removed': [
+    '오래된 Python 버전을 소스 코드에서 제거',
+    'Python으로 작성된 Jesse’s Archive의 첫 버전은 더 이상 소스 코드에 포함되지 않습니다. 앱에서 사용하지 않았고 유지 관리를 어렵게 했습니다. 프로젝트 기록에서는 계속 볼 수 있습니다. 그 버전으로 만든 볼트는 여전히 열리며, 변경할 때마다 테스트로 확인합니다. 앱 사용자에게는 달라지는 것이 없습니다.',
+  ],
   'export-keeps-groups': [
     '내보낸 파일에 그룹과 즐겨찾기가 유지됩니다',
     '볼트를 CSV로 내보낸 뒤 다시 가져오면 웹사이트가 없는 앱과 서비스의 계정(예: 같은 게임의 여러 계정)이 각각 다른 그룹으로 흩어지지 않고 이름이 있는 원래 그룹으로 돌아가며, 즐겨찾기도 유지됩니다. JSON 내보내기도 이제 그룹 이름과 아이콘을 유지합니다. 또한 삭제한 뒤 JSON 파일에서 다시 가져온 항목이 다음 저장 때 더 이상 사라지지 않습니다.',

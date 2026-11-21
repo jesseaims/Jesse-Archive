@@ -2,6 +2,5 @@ dist
 target
 node_modules
 src-tauri
-legacy-python
 browser-extension
 src/commits.generated.json
