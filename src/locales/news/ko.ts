@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    '권한을 줄이고 하위 도메인을 알려 주는 확장 프로그램',
+    '브라우저 확장 프로그램은 필요하지 않던 열린 모든 탭 읽기 권한을 더 이상 요청하지 않습니다. 설치 시 방문 기록 경고가 사라지며, 입력, 계정 저장, 패스키는 이전과 같이 작동합니다. 미니 창에서는 페이지의 정확한 주소용으로 저장된 계정이 먼저 표시되고, 같은 사이트의 다른 하위 도메인용으로 저장된 계정은 저장 위치를 보여 줍니다(예: «accounts.google.com용으로 저장됨»). 필드가 다른 주소의 프레임 안에 있으면 미니 창이 알려 줍니다.',
+  ],
   'browser-channel-hardening': [
     '더 안전해진 브라우저 연결',
     '확장 프로그램이 앱에 연결할 때 쓰는 접근 코드 파일은 이제 폴더가 다른 사용자의 읽기를 허용하더라도 내 Windows 사용자만 읽을 수 있으며, 앱을 닫으면 삭제됩니다. 또한 앱은 제때 인증하지 않는 연결, 한도를 넘는 연결, 메시지를 너무 많이 보내는 연결을 닫습니다. 자격 증명 입력은 이전과 같이 작동하며 항상 미니 창에서 직접 선택합니다.',

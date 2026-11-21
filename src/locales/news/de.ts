@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    'Erweiterung mit weniger Berechtigungen und Hinweisen zu Subdomains',
+    'Die Browsererweiterung verlangt nicht mehr die Berechtigung, alle geöffneten Tabs zu lesen, die sie nicht brauchte: Der Hinweis auf den Browserverlauf bei der Installation entfällt, und Ausfüllen, Speichern von Konten und Passkeys funktionieren wie bisher. Im Mini-Fenster erscheinen Konten, die für die genaue Adresse der Seite gespeichert sind, zuerst; Konten für eine andere Subdomain derselben Website zeigen, wofür sie gespeichert sind (zum Beispiel „Gespeichert für accounts.google.com“), und wenn das Feld in einem Rahmen einer anderen Adresse liegt, weist das Mini-Fenster darauf hin.',
+  ],
   'browser-channel-hardening': [
     'Besser geschützte Verbindung zum Browser',
     'Die Datei mit dem Zugangscode, mit dem sich die Erweiterung mit der App verbindet, kann jetzt nur noch dein Windows-Benutzer lesen, auch wenn der Ordner anderen das Lesen erlaubt, und sie wird beim Schließen der App gelöscht. Außerdem schließt die App Verbindungen, die sich nicht rechtzeitig ausweisen, überzählige Verbindungen und solche, die zu viele Nachrichten senden. Das Ausfüllen von Zugangsdaten funktioniert wie bisher und bleibt immer deine Entscheidung im Mini-Fenster.',

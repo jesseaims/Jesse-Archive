@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'extension-permissions': [
+    '扩展权限更少，并提示子域名',
+    '浏览器扩展不再请求读取所有打开标签页的权限（它并不需要）：安装时不再显示浏览历史记录提示，填写、保存账户和通行密钥照常工作。在迷你窗口中，为页面确切地址保存的账户排在最前；为同一网站其他子域名保存的账户会显示保存位置（例如“保存于 accounts.google.com”），如果字段位于其他地址的框架中，迷你窗口也会提示。',
+  ],
   'browser-channel-hardening': [
     '与浏览器的连接更安全',
     '扩展用来连接应用的访问码文件现在只能由你的 Windows 用户读取，即使文件夹允许其他人读取也是如此，并且关闭应用时会被删除。应用还会关闭未及时完成身份验证的连接、超出数量的连接以及发送过多消息的连接。填写凭据的方式与以前相同，并且始终由你在迷你窗口中选择。',

@@ -646,6 +646,8 @@ const dictionary: Dictionary = {
   'Seleziona password': 'パスワードを選択',
   'Seleziona un account...': 'アカウントを選択...',
   'Seleziona un campo di accesso': 'ログイン欄を選択してください',
+  'Il campo è in un riquadro di {host}': 'このフィールドは {host} のフレーム内にあります',
+  'Salvato per {host}': '{host} 用に保存',
   "Seleziona un'app installata oppure inserisci il suo nome come titolo dell'account. Puoi assegnare un logo dal PC.":
     'インストール済みのアプリを選択するか、アプリ名をアカウントのタイトルとして入力してください。PC からロゴを割り当てられます。',
   'Selezionati: {n}': '選択済み: {n}',
