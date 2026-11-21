@@ -438,8 +438,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': 'les dossiers ont changé',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     'Les nouvelles versions sont demandées à GitHub. Elles ne s’installent qu’après votre confirmation et seulement si la signature de l’auteur est valide.',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    'Les mots de passe liés restent dans l’historique de la page Mots de passe comme non associés. Si vous voulez conserver certains de ces éléments, appuyez sur Annuler et restaurez-les d’abord.',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    'Leurs mots de passe dans l’Archive des mots de passe seront aussi supprimés. Si vous voulez conserver certains de ces éléments, appuyez sur Annuler et restaurez-les d’abord.',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    'Leurs mots de passe dans l’Archive des mots de passe seront aussi supprimés.',
   'Le tue password': 'Vos mots de passe',
   Lingua: 'Langue',
   'lo storico delle password è cambiato': 'l’historique des mots de passe a changé',

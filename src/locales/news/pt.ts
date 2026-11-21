@@ -3,8 +3,8 @@ import type { NewsTranslations } from '../../news-changelog';
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
   'password-bulk-select': [
-    'Seleção múltipla no arquivo de senhas',
-    'No Arquivo de senhas, o botão «Selecionar tudo» seleciona de uma vez todas as senhas excluíveis exibidas, também filtradas pela pesquisa, para limpar o histórico sem marcá-las uma a uma. As senhas atuais das contas não podem ser selecionadas: elas são alteradas na conta. Depois de excluir, o app informa quantas senhas removeu.',
+    'Arquivo de senhas mais fácil de limpar',
+    'No Arquivo de senhas, o botão «Selecionar tudo» seleciona de uma vez todas as senhas excluíveis exibidas, também filtradas pela pesquisa, para limpar o histórico sem marcá-las uma a uma. As senhas atuais das contas não podem ser selecionadas: elas são alteradas na conta. Depois de excluir, o app informa quantas senhas removeu. Além disso, ao excluir definitivamente um item (inclusive esvaziando a lixeira), as senhas dele no histórico também são excluídas, em vez de ficarem como senhas não vinculadas.',
   ],
   'css-cleanup': [
     'Folha de estilos limpa',

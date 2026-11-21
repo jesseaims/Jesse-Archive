@@ -1156,7 +1156,7 @@ export default function App() {
       t('Ultima conferma: elementi da eliminare per sempre dal vault: {n}.', { n }) +
         '\n\n' +
         t(
-          'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
+          'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
         ),
       {
         title: t('Conferma svuotamento del cestino'),
@@ -1808,7 +1808,11 @@ export default function App() {
                             onClick={async () => {
                               if (
                                 await askConfirm(
-                                  t('Eliminare definitivamente gli elementi selezionati?'),
+                                  t('Eliminare definitivamente gli elementi selezionati?') +
+                                    '\n\n' +
+                                    t(
+                                      'Verranno eliminate anche le loro password nell’Archivio password.',
+                                    ),
                                   {
                                     title: t('Eliminazione definitiva'),
                                     danger: true,
@@ -1968,7 +1972,11 @@ export default function App() {
                                 onClick={async () => {
                                   if (
                                     await askConfirm(
-                                      t('Eliminare definitivamente questo elemento?'),
+                                      t('Eliminare definitivamente questo elemento?') +
+                                        '\n\n' +
+                                        t(
+                                          'Verranno eliminate anche le loro password nell’Archivio password.',
+                                        ),
                                       {
                                         title: t('Eliminazione definitiva'),
                                         danger: true,

@@ -3,8 +3,8 @@ import type { NewsTranslations } from '../../news-changelog';
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
   'password-bulk-select': [
-    'Multiple selection in the password archive',
-    'In the Password archive, the «Select all» button selects at once every deletable password shown, also when filtered by the search, so you can clean up the history without ticking them one by one. The current passwords of accounts can’t be selected: change them in the account. After deleting, the app tells you how many passwords it removed.',
+    'Password archive easier to clean up',
+    'In the Password archive, the «Select all» button selects at once every deletable password shown, also when filtered by the search, so you can clean up the history without ticking them one by one. The current passwords of accounts can’t be selected: change them in the account. After deleting, the app tells you how many passwords it removed. Also, deleting an item for good (including by emptying the trash) now deletes its passwords in the history too, instead of leaving them as unlinked passwords.',
   ],
   'css-cleanup': [
     'Style sheet cleaned up',

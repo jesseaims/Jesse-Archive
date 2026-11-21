@@ -84,7 +84,7 @@ Il metodo `state` clona il payload e aggiunge `path`, `synced_at`, `prefs` per l
 - `item` clona un elemento esistente oppure ne crea uno; aggiorna campi noti, titolo, timestamp e gruppo. I campi sconosciuti dell'elemento esistente possono sopravvivere alla modifica.
 - `link` mantiene una password attiva per elemento e conserva la precedente con `active=false` e `retired`. Se il valore non cambia, evita una nuova revisione. Può riutilizzare una password non collegata con lo stesso valore.
 - `pw_save` salva valori indipendenti se non già presenti per valore. `pw_link` sostituisce il campo segreto dell'elemento e aggiorna lo storico; non modifica la password del servizio esterno. Il backend supporta i tipi con `secret`, mentre `PasswordPage` propone solo `login`.
-- `trash` imposta o rimuove il timestamp di cestinamento. `delete_ids` toglie elementi e scrive tombstone; le loro password vengono scollegate e conservate come orfane.
+- `trash` imposta o rimuove il timestamp di cestinamento. `delete_ids` toglie elementi e scrive tombstone; dalla Beta 1.9.0 elimina anche le loro password nello storico, con tombstone, così le altre copie le tolgono alla fusione successiva (prima venivano scollegate e conservate come orfane con `orphan_of`). `normalize` scollega ancora come orfane le password che puntano a un elemento assente per altre vie.
 - `pw_del`/`pw_bulk` impediscono di eliminare da quello storico una password ancora attiva e collegata. `folder` cancella la cartella ma lascia gli elementi senza cartella.
 - `bulk` offre cestino, ripristino, spostamento e cancellazione dal cestino. La route singola `delete` non impone sempre lo stesso vincolo di cestinamento: il controllo UI non va scambiato per un vincolo generale del backend.
 

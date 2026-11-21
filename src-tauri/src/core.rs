@@ -1747,19 +1747,19 @@ impl Vault {
             _ => Err(format!("Comando sconosciuto: {name}")),
         }
     }
+    // Permanent deletion (after the trash): the item's password history goes with it,
+    // with tombstones so other copies drop it too at the next merge.
     fn delete_ids(&mut self, ids: &HashSet<String>) {
-        for p in arr(&mut self.data, "passwords") {
-            if ids.contains(s(p, "item_id")) {
-                p["orphan_of"] = p["item_title"].clone();
-                p["item_id"] = V::Null;
-                p["active"] = json!(false);
-                p["upd"] = json!(now());
-            }
-        }
-        for i in ids {
+        let pids: HashSet<String> = array(&self.data, "passwords")
+            .iter()
+            .filter(|p| ids.contains(s(p, "item_id")))
+            .map(|p| s(p, "id").to_string())
+            .collect();
+        for i in ids.iter().chain(&pids) {
             obj(&mut self.data, "deleted").insert(i.clone(), json!(now()));
         }
         arr(&mut self.data, "items").retain(|x| !ids.contains(s(x, "id")));
+        arr(&mut self.data, "passwords").retain(|p| !pids.contains(s(p, "id")));
     }
 }
 fn sha2hash(b: &[u8]) -> String {
@@ -3654,6 +3654,51 @@ mod vault_tests {
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]
+    fn deleting_an_account_for_good_deletes_its_passwords_too() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        // A second revision leaves the first login password in the history.
+        v.call(
+            "item",
+            json!({"id": ids[0], "type": "login", "f": {"password": "segreto-login-2"}}),
+        )
+        .unwrap();
+        v.call(
+            "pw_save",
+            json!({"value": "segreto-manuale", "source": "manual"}),
+        )
+        .unwrap();
+        let of = |v: &Vault, id: &str| -> Vec<String> {
+            array(&v.data, "passwords")
+                .iter()
+                .filter(|p| s(p, "item_id") == id)
+                .map(|p| s(p, "id").to_string())
+                .collect()
+        };
+        let gone = of(&v, &ids[0]);
+        let kept = of(&v, &ids[2]);
+        assert_eq!(gone.len(), 2);
+        assert!(!kept.is_empty());
+        v.call("bulk", json!({"ids": [ids[0]], "op": "trash"}))
+            .unwrap();
+        // In the trash the history is still there: the item can be restored.
+        assert_eq!(of(&v, &ids[0]).len(), 2);
+        v.call("delete", json!({"all": true})).unwrap();
+        let values: Vec<&str> = array(&v.data, "passwords")
+            .iter()
+            .map(|p| s(p, "value"))
+            .collect();
+        assert!(!values.contains(&"segreto-login-1") && !values.contains(&"segreto-login-2"));
+        assert!(values.contains(&"segreto-manuale"));
+        assert_eq!(of(&v, &ids[2]), kept);
+        for p in &gone {
+            assert!(v.data["deleted"].get(p).is_some(), "tombstone for {p}");
+        }
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
     fn an_export_reimported_keeps_groups_and_favorites() {
         let (mut v, dir) = test_vault();
         v.call("create", json!({"password": "password-uno"}))
@@ -4195,10 +4240,12 @@ mod vault_tests {
         assert_eq!(r["count"], 1);
         let ids: Vec<&str> = array(&v.data, "items").iter().map(|i| s(i, "id")).collect();
         assert_eq!(ids, vec![kept.as_str()]);
-        // The deleted item's password stays in the history as an orphan.
-        assert!(array(&v.data, "passwords")
+        // The deleted item's password goes with it; the kept one stays.
+        let values: Vec<&str> = array(&v.data, "passwords")
             .iter()
-            .any(|p| s(p, "value") == "pw-sintetica-gone" && p["item_id"].is_null()));
+            .map(|p| s(p, "value"))
+            .collect();
+        assert_eq!(values, vec!["pw-sintetica-kept"]);
         assert!(v.data["deleted"].get(&gone).is_some());
         fs::remove_dir_all(dir).unwrap();
     }

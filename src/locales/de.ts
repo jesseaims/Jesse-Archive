@@ -434,8 +434,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': 'die Ordner haben sich geändert',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     'Neue Versionen werden bei GitHub abgefragt. Sie werden nur nach deiner Bestätigung installiert und nur, wenn die Signatur des Autors gültig ist.',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    'Verknüpfte Passwörter bleiben im Verlauf der Seite Passwörter als nicht zugeordnet. Wenn du einige dieser Elemente behalten möchtest, drücke Abbrechen und stelle sie vorher wieder her.',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    'Auch ihre Passwörter im Passwortarchiv werden gelöscht. Wenn du einige dieser Elemente behalten möchtest, drücke Abbrechen und stelle sie vorher wieder her.',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    'Auch ihre Passwörter im Passwortarchiv werden gelöscht.',
   'Le tue password': 'Deine Passwörter',
   Lingua: 'Sprache',
   'lo storico delle password è cambiato': 'der Passwortverlauf hat sich geändert',

@@ -3,8 +3,8 @@ import type { NewsTranslations } from '../../news-changelog';
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
   'password-bulk-select': [
-    'Selección múltiple en el archivo de contraseñas',
-    'En el Archivo de contraseñas, el botón «Seleccionar todo» selecciona de una vez todas las contraseñas eliminables que se muestran, también filtradas con la búsqueda, para limpiar el historial sin marcarlas una a una. Las contraseñas actuales de las cuentas no se pueden seleccionar: se cambian en la cuenta. Tras eliminar, la app indica cuántas contraseñas ha quitado.',
+    'Archivo de contraseñas más fácil de limpiar',
+    'En el Archivo de contraseñas, el botón «Seleccionar todo» selecciona de una vez todas las contraseñas eliminables que se muestran, también filtradas con la búsqueda, para limpiar el historial sin marcarlas una a una. Las contraseñas actuales de las cuentas no se pueden seleccionar: se cambian en la cuenta. Tras eliminar, la app indica cuántas contraseñas ha quitado. Además, al eliminar definitivamente un elemento (también vaciando la papelera), se eliminan también sus contraseñas del historial, en lugar de quedar como contraseñas no vinculadas.',
   ],
   'css-cleanup': [
     'Hoja de estilos depurada',

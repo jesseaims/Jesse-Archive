@@ -3,8 +3,8 @@ import type { NewsTranslations } from '../../news-changelog';
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
   'password-bulk-select': [
-    '密码档案支持多选',
-    '在密码档案中，“全选”按钮可一次选中所有显示的可删除密码（包括搜索筛选后的结果），无需逐个勾选即可清理历史记录。账户的当前密码无法选择，请在账户中修改。删除后，应用会显示已删除的密码数量。',
+    '密码档案更易清理',
+    '在密码档案中，“全选”按钮可一次选中所有显示的可删除密码（包括搜索筛选后的结果），无需逐个勾选即可清理历史记录。账户的当前密码无法选择，请在账户中修改。删除后，应用会显示已删除的密码数量。此外，永久删除项目（包括清空回收站）时，其历史记录中的密码也会一并删除，而不再作为未关联密码保留。',
   ],
   'css-cleanup': [
     '样式表已清理',

@@ -413,8 +413,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': '文件夹已更改',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     '新版本会从 GitHub 获取。只有在你确认后，且作者签名有效时才会安装。',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    '已关联的密码会作为未关联密码保留在“密码”页面的历史记录中。如果想保留其中某些项目，请按“取消”并先恢复它们。',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    '它们在密码档案中的密码也会被删除。如果想保留其中某些项目，请按“取消”并先恢复它们。',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    '它们在密码档案中的密码也会被删除。',
   'Le tue password': '你的密码',
   Lingua: '语言',
   'lo storico delle password è cambiato': '密码历史已更改',
