@@ -1929,7 +1929,12 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
             .iter_mut()
             .find(|x| s(x, "id") == s(&it, "id"))
         {
-            if num(&it, "updated") > num(old, "updated") {
+            // In the trash here and not in the file: the import brings it back.
+            let restore = !old["trashed"].is_null() && it["trashed"].is_null();
+            if restore {
+                it["updated"] = json!(now());
+            }
+            if restore || num(&it, "updated") > num(old, "updated") {
                 *old = it;
                 n += 1
             }
@@ -3738,6 +3743,39 @@ mod vault_tests {
         assert_eq!(count(&v), ids.len() + 1);
         other.call("ping", json!({})).unwrap();
         assert_eq!(count(&other), ids.len() + 1);
+        fs::remove_dir_all(odir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_json_export_reimported_brings_items_back_from_the_trash() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let text = v.call("export", json!({"format": "json"})).unwrap();
+        v.call("bulk", json!({"ids": ids, "op": "trash"})).unwrap();
+        let active = |v: &Vault| {
+            array(&v.data, "items")
+                .iter()
+                .filter(|i| i["trashed"].is_null())
+                .count()
+        };
+        assert_eq!(active(&v), 0);
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(ids.len()));
+        assert_eq!(active(&v), ids.len());
+        // Not duplicated, and a second import of the same file changes nothing.
+        assert_eq!(array(&v.data, "items").len(), ids.len());
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(0));
+        // It stays restored after a synchronization with another PC.
+        let (mut other, odir) = other_device(&v);
+        other
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut other, "da un altro PC").unwrap();
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(active(&v), ids.len() + 1);
         fs::remove_dir_all(odir).unwrap();
         fs::remove_dir_all(dir).unwrap();
     }

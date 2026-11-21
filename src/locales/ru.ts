@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Импортировано элементов: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'Ничего не импортировано: элементы из файла уже есть в хранилище.',
   'Gruppo (app o servizio senza sito)': 'Группа (приложение или сервис без сайта)',
   'Tipo di gruppo (app o altro)': 'Тип группы (приложение или другое)',
   'Rimuovi dai preferiti': 'Удалить из избранного',
@@ -390,7 +393,6 @@ const dictionary: Dictionary = {
     'Хранилище заблокировано (например, из-за бездействия), поэтому данные не удалось перезагрузить.\n\nСнова разблокируйте хранилище мастер-паролем.',
   'Importa dati nel vault': 'Импортировать данные в хранилище',
   'Importa pacchetto cifrato': 'Импортировать зашифрованный пакет',
-  'Importazione effettuata': 'Импорт завершён',
   'Imposta lo zoom al massimo, {n}%': 'Установить максимальный масштаб, {n}%',
   'Imposta lo zoom al minimo, {n}%': 'Установить минимальный масштаб, {n}%',
   'Imposta password': 'Установить пароль',

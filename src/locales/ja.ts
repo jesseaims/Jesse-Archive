@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'インポートした項目：{n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'インポートした項目はありません。ファイルの項目はすでに保管庫にあります。',
   'Gruppo (app o servizio senza sito)': 'グループ（Web サイトのないアプリやサービス）',
   'Tipo di gruppo (app o altro)': 'グループの種類（アプリまたはその他）',
   'Rimuovi dai preferiti': 'お気に入りから削除',
@@ -385,7 +388,6 @@ const dictionary: Dictionary = {
     '保管庫がロックされているため (無操作など)、データを再読み込みできませんでした。\n\nマスター パスワードで保管庫のロックを解除し直してください。',
   'Importa dati nel vault': '保管庫にデータをインポート',
   'Importa pacchetto cifrato': '暗号化パッケージをインポート',
-  'Importazione effettuata': 'インポートが完了しました',
   'Imposta lo zoom al massimo, {n}%': 'ズームを最大にする、{n}%',
   'Imposta lo zoom al minimo, {n}%': 'ズームを最小にする、{n}%',
   'Imposta password': 'パスワードを設定',

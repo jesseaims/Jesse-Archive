@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // German. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Elementi importati: {n}': 'Importierte Einträge: {n}',
+  'Nessun elemento importato: quelli del file sono già nel vault.':
+    'Keine Einträge importiert: Die Einträge der Datei sind bereits im Tresor.',
   'Gruppo (app o servizio senza sito)': 'Gruppe (App oder Dienst ohne Website)',
   'Tipo di gruppo (app o altro)': 'Gruppentyp (App oder Sonstiges)',
   'Rimuovi dai preferiti': 'Aus Favoriten entfernen',
@@ -388,7 +391,6 @@ const dictionary: Dictionary = {
     'Der Tresor ist gesperrt (zum Beispiel wegen Inaktivität), daher konnten die Daten nicht neu geladen werden.\n\nEntsperre den Tresor erneut mit dem Master-Passwort.',
   'Importa dati nel vault': 'Daten in den Tresor importieren',
   'Importa pacchetto cifrato': 'Verschlüsseltes Paket importieren',
-  'Importazione effettuata': 'Import abgeschlossen',
   'Imposta lo zoom al massimo, {n}%': 'Zoom auf das Maximum setzen, {n} %',
   'Imposta lo zoom al minimo, {n}%': 'Zoom auf das Minimum setzen, {n} %',
   'Imposta password': 'Passwort festlegen',
