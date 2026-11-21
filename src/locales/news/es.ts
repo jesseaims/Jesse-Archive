@@ -4,7 +4,7 @@ import type { NewsTranslations } from '../../news-changelog';
 const news: NewsTranslations = {
   'export-keeps-groups': [
     'Los archivos exportados conservan grupos y favoritos',
-    'Al exportar el vault a CSV y volver a importarlo, las cuentas de apps y servicios sin sitio web (por ejemplo, varias cuentas del mismo juego) vuelven a su grupo con su nombre en lugar de acabar cada una en un grupo separado, y los favoritos se mantienen. La exportación JSON ahora también conserva los nombres e iconos de los grupos.',
+    'Al exportar el vault a CSV y volver a importarlo, las cuentas de apps y servicios sin sitio web (por ejemplo, varias cuentas del mismo juego) vuelven a su grupo con su nombre en lugar de acabar cada una en un grupo separado, y los favoritos se mantienen. La exportación JSON ahora también conserva los nombres e iconos de los grupos. Además, los elementos eliminados y luego importados de nuevo desde un archivo JSON ya no desaparecen al guardar.',
   ],
   'window-permissions': [
     'Cada ventana solo puede hacer su propio trabajo',

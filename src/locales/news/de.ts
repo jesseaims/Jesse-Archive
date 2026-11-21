@@ -4,7 +4,7 @@ import type { NewsTranslations } from '../../news-changelog';
 const news: NewsTranslations = {
   'export-keeps-groups': [
     'Exportierte Dateien behalten Gruppen und Favoriten',
-    'Wenn du den Tresor als CSV exportierst und wieder importierst, kommen Konten von Apps und Diensten ohne Website (zum Beispiel mehrere Konten desselben Spiels) zurück in ihre benannte Gruppe, statt jeweils in einer eigenen Gruppe zu landen, und Favoriten bleiben Favoriten. Auch der JSON-Export behält jetzt Namen und Symbole der Gruppen.',
+    'Wenn du den Tresor als CSV exportierst und wieder importierst, kommen Konten von Apps und Diensten ohne Website (zum Beispiel mehrere Konten desselben Spiels) zurück in ihre benannte Gruppe, statt jeweils in einer eigenen Gruppe zu landen, und Favoriten bleiben Favoriten. Auch der JSON-Export behält jetzt Namen und Symbole der Gruppen. Außerdem verschwinden gelöschte und dann aus einer JSON-Datei erneut importierte Einträge beim nächsten Speichern nicht mehr.',
   ],
   'window-permissions': [
     'Jedes Fenster kann nur seine eigene Aufgabe erledigen',

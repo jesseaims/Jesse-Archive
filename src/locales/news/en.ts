@@ -4,7 +4,7 @@ import type { NewsTranslations } from '../../news-changelog';
 const news: NewsTranslations = {
   'export-keeps-groups': [
     'Exported files keep groups and favorites',
-    'When you export the vault as CSV and import it again, accounts of apps and services without a website (for example several accounts of the same game) go back into their named group instead of each ending up in a separate group, and favorites stay favorites. The JSON export now also keeps group names and icons.',
+    'When you export the vault as CSV and import it again, accounts of apps and services without a website (for example several accounts of the same game) go back into their named group instead of each ending up in a separate group, and favorites stay favorites. The JSON export now also keeps group names and icons. Also, items deleted and then imported again from a JSON file no longer disappear at the next save.',
   ],
   'window-permissions': [
     'Each window can only do its own job',

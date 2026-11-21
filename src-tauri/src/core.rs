@@ -1904,12 +1904,22 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
         .iter()
         .map(|f| (s(f, "name").to_string(), s(f, "id").to_string()))
         .collect();
+    // An item deleted from this vault keeps a tombstone (for the other devices): the
+    // imported copy, older than the deletion, would be removed again at the next save.
+    // Importing it is a new change, so it counts from now and wins everywhere.
+    let tomb = d["deleted"].clone();
+    let revived = |mut x: V, k: &str| {
+        if num(&tomb, s(&x, "id")) >= ts(&x) {
+            x[k] = json!(now());
+        }
+        x
+    };
     let mut n = 0;
     for item in array(pl, "items") {
         if !item.is_object() {
             continue;
         }
-        let mut it = item.clone();
+        let mut it = revived(item.clone(), "updated");
         let fname = fs_remote.get(s(&it, "folder"));
         it["folder"] = fname
             .and_then(|n| local.get(n))
@@ -1942,7 +1952,7 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
         .collect();
     for p in array(pl, "passwords") {
         if !existing.contains(s(p, "id")) {
-            arr(d, "passwords").push(p.clone())
+            arr(d, "passwords").push(revived(p.clone(), "upd"))
         }
     }
     n
@@ -3683,6 +3693,52 @@ mod vault_tests {
             assert_ne!(by("Primo")["fav"], json!(true), "{format}");
             fs::remove_dir_all(wdir).unwrap();
         }
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_json_export_reimported_after_deleting_everything_comes_back() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let text = v.call("export", json!({"format": "json"})).unwrap();
+        // Deleted for good (tombstones), then the export is imported again.
+        for id in &ids {
+            v.call("delete", json!({"id": id})).unwrap();
+        }
+        assert!(array(&v.data, "items").is_empty());
+        let r = v.call("import", json!({"text": s(&text, "text")})).unwrap();
+        assert_eq!(r["count"], json!(ids.len()));
+        let count = |v: &Vault| array(&v.data, "items").len();
+        assert_eq!(count(&v), ids.len());
+        // Still there after the synchronization, on disk and at the next unlock...
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(count(&v), ids.len());
+        assert_eq!(array(&data_on_disk(&v), "items").len(), ids.len());
+        v.lock();
+        v.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(count(&v), ids.len());
+        // ...with the password history, and the secrets intact.
+        assert!(array(&v.data, "passwords")
+            .iter()
+            .any(|p| s(p, "value") == "segreto-login-1"));
+        assert_eq!(
+            s(&v.find(&ids[0]).unwrap()["f"], "password"),
+            "segreto-login-1"
+        );
+        // A synchronization merges the copies and applies every tombstone again: the
+        // imported items must win over the deletion on both PCs.
+        let (mut other, odir) = other_device(&v);
+        other
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut other, "da un altro PC").unwrap();
+        v.call("ping", json!({})).unwrap();
+        assert_eq!(count(&v), ids.len() + 1);
+        other.call("ping", json!({})).unwrap();
+        assert_eq!(count(&other), ids.len() + 1);
+        fs::remove_dir_all(odir).unwrap();
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

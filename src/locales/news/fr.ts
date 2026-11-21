@@ -4,7 +4,7 @@ import type { NewsTranslations } from '../../news-changelog';
 const news: NewsTranslations = {
   'export-keeps-groups': [
     'Les fichiers exportés conservent groupes et favoris',
-    'En exportant le coffre en CSV puis en le réimportant, les comptes des applications et services sans site (par exemple plusieurs comptes du même jeu) retrouvent leur groupe et son nom au lieu de finir chacun dans un groupe séparé, et les favoris restent favoris. L’export JSON conserve désormais aussi les noms et icônes des groupes.',
+    'En exportant le coffre en CSV puis en le réimportant, les comptes des applications et services sans site (par exemple plusieurs comptes du même jeu) retrouvent leur groupe et son nom au lieu de finir chacun dans un groupe séparé, et les favoris restent favoris. L’export JSON conserve désormais aussi les noms et icônes des groupes. De plus, les éléments supprimés puis réimportés depuis un fichier JSON ne disparaissent plus à l’enregistrement suivant.',
   ],
   'window-permissions': [
     'Chaque fenêtre ne peut faire que son propre travail',
