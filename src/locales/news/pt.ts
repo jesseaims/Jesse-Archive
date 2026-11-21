@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'legacy-python-removed': [
+    'Removida do código-fonte a antiga versão em Python',
+    'A primeira versão do Jesse’s Archive, escrita em Python, deixa de fazer parte do código-fonte: a aplicação não a usava e dificultava a manutenção. Continua disponível no histórico do projeto. Os cofres criados com essa versão continuam a abrir, e um teste verifica-o a cada alteração. Para quem usa a aplicação nada muda.',
+  ],
   'export-keeps-groups': [
     'Os ficheiros exportados mantêm grupos e favoritos',
     'Ao exportar o cofre em CSV e importá-lo de novo, as contas de apps e serviços sem site (por exemplo, várias contas do mesmo jogo) voltam ao seu grupo com o respetivo nome, em vez de cada uma ficar num grupo separado, e os favoritos mantêm-se. A exportação JSON passa também a conservar os nomes e ícones dos grupos. Além disso, os elementos eliminados e depois importados de novo a partir de um ficheiro JSON já não desaparecem ao guardar.',

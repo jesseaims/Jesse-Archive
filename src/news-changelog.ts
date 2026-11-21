@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'legacy-python-removed',
+    addedAt: '2026-11-21T05:10:00+01:00',
+    version: 'Beta 1.8.2',
+    title: 'Rimossa dal codice sorgente la vecchia versione Python',
+    description:
+      'La prima versione di Jesse’s Archive, scritta in Python, non fa più parte del codice sorgente: non era usata dall’app e ne rendeva più difficile la manutenzione. Resta consultabile nella cronologia del progetto. I vault creati con quella versione si aprono ancora, e un test lo verifica a ogni modifica. Per chi usa l’app non cambia niente.',
+    icon: 'wrench',
+  },
+  {
     id: 'export-keeps-groups',
     addedAt: '2026-11-21T04:40:00+01:00',
     version: 'Beta 1.8.1',

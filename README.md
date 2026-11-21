@@ -56,10 +56,9 @@ Le funzionalità di crittografia, dati, gruppi, sicurezza, esportazione, tema e 
 ## Test prioritari prima dell'uso reale
 
 1. `cargo test` deve superare fixture AES/scrypt generata col Python originale e test CRUD, TOTP, merge.
-2. Apri una **copia** di un vault v1 in una cartella temporanea; sblocca con master e recovery; confronta conteggi e campi con il client Python.
-3. Salva una nuova password nella copia e verifica che il client Python possa aprirla, controllando il file `.bak`.
-4. Testa tutti i sei tipi di elemento, gestione storico, import/export, condivisione e sync conflittuale tra copie.
-5. Testa tray, singola istanza, avvio automatico, clipboard, ridimensionamento e installazione sul tuo Windows.
+2. Apri una **copia** di un vault v1 in una cartella temporanea; sblocca con master e recovery; controlla conteggi e campi. Il client Python non è più nella repository dalla Beta 1.8.2.
+3. Testa tutti i sei tipi di elemento, gestione storico, import/export, condivisione e sync conflittuale tra copie.
+4. Testa tray, singola istanza, avvio automatico, clipboard, ridimensionamento e installazione sul tuo Windows.
 6. Solo dopo verifica backup **e** restore valuta di migrare i dati personali.
 
 ### Privacy e sicurezza

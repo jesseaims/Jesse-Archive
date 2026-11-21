@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'legacy-python-removed': [
+    '从源代码中移除旧的 Python 版本',
+    'Jesse’s Archive 最早用 Python 编写的版本不再是源代码的一部分：应用并未使用它，而且它增加了维护难度。它仍可在项目历史中查看。用该版本创建的保险库仍可打开，每次修改都会有测试进行验证。对应用用户而言没有任何变化。',
+  ],
   'export-keeps-groups': [
     '导出文件会保留分组和收藏',
     '将保险库导出为 CSV 再重新导入时，没有网站的应用和服务的账户（例如同一款游戏的多个账户）会回到带有名称的原分组，而不是各自分到单独的分组，收藏也会保留。JSON 导出现在也会保留分组的名称和图标。此外，删除后又从 JSON 文件重新导入的条目，在下次保存时不会再消失。',

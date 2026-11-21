@@ -2,7 +2,7 @@
 
 This repository's commit history was **reconstructed** from actual archived source snapshots in the ChatGPT workspace. It is **not** an export of an earlier real Git history, and the commit timestamps/technical author do not represent original development times or authorship. Each historical commit records the differences present between consecutive available archives. Some commits necessarily group multiple changes because no finer-grained source snapshot is available.
 
-The original Python source is retained in `legacy-python/` for audit and migration reference. The **original encrypted vault was never imported**. Do not commit actual credentials, personal vaults, or private keys.
+The original Python source was kept in `legacy-python/` for audit and migration reference until Beta 1.8.2, when it was removed from the tree; it remains in the Git history. The **original encrypted vault was never imported**. Do not commit actual credentials, personal vaults, or private keys.
 
 The repository is local and has **no GitHub remote** configured. To publish after review, use `git remote add origin <url>` and `git push -u origin main`. GitHub authentication remains with the owner.
 

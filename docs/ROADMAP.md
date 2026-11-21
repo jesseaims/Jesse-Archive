@@ -7,6 +7,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Applicazione desktop Tauri/React con vault JSON cifrato, master password e recupero, sei tipi di schede, cartelle, cestino e cronologia password.
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
+- Rimossa dalla repository la vecchia applicazione Python, con backup esterno; la compatibilità dei vault v1 resta verificata (dalla Beta 1.8.2).
 - Permessi per finestra: ogni finestra chiama solo i comandi nativi che usa e le finestre secondarie non accedono ai comandi del vault (dalla Beta 1.8.1).
 - Finestra principale senza segreti nello stato: password, PIN, CVV, seed, TOTP, chiavi delle passkey e note arrivano solo su richiesta; copia dalle schede e dallo storico nel backend (dalla Beta 1.8.0).
 - Wrapper master a scrypt N=2^17 con migrazione automatica, avviso se il file del vault viene sostituito con una copia più vecchia, nuovo tentativo delle scritture fallite e test di concorrenza fra due PC (dalla Beta 1.7.0).
@@ -56,7 +57,7 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 | Verificare bridge locale | ACL, limiti di connessioni/frame/thread, processi dello stesso utente, gestione errori e app assente |
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
 | Ridurre debito di organizzazione | Formattazione uniforme applicata e verificata dalla CI; `core.rs`/`App.tsx` restano monolitici e il CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
-| Chiarire codice storico e contratti duplicati | Mantenere distinzione Python/Rust, `touch`/`show`, gruppi UI vs matching di sicurezza e sorgente JS vs copie generate |
+| Chiarire codice storico e contratti duplicati | Dalla Beta 1.8.2 il client Python non è più nella repository (resta la fixture di compatibilità v1). Restano: `touch`/`show`, gruppi UI vs matching di sicurezza e sorgente JS vs copie generate |
 | Consolidare processo di release | CI presente (tipi, build frontend, test Rust/Node, clippy senza avvisi, host nativo) e pubblicazione delle release dal PC di sviluppo con `Publish-Release.ps1` (prima release: Beta 1.1.12); restano da valutare pin toolchain, clippy, firma e prove offline |
 
 Non è stata dimostrata la completa inutilità di moduli o asset: copie ICO e background hanno ruoli di packaging, il client storico è separatamente avviabile. “Apparentemente duplicato” non autorizza la rimozione.

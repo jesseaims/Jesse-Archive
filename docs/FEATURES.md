@@ -71,6 +71,6 @@ Entrambi i manifest derivano dal background canonico; modificare le copie genera
 
 Dalla Beta 1.2.0 il prodotto si installa con un solo setup Inno `.exe` nello stile dell'app (tema scuro «Notte»), con disinstallazione propria; sostituisce da solo le installazioni MSI precedenti mantenendo cartella e dati. La procedura completa include helper e pacchetti browser. Esistono controlli automatici Rust, Node/jsdom e una fixture Python, non una copertura end-to-end di ogni funzione. Vedere [DEVELOPMENT](DEVELOPMENT.md).
 
-`legacy-python/` è un client separato: server HTTP locale, pywebview opzionale, UI HTML imperativa, stampa di emergenza, flusso `.jbackup` e comportamenti diversi di blocco/conflitti. Non è una libreria del client Rust e la sua esistenza non prova la disponibilità di tali schermate nella nuova UI.
+Dalla Beta 1.8.2 la vecchia applicazione Python (`legacy-python/`) non è più nella repository e resta nella cronologia Git (commit `388f0e4`, ultima versione nel commit precedente alla rimozione). Le sue funzioni proprie (stampa di emergenza, flusso `.jbackup`, comportamenti diversi di blocco e conflitti) non esistono nel client attuale; i vault v1 che creava si aprono ancora.
 
 Non risultano implementati nel client Rust: autenticazione biometrica, sincronizzazione cloud con account/API propri, distribuzione pubblicata e firmata delle estensioni, riempimento universale nelle applicazioni desktop. Non sono impegni di sviluppo: proposte e verifiche sono separate in [ROADMAP](ROADMAP.md).
