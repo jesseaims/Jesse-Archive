@@ -327,6 +327,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': 'Удалить пароли из истории',
   'Elimina selezionate': 'Удалить выбранные',
   'Elimina selezionate ({n})': 'Удалить выбранные ({n})',
+  'Password eliminate: {n}': 'Удалено паролей: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'Текущие пароли учётных записей нельзя выбрать: меняйте их в учётной записи.',
   "Elimina solo l'account {name}": 'Удалить только учётную запись {name}',
   'Elimina: {category}': 'Удалить: {category}',
   'Eliminare definitivamente gli elementi selezionati?': 'Удалить выбранные элементы навсегда?',

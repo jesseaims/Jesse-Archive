@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'password-bulk-select': [
+    'Sélection multiple dans l’archive des mots de passe',
+    'Dans l’Archive des mots de passe, le bouton « Tout sélectionner » sélectionne d’un coup tous les mots de passe supprimables affichés, même filtrés par la recherche, pour nettoyer l’historique sans les cocher un par un. Les mots de passe actuels des comptes ne peuvent pas être sélectionnés : ils se modifient dans le compte. Après la suppression, l’application indique combien de mots de passe elle a retirés.',
+  ],
   'css-cleanup': [
     'Feuille de style nettoyée',
     'Les règles qui n’avaient plus d’effet ont été retirées du style de l’interface : propriétés toujours remplacées par des règles suivantes et style d’un élément qui n’existe plus. L’application reste identique, et un contrôle automatique l’a vérifié règle par règle.',

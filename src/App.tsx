@@ -2810,6 +2810,10 @@ function PasswordPage({
   const list = vault.passwords.filter((p) =>
     [p.item_title, p.label, p.source].some((v) => v?.toLowerCase().includes(filter.toLowerCase())),
   );
+  // The current password of an account is changed in the account, so it can't be
+  // selected for deletion here.
+  const deletable = list.filter((p) => !(p.active && p.item_id));
+  const allSelected = deletable.length > 0 && deletable.every((p) => selected.includes(p.id));
   const eligible = vault.items.filter((i) => !i.trashed && i.type === 'login');
   const source = linkPid ? vault.passwords.find((p) => p.id === linkPid) : undefined;
   const target = vault.items.find((i) => i.id === targetId);
@@ -2891,13 +2895,35 @@ function PasswordPage({
                     },
                   )
                 ) {
-                  await mutate('pw_bulk', { pids: selected });
-                  setSelected([]);
+                  const r = await mutate(
+                    'pw_bulk',
+                    { pids: selected },
+                    t('Password eliminate: {n}', { n: selected.length }),
+                  );
+                  if (r) setSelected([]);
                 }
               }}
             >
               <Trash2 size={16} />
               {t('Elimina selezionate ({n})', { n: selected.length })}
+            </button>
+          )}
+          {deletable.length > 0 && (
+            <button
+              className="secondary"
+              title={t(
+                'Le password attuali degli account non si selezionano: si cambiano nell’account.',
+              )}
+              onClick={() =>
+                setSelected(
+                  allSelected
+                    ? selected.filter((id) => !deletable.some((p) => p.id === id))
+                    : [...new Set([...selected, ...deletable.map((p) => p.id)])],
+                )
+              }
+            >
+              <CheckSquare size={16} />
+              {allSelected ? t('Deseleziona tutti') : t('Seleziona tutti')}
             </button>
           )}
           <div className="search-box">
@@ -2941,6 +2967,14 @@ function PasswordPage({
             <input
               type="checkbox"
               aria-label={t('Seleziona password')}
+              disabled={!!(p.active && p.item_id)}
+              title={
+                p.active && p.item_id
+                  ? t(
+                      'Le password attuali degli account non si selezionano: si cambiano nell’account.',
+                    )
+                  : undefined
+              }
               checked={selected.includes(p.id)}
               onChange={(e) =>
                 setSelected((ids) =>

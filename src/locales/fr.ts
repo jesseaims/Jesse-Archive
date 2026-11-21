@@ -328,6 +328,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': 'Supprimer des mots de passe de l’historique',
   'Elimina selezionate': 'Supprimer la sélection',
   'Elimina selezionate ({n})': 'Supprimer la sélection ({n})',
+  'Password eliminate: {n}': 'Mots de passe supprimés : {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'Les mots de passe actuels des comptes ne peuvent pas être sélectionnés : modifiez-les dans le compte.',
   "Elimina solo l'account {name}": 'Supprimer uniquement le compte {name}',
   'Elimina: {category}': 'Supprimer : {category}',
   'Eliminare definitivamente gli elementi selezionati?':

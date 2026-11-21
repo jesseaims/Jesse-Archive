@@ -311,6 +311,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': '从历史记录中删除密码',
   'Elimina selezionate': '删除所选',
   'Elimina selezionate ({n})': '删除所选（{n}）',
+  'Password eliminate: {n}': '已删除密码：{n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    '账户的当前密码无法选择：请在账户中修改。',
   "Elimina solo l'account {name}": '仅删除账户 {name}',
   'Elimina: {category}': '删除：{category}',
   'Eliminare definitivamente gli elementi selezionati?': '永久删除所选项目？',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'password-bulk-select': [
+    'パスワード アーカイブで複数選択',
+    'パスワード アーカイブの「すべて選択」ボタンで、表示中の削除可能なパスワードを検索で絞り込んだ場合も含めて一度に選択でき、1件ずつチェックせずに履歴を整理できます。アカウントの現在のパスワードは選択できず、アカウントで変更します。削除後、アプリは削除したパスワードの数を表示します。',
+  ],
   'css-cleanup': [
     'スタイルシートを整理',
     'インターフェースのスタイルから、効果のなくなったルールを削除しました。後のルールで常に上書きされていたプロパティと、存在しなくなった要素のスタイルです。アプリの見た目はまったく変わらず、自動チェックでルールごとに確認しました。',

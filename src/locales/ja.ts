@@ -323,6 +323,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': '履歴からパスワードを削除',
   'Elimina selezionate': '選択項目を削除',
   'Elimina selezionate ({n})': '選択項目を削除 ({n})',
+  'Password eliminate: {n}': '削除したパスワード: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'アカウントの現在のパスワードは選択できません。アカウントで変更してください。',
   "Elimina solo l'account {name}": 'アカウント {name} だけを削除',
   'Elimina: {category}': '削除: {category}',
   'Eliminare definitivamente gli elementi selezionati?': '選択した項目を完全に削除しますか?',

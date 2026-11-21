@@ -318,6 +318,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': '기록에서 비밀번호 삭제',
   'Elimina selezionate': '선택 항목 삭제',
   'Elimina selezionate ({n})': '선택 항목 삭제({n})',
+  'Password eliminate: {n}': '삭제된 비밀번호: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    '계정의 현재 비밀번호는 선택할 수 없습니다. 계정에서 변경하세요.',
   "Elimina solo l'account {name}": '{name} 계정만 삭제',
   'Elimina: {category}': '삭제: {category}',
   'Eliminare definitivamente gli elementi selezionati?': '선택한 항목을 영구적으로 삭제할까요?',

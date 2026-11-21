@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'password-bulk-select': [
+    'Multiple selection in the password archive',
+    'In the Password archive, the «Select all» button selects at once every deletable password shown, also when filtered by the search, so you can clean up the history without ticking them one by one. The current passwords of accounts can’t be selected: change them in the account. After deleting, the app tells you how many passwords it removed.',
+  ],
   'css-cleanup': [
     'Style sheet cleaned up',
     'Rules that no longer had any effect were removed from the interface style: properties always overridden by later rules and the style of an element that no longer exists. The app looks exactly the same, and an automatic check verified it rule by rule.',
