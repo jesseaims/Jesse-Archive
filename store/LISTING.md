@@ -85,7 +85,7 @@ Lascia senza spunta tutto il resto: salute, finanze, comunicazioni personali, po
 - non uso né trasferisco i dati per scopi estranei allo scopo unico dell'estensione;
 - non uso né trasferisco i dati per valutare l'affidabilità creditizia o per prestiti.
 
-**URL informativa privacy:** <https://jessearchive.it/privacy-estensione/>
+**URL informativa privacy:** <https://jessearchive.it/en/extension-privacy/> (campo unico per tutte le lingue: inglese come il resto della scheda Privacy; la pagina ha il selettore di lingua).
 
 ### Istruzioni per i revisori (campo «Test instructions» / note)
 
