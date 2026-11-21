@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'remote-changes-refresh',
+    addedAt: '2026-11-21T21:36:00+01:00',
+    version: 'Beta 1.9.4',
+    title: 'Modifiche degli altri PC visibili da sole',
+    description:
+      'Se usi lo stesso vault su più PC tramite una cartella cloud, le modifiche fatte su un altro PC compaiono da sole entro circa 15 secondi. Prima l’app le riceveva già, ma per vederle bisognava premere «Aggiorna» o salvare qualcosa.',
+    icon: 'cloud',
+  },
+  {
     id: 'extension-permissions',
     addedAt: '2026-11-21T17:47:00+01:00',
     version: 'Beta 1.9.3',

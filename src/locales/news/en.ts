@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    'Changes from other PCs show up on their own',
+    'If you use the same vault on several PCs through a cloud folder, changes made on another PC now appear on their own within about 15 seconds. Before, the app already received them, but you had to press «Refresh» or save something to see them.',
+  ],
   'extension-permissions': [
     'Extension with fewer permissions and subdomain notices',
     'The browser extension no longer asks for permission to read every open tab, which it did not need: the browsing history notice disappears at installation, and filling, account saving and passkeys work as before. In the mini window, accounts saved for the page’s exact address come first; those saved for another subdomain of the same site show where they are saved (for example «Saved for accounts.google.com»), and if the field is in a frame of another address the mini window says so.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    'Alterações de outros PCs aparecem sozinhas',
+    'Se você usa o mesmo cofre em vários PCs por meio de uma pasta na nuvem, as alterações feitas em outro PC agora aparecem sozinhas em cerca de 15 segundos. Antes o app já as recebia, mas era preciso pressionar «Atualizar» ou salvar algo para vê-las.',
+  ],
   'extension-permissions': [
     'Extensão com menos permissões e avisos de subdomínios',
     'A extensão do navegador não pede mais permissão para ler todas as abas abertas, da qual não precisava: o aviso sobre o histórico de navegação desaparece na instalação, e o preenchimento, o salvamento de contas e as passkeys funcionam como antes. Na minijanela, as contas salvas para o endereço exato da página aparecem primeiro; as salvas para outro subdomínio do mesmo site mostram onde estão salvas (por exemplo «Salvo para accounts.google.com»), e se o campo estiver em um quadro de outro endereço a minijanela avisa.',

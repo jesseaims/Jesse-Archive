@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    'Änderungen anderer PCs erscheinen von selbst',
+    'Wenn du denselben Tresor über einen Cloud-Ordner auf mehreren PCs nutzt, erscheinen Änderungen von einem anderen PC jetzt innerhalb von etwa 15 Sekunden von selbst. Vorher hatte die App sie zwar schon erhalten, aber man musste „Aktualisieren“ drücken oder etwas speichern, um sie zu sehen.',
+  ],
   'extension-permissions': [
     'Erweiterung mit weniger Berechtigungen und Hinweisen zu Subdomains',
     'Die Browsererweiterung verlangt nicht mehr die Berechtigung, alle geöffneten Tabs zu lesen, die sie nicht brauchte: Der Hinweis auf den Browserverlauf bei der Installation entfällt, und Ausfüllen, Speichern von Konten und Passkeys funktionieren wie bisher. Im Mini-Fenster erscheinen Konten, die für die genaue Adresse der Seite gespeichert sind, zuerst; Konten für eine andere Subdomain derselben Website zeigen, wofür sie gespeichert sind (zum Beispiel „Gespeichert für accounts.google.com“), und wenn das Feld in einem Rahmen einer anderen Adresse liegt, weist das Mini-Fenster darauf hin.',

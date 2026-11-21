@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    'Los cambios de otros PC aparecen solos',
+    'Si usas la misma bóveda en varios PC mediante una carpeta en la nube, los cambios hechos en otro PC aparecen ahora solos en unos 15 segundos. Antes la app ya los recibía, pero para verlos había que pulsar «Actualizar» o guardar algo.',
+  ],
   'extension-permissions': [
     'Extensión con menos permisos y avisos de subdominios',
     'La extensión del navegador ya no pide permiso para leer todas las pestañas abiertas, que no necesitaba: al instalarla desaparece el aviso sobre el historial de navegación, y el rellenado, el guardado de cuentas y las passkeys funcionan como antes. En la miniventana, las cuentas guardadas para la dirección exacta de la página aparecen primero; las guardadas para otro subdominio del mismo sitio indican dónde están guardadas (por ejemplo «Guardado para accounts.google.com»), y si el campo está en un marco de otra dirección la miniventana lo indica.',

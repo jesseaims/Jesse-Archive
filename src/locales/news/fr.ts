@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    'Les modifications des autres PC s’affichent seules',
+    'Si vous utilisez le même coffre sur plusieurs PC via un dossier cloud, les modifications faites sur un autre PC s’affichent désormais seules en 15 secondes environ. Avant, l’application les recevait déjà, mais il fallait appuyer sur « Actualiser » ou enregistrer quelque chose pour les voir.',
+  ],
   'extension-permissions': [
     'Extension avec moins de permissions et avis sur les sous-domaines',
     'L’extension du navigateur ne demande plus l’autorisation de lire tous les onglets ouverts, dont elle n’avait pas besoin : l’avertissement sur l’historique de navigation disparaît à l’installation, et le remplissage, l’enregistrement des comptes et les passkeys fonctionnent comme avant. Dans la mini-fenêtre, les comptes enregistrés pour l’adresse exacte de la page apparaissent en premier ; ceux enregistrés pour un autre sous-domaine du même site indiquent où ils sont enregistrés (par exemple « Enregistré pour accounts.google.com »), et si le champ se trouve dans un cadre d’une autre adresse, la mini-fenêtre le signale.',
