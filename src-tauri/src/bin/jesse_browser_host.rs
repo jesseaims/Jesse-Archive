@@ -20,10 +20,10 @@ fn connect() -> Result<TcpStream, Box<dyn std::error::Error>> {
     Ok(socket)
 }
 fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let chrome = format!("chrome-extension://{}/", protocol::CHROMIUM_ID.trim());
+    let chrome = protocol::chromium_origins();
     if !std::env::args()
         .skip(1)
-        .any(|a| a == chrome || a == protocol::FIREFOX_ID)
+        .any(|a| chrome.contains(&a) || a == protocol::FIREFOX_ID)
     {
         return Err("Extension not allowed".into());
     }

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Prête pour l’extension du Chrome Web Store',
+    'L’application reconnaît aussi l’extension qui sera publiée sur le Chrome Web Store, en plus de celle chargée à la main depuis le dossier de l’application. Si vous aviez déjà configuré vos navigateurs, la liaison se met à jour seule au démarrage : inutile de refaire le guide.',
+  ],
   'remote-changes-refresh': [
     'Les modifications des autres PC s’affichent seules',
     'Si vous utilisez le même coffre sur plusieurs PC via un dossier cloud, les modifications faites sur un autre PC s’affichent désormais seules en 15 secondes environ. Avant, l’application les recevait déjà, mais il fallait appuyer sur « Actualiser » ou enregistrer quelque chose pour les voir.',

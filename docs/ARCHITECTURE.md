@@ -38,7 +38,7 @@ L'interfaccia Tauri usa IPC nativo, non il server HTTP del vecchio client Python
 | [browser.rs](../src-tauri/src/browser.rs) | `Bridge`, listener, scorciatoie, selezione account e messaggi di riempimento |
 | [browser_channel.rs](../src-tauri/src/browser_channel.rs) | Canale locale (dalla Beta 1.9.2): `connection.json` con permessi riservati all'utente (`write_private`), autenticazione del token con scadenza complessiva, limiti di connessioni in attesa e autenticate (`serve`), limite di frequenza dei messaggi (`Rate`) |
 | [browser_save.rs](../src-tauri/src/browser_save.rs), [save-capture.js](../browser-extension/save-capture.js) | Salvataggio degli account inviati sui siti (dalla Beta 1.3.0): cattura nell'estensione, richiesta in memoria nel backend, conferma nella mini finestra |
-| [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) | Identificatori, directory e framing condiviso |
+| [browser_protocol.rs](../src-tauri/src/browser_protocol.rs) | Identificatori (estensione non pacchettizzata e ID degli store, `chromium_origins`), directory e framing condiviso |
 | [jesse_browser_host.rs](../src-tauri/src/bin/jesse_browser_host.rs) | Secondo binario Cargo; relay tra browser e app già aperta |
 | [browser_installer.rs](../src-tauri/src/browser_installer.rs) | Catalogo fisso di sei browser, rilevamento e apertura guida |
 | [browser_navigation.rs](../src-tauri/src/browser_navigation.rs) | Navigazione Win32 controllata, compilata solo su Windows |

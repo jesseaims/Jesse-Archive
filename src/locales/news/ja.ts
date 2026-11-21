@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Chrome ウェブストアの拡張機能に対応',
+    'アプリのフォルダーから手動で読み込んだ拡張機能に加えて、Chrome ウェブストアで公開予定の拡張機能も認識するようになりました。ブラウザーを設定済みの場合、起動時に接続が自動で更新されるため、ガイドをやり直す必要はありません。',
+  ],
   'remote-changes-refresh': [
     '他の PC の変更が自動で表示',
     'クラウドフォルダーで同じ保管庫を複数の PC で使っている場合、別の PC で行った変更が約 15 秒以内に自動で表示されるようになりました。以前もアプリは変更を受け取っていましたが、表示するには「更新」を押すか何かを保存する必要がありました。',

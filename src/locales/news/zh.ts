@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    '已支持 Chrome 应用商店中的扩展',
+    '除了从应用文件夹手动加载的扩展外，应用现在也能识别即将发布到 Chrome 应用商店的扩展。如果你之前已经设置过浏览器，连接会在启动时自动更新，无需重新运行向导。',
+  ],
   'remote-changes-refresh': [
     '其他电脑的更改会自动显示',
     '如果你通过云文件夹在多台电脑上使用同一个保险库，在另一台电脑上所做的更改现在会在大约 15 秒内自动显示。以前应用已经收到了这些更改，但需要点击“刷新”或保存内容才能看到。',

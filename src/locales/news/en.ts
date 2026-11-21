@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Ready for the Chrome Web Store extension',
+    'The app also recognises the extension that will be published on the Chrome Web Store, besides the one loaded by hand from the app folder. If you had already set up your browsers, the connection is updated on its own at startup: you do not need to run the guide again.',
+  ],
   'remote-changes-refresh': [
     'Changes from other PCs show up on their own',
     'If you use the same vault on several PCs through a cloud folder, changes made on another PC now appear on their own within about 15 seconds. Before, the app already received them, but you had to press «Refresh» or save something to see them.',
