@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    'Exportierte Dateien behalten Gruppen und Favoriten',
+    'Wenn du den Tresor als CSV exportierst und wieder importierst, kommen Konten von Apps und Diensten ohne Website (zum Beispiel mehrere Konten desselben Spiels) zurück in ihre benannte Gruppe, statt jeweils in einer eigenen Gruppe zu landen, und Favoriten bleiben Favoriten. Auch der JSON-Export behält jetzt Namen und Symbole der Gruppen.',
+  ],
   'window-permissions': [
     'Jedes Fenster kann nur seine eigene Aufgabe erledigen',
     'Das Browser-Minifenster, die Schnellsuche und die Erweiterungsanleitung können jetzt nur noch die Funktionen nutzen, die sie jeweils brauchen: Sie können zum Beispiel den Tresor nicht mehr exportieren, keine Passwörter lesen, die sie nicht anzeigen, keine Einträge ändern und das Master-Passwort nicht ändern. All das ist weiterhin nur im Hauptfenster möglich. Im Alltag ändert sich nichts.',

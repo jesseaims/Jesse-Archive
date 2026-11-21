@@ -125,6 +125,8 @@ const IMPORT_TARGETS: [string, string][] = [
   ['platform', msg('Piattaforma')],
   ['seed', msg('Seed')],
   ['credential', msg('Credenziale')],
+  ['app_group', msg('Gruppo (app o servizio senza sito)')],
+  ['app_group_type', msg('Tipo di gruppo (app o altro)')],
   ['ignore', msg('Ignora')],
 ];
 

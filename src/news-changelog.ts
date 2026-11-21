@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'export-keeps-groups',
+    addedAt: '2026-11-21T04:40:00+01:00',
+    version: 'Beta 1.8.1',
+    title: 'I file esportati conservano gruppi e preferiti',
+    description:
+      'Esportando il vault in CSV e reimportandolo, gli account delle app e dei servizi senza sito (per esempio più account dello stesso gioco) tornano nel loro gruppo con il suo nome, invece di finire ognuno in un gruppo separato, e i preferiti restano tali. Anche l’esportazione JSON conserva ora nomi e icone dei gruppi.',
+    icon: 'shield',
+  },
+  {
     id: 'window-permissions',
     addedAt: '2026-11-21T04:20:00+01:00',
     version: 'Beta 1.8.1',

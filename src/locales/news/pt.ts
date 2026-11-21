@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'export-keeps-groups': [
+    'Os ficheiros exportados mantêm grupos e favoritos',
+    'Ao exportar o cofre em CSV e importá-lo de novo, as contas de apps e serviços sem site (por exemplo, várias contas do mesmo jogo) voltam ao seu grupo com o respetivo nome, em vez de cada uma ficar num grupo separado, e os favoritos mantêm-se. A exportação JSON passa também a conservar os nomes e ícones dos grupos.',
+  ],
   'window-permissions': [
     'Cada janela só pode fazer o seu próprio trabalho',
     'A minijanela do navegador, a pesquisa rápida e o guia das extensões passam a poder usar apenas as funções de que cada uma precisa: por exemplo, já não podem exportar o cofre, ler palavras-passe que não mostram, alterar elementos nem mudar a palavra-passe principal. Tudo isto continua possível apenas a partir da janela principal. Nada muda no uso diário.',

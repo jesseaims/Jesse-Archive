@@ -1928,6 +1928,14 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
             n += 1
         }
     }
+    // Names and icons of the groups, only those this vault does not have yet.
+    if let Some(groups) = pl.get("groups").and_then(V::as_object) {
+        for (k, g) in groups {
+            if g.is_object() && d["groups"].get(k).is_none() {
+                obj(d, "groups").insert(k.clone(), g.clone());
+            }
+        }
+    }
     let existing: HashSet<String> = array(d, "passwords")
         .iter()
         .map(|p| s(p, "id").to_string())
@@ -1941,7 +1949,7 @@ fn merge_import(d: &mut V, pl: &V) -> usize {
 }
 fn export_text(d: &V, format: &str) -> Res<String> {
     if format == "json" {
-        return serde_json::to_string_pretty(&json!({"kind":"jessamine-export","folders":d["folders"],"items":d["items"],"passwords":d["passwords"]})).map_err(err);
+        return serde_json::to_string_pretty(&json!({"kind":"jessamine-export","folders":d["folders"],"items":d["items"],"passwords":d["passwords"],"groups":d["groups"]})).map_err(err);
     }
     let mut columns = vec![];
     for t in ["card", "crypto", "login", "passkey", "personal"] {
@@ -1955,6 +1963,9 @@ fn export_text(d: &V, format: &str) -> Res<String> {
     let mut out = csv::Writer::from_writer(Vec::new());
     let mut head = vec!["name", "type", "folder", "notes"];
     head.extend(columns.iter().copied());
+    // Favorite and, for accounts grouped by app or service instead of by website,
+    // the group name: an import of this file puts them back together.
+    head.extend(["fav", "app_group", "app_group_type"]);
     out.write_record(head).map_err(err)?;
     for i in array(d, "items") {
         if !i["trashed"].is_null() {
@@ -1967,6 +1978,22 @@ fn export_text(d: &V, format: &str) -> Res<String> {
             .unwrap_or("");
         let mut row = vec![s(i, "title"), s(i, "type"), folder, s(i, "notes")];
         row.extend(columns.iter().map(|k| s(&i["f"], k)));
+        let gk = s(i, "gk");
+        let kind = gk.split(':').next().unwrap_or("");
+        let (group, kind) = if s(i, "type") == "login" && matches!(kind, "app" | "other") {
+            let name = s(&d["groups"][gk], "name");
+            (
+                if name.is_empty() {
+                    &gk[kind.len() + 1..]
+                } else {
+                    name
+                },
+                kind,
+            )
+        } else {
+            ("", "")
+        };
+        row.extend([if i["fav"] == true { "true" } else { "" }, group, kind]);
         out.write_record(row).map_err(err)?
     }
     String::from_utf8(out.into_inner().map_err(err)?).map_err(err)
@@ -2042,6 +2069,14 @@ fn add_entries(d: &mut V, entries: Vec<crate::importers::Entry>) -> usize {
             }
         }
         push_imported(d, typ, &e.title, folder, f, &e.notes);
+        if typ == "login" && !e.group.trim().is_empty() {
+            let kind = if e.group_kind == "other" {
+                "other"
+            } else {
+                "app"
+            };
+            group_by_title(d, kind, &e.group);
+        }
         if e.fav {
             if let Some(it) = arr(d, "items").last_mut() {
                 it["fav"] = json!(true);
@@ -3601,6 +3636,53 @@ mod vault_tests {
         v.call("bulk", json!({"ids": [ids[0]], "op": "fav", "fav": false}))
             .unwrap();
         assert!(!fav(&v, &ids[0]) && fav(&v, &ids[1]));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn an_export_reimported_keeps_groups_and_favorites() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let group = json!({"key": "app:primo", "name": "Gioco Bello", "src": "app", "icon": ""});
+        for title in ["Primo", "Secondo"] {
+            v.call("item", json!({"type": "login", "title": title, "f": {"username": title, "password": "pw-gioco"}, "group": group}))
+                .unwrap();
+        }
+        let other =
+            json!({"key": "other:router", "name": "Router di casa", "src": "other", "icon": ""});
+        v.call(
+            "item",
+            json!({"type": "login", "title": "Router", "f": {"username": "admin"}, "group": other}),
+        )
+        .unwrap();
+        v.call("item", json!({"type": "login", "title": "Sito", "fav": true, "f": {"url": "https://sito.example", "username": "io"}}))
+            .unwrap();
+        for format in ["csv", "json"] {
+            let text = v.call("export", json!({"format": format})).unwrap();
+            let (mut w, wdir) = test_vault();
+            w.call("create", json!({"password": "password-due"}))
+                .unwrap();
+            w.call("import", json!({"text": s(&text, "text")})).unwrap();
+            let items = array(&w.data, "items");
+            let by = |t: &str| items.iter().find(|i| s(i, "title") == t).unwrap();
+            // Both accounts of the app in one group, with its name.
+            let gk = s(by("Primo"), "gk").to_string();
+            assert!(gk.starts_with("app:"), "{format}: {gk}");
+            assert_eq!(s(by("Secondo"), "gk"), gk, "{format}");
+            assert_eq!(s(&w.data["groups"][&gk], "name"), "Gioco Bello", "{format}");
+            let rk = s(by("Router"), "gk").to_string();
+            assert!(rk.starts_with("other:"), "{format}: {rk}");
+            assert_eq!(
+                s(&w.data["groups"][&rk], "name"),
+                "Router di casa",
+                "{format}"
+            );
+            // A website account stays grouped by its site, and favorites come back.
+            assert_eq!(s(by("Sito"), "gk"), "", "{format}");
+            assert_eq!(by("Sito")["fav"], json!(true), "{format}");
+            assert_ne!(by("Primo")["fav"], json!(true), "{format}");
+            fs::remove_dir_all(wdir).unwrap();
+        }
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

@@ -2,6 +2,8 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Gruppo (app o servizio senza sito)': '分组（无网站的应用或服务）',
+  'Tipo di gruppo (app o altro)': '分组类型（应用或其他）',
   'Rimuovi dai preferiti': '从收藏中移除',
   'Aggiungi il gruppo {name} ai preferiti': '将 {name} 组加入收藏',
   'Rimuovi il gruppo {name} dai preferiti': '将 {name} 组从收藏中移除',

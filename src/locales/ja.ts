@@ -2,6 +2,8 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Gruppo (app o servizio senza sito)': 'グループ（Web サイトのないアプリやサービス）',
+  'Tipo di gruppo (app o altro)': 'グループの種類（アプリまたはその他）',
   'Rimuovi dai preferiti': 'お気に入りから削除',
   'Aggiungi il gruppo {name} ai preferiti': '{name} グループをお気に入りに追加',
   'Rimuovi il gruppo {name} dai preferiti': '{name} グループをお気に入りから削除',

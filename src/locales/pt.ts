@@ -2,6 +2,8 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Gruppo (app o servizio senza sito)': 'Grupo (app ou serviço sem site)',
+  'Tipo di gruppo (app o altro)': 'Tipo de grupo (app ou outro)',
   'Rimuovi dai preferiti': 'Remover dos favoritos',
   'Aggiungi il gruppo {name} ai preferiti': 'Adicionar o grupo {name} aos favoritos',
   'Rimuovi il gruppo {name} dai preferiti': 'Remover o grupo {name} dos favoritos',

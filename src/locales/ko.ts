@@ -2,6 +2,8 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Gruppo (app o servizio senza sito)': '그룹(웹사이트가 없는 앱 또는 서비스)',
+  'Tipo di gruppo (app o altro)': '그룹 유형(앱 또는 기타)',
   'Rimuovi dai preferiti': '즐겨찾기에서 제거',
   'Aggiungi il gruppo {name} ai preferiti': '{name} 그룹을 즐겨찾기에 추가',
   'Rimuovi il gruppo {name} dai preferiti': '{name} 그룹을 즐겨찾기에서 제거',
