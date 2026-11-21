@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'password-bulk-select',
+    addedAt: '2026-11-21T13:20:00+01:00',
+    version: 'Beta 1.9.0',
+    title: 'Archivio password più facile da ripulire',
+    description:
+      'Nell’Archivio password il pulsante «Seleziona tutti» seleziona in un colpo tutte le password eliminabili mostrate, anche filtrate con la ricerca, così puoi ripulire lo storico senza spuntarle una per una. Le password attuali degli account non si possono selezionare: si cambiano nell’account. Dopo l’eliminazione l’app indica quante password ha tolto. Inoltre, eliminando definitivamente un elemento (anche svuotando il cestino), vengono eliminate anche le sue password nello storico, invece di restare come password non collegate.',
+    icon: 'key',
+  },
+  {
     id: 'css-cleanup',
     addedAt: '2026-11-21T05:40:00+01:00',
     version: 'Beta 1.8.3',

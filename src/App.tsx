@@ -1156,7 +1156,7 @@ export default function App() {
       t('Ultima conferma: elementi da eliminare per sempre dal vault: {n}.', { n }) +
         '\n\n' +
         t(
-          'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
+          'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.',
         ),
       {
         title: t('Conferma svuotamento del cestino'),
@@ -1808,7 +1808,11 @@ export default function App() {
                             onClick={async () => {
                               if (
                                 await askConfirm(
-                                  t('Eliminare definitivamente gli elementi selezionati?'),
+                                  t('Eliminare definitivamente gli elementi selezionati?') +
+                                    '\n\n' +
+                                    t(
+                                      'Verranno eliminate anche le loro password nell’Archivio password.',
+                                    ),
                                   {
                                     title: t('Eliminazione definitiva'),
                                     danger: true,
@@ -1968,7 +1972,11 @@ export default function App() {
                                 onClick={async () => {
                                   if (
                                     await askConfirm(
-                                      t('Eliminare definitivamente questo elemento?'),
+                                      t('Eliminare definitivamente questo elemento?') +
+                                        '\n\n' +
+                                        t(
+                                          'Verranno eliminate anche le loro password nell’Archivio password.',
+                                        ),
                                       {
                                         title: t('Eliminazione definitiva'),
                                         danger: true,
@@ -2810,6 +2818,10 @@ function PasswordPage({
   const list = vault.passwords.filter((p) =>
     [p.item_title, p.label, p.source].some((v) => v?.toLowerCase().includes(filter.toLowerCase())),
   );
+  // The current password of an account is changed in the account, so it can't be
+  // selected for deletion here.
+  const deletable = list.filter((p) => !(p.active && p.item_id));
+  const allSelected = deletable.length > 0 && deletable.every((p) => selected.includes(p.id));
   const eligible = vault.items.filter((i) => !i.trashed && i.type === 'login');
   const source = linkPid ? vault.passwords.find((p) => p.id === linkPid) : undefined;
   const target = vault.items.find((i) => i.id === targetId);
@@ -2891,13 +2903,35 @@ function PasswordPage({
                     },
                   )
                 ) {
-                  await mutate('pw_bulk', { pids: selected });
-                  setSelected([]);
+                  const r = await mutate(
+                    'pw_bulk',
+                    { pids: selected },
+                    t('Password eliminate: {n}', { n: selected.length }),
+                  );
+                  if (r) setSelected([]);
                 }
               }}
             >
               <Trash2 size={16} />
               {t('Elimina selezionate ({n})', { n: selected.length })}
+            </button>
+          )}
+          {deletable.length > 0 && (
+            <button
+              className="secondary"
+              title={t(
+                'Le password attuali degli account non si selezionano: si cambiano nell’account.',
+              )}
+              onClick={() =>
+                setSelected(
+                  allSelected
+                    ? selected.filter((id) => !deletable.some((p) => p.id === id))
+                    : [...new Set([...selected, ...deletable.map((p) => p.id)])],
+                )
+              }
+            >
+              <CheckSquare size={16} />
+              {allSelected ? t('Deseleziona tutti') : t('Seleziona tutti')}
             </button>
           )}
           <div className="search-box">
@@ -2941,6 +2975,14 @@ function PasswordPage({
             <input
               type="checkbox"
               aria-label={t('Seleziona password')}
+              disabled={!!(p.active && p.item_id)}
+              title={
+                p.active && p.item_id
+                  ? t(
+                      'Le password attuali degli account non si selezionano: si cambiano nell’account.',
+                    )
+                  : undefined
+              }
               checked={selected.includes(p.id)}
               onChange={(e) =>
                 setSelected((ids) =>

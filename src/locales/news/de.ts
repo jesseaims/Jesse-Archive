@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'password-bulk-select': [
+    'Passwortarchiv leichter aufzuräumen',
+    'Im Passwortarchiv wählt die Schaltfläche „Alle auswählen“ auf einmal alle angezeigten löschbaren Passwörter aus, auch wenn sie per Suche gefiltert sind, damit du den Verlauf bereinigen kannst, ohne jedes einzeln abzuhaken. Aktuelle Passwörter von Konten lassen sich nicht auswählen: Sie werden im Konto geändert. Nach dem Löschen zeigt die App an, wie viele Passwörter entfernt wurden. Außerdem werden beim endgültigen Löschen eines Elements (auch beim Leeren des Papierkorbs) seine Passwörter im Verlauf mitgelöscht, statt als nicht verknüpfte Passwörter zu bleiben.',
+  ],
   'css-cleanup': [
     'Stylesheet bereinigt',
     'Aus dem Stil der Oberfläche wurden Regeln entfernt, die keine Wirkung mehr hatten: Eigenschaften, die immer von späteren Regeln überschrieben wurden, und der Stil eines Elements, das es nicht mehr gibt. Die App sieht genau gleich aus, und eine automatische Prüfung hat das Regel für Regel bestätigt.',

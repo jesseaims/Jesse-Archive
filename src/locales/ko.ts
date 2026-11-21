@@ -318,6 +318,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': '기록에서 비밀번호 삭제',
   'Elimina selezionate': '선택 항목 삭제',
   'Elimina selezionate ({n})': '선택 항목 삭제({n})',
+  'Password eliminate: {n}': '삭제된 비밀번호: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    '계정의 현재 비밀번호는 선택할 수 없습니다. 계정에서 변경하세요.',
   "Elimina solo l'account {name}": '{name} 계정만 삭제',
   'Elimina: {category}': '삭제: {category}',
   'Eliminare definitivamente gli elementi selezionati?': '선택한 항목을 영구적으로 삭제할까요?',
@@ -421,8 +424,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': '폴더가 변경되었습니다',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     '새 버전은 GitHub에서 확인합니다. 사용자가 확인하고 작성자의 서명이 유효한 경우에만 설치됩니다.',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    '연결된 비밀번호는 비밀번호 페이지의 기록에 연결되지 않은 상태로 남습니다. 이 항목 중 일부를 유지하려면 취소를 누르고 먼저 복원하세요.',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    '비밀번호 보관소에 있는 해당 비밀번호도 삭제됩니다. 이 항목 중 일부를 유지하려면 취소를 누르고 먼저 복원하세요.',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    '비밀번호 보관소에 있는 해당 비밀번호도 삭제됩니다.',
   'Le tue password': '나의 비밀번호',
   Lingua: '언어',
   'lo storico delle password è cambiato': '비밀번호 기록이 변경되었습니다',

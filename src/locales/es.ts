@@ -326,6 +326,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': 'Eliminar contraseñas del historial',
   'Elimina selezionate': 'Eliminar seleccionadas',
   'Elimina selezionate ({n})': 'Eliminar seleccionadas ({n})',
+  'Password eliminate: {n}': 'Contraseñas eliminadas: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'Las contraseñas actuales de las cuentas no se pueden seleccionar: cámbialas en la cuenta.',
   "Elimina solo l'account {name}": 'Eliminar solo la cuenta {name}',
   'Elimina: {category}': 'Eliminar: {category}',
   'Eliminare definitivamente gli elementi selezionati?':
@@ -432,8 +435,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': 'las carpetas han cambiado',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     'Las nuevas versiones se consultan en GitHub. Solo se instalan tras tu confirmación y si la firma del autor es válida.',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    'Las contraseñas vinculadas quedan en el historial de la página Contraseñas como no asociadas. Si quieres conservar alguno de estos elementos, pulsa Cancelar y restáuralo antes.',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    'También se eliminarán sus contraseñas del Archivo de contraseñas. Si quieres conservar alguno de estos elementos, pulsa Cancelar y restáuralo antes.',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    'También se eliminarán sus contraseñas del Archivo de contraseñas.',
   'Le tue password': 'Tus contraseñas',
   Lingua: 'Idioma',
   'lo storico delle password è cambiato': 'el historial de contraseñas ha cambiado',

@@ -327,6 +327,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': 'Удалить пароли из истории',
   'Elimina selezionate': 'Удалить выбранные',
   'Elimina selezionate ({n})': 'Удалить выбранные ({n})',
+  'Password eliminate: {n}': 'Удалено паролей: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'Текущие пароли учётных записей нельзя выбрать: меняйте их в учётной записи.',
   "Elimina solo l'account {name}": 'Удалить только учётную запись {name}',
   'Elimina: {category}': 'Удалить: {category}',
   'Eliminare definitivamente gli elementi selezionati?': 'Удалить выбранные элементы навсегда?',
@@ -433,8 +436,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': 'папки изменились',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     'Новые версии запрашиваются у GitHub. Они устанавливаются только после вашего подтверждения и только при действительной подписи автора.',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    'Связанные пароли останутся в истории на странице «Пароли» как непривязанные. Если хотите сохранить какие-то из этих элементов, нажмите «Отмена» и сначала восстановите их.',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    'Их пароли в архиве паролей тоже будут удалены. Если хотите сохранить какие-то из этих элементов, нажмите «Отмена» и сначала восстановите их.',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    'Их пароли в архиве паролей тоже будут удалены.',
   'Le tue password': 'Ваши пароли',
   Lingua: 'Язык',
   'lo storico delle password è cambiato': 'история паролей изменилась',

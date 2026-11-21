@@ -323,6 +323,9 @@ const dictionary: Dictionary = {
   'Elimina password dallo storico': '履歴からパスワードを削除',
   'Elimina selezionate': '選択項目を削除',
   'Elimina selezionate ({n})': '選択項目を削除 ({n})',
+  'Password eliminate: {n}': '削除したパスワード: {n}',
+  'Le password attuali degli account non si selezionano: si cambiano nell’account.':
+    'アカウントの現在のパスワードは選択できません。アカウントで変更してください。',
   "Elimina solo l'account {name}": 'アカウント {name} だけを削除',
   'Elimina: {category}': '削除: {category}',
   'Eliminare definitivamente gli elementi selezionati?': '選択した項目を完全に削除しますか?',
@@ -428,8 +431,10 @@ const dictionary: Dictionary = {
   'le cartelle sono cambiate': 'フォルダーが変更されました',
   "Le nuove versioni vengono chieste a GitHub. Si installano solo dopo la tua conferma e solo se la firma dell'autore è valida.":
     '新しいバージョンは GitHub に問い合わせます。インストールされるのは、確認した後で、作成者の署名が有効な場合だけです。',
-  'Le password collegate restano nello storico della pagina Password come non associate. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
-    '関連付けられたパスワードは、パスワード ページの履歴に未関連付けとして残ります。これらの項目の一部を残したい場合は、[キャンセル] を押して先に復元してください。',
+  'Verranno eliminate anche le loro password nell’Archivio password. Se vuoi tenerne qualcuno, premi Annulla e ripristinalo prima.':
+    'パスワード アーカイブ内のそれらのパスワードも削除されます。これらの項目の一部を残したい場合は、[キャンセル] を押して先に復元してください。',
+  'Verranno eliminate anche le loro password nell’Archivio password.':
+    'パスワード アーカイブ内のそれらのパスワードも削除されます。',
   'Le tue password': 'あなたのパスワード',
   Lingua: '言語',
   'lo storico delle password è cambiato': 'パスワード履歴が変更されました',
