@@ -408,7 +408,8 @@ mod tests {
             Foundation::LocalFree,
             Security::{
                 Authorization::{
-                    ConvertSecurityDescriptorToStringSecurityDescriptorW, GetNamedSecurityInfoW,
+                    ConvertSecurityDescriptorToStringSecurityDescriptorW,
+                    ConvertStringSecurityDescriptorToSecurityDescriptorW, GetNamedSecurityInfoW,
                     SDDL_REVISION_1, SE_FILE_OBJECT,
                 },
                 DACL_SECURITY_INFORMATION,
@@ -425,24 +426,11 @@ mod tests {
             br#"{"token":"token-sintetico"}"#
         );
         assert!(!path.with_extension("tmp").exists());
-        let wide: Vec<u16> = path.as_os_str().encode_wide().chain([0]).collect();
-        let mut descriptor = std::ptr::null_mut();
-        let mut text = std::ptr::null_mut();
-        // SAFETY: test-only reads of the file's DACL; buffers freed with LocalFree.
-        let sddl = unsafe {
-            assert_eq!(
-                GetNamedSecurityInfoW(
-                    wide.as_ptr(),
-                    SE_FILE_OBJECT,
-                    DACL_SECURITY_INFORMATION,
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                    std::ptr::null_mut(),
-                    &mut descriptor,
-                ),
-                0
-            );
+        // SDDL text of a DACL, as Windows writes it (well-known accounts such as the
+        // local Administrator, the CI user, come out as short aliases like "LA").
+        // SAFETY: test-only; the buffer is freed with LocalFree.
+        let text_of = |descriptor: *mut std::ffi::c_void| unsafe {
+            let mut text = std::ptr::null_mut();
             assert_ne!(
                 ConvertSecurityDescriptorToStringSecurityDescriptorW(
                     descriptor,
@@ -456,11 +444,49 @@ mod tests {
             let len = (0..).take_while(|&i| *text.add(i) != 0).count();
             let s = String::from_utf16_lossy(std::slice::from_raw_parts(text, len));
             LocalFree(text.cast());
+            s
+        };
+        let wide: Vec<u16> = path.as_os_str().encode_wide().chain([0]).collect();
+        let mut descriptor = std::ptr::null_mut();
+        // SAFETY: test-only read of the file's DACL; freed with LocalFree.
+        let actual = unsafe {
+            assert_eq!(
+                GetNamedSecurityInfoW(
+                    wide.as_ptr(),
+                    SE_FILE_OBJECT,
+                    DACL_SECURITY_INFORMATION,
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    &mut descriptor,
+                ),
+                0
+            );
+            let s = text_of(descriptor);
             LocalFree(descriptor);
             s
         };
-        let sid = user_sid().unwrap();
-        assert_eq!(sddl, format!("D:P(A;;FA;;;{sid})(A;;FA;;;SY)"));
+        let expected = format!("D:P(A;;FA;;;{})(A;;FA;;;SY)", user_sid().unwrap());
+        let expected_wide: Vec<u16> = expected.encode_utf16().chain([0]).collect();
+        let mut parsed = std::ptr::null_mut();
+        // SAFETY: valid NUL-terminated SDDL; freed with LocalFree.
+        let expected = unsafe {
+            assert_ne!(
+                ConvertStringSecurityDescriptorToSecurityDescriptorW(
+                    expected_wide.as_ptr(),
+                    SDDL_REVISION_1,
+                    &mut parsed,
+                    std::ptr::null_mut(),
+                ),
+                0
+            );
+            let s = text_of(parsed);
+            LocalFree(parsed);
+            s
+        };
+        assert!(actual.starts_with("D:P("), "{actual}");
+        assert_eq!(actual, expected);
         std::fs::remove_dir_all(dir).unwrap();
     }
 }
