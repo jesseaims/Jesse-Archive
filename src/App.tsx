@@ -43,7 +43,15 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import { api, copyText, clearSecretIfUnchanged, picker, readFile, saveFile } from './api';
+import {
+  api,
+  copyText,
+  copyVaultSecret,
+  clearSecretIfUnchanged,
+  picker,
+  readFile,
+  saveFile,
+} from './api';
 import { paletteKeys, DEFAULT_CUSTOM, applyPalette } from './theme';
 import { changeZoom, getZoom, ZOOM_MAX, ZOOM_MIN } from './zoom';
 import { pickIconData } from './api';
@@ -223,6 +231,8 @@ function AccountGroups({
   vault,
   openItem,
   copy,
+  reveal,
+  copySecret,
   onDeleteAccount,
   onDeleteGroup,
   selected,
@@ -232,6 +242,8 @@ function AccountGroups({
   vault: State;
   openItem: (i?: Item) => void;
   copy: (v: string) => Promise<void>;
+  reveal: (id: string, field: string) => Promise<string | undefined>;
+  copySecret: (id: string, field: string) => Promise<void>;
   onDeleteAccount: (it: Item) => Promise<void>;
   onDeleteGroup: (key: string, label: string) => Promise<void>;
   // Multiple selection shared with the page's bulk bar (move, trash, restore).
@@ -250,7 +262,8 @@ function AccountGroups({
     return Array.from(m.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [items]);
   const [pageBy, setPageBy] = useState<Record<string, number>>({});
-  const [revealed, setRevealed] = useState<Record<string, boolean>>({});
+  // Values shown on request (`state` has none): forgotten when the list changes.
+  const [revealed, setRevealed] = useState<Record<string, string>>({});
   // Hide a previously revealed secret when switching accounts or groups.
   useEffect(() => setRevealed({}), [items]);
   return (
@@ -329,34 +342,50 @@ function AccountGroups({
                 <strong
                   className="group-password"
                   title={
-                    revealed[key + ':' + it.id] ? t('Password visibile') : t('Password nascosta')
+                    revealed[key + ':' + it.id] !== undefined
+                      ? t('Password visibile')
+                      : t('Password nascosta')
                   }
                 >
-                  {revealed[key + ':' + it.id] ? it.f.password || t('Non impostata') : '••••••••••'}
+                  {revealed[key + ':' + it.id] ?? '••••••••••'}
                 </strong>
-                {it.f.password && (
+                {it.has?.includes('password') && (
                   <>
                     <button
                       type="button"
                       title={
-                        revealed[key + ':' + it.id] ? t('Nascondi password') : t('Mostra password')
+                        revealed[key + ':' + it.id] !== undefined
+                          ? t('Nascondi password')
+                          : t('Mostra password')
                       }
                       aria-label={
-                        revealed[key + ':' + it.id] ? t('Nascondi password') : t('Mostra password')
+                        revealed[key + ':' + it.id] !== undefined
+                          ? t('Nascondi password')
+                          : t('Mostra password')
                       }
-                      aria-pressed={!!revealed[key + ':' + it.id]}
+                      aria-pressed={revealed[key + ':' + it.id] !== undefined}
                       className="icon-button group-reveal"
-                      onClick={() =>
-                        setRevealed((v) => ({ ...v, [key + ':' + it.id]: !v[key + ':' + it.id] }))
-                      }
+                      onClick={async () => {
+                        const k = key + ':' + it.id;
+                        if (revealed[k] !== undefined) {
+                          setRevealed(({ [k]: _, ...rest }) => rest);
+                          return;
+                        }
+                        const value = await reveal(it.id, 'password');
+                        if (value !== undefined) setRevealed((v) => ({ ...v, [k]: value }));
+                      }}
                     >
-                      {revealed[key + ':' + it.id] ? <EyeOff size={15} /> : <Eye size={15} />}
+                      {revealed[key + ':' + it.id] !== undefined ? (
+                        <EyeOff size={15} />
+                      ) : (
+                        <Eye size={15} />
+                      )}
                     </button>
                     <button
                       title={t('Copia password')}
                       aria-label={t('Copia password')}
                       className="icon-button"
-                      onClick={() => void copy(it.f.password)}
+                      onClick={() => void copySecret(it.id, 'password')}
                     >
                       <Copy size={14} />
                     </button>
@@ -601,7 +630,8 @@ export default function App() {
     [sharePass, setSharePass] = useState(''),
     [shareImport, setShareImport] = useState(''),
     [importPreview, setImportPreview] = useState<ImportPreview | null>(null),
-    [showSecrets, setShowSecrets] = useState<string[]>([]),
+    // Password history values shown on request (id -> value): `state` has none.
+    [showSecrets, setShowSecrets] = useState<Record<string, string>>({}),
     [mobileMenu, setMobileMenu] = useState(false),
     [appsList, setAppsList] = useState<{ name: string; path: string }[] | null>(null),
     [appsQuery, setAppsQuery] = useState(''),
@@ -632,7 +662,8 @@ export default function App() {
     setMulti([]);
     setSharePass('');
     setShareImport('');
-    setShowSecrets([]);
+    setShowSecrets({});
+    setNoteHits([]);
     setAppsList(null);
     setGroupIcon('');
   }, []);
@@ -920,6 +951,20 @@ export default function App() {
       setError(translateMessage(formatError(e)));
     }
   };
+  // Secrets are not in `state`: one value when the user asks to see it, copied in the
+  // backend without passing through this window.
+  const reveal = async (id: string, field: string) =>
+    (await run<{ value: string }>('secret', { id, field }))?.value;
+  const copySecret = async (id: string, field: string) => {
+    try {
+      await copyVaultSecret(id, field);
+      notify(t('Copiato negli appunti'));
+    } catch (e) {
+      const message = formatError(e);
+      if (/Vault bloccato|Sessione scaduta/.test(message)) wipeSession();
+      setError(translateMessage(message));
+    }
+  };
   const lock = async () => {
     await run('lock');
     wipeSession();
@@ -932,6 +977,20 @@ export default function App() {
     setMulti([]);
     setMobileMenu(false);
   };
+  const [noteHits, setNoteHits] = useState<string[]>([]);
+  useEffect(() => {
+    const q = search.trim();
+    if (!q || !vault) {
+      setNoteHits([]);
+      return;
+    }
+    const id = window.setTimeout(() => {
+      void api<{ ids: string[] }>('search_notes', { q })
+        .then((r) => setNoteHits(r.ids))
+        .catch(() => setNoteHits([]));
+    }, 200);
+    return () => window.clearTimeout(id);
+  }, [search, vault]);
   const filtered = useMemo(() => {
     if (!vault) return [];
     return vault.items
@@ -950,19 +1009,16 @@ export default function App() {
         const q = search.toLowerCase().trim();
         return (
           !q ||
-          [
-            it.title,
-            it.type,
-            it.notes,
-            // The hidden WebAuthn key material is never searched.
-            ...Object.entries(it.f || {})
-              .filter(([k]) => k !== 'webauthn')
-              .map(([, v]) => v),
-          ].some((v) => v?.toLowerCase().includes(q))
+          noteHits.includes(it.id) ||
+          // `state` has no secrets: what is searched here is title, category and the
+          // visible fields; the notes are searched in the backend (`noteHits`).
+          [it.title, it.type, ...Object.values(it.f || {})].some((v) =>
+            v?.toLowerCase().includes(q),
+          )
         );
       })
       .sort((a, b) => (b.updated || 0) - (a.updated || 0));
-  }, [vault, page, folderId, search]);
+  }, [vault, page, folderId, search, noteHits]);
   // Deleting moves items to the Cestino (backend `trash`/`bulk`), where they can be
   // restored or permanently deleted. Nothing happens before explicit confirmation.
   const deleteItem = async (it: Item) => {
@@ -1082,12 +1138,25 @@ export default function App() {
     ).then(() => setMulti([]));
   };
   const openItem = (it?: Item, type: Category = 'login') => {
-    if (it?.id) void rememberItem(it.id);
-    setDraft(it ? structuredClone(it) : itemBase(type));
     setGroupIcon('');
     setAppsList(null);
-    setDialog('item');
+    if (!it?.id) {
+      setDraft(it ? structuredClone(it) : itemBase(type));
+      setDialog('item');
+      return;
+    }
+    void rememberItem(it.id);
+    // The editor needs the secrets of this item only (`state` has none).
+    void run<{ item: Item }>('item_full', { id: it.id }).then((r) => {
+      if (!r) return;
+      setDraft(r.item);
+      setDialog('item');
+    });
   };
+  // Closing the editor forgets the secrets it loaded.
+  useEffect(() => {
+    if (dialog !== 'item') setDraft(itemBase());
+  }, [dialog]);
   // When creating from a category, preselect that category; generic views keep the default editable type.
   const openNewItem = () => {
     const currentCategory: Category =
@@ -1798,6 +1867,8 @@ export default function App() {
                     vault={vault}
                     openItem={openItem}
                     copy={copy}
+                    reveal={reveal}
+                    copySecret={copySecret}
                     onDeleteAccount={deleteItem}
                     onDeleteGroup={deleteGroup}
                     selected={multi}
@@ -1842,7 +1913,7 @@ export default function App() {
                             <button
                               className={`icon-button favorite ${it.fav ? 'on' : ''}`}
                               title={t('Preferito')}
-                              onClick={() => void mutate('item', { ...it, fav: !it.fav })}
+                              onClick={() => void mutate('item', { id: it.id, fav: !it.fav })}
                             >
                               <Star size={18} fill={it.fav ? 'currentColor' : 'none'} />
                             </button>
@@ -1933,10 +2004,11 @@ export default function App() {
               askConfirm={askConfirm}
               showNotice={showNotice}
               vault={vault}
-              copy={copy}
               mutate={mutate}
               showSecrets={showSecrets}
               setShowSecrets={setShowSecrets}
+              reveal={reveal}
+              copySecret={copySecret}
               openItem={openItem}
             />
           )}
@@ -2080,11 +2152,11 @@ export default function App() {
                     <span>{t('Categoria')}</span>
                     <select
                       value={draft.type}
-                      // A WebAuthn passkey keeps its private key in f.webauthn: changing the
-                      // category would discard it.
-                      disabled={!!draft.f?.webauthn}
+                      // A WebAuthn passkey keeps its private key in f.webauthn (never sent
+                      // to this window): changing the category would discard it.
+                      disabled={!!draft.has?.includes('webauthn')}
                       title={
-                        draft.f?.webauthn
+                        draft.has?.includes('webauthn')
                           ? t('Passkey WebAuthn: categoria non modificabile')
                           : undefined
                       }
@@ -2670,19 +2742,21 @@ function PasswordPage({
   askConfirm,
   showNotice,
   vault,
-  copy,
   mutate,
   showSecrets,
   setShowSecrets,
+  reveal,
+  copySecret,
   openItem,
 }: {
   askConfirm: DialogAPI['askConfirm'];
   showNotice: DialogAPI['showNotice'];
   vault: State;
-  copy: (v: string) => Promise<void>;
   mutate: (n: string, b?: Dict, m?: string) => Promise<unknown>;
-  showSecrets: string[];
-  setShowSecrets: Dispatch<SetStateAction<string[]>>;
+  showSecrets: Record<string, string>;
+  setShowSecrets: Dispatch<SetStateAction<Record<string, string>>>;
+  reveal: (id: string, field: string) => Promise<string | undefined>;
+  copySecret: (id: string, field: string) => Promise<void>;
   openItem: (it?: Item, type?: Category) => void;
 }) {
   const [filter, setFilter] = useState('');
@@ -2847,22 +2921,27 @@ function PasswordPage({
                 · {date(p.created)}
               </span>
             </div>
-            <code className="password-value">
-              {showSecrets.includes(p.id) ? p.value : '••••••••••••'}
-            </code>
+            <code className="password-value">{showSecrets[p.id] ?? '••••••••••••'}</code>
             <button
               title={t('Mostra/Nascondi')}
               aria-label={t('Mostra o nascondi password')}
               className="icon-button"
-              onClick={() =>
-                setShowSecrets((x) =>
-                  x.includes(p.id) ? x.filter((id) => id !== p.id) : [...x, p.id],
-                )
-              }
+              onClick={async () => {
+                if (showSecrets[p.id] !== undefined) {
+                  setShowSecrets(({ [p.id]: _, ...rest }) => rest);
+                  return;
+                }
+                const value = await reveal(p.id, 'history');
+                if (value !== undefined) setShowSecrets((x) => ({ ...x, [p.id]: value }));
+              }}
             >
-              {showSecrets.includes(p.id) ? <EyeOff size={17} /> : <Eye size={17} />}
+              {showSecrets[p.id] !== undefined ? <EyeOff size={17} /> : <Eye size={17} />}
             </button>
-            <button title={t('Copia')} className="icon-button" onClick={() => copy(p.value)}>
+            <button
+              title={t('Copia')}
+              className="icon-button"
+              onClick={() => void copySecret(p.id, 'history')}
+            >
               <Copy size={17} />
             </button>
             {p.item_id ? (

@@ -488,7 +488,6 @@ const dictionary: Dictionary = {
     'Impossible de relire le coffre depuis le fichier.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Vous n’avez pas encore créé de Compte. Créez un Compte avant de lui attribuer un mot de passe de l’historique.',
-  'Non impostata': 'Non défini',
   'Non impostato': 'Non défini',
   'Non rilevato': 'Non détecté',
   'Nota protetta': 'Note sécurisée',

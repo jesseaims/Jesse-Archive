@@ -487,7 +487,6 @@ const dictionary: Dictionary = {
     'Não foi possível reler o cofre a partir do arquivo.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Você ainda não criou uma Conta. Crie uma Conta antes de atribuir a ela uma senha do histórico.',
-  'Non impostata': 'Não definida',
   'Non impostato': 'Não definido',
   'Non rilevato': 'Não detectado',
   'Nota protetta': 'Nota protegida',

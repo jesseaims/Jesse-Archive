@@ -46,6 +46,10 @@ async fn api(
     name: String,
     body: Value,
 ) -> Result<Value, String> {
+    // The whole decrypted vault is for the backend bridge only.
+    if name == "browser_state" {
+        return Err("Operazione non disponibile per questo elemento".into());
+    }
     let mut core = state.vault().inspect_err(|_| {
         let _ = app.emit("vault-locked", ());
     })?;
@@ -197,6 +201,32 @@ async fn copy_secret(text: String) -> Result<(), String> {
         .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?
 }
 
+/// Copies one secret of the vault (`core` command `secret`) in the backend: the main
+/// window never receives it. Cleared after the vault's delay unless something else was
+/// copied meanwhile.
+#[tauri::command]
+async fn copy_vault_secret(app: tauri::AppHandle, id: String, field: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        let mut core = state.vault()?;
+        let was_unlocked = core.unlocked();
+        let result = core.call("secret", serde_json::json!({"id": id, "field": field}));
+        let just_locked = was_unlocked && !core.unlocked();
+        drop(core);
+        if just_locked {
+            let _ = app.emit("vault-locked", ());
+        }
+        let r = result?;
+        let value = zeroize::Zeroizing::new(r["value"].as_str().unwrap_or("").to_owned());
+        if value.is_empty() {
+            return Err("Operazione non disponibile per questo elemento".into());
+        }
+        clipboard::copy_with_timeout(value, r["clip"].as_u64().unwrap_or(30))
+    })
+    .await
+    .map_err(|e| format!("Errore nel thread degli appunti: {e}"))?
+}
+
 #[tauri::command]
 async fn clear_secret_if_unchanged(expected: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || clipboard::clear_if_unchanged(&expected))
@@ -344,6 +374,7 @@ pub fn run() {
             read_file,
             save_file,
             copy_secret,
+            copy_vault_secret,
             clear_secret_if_unchanged,
             browser::browser_status,
             browser::browser_shortcut,

@@ -18,6 +18,11 @@ export async function copyText(text: string) {
   return invoke<void>('copy_secret', { text });
 }
 
+/** One secret of the vault, copied in the backend: the window never receives it. */
+export async function copyVaultSecret(id: string, field: string) {
+  return invoke<void>('copy_vault_secret', { id, field });
+}
+
 export async function clearSecretIfUnchanged(expected: string) {
   return invoke<void>('clear_secret_if_unchanged', { expected });
 }

@@ -14,10 +14,16 @@ export type Item = {
   shared?: boolean;
   gk?: string;
   src?: string;
+  /**
+   * Which secret fields (and `notes`) are set. `state` leaves their values out: they
+   * come one at a time (`secret`, `copyVaultSecret`) or for the editor (`item_full`).
+   */
+  has?: string[];
 };
 export type Password = {
   id: string;
-  value: string;
+  /** Not in `state`: `secret` with field `history`. */
+  value?: string;
   item_id?: string | null;
   item_title?: string;
   item_type?: string;

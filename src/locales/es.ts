@@ -485,7 +485,6 @@ const dictionary: Dictionary = {
     'No se pudo volver a leer la bóveda desde el archivo.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Aún no has creado ninguna Cuenta. Crea una Cuenta antes de asignarle una contraseña del historial.',
-  'Non impostata': 'Sin establecer',
   'Non impostato': 'Sin establecer',
   'Non rilevato': 'No detectado',
   'Nota protetta': 'Nota protegida',

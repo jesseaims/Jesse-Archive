@@ -485,7 +485,6 @@ const dictionary: Dictionary = {
   'Non è stato possibile rileggere il vault dal file.': 'Не удалось перечитать хранилище из файла.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Вы ещё не создали учётную запись. Создайте учётную запись, прежде чем назначать ей пароль из истории.',
-  'Non impostata': 'Не задан',
   'Non impostato': 'Не задано',
   'Non rilevato': 'Не обнаружено',
   'Nota protetta': 'Защищённая заметка',

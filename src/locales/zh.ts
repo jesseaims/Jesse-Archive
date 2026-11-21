@@ -460,7 +460,6 @@ const dictionary: Dictionary = {
   'Non è stato possibile rileggere il vault dal file.': '无法从文件重新读取保险库。',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     '你还没有创建账户。请先创建账户，然后再为其分配历史记录中的密码。',
-  'Non impostata': '未设置',
   'Non impostato': '未设置',
   'Non rilevato': '未检测到',
   'Nota protetta': '安全笔记',

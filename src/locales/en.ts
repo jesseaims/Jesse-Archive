@@ -481,7 +481,6 @@ const dictionary: Dictionary = {
     'The vault could not be reloaded from the file.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'You have not created an Account yet. Create an Account before assigning it a password from the history.',
-  'Non impostata': 'Not set',
   'Non impostato': 'Not set',
   'Non rilevato': 'Not detected',
   'Nota protetta': 'Secure note',

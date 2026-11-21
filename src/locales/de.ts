@@ -484,7 +484,6 @@ const dictionary: Dictionary = {
     'Der Tresor konnte nicht neu aus der Datei geladen werden.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Du hast noch kein Konto erstellt. Erstelle ein Konto, bevor du ihm ein Passwort aus dem Verlauf zuweist.',
-  'Non impostata': 'Nicht festgelegt',
   'Non impostato': 'Nicht festgelegt',
   'Non rilevato': 'Nicht erkannt',
   'Nota protetta': 'Sichere Notiz',

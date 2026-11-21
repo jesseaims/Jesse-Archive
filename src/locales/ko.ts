@@ -473,7 +473,6 @@ const dictionary: Dictionary = {
   'Non è stato possibile rileggere il vault dal file.': '파일에서 보관함을 다시 읽지 못했습니다.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     '아직 계정을 만들지 않았습니다. 기록의 비밀번호를 지정하기 전에 계정을 만드세요.',
-  'Non impostata': '설정 안 됨',
   'Non impostato': '설정 안 됨',
   'Non rilevato': '감지되지 않음',
   'Nota protetta': '보안 메모',

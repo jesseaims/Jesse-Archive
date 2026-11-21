@@ -481,7 +481,6 @@ const dictionary: Dictionary = {
     'ファイルから保管庫を再読み込みできませんでした。',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'まだアカウントを作成していません。履歴のパスワードを割り当てる前にアカウントを作成してください。',
-  'Non impostata': '未設定',
   'Non impostato': '未設定',
   'Non rilevato': '検出されません',
   'Nota protetta': '保護されたメモ',
