@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favoritos directamente desde los grupos de cuentas',
+    'En la vista por grupos de las cuentas, cada cuenta tiene una estrella para añadirla o quitarla de favoritos, y la estrella junto al nombre del grupo añade o quita todas sus cuentas a la vez, sin abrirlas una por una.',
+  ],
   'ui-secrets-on-demand': [
     'Las contraseñas ya no quedan abiertas en la ventana principal',
     'La ventana principal ahora recibe solo los nombres, usuarios y direcciones de los elementos. Las contraseñas, PIN, CVV, números de tarjeta, seed phrases, códigos TOTP y el texto de las notas permanecen en el motor de la app, separado de la interfaz, hasta que los muestras, los copias o abres el elemento para editarlo, y se olvidan al cerrar el elemento o bloquear el vault. Las contraseñas copiadas desde las fichas de las cuentas y desde el historial van directamente al portapapeles sin pasar por la ventana. La búsqueda sigue encontrando las palabras escritas en las notas.',

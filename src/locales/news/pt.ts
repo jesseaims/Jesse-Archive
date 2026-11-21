@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favoritos diretamente nos grupos de contas',
+    'Na vista por grupos das contas, cada conta tem uma estrela para a adicionar ou remover dos favoritos, e a estrela junto ao nome do grupo adiciona ou remove todas as suas contas de uma vez, sem as abrir uma a uma.',
+  ],
   'ui-secrets-on-demand': [
     'As palavras-passe já não ficam abertas na janela principal',
     'A janela principal passa a receber apenas os nomes, utilizadores e endereços dos elementos. Palavras-passe, PIN, CVV, números de cartão, seed phrases, códigos TOTP e o texto das notas ficam no motor da aplicação, separado da interface, até os mostrares, copiares ou abrires o elemento para o editar, e são esquecidos quando fechas o elemento ou bloqueias o cofre. As palavras-passe copiadas dos cartões das contas e do histórico vão diretamente para a área de transferência sem passar pela janela. A pesquisa continua a encontrar as palavras escritas nas notas.',

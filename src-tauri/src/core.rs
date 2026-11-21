@@ -1249,7 +1249,7 @@ impl Vault {
                         .collect();
                     count = dead.len();
                     self.delete_ids(&dead)
-                } else if ["trash", "restore", "move"].contains(&op) {
+                } else if ["trash", "restore", "move", "fav"].contains(&op) {
                     if op == "move"
                         && !s(&b, "folder").is_empty()
                         && !array(&self.data, "folders")
@@ -1264,6 +1264,7 @@ impl Vault {
                             match op {
                                 "trash" => i["trashed"] = json!(now()),
                                 "restore" => i["trashed"] = V::Null,
+                                "fav" => i["fav"] = json!(b["fav"] == true),
                                 _ => {
                                     i["folder"] = b
                                         .get("folder")
@@ -3578,6 +3579,28 @@ mod vault_tests {
         v.call("item", json!({"id": ids[2], "type": "note", "f": {}}))
             .unwrap();
         assert_eq!(item(&v, &ids[2])["f"], json!({}));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn bulk_favorite_marks_every_item_and_nothing_else() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        v.call(
+            "bulk",
+            json!({"ids": [ids[0], ids[1]], "op": "fav", "fav": true}),
+        )
+        .unwrap();
+        let fav = |v: &Vault, id: &str| v.find(id).unwrap()["fav"] == json!(true);
+        assert!(fav(&v, &ids[0]) && fav(&v, &ids[1]) && !fav(&v, &ids[2]));
+        assert_eq!(
+            s(&v.find(&ids[0]).unwrap()["f"], "password"),
+            "segreto-login-1"
+        );
+        v.call("bulk", json!({"ids": [ids[0]], "op": "fav", "fav": false}))
+            .unwrap();
+        assert!(!fav(&v, &ids[0]) && fav(&v, &ids[1]));
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

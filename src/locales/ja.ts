@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': 'お気に入りから削除',
+  'Aggiungi il gruppo {name} ai preferiti': '{name} グループをお気に入りに追加',
+  'Rimuovi il gruppo {name} dai preferiti': '{name} グループをお気に入りから削除',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "サポートされていない暗号化パラメーターです。Jesse's Archive を最新バージョンに更新してください。",
   'Copia del vault più vecchia': '古い保管庫のコピー',

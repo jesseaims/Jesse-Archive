@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Simplified Chinese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': '从收藏中移除',
+  'Aggiungi il gruppo {name} ai preferiti': '将 {name} 组加入收藏',
+  'Rimuovi il gruppo {name} dai preferiti': '将 {name} 组从收藏中移除',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "不支持的加密参数：请将 Jesse's Archive 更新到最新版本。",
   'Copia del vault più vecchia': '较旧的保险库副本',

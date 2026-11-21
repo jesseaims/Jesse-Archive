@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': 'Удалить из избранного',
+  'Aggiungi il gruppo {name} ai preferiti': 'Добавить группу {name} в избранное',
+  'Rimuovi il gruppo {name} dai preferiti': 'Удалить группу {name} из избранного',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "Неподдерживаемые параметры шифрования: обновите Jesse's Archive до последней версии.",
   'Copia del vault più vecchia': 'Более старая копия хранилища',

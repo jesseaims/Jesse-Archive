@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    '直接在账户分组中设置收藏',
+    '在账户的分组视图中，每个账户都有一颗星标，可将其加入或移出收藏；分组名称旁的星标可一次性将该组所有账户加入或移出收藏，无需逐个打开。',
+  ],
   'ui-secrets-on-demand': [
     '密码不再在主窗口中保持打开',
     '主窗口现在只接收条目的名称、用户名和地址。密码、PIN、CVV、卡号、助记词、TOTP 代码和笔记文本会留在与界面分离的应用引擎中，直到你显示、复制它们或打开条目进行编辑；关闭条目或锁定保险库时会被遗忘。从账户卡片和历史记录中复制的密码会直接进入剪贴板，不经过窗口。搜索仍能找到笔记中的文字。',

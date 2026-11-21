@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favorites straight from the account groups',
+    'In the grouped view of accounts, each account has a star to add it to or remove it from favorites, and the star next to the group name adds or removes all its accounts at once, without opening them one by one.',
+  ],
   'ui-secrets-on-demand': [
     'Passwords no longer stay open in the main window',
     'The main window now receives only the names, usernames and addresses of your items. Passwords, PINs, CVVs, card numbers, seed phrases, TOTP codes and note text stay in the app’s engine, separate from the interface, until you show them, copy them or open the item to edit it, and they are forgotten when you close the item or lock the vault. Passwords copied from the account cards and from the history go straight to the clipboard without passing through the window. Search still finds words written in notes.',

@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Portuguese (Brazil). Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': 'Remover dos favoritos',
+  'Aggiungi il gruppo {name} ai preferiti': 'Adicionar o grupo {name} aos favoritos',
+  'Rimuovi il gruppo {name} dai preferiti': 'Remover o grupo {name} dos favoritos',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "Parâmetros de cifra não suportados: atualiza o Jesse's Archive para a versão mais recente.",
   'Copia del vault più vecchia': 'Cópia mais antiga do cofre',

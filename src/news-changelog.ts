@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'group-favorites',
+    addedAt: '2026-11-21T04:00:00+01:00',
+    version: 'Beta 1.8.0',
+    title: 'Preferiti direttamente dai gruppi degli account',
+    description:
+      'Nella vista a gruppi degli account ogni account ha una stella per aggiungerlo o toglierlo dai preferiti, e la stella accanto al nome del gruppo mette o toglie dai preferiti tutti i suoi account insieme, senza aprirli uno alla volta.',
+    icon: 'sparkles',
+  },
+  {
     id: 'ui-secrets-on-demand',
     addedAt: '2026-11-21T03:15:00+01:00',
     version: 'Beta 1.8.0',

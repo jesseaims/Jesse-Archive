@@ -233,6 +233,7 @@ function AccountGroups({
   copy,
   reveal,
   copySecret,
+  onFavorite,
   onDeleteAccount,
   onDeleteGroup,
   selected,
@@ -244,6 +245,7 @@ function AccountGroups({
   copy: (v: string) => Promise<void>;
   reveal: (id: string, field: string) => Promise<string | undefined>;
   copySecret: (id: string, field: string) => Promise<void>;
+  onFavorite: (ids: string[], on: boolean) => Promise<unknown>;
   onDeleteAccount: (it: Item) => Promise<void>;
   onDeleteGroup: (key: string, label: string) => Promise<void>;
   // Multiple selection shared with the page's bulk bar (move, trash, restore).
@@ -264,8 +266,10 @@ function AccountGroups({
   const [pageBy, setPageBy] = useState<Record<string, number>>({});
   // Values shown on request (`state` has none): forgotten when the list changes.
   const [revealed, setRevealed] = useState<Record<string, string>>({});
-  // Hide a previously revealed secret when switching accounts or groups.
-  useEffect(() => setRevealed({}), [items]);
+  // Hide a previously revealed secret when the accounts shown change. Keyed on the
+  // ids: `items` is a new array at every render of the page (busy, toasts).
+  const shownIds = items.map((i) => i.id).join(',');
+  useEffect(() => setRevealed({}), [shownIds]);
   return (
     <div className="account-groups">
       {groups.map(([key, rows]) => {
@@ -301,6 +305,24 @@ function AccountGroups({
               </div>
               <button
                 type="button"
+                className={`icon-button favorite group-fav ${rows.every((r) => r.fav) ? 'on' : ''}`}
+                title={
+                  rows.every((r) => r.fav)
+                    ? t('Rimuovi il gruppo {name} dai preferiti', { name: label })
+                    : t('Aggiungi il gruppo {name} ai preferiti', { name: label })
+                }
+                aria-label={
+                  rows.every((r) => r.fav)
+                    ? t('Rimuovi il gruppo {name} dai preferiti', { name: label })
+                    : t('Aggiungi il gruppo {name} ai preferiti', { name: label })
+                }
+                aria-pressed={rows.every((r) => r.fav)}
+                onClick={() => void onFavorite(ids, !rows.every((r) => r.fav))}
+              >
+                <Star size={16} fill={rows.every((r) => r.fav) ? 'currentColor' : 'none'} />
+              </button>
+              <button
+                type="button"
                 className="icon-button danger group-delete"
                 title={t("Elimina l'intero gruppo {name}", { name: label })}
                 aria-label={t("Elimina l'intero gruppo {name}", { name: label })}
@@ -322,6 +344,16 @@ function AccountGroups({
                 )}
                 <button className="account-name" onClick={() => openItem(it)}>
                   {it.title}
+                </button>
+                <button
+                  type="button"
+                  className={`icon-button favorite account-fav ${it.fav ? 'on' : ''}`}
+                  title={it.fav ? t('Rimuovi dai preferiti') : t('Aggiungi ai preferiti')}
+                  aria-label={it.fav ? t('Rimuovi dai preferiti') : t('Aggiungi ai preferiti')}
+                  aria-pressed={!!it.fav}
+                  onClick={() => void onFavorite([it.id], !it.fav)}
+                >
+                  <Star size={15} fill={it.fav ? 'currentColor' : 'none'} />
                 </button>
               </div>
               <div className="group-credential">
@@ -1869,6 +1901,7 @@ export default function App() {
                     copy={copy}
                     reveal={reveal}
                     copySecret={copySecret}
+                    onFavorite={(ids, on) => mutate('bulk', { ids, op: 'fav', fav: on })}
                     onDeleteAccount={deleteItem}
                     onDeleteGroup={deleteGroup}
                     selected={multi}

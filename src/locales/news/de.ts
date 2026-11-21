@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favoriten direkt in den Kontogruppen',
+    'In der gruppierten Ansicht der Konten hat jedes Konto einen Stern, um es zu den Favoriten hinzuzufügen oder daraus zu entfernen, und der Stern neben dem Gruppennamen fügt alle Konten der Gruppe auf einmal hinzu oder entfernt sie, ohne sie einzeln zu öffnen.',
+  ],
   'ui-secrets-on-demand': [
     'Passwörter bleiben nicht mehr im Hauptfenster geöffnet',
     'Das Hauptfenster erhält jetzt nur noch Namen, Benutzernamen und Adressen der Einträge. Passwörter, PINs, CVVs, Kartennummern, Seed-Phrasen, TOTP-Codes und der Text von Notizen bleiben in der vom Interface getrennten App-Engine, bis du sie anzeigst, kopierst oder den Eintrag zum Bearbeiten öffnest, und werden vergessen, wenn du den Eintrag schließt oder den Tresor sperrst. Aus den Kontokarten und dem Verlauf kopierte Passwörter gelangen direkt in die Zwischenablage, ohne durch das Fenster zu gehen. Die Suche findet weiterhin Wörter in Notizen.',

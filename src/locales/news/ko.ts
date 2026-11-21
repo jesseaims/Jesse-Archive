@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    '계정 그룹에서 바로 즐겨찾기',
+    '계정의 그룹 보기에서 각 계정에 별이 있어 즐겨찾기에 추가하거나 제거할 수 있고, 그룹 이름 옆의 별은 하나씩 열지 않고도 그룹의 모든 계정을 한 번에 추가하거나 제거합니다.',
+  ],
   'ui-secrets-on-demand': [
     '비밀번호가 더 이상 메인 창에 열려 있지 않습니다',
     '이제 메인 창은 항목의 이름, 사용자 이름, 주소만 받습니다. 비밀번호, PIN, CVV, 카드 번호, 시드 문구, TOTP 코드, 메모 내용은 표시하거나 복사하거나 항목을 열어 편집할 때까지 인터페이스와 분리된 앱 엔진에 남아 있고, 항목을 닫거나 볼트를 잠그면 잊혀집니다. 계정 카드와 기록에서 복사한 비밀번호는 창을 거치지 않고 바로 클립보드로 갑니다. 검색은 여전히 메모에 쓴 단어도 찾습니다.',
