@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'generator-checks': [
+    'Générateur et contrôle des mots de passe plus précis',
+    'Le générateur ne crée plus de codes PIN triviaux comme 000000 ou 123456, et l’option « Caractères uniques » fonctionne aussi avec des longueurs proches du nombre de caractères disponibles, alors qu’elle donnait souvent une erreur. Les bits estimés des mots de passe générés sont désormais une estimation prudente qui tient compte des options choisies. Le contrôle de santé des mots de passe reconnaît aussi les mots de passe courants légèrement modifiés (comme « Password123! », « p4ssw0rd » ou un prénom suivi d’une année), les répétitions et les suites du clavier : certains mots de passe jugés robustes peuvent désormais apparaître comme faibles.',
+  ],
   'password-bulk-select': [
     'Archive des mots de passe plus facile à nettoyer',
     'Dans l’Archive des mots de passe, le bouton « Tout sélectionner » sélectionne d’un coup tous les mots de passe supprimables affichés, même filtrés par la recherche, pour nettoyer l’historique sans les cocher un par un. Les mots de passe actuels des comptes ne peuvent pas être sélectionnés : ils se modifient dans le compte. Après la suppression, l’application indique combien de mots de passe elle a retirés. De plus, supprimer définitivement un élément (y compris en vidant la corbeille) supprime aussi ses mots de passe de l’historique, au lieu de les laisser comme mots de passe non liés.',

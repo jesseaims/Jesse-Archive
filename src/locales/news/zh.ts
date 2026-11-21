@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'generator-checks': [
+    '更准确的密码生成器和检查',
+    '生成器不再生成 000000 或 123456 这类简单 PIN，“唯一字符”选项在长度接近可用字符数时也能正常工作，以前常常报错。生成密码的估计位数现在是考虑所选选项的保守估计。密码健康检查也能识别略加改动的常见密码（如“Password123!”、“p4ssw0rd”或名字加年份）、重复内容和键盘序列：一些以前被视为强的密码现在可能显示为弱。',
+  ],
   'password-bulk-select': [
     '密码档案更易清理',
     '在密码档案中，“全选”按钮可一次选中所有显示的可删除密码（包括搜索筛选后的结果），无需逐个勾选即可清理历史记录。账户的当前密码无法选择，请在账户中修改。删除后，应用会显示已删除的密码数量。此外，永久删除项目（包括清空回收站）时，其历史记录中的密码也会一并删除，而不再作为未关联密码保留。',

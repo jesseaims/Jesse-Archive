@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'generator-checks',
+    addedAt: '2026-11-21T16:14:00+01:00',
+    version: 'Beta 1.9.1',
+    title: 'Generatore e controllo delle password più accurati',
+    description:
+      'Il generatore non crea più PIN banali come 000000 o 123456, e l’opzione «Caratteri unici» funziona anche con lunghezze vicine al numero di caratteri disponibili, mentre prima dava spesso errore. I bit stimati delle password generate ora sono una stima prudente, che tiene conto delle opzioni scelte. Il controllo della salute delle password riconosce anche le password comuni con piccole modifiche (come «Password123!», «p4ssw0rd» o un nome seguito da un anno), le ripetizioni e le sequenze della tastiera: alcune password prima considerate robuste ora possono risultare deboli.',
+    icon: 'key',
+  },
+  {
     id: 'password-bulk-select',
     addedAt: '2026-11-21T13:20:00+01:00',
     version: 'Beta 1.9.0',

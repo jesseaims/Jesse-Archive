@@ -975,6 +975,8 @@ const dictionary: Dictionary = {
   'Chiave TOTP non valida': 'Invalid TOTP key',
   'Seleziona almeno un tipo di caratteri': 'Select at least one character type',
   'Troppi caratteri unici richiesti': 'Too many unique characters requested',
+  'Le cifre e i simboli minimi superano la lunghezza della password':
+    'The minimum digits and symbols exceed the password length',
   'Impossibile rispettare le opzioni': 'The options cannot be satisfied',
   'Impossibile contattare Pwned Passwords': 'Cannot reach Pwned Passwords',
   "Impossibile modificare l'avvio automatico": 'Cannot change the start-up setting',

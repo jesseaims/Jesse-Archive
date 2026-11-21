@@ -934,6 +934,8 @@ const dictionary: Dictionary = {
   'Chiave TOTP non valida': 'TOTP 密钥无效',
   'Seleziona almeno un tipo di caratteri': '请至少选择一种字符类型',
   'Troppi caratteri unici richiesti': '要求的唯一字符过多',
+  'Le cifre e i simboli minimi superano la lunghezza della password':
+    '最少数字和符号数量超过了密码长度',
   'Impossibile rispettare le opzioni': '无法满足这些选项',
   'Impossibile contattare Pwned Passwords': '无法连接 Pwned Passwords',
   "Impossibile modificare l'avvio automatico": '无法更改开机自启动',

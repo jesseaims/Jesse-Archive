@@ -976,6 +976,8 @@ const dictionary: Dictionary = {
   'Chiave TOTP non valida': 'TOTP キーが無効です',
   'Seleziona almeno un tipo di caratteri': '文字の種類を 1 つ以上選択してください',
   'Troppi caratteri unici richiesti': '要求された一意の文字が多すぎます',
+  'Le cifre e i simboli minimi superano la lunghezza della password':
+    '最小の数字と記号の数がパスワードの長さを超えています',
   'Impossibile rispettare le opzioni': 'オプションを満たせません',
   'Impossibile contattare Pwned Passwords': 'Pwned Passwords に接続できません',
   "Impossibile modificare l'avvio automatico": '自動起動を変更できません',

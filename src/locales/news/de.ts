@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'generator-checks': [
+    'Genauerer Passwortgenerator und -check',
+    'Der Generator erstellt keine trivialen PINs wie 000000 oder 123456 mehr, und die Option „Eindeutige Zeichen“ funktioniert auch bei Längen nahe der Anzahl verfügbarer Zeichen, wo sie vorher oft einen Fehler gab. Die geschätzten Bits generierter Passwörter sind jetzt eine vorsichtige Schätzung, die die gewählten Optionen berücksichtigt. Der Passwort-Gesundheitscheck erkennt auch gängige Passwörter mit kleinen Änderungen (wie „Password123!“, „p4ssw0rd“ oder ein Name mit Jahreszahl), Wiederholungen und Tastaturfolgen: Manche bisher als stark eingestufte Passwörter können nun als schwach erscheinen.',
+  ],
   'password-bulk-select': [
     'Passwortarchiv leichter aufzuräumen',
     'Im Passwortarchiv wählt die Schaltfläche „Alle auswählen“ auf einmal alle angezeigten löschbaren Passwörter aus, auch wenn sie per Suche gefiltert sind, damit du den Verlauf bereinigen kannst, ohne jedes einzeln abzuhaken. Aktuelle Passwörter von Konten lassen sich nicht auswählen: Sie werden im Konto geändert. Nach dem Löschen zeigt die App an, wie viele Passwörter entfernt wurden. Außerdem werden beim endgültigen Löschen eines Elements (auch beim Leeren des Papierkorbs) seine Passwörter im Verlauf mitgelöscht, statt als nicht verknüpfte Passwörter zu bleiben.',
