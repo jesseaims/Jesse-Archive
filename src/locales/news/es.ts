@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'ui-secrets-on-demand': [
+    'Las contraseñas ya no quedan abiertas en la ventana principal',
+    'La ventana principal ahora recibe solo los nombres, usuarios y direcciones de los elementos. Las contraseñas, PIN, CVV, números de tarjeta, seed phrases, códigos TOTP y el texto de las notas permanecen en el motor de la app, separado de la interfaz, hasta que los muestras, los copias o abres el elemento para editarlo, y se olvidan al cerrar el elemento o bloquear el vault. Las contraseñas copiadas desde las fichas de las cuentas y desde el historial van directamente al portapapeles sin pasar por la ventana. La búsqueda sigue encontrando las palabras escritas en las notas.',
+  ],
   'vault-scrypt-rollback': [
     'Contraseña maestra más difícil de forzar y aviso sobre copias antiguas',
     'En el primer desbloqueo, la protección de la contraseña maestra pasa a un cálculo cuatro veces más pesado (scrypt con 128 MB de memoria): quien consiga una copia del vault tardará mucho más en probar contraseñas. El desbloqueo puede tardar una fracción de segundo más. Los nuevos paquetes .jshare también usan esta protección. Si el archivo del vault se sustituye por una copia más antigua (por ejemplo, en la carpeta de la nube), aparece un aviso al abrirlo. Además, un cambio que no se guardó porque el archivo estaba ocupado ahora se guarda en la siguiente sincronización. Si usas el vault en varios PC, actualízalos todos: tras el primer desbloqueo con esta versión, las anteriores ya no pueden abrirlo.',

@@ -77,7 +77,7 @@ Tutte e quattro compaiono in [capabilities/default.json](../src-tauri/capabiliti
 
 ## Interfaccia principale e dispatcher
 
-`App` mantiene il vault decifrato come stato React. `refresh` interroga `status` e poi `state`; `mutate` usa lo stato ritornato dal comando oppure aggiorna. `run` normalizza gli errori e gestisce `busy`, ma non elimina automaticamente il vecchio stato React su ogni errore di sessione.
+`App` mantiene come stato React il vault senza segreti: dalla Beta 1.8.0 `state` toglie password, PIN, CVV, numeri di carta, seed, TOTP, credenziali, chiavi WebAuthn e note (`public_item`, campo `has`), che arrivano uno alla volta con `secret`, per l'editor con `item_full` o vengono copiati nel backend con il comando Tauri `copy_vault_secret` (vedere [SECURITY](SECURITY.md#segreti-su-richiesta-dalla-beta-180)). `refresh` interroga `status` e poi `state`; `mutate` usa lo stato ritornato dal comando oppure aggiorna. `run` normalizza gli errori e gestisce `busy`, ma non elimina automaticamente il vecchio stato React su ogni errore di sessione.
 
 Il componente esegue `ping` ogni 15 secondi mentre dispone di un vault e ascolta `vault-changed` e `vault-locked`. Non usa il numero `rev` per ricaricare automaticamente il contenuto a ogni aggiornamento remoto. Su tastiera, clic e rotella invia `touch` al massimo ogni 30 secondi; su `vault-locked`, o se un comando risponde "Vault bloccato"/"Sessione scaduta", `wipeSession` azzera tutto lo stato sensibile. Nel backend, `api` emette `vault-locked` quando un comando fa passare il vault da sbloccato a bloccato, e il thread `spawn_idle_lock` controlla la scadenza ogni 5 secondi con `try_lock`.
 
@@ -85,7 +85,8 @@ Il componente esegue `ping` ogni 15 secondi mentre dispone di un vault e ascolta
 
 | Famiglia | Comandi di `Vault::call` |
 |---|---|
-| Stato/sessione | `status`, `ping`, `create`, `unlock`, `lock`, `touch`, `show`, `state`, `browser_state` |
+| Stato/sessione | `status`, `ping`, `create`, `unlock`, `lock`, `touch`, `show`, `state` (senza segreti), `browser_state` (vault completo, solo per il backend: `api` lo rifiuta) |
+| Segreti su richiesta | `secret`, `item_full`, `search_notes` (dalla Beta 1.8.0) |
 | Elementi e organizzazione | `item`, `trash`, `delete`, `bulk`, `folder`, `group_edit` |
 | Storico e generatori | `pw_save`, `pw_link`, `pw_del`, `pw_bulk`, `generate` |
 | Sicurezza e preferenze | `health`, `breach`, `totp`, `settings`, `master`, `recovery_new`, `prefs_set` |

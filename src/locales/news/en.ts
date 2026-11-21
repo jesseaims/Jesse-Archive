@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'ui-secrets-on-demand': [
+    'Passwords no longer stay open in the main window',
+    'The main window now receives only the names, usernames and addresses of your items. Passwords, PINs, CVVs, card numbers, seed phrases, TOTP codes and note text stay in the app’s engine, separate from the interface, until you show them, copy them or open the item to edit it, and they are forgotten when you close the item or lock the vault. Passwords copied from the account cards and from the history go straight to the clipboard without passing through the window. Search still finds words written in notes.',
+  ],
   'vault-scrypt-rollback': [
     'Master password harder to crack and a warning about old copies',
     'At the first unlock, the master password protection moves to a calculation four times heavier (scrypt with 128 MB of memory): anyone who gets a copy of the vault needs much longer to try passwords. Unlocking may take a fraction of a second longer. New .jshare packages use this protection too. If the vault file is replaced with an older copy of itself (for example in the cloud folder), a warning appears when you open it. Also, a change not saved because the file was busy is now saved at the next synchronization. If you use the vault on several PCs, update all of them: after the first unlock with this version, earlier ones can no longer open it.',

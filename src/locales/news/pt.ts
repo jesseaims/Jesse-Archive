@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'ui-secrets-on-demand': [
+    'As palavras-passe já não ficam abertas na janela principal',
+    'A janela principal passa a receber apenas os nomes, utilizadores e endereços dos elementos. Palavras-passe, PIN, CVV, números de cartão, seed phrases, códigos TOTP e o texto das notas ficam no motor da aplicação, separado da interface, até os mostrares, copiares ou abrires o elemento para o editar, e são esquecidos quando fechas o elemento ou bloqueias o cofre. As palavras-passe copiadas dos cartões das contas e do histórico vão diretamente para a área de transferência sem passar pela janela. A pesquisa continua a encontrar as palavras escritas nas notas.',
+  ],
   'vault-scrypt-rollback': [
     'Palavra-passe principal mais difícil de quebrar e aviso sobre cópias antigas',
     'No primeiro desbloqueio, a proteção da palavra-passe principal passa a um cálculo quatro vezes mais pesado (scrypt com 128 MB de memória): quem obtiver uma cópia do cofre demora muito mais a experimentar palavras-passe. O desbloqueio pode demorar uma fração de segundo a mais. Os novos pacotes .jshare também usam esta proteção. Se o ficheiro do cofre for substituído por uma cópia mais antiga (por exemplo, na pasta da nuvem), aparece um aviso ao abri-lo. Além disso, uma alteração não guardada porque o ficheiro estava ocupado passa a ser guardada na sincronização seguinte. Se usas o cofre em vários PC, atualiza-os todos: depois do primeiro desbloqueio com esta versão, as anteriores deixam de o conseguir abrir.',
