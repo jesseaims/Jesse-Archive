@@ -74,10 +74,11 @@ Privacy policy: <https://jessearchive.it/en/extension-privacy/>
 **Codice remoto:** No, non uso codice remoto. Tutto il JavaScript è nel pacchetto.
 
 **Uso dei dati: cosa raccoglie l'estensione.** Spunta solo:
+- ☑ **Informazioni che consentono l'identificazione personale**: per proporre il salvataggio, l'estensione legge i campi scritti nel modulo, che possono contenere email, nome o telefono.
 - ☑ **Informazioni di autenticazione** (password, credenziali): passano fra la pagina e l'app locale per compilare e salvare.
 - ☑ **Contenuti dei siti web**: indirizzo della pagina e campi del modulo di accesso.
 
-Lascia senza spunta tutto il resto: dati personali identificativi, salute, finanze, comunicazioni personali, posizione, cronologia web, attività dell'utente.
+Lascia senza spunta tutto il resto: salute, finanze, comunicazioni personali, posizione, cronologia web (legge solo l'indirizzo della pagina in cui si accede, quando lo chiede l'utente), attività dell'utente (controlla solo che i campi siano stati scritti davvero, non registra i tasti).
 
 **Le tre dichiarazioni** (spuntale tutte e tre):
 - non vendo né trasferisco i dati a terzi, fuori dai casi consentiti;
