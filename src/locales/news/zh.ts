@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    '其他电脑的更改会自动显示',
+    '如果你通过云文件夹在多台电脑上使用同一个保险库，在另一台电脑上所做的更改现在会在大约 15 秒内自动显示。以前应用已经收到了这些更改，但需要点击“刷新”或保存内容才能看到。',
+  ],
   'extension-permissions': [
     '扩展权限更少，并提示子域名',
     '浏览器扩展不再请求读取所有打开标签页的权限（它并不需要）：安装时不再显示浏览历史记录提示，填写、保存账户和通行密钥照常工作。在迷你窗口中，为页面确切地址保存的账户排在最前；为同一网站其他子域名保存的账户会显示保存位置（例如“保存于 accounts.google.com”），如果字段位于其他地址的框架中，迷你窗口也会提示。',

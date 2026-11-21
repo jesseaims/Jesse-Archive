@@ -827,15 +827,27 @@ export default function App() {
   useEffect(() => {
     applyPalette(vault?.settings.theme);
   }, [vault?.settings.theme]);
+  // Revision of the backend data seen at the last ping: it changes when the ping merges
+  // changes another device wrote to the vault folder (and on local saves).
+  const seenRev = useRef<number | null>(null);
   useEffect(() => {
-    if (!vault) return;
+    if (!vault) {
+      seenRev.current = null;
+      return;
+    }
     const id = window.setInterval(() => {
       void api<{ unlocked: boolean; rev: number }>('ping')
         .then((r) => {
           if (!r.unlocked) {
             wipeSession();
             void refresh();
+            return;
           }
+          // Without this the screen showed another PC's changes only after a manual
+          // refresh or a save, although the backend had already merged them. The first
+          // ping after unlocking also reloads once: changes merged since then show too.
+          if (r.rev !== seenRev.current) void refresh();
+          seenRev.current = r.rev;
         })
         .catch(() => {});
     }, 15000);

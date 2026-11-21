@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'remote-changes-refresh': [
+    '다른 PC의 변경 사항이 자동으로 표시',
+    '클라우드 폴더를 통해 여러 PC에서 같은 보관함을 사용하면, 다른 PC에서 한 변경 사항이 이제 약 15초 안에 자동으로 표시됩니다. 이전에도 앱은 변경 사항을 받았지만, 보려면 «새로 고침»을 누르거나 무언가를 저장해야 했습니다.',
+  ],
   'extension-permissions': [
     '권한을 줄이고 하위 도메인을 알려 주는 확장 프로그램',
     '브라우저 확장 프로그램은 필요하지 않던 열린 모든 탭 읽기 권한을 더 이상 요청하지 않습니다. 설치 시 방문 기록 경고가 사라지며, 입력, 계정 저장, 패스키는 이전과 같이 작동합니다. 미니 창에서는 페이지의 정확한 주소용으로 저장된 계정이 먼저 표시되고, 같은 사이트의 다른 하위 도메인용으로 저장된 계정은 저장 위치를 보여 줍니다(예: «accounts.google.com용으로 저장됨»). 필드가 다른 주소의 프레임 안에 있으면 미니 창이 알려 줍니다.',

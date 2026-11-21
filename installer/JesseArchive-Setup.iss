@@ -1,4 +1,4 @@
-﻿#define AppVersion "1.9.3"
+﻿#define AppVersion "1.9.4"
 #define AppName "Jesse's Archive"
 #define AppExe "jesse_archive.exe"
 ; Fixed id of this installation: updates and uninstall rely on it, never change it.
