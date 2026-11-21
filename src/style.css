@@ -6,8 +6,6 @@
     system-ui,
     sans-serif;
   font-synthesis: none;
-  color: var(--ui-text);
-  background: var(--ui-background);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -89,7 +87,6 @@ p {
 .sidebar {
   width: 258px;
   flex: none;
-  background: var(--ui-sidebar);
   border-right: 1px solid var(--ui-border);
   display: flex;
   flex-direction: column;
@@ -120,9 +117,7 @@ p {
   width: 55px;
   height: 55px;
   border-radius: 17px;
-  background: linear-gradient(135deg, var(--ui-accent), #5f4dbb);
   color: white;
-  box-shadow: 0 12px 36px #7c60e744;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -229,7 +224,6 @@ p {
 }
 .nav-item.active {
   background: var(--ui-selected);
-  color: var(--ui-accent);
 }
 .nav-item span:nth-child(2) {
   flex: 1;
@@ -278,7 +272,6 @@ p {
   flex: 1;
   min-width: 0;
   overflow: auto;
-  background: radial-gradient(circle at 50% -30%, var(--ui-surface) 0%, var(--ui-background) 44%);
 }
 .topbar {
   height: 74px;
@@ -289,7 +282,6 @@ p {
   border-bottom: 1px solid var(--ui-border);
   position: sticky;
   top: 0;
-  background: var(--ui-topbar);
   backdrop-filter: blur(20px);
   z-index: 10;
 }
@@ -351,7 +343,6 @@ p {
 .eyebrow {
   font-size: 10px;
   letter-spacing: 0.21em;
-  color: var(--ui-accent);
   font-weight: 800;
 }
 .primary,
@@ -364,13 +355,7 @@ p {
   white-space: nowrap;
 }
 .primary {
-  color: var(--ui-accentText);
-  background: linear-gradient(110deg, var(--ui-accent), var(--ui-accent));
   border: 1px solid var(--ui-accent);
-  box-shadow: 0 5px 17px #684ac033;
-}
-.primary:hover {
-  background: var(--ui-accent);
 }
 .secondary {
   background: var(--ui-input);
@@ -423,7 +408,6 @@ p {
   height: 42px;
   border-radius: 12px;
   background: var(--ui-selected);
-  color: var(--ui-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -730,8 +714,7 @@ p {
 .field textarea,
 .field select,
 .form-stack > input,
-.inline-form input,
-.panel-bottom select {
+.inline-form input {
   color: var(--ui-text);
   background: var(--ui-input);
   border: 1px solid var(--ui-border);
@@ -818,19 +801,6 @@ p {
   max-width: 190px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.panel-bottom {
-  padding: 20px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  border-top: 1px solid var(--ui-border);
-  font-size: 12px;
-  color: var(--ui-muted);
-}
-.panel-bottom select {
-  max-width: 250px;
 }
 .generated-row {
   display: flex;
@@ -989,7 +959,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 15%, var(--ui-surface), var(--ui-background) 57%);
   position: relative;
   overflow: auto;
   padding: 40px 15px;
@@ -1176,7 +1145,6 @@ p {
     width: 36px;
     height: 36px;
   }
-  .panel-bottom,
   .inline-form {
     flex-wrap: wrap;
   }
@@ -2145,7 +2113,6 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   scrollbar-color: var(--ui-scroll) var(--ui-modal);
 }
 .news-entry {
-  display: flex;
   gap: 13px;
   align-items: flex-start;
   padding: 16px 20px;

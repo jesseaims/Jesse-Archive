@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'css-cleanup': [
+    'Folha de estilos limpa',
+    'Foram removidas do estilo da interface as regras que já não tinham efeito: propriedades sempre substituídas por regras posteriores e o estilo de um elemento que já não existe. A aplicação fica exatamente igual, e uma verificação automática confirmou-o regra a regra.',
+  ],
   'legacy-python-removed': [
     'Removida do código-fonte a antiga versão em Python',
     'A primeira versão do Jesse’s Archive, escrita em Python, deixa de fazer parte do código-fonte: a aplicação não a usava e dificultava a manutenção. Continua disponível no histórico do projeto. Os cofres criados com essa versão continuam a abrir, e um teste verifica-o a cada alteração. Para quem usa a aplicação nada muda.',

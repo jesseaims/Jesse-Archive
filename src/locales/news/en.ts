@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'css-cleanup': [
+    'Style sheet cleaned up',
+    'Rules that no longer had any effect were removed from the interface style: properties always overridden by later rules and the style of an element that no longer exists. The app looks exactly the same, and an automatic check verified it rule by rule.',
+  ],
   'legacy-python-removed': [
     'The old Python version removed from the source code',
     'The first version of Jesse’s Archive, written in Python, is no longer part of the source code: the app did not use it and it made maintenance harder. It is still available in the project history. Vaults created with that version still open, and a test checks it at every change. Nothing changes for people using the app.',
