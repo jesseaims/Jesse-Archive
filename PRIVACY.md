@@ -45,7 +45,7 @@ Domande sulla privacy: le email indicate in <https://jessearchive.it/supporto/>.
 
 # Privacy policy — Jesse's Archive
 
-Last updated: 21 November 2026. Published version: <https://jessearchive.it/en/privacy-estensione/>.
+Last updated: 21 November 2026. Published version: <https://jessearchive.it/en/extension-privacy/>.
 
 This policy covers the browser extension **JesseArchive · Quick fill** and the desktop app **Jesse's Archive**. The extension only works together with the desktop app, installed on the same computer.
 

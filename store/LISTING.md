@@ -4,7 +4,7 @@ Testi pronti da copiare nel Chrome Web Store, nel sito dei componenti aggiuntivi
 
 - **Pacchetti:** `npm run package:store` crea in `store/out/` lo zip per Chrome/Edge (senza il campo `key`) e quello per Firefox.
 - **Immagini:** sono in `store/images/`.
-- **Informativa privacy:** pubblicata sul sito, <https://jessearchive.it/privacy-estensione/> (inglese: <https://jessearchive.it/en/privacy-estensione/>). [PRIVACY.md](../PRIVACY.md) ne è la copia di riferimento: tenerli allineati.
+- **Informativa privacy:** pubblicata sul sito, <https://jessearchive.it/privacy-estensione/> (inglese: <https://jessearchive.it/en/extension-privacy/>). [PRIVACY.md](../PRIVACY.md) ne è la copia di riferimento: tenerli allineati.
 - **Supporto:** <https://jessearchive.it/supporto/>; sito: <https://jessearchive.it>.
 
 Nome e descrizione breve vengono dal manifest, tradotti in `browser-extension/_locales/`: lo store li prende da lì e non vanno riscritti.
@@ -47,7 +47,7 @@ Privacy and security:
 • Credentials stay in the AES-256-GCM encrypted vault.
 • A frame of another site never receives credentials, and accounts saved for another subdomain are flagged.
 
-Privacy policy: <https://jessearchive.it/en/privacy-estensione/>
+Privacy policy: <https://jessearchive.it/en/extension-privacy/>
 
 ---
 
