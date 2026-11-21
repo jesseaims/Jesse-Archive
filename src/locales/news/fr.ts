@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favoris directement depuis les groupes de comptes',
+    'Dans la vue par groupes des comptes, chaque compte a une étoile pour l’ajouter aux favoris ou l’en retirer, et l’étoile à côté du nom du groupe ajoute ou retire tous ses comptes d’un coup, sans les ouvrir un par un.',
+  ],
+  'ui-secrets-on-demand': [
+    'Les mots de passe ne restent plus ouverts dans la fenêtre principale',
+    'La fenêtre principale ne reçoit plus que les noms, identifiants et adresses des éléments. Les mots de passe, codes PIN, CVV, numéros de carte, seed phrases, codes TOTP et le texte des notes restent dans le moteur de l’application, séparé de l’interface, jusqu’à ce que vous les affichiez, les copiiez ou ouvriez l’élément pour le modifier, et ils sont oubliés quand vous fermez l’élément ou verrouillez le coffre. Les mots de passe copiés depuis les fiches des comptes et l’historique vont directement dans le presse-papiers sans passer par la fenêtre. La recherche trouve toujours les mots écrits dans les notes.',
+  ],
   'vault-scrypt-rollback': [
     'Mot de passe principal plus difficile à casser et avertissement sur les anciennes copies',
     'Au premier déverrouillage, la protection du mot de passe principal passe à un calcul quatre fois plus lourd (scrypt avec 128 Mo de mémoire) : quiconque obtient une copie du coffre met beaucoup plus de temps à essayer des mots de passe. Le déverrouillage peut prendre une fraction de seconde de plus. Les nouveaux paquets .jshare utilisent aussi cette protection. Si le fichier du coffre est remplacé par une copie plus ancienne (par exemple dans le dossier cloud), un avertissement s’affiche à l’ouverture. De plus, une modification non enregistrée parce que le fichier était occupé est désormais enregistrée à la synchronisation suivante. Si vous utilisez le coffre sur plusieurs PC, mettez-les tous à jour : après le premier déverrouillage avec cette version, les précédentes ne peuvent plus l’ouvrir.',

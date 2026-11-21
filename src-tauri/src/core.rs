@@ -289,6 +289,49 @@ fn secret(typ: &str) -> Option<&'static str> {
         _ => None,
     }
 }
+/// Item fields the main window never receives in `state`: it gets `has` (which of
+/// them, and the notes, are set) and asks for one value at a time (`secret`,
+/// `item_full`). `webauthn` (the passkey private key) never leaves the backend.
+const HIDDEN: &[&str] = &[
+    "password",
+    "totp",
+    "number",
+    "cvv",
+    "pin",
+    "seed",
+    "credential",
+    "webauthn",
+];
+fn set_flags(it: &V) -> Vec<&'static str> {
+    let filled = |v: Option<&V>| match v {
+        Some(V::String(x)) => !x.is_empty(),
+        Some(V::Null) | None => false,
+        Some(_) => true,
+    };
+    let mut has: Vec<&'static str> = HIDDEN
+        .iter()
+        .copied()
+        .filter(|k| filled(it["f"].get(*k)))
+        .collect();
+    if !s(it, "notes").trim().is_empty() {
+        has.push("notes");
+    }
+    has
+}
+fn public_item(it: &V) -> V {
+    let mut out = it.clone();
+    let has = set_flags(it);
+    if let Some(f) = out.get_mut("f").and_then(V::as_object_mut) {
+        for k in HIDDEN {
+            f.remove(*k);
+        }
+    }
+    if let Some(o) = out.as_object_mut() {
+        o.remove("notes");
+        o.insert("has".into(), json!(has));
+    }
+    out
+}
 fn ts(v: &V) -> f64 {
     for k in ["upd", "updated", "created"] {
         let n = num(v, k);
@@ -792,7 +835,25 @@ impl Vault {
         }
         Ok(rec)
     }
+    /// What the main window receives: everything but the secrets (`public_item`)
+    /// and the values of the password history.
     fn state(&self) -> V {
+        let mut d = self.full_state();
+        if let Some(items) = d["items"].as_array_mut() {
+            for it in items.iter_mut() {
+                *it = public_item(it);
+            }
+        }
+        if let Some(history) = d["passwords"].as_array_mut() {
+            for p in history.iter_mut().filter_map(V::as_object_mut) {
+                p.remove("value");
+            }
+        }
+        d
+    }
+    /// The whole decrypted vault, for the backend only (browser bridge): `api` refuses
+    /// `browser_state`, so no webview receives it.
+    fn full_state(&self) -> V {
         let mut d = self.data.clone();
         d["path"] = json!(self.path.to_string_lossy());
         d["synced_at"] = json!(self.last_sync);
@@ -1008,7 +1069,60 @@ impl Vault {
                 if self.push {
                     self.save()?;
                 }
-                Ok(self.state())
+                Ok(if name == "state" {
+                    self.state()
+                } else {
+                    self.full_state()
+                })
+            }
+            "secret" => {
+                // One value, when the user explicitly shows or copies it.
+                let field = s(&b, "field");
+                let value = if field == "history" {
+                    array(&self.data, "passwords")
+                        .iter()
+                        .find(|p| s(p, "id") == s(&b, "id"))
+                        .map(|p| s(p, "value").to_string())
+                        .ok_or("Elemento non trovato")?
+                } else {
+                    let it = self.find(s(&b, "id"))?;
+                    match field {
+                        "notes" => s(&it, "notes").to_string(),
+                        "webauthn" => {
+                            return Err("Operazione non disponibile per questo elemento".into())
+                        }
+                        f if HIDDEN.contains(&f) => s(&it["f"], f).to_string(),
+                        _ => return Err("Operazione non disponibile per questo elemento".into()),
+                    }
+                };
+                let clip = self.data["settings"]["clip"]
+                    .as_u64()
+                    .unwrap_or(30)
+                    .min(3600);
+                Ok(json!({"value": value, "clip": clip}))
+            }
+            "item_full" => {
+                // The editor: every field of one item, except the passkey private key.
+                let mut it = self.find(s(&b, "id"))?;
+                it["has"] = json!(set_flags(&it));
+                if let Some(f) = it.get_mut("f").and_then(V::as_object_mut) {
+                    f.remove("webauthn");
+                }
+                Ok(json!({ "item": it }))
+            }
+            "search_notes" => {
+                // The window cannot search the notes it does not receive: only the ids.
+                let q = s(&b, "q").trim().to_lowercase();
+                let ids: Vec<&str> = if q.is_empty() {
+                    vec![]
+                } else {
+                    array(&self.data, "items")
+                        .iter()
+                        .filter(|i| s(i, "notes").to_lowercase().contains(&q))
+                        .map(|i| s(i, "id"))
+                        .collect()
+                };
+                Ok(json!({ "ids": ids }))
             }
             "item" => {
                 let mut it = self.data["items"]
@@ -1023,9 +1137,23 @@ impl Vault {
                 if fields(s(&it, "type")).is_none() && fields(s(&b, "type")).is_none() {
                     return Err("Tipo non valido".into());
                 }
-                for k in ["type", "title", "folder", "fav", "f", "notes"] {
+                let same_type = b.get("type").is_none_or(|t| *t == it["type"]);
+                for k in ["type", "title", "folder", "fav", "notes"] {
                     if let Some(v) = b.get(k) {
                         it[k] = v.clone()
+                    }
+                }
+                if let Some(f) = b.get("f") {
+                    // The window does not receive the secrets: a field it does not send
+                    // stays as it is (an empty value clears it). A new category starts
+                    // from the fields sent.
+                    match (same_type, it["f"].as_object_mut(), f.as_object()) {
+                        (true, Some(old), Some(new)) => {
+                            for (k, v) in new {
+                                old.insert(k.clone(), v.clone());
+                            }
+                        }
+                        _ => it["f"] = f.clone(),
                     }
                 }
                 it["title"] = json!(s(&it, "title").trim().to_string());
@@ -1121,7 +1249,7 @@ impl Vault {
                         .collect();
                     count = dead.len();
                     self.delete_ids(&dead)
-                } else if ["trash", "restore", "move"].contains(&op) {
+                } else if ["trash", "restore", "move", "fav"].contains(&op) {
                     if op == "move"
                         && !s(&b, "folder").is_empty()
                         && !array(&self.data, "folders")
@@ -1136,6 +1264,7 @@ impl Vault {
                             match op {
                                 "trash" => i["trashed"] = json!(now()),
                                 "restore" => i["trashed"] = V::Null,
+                                "fav" => i["fav"] = json!(b["fav"] == true),
                                 _ => {
                                     i["folder"] = b
                                         .get("folder")
@@ -3323,6 +3452,155 @@ mod vault_tests {
         a.call("ping", json!({})).unwrap();
         assert!(!titles(&a.data).contains("ripresa da B"));
         fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    fn synthetic_items(v: &mut Vault) -> Vec<String> {
+        let items = [
+            json!({"type":"login","title":"posta","f":{"url":"https://posta.example","username":"utente","password":"segreto-login-1","totp":"JBSWY3DPEHPK3PXP"},"notes":"nota-login-1"}),
+            json!({"type":"card","title":"carta","f":{"holder":"Titolare","number":"4111111111111111","expiry":"12/30","cvv":"segreto-cvv","pin":"segreto-pin-4321"}}),
+            json!({"type":"crypto","title":"wallet","f":{"platform":"rete","address":"indirizzo","seed":"segreto seed parole","password":"segreto-crypto-1"}}),
+            json!({"type":"passkey","title":"chiave","f":{"url":"https://chiave.example","username":"utente","credential":"segreto-credenziale","webauthn":"{\"k\":\"segreto-chiave-privata\"}"}}),
+            json!({"type":"note","title":"nota","notes":"segreto della nota protetta"}),
+        ];
+        items
+            .into_iter()
+            .map(|i| s(&v.call("item", i).unwrap(), "id").to_string())
+            .collect()
+    }
+    #[test]
+    fn the_main_window_state_carries_no_secret() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        synthetic_items(&mut v);
+        // The password history keeps a copy of the login password.
+        assert!(array(&v.data, "passwords")
+            .iter()
+            .any(|p| s(p, "value") == "segreto-login-1"));
+        for state in [v.call("state", json!({})).unwrap(), v.state()] {
+            let text = state.to_string();
+            for secret in [
+                "segreto",
+                "JBSWY3DPEHPK3PXP",
+                "4111111111111111",
+                "nota-login-1",
+            ] {
+                assert!(!text.contains(secret), "{secret} in state");
+            }
+            let has = |title: &str| {
+                array(&state, "items")
+                    .iter()
+                    .find(|i| s(i, "title") == title)
+                    .unwrap()["has"]
+                    .clone()
+            };
+            assert_eq!(has("posta"), json!(["password", "totp", "notes"]));
+            assert_eq!(has("carta"), json!(["number", "cvv", "pin"]));
+            assert_eq!(has("chiave"), json!(["credential", "webauthn"]));
+            assert_eq!(has("nota"), json!(["notes"]));
+            // Metadata still there.
+            assert!(text.contains("https://posta.example") && text.contains("Titolare"));
+        }
+        // The backend bridge still reads everything, but not through the window.
+        let full = v.call("browser_state", json!({})).unwrap().to_string();
+        assert!(full.contains("segreto-login-1"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn secrets_are_given_one_at_a_time_and_never_the_passkey_key() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let secret = |v: &mut Vault, id: &str, field: &str| {
+            v.call("secret", json!({"id": id, "field": field}))
+                .map(|r| s(&r, "value").to_string())
+        };
+        assert_eq!(
+            secret(&mut v, &ids[0], "password").unwrap(),
+            "segreto-login-1"
+        );
+        assert_eq!(secret(&mut v, &ids[0], "notes").unwrap(), "nota-login-1");
+        assert_eq!(secret(&mut v, &ids[1], "cvv").unwrap(), "segreto-cvv");
+        assert!(secret(&mut v, &ids[3], "webauthn").is_err());
+        assert!(secret(&mut v, &ids[0], "username").is_err());
+        assert!(secret(&mut v, "inesistente", "password").is_err());
+        let history = s(&array(&v.data, "passwords")[0], "id").to_string();
+        assert_eq!(
+            secret(&mut v, &history, "history").unwrap(),
+            "segreto-login-1"
+        );
+        // The editor gets one whole item, without the private key.
+        let full = v.call("item_full", json!({"id": ids[3]})).unwrap();
+        assert_eq!(s(&full["item"]["f"], "credential"), "segreto-credenziale");
+        assert!(full["item"]["f"].get("webauthn").is_none());
+        assert_eq!(full["item"]["has"], json!(["credential", "webauthn"]));
+        // Notes are searched in the backend, only ids come back.
+        let found = v
+            .call("search_notes", json!({"q": "  NOTA protetta "}))
+            .unwrap();
+        assert_eq!(found["ids"], json!([ids[4]]));
+        assert_eq!(
+            v.call("search_notes", json!({"q": ""})).unwrap()["ids"],
+            json!([])
+        );
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn an_update_without_the_secrets_keeps_them() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        let item = |v: &Vault, id: &str| v.find(id).unwrap();
+        // The favorite star sends the public item back: nothing secret is lost.
+        let public = public_item(&item(&v, &ids[3]));
+        v.call(
+            "item",
+            json!({"id": ids[3], "fav": true, "f": public["f"], "title": "chiave"}),
+        )
+        .unwrap();
+        let it = item(&v, &ids[3]);
+        assert_eq!(it["fav"], json!(true));
+        assert_eq!(s(&it["f"], "credential"), "segreto-credenziale");
+        assert!(s(&it["f"], "webauthn").contains("segreto-chiave-privata"));
+        // A changed field is saved, the others stay; notes not sent stay too.
+        v.call("item", json!({"id": ids[0], "f": {"username": "altro"}}))
+            .unwrap();
+        let it = item(&v, &ids[0]);
+        assert_eq!(s(&it["f"], "username"), "altro");
+        assert_eq!(s(&it["f"], "password"), "segreto-login-1");
+        assert_eq!(s(&it, "notes"), "nota-login-1");
+        // An empty value clears a secret.
+        v.call("item", json!({"id": ids[0], "f": {"totp": ""}}))
+            .unwrap();
+        assert_eq!(s(&item(&v, &ids[0])["f"], "totp"), "");
+        // Another category starts from the fields sent.
+        v.call("item", json!({"id": ids[2], "type": "note", "f": {}}))
+            .unwrap();
+        assert_eq!(item(&v, &ids[2])["f"], json!({}));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn bulk_favorite_marks_every_item_and_nothing_else() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let ids = synthetic_items(&mut v);
+        v.call(
+            "bulk",
+            json!({"ids": [ids[0], ids[1]], "op": "fav", "fav": true}),
+        )
+        .unwrap();
+        let fav = |v: &Vault, id: &str| v.find(id).unwrap()["fav"] == json!(true);
+        assert!(fav(&v, &ids[0]) && fav(&v, &ids[1]) && !fav(&v, &ids[2]));
+        assert_eq!(
+            s(&v.find(&ids[0]).unwrap()["f"], "password"),
+            "segreto-login-1"
+        );
+        v.call("bulk", json!({"ids": [ids[0]], "op": "fav", "fav": false}))
+            .unwrap();
+        assert!(!fav(&v, &ids[0]) && fav(&v, &ids[1]));
         fs::remove_dir_all(dir).unwrap();
     }
     #[test]

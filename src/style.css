@@ -1523,6 +1523,20 @@ select,
   width: 30px;
   height: 30px;
 }
+.account-group-head .group-fav {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+}
+.account-group-head .group-fav + .group-delete {
+  margin-left: 0;
+}
+.account-name-row .account-fav {
+  flex: none;
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+}
 .group-actions {
   display: flex;
   justify-content: space-between;

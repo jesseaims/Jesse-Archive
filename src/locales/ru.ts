@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Russian. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': 'Удалить из избранного',
+  'Aggiungi il gruppo {name} ai preferiti': 'Добавить группу {name} в избранное',
+  'Rimuovi il gruppo {name} dai preferiti': 'Удалить группу {name} из избранного',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "Неподдерживаемые параметры шифрования: обновите Jesse's Archive до последней версии.",
   'Copia del vault più vecchia': 'Более старая копия хранилища',
@@ -485,7 +488,6 @@ const dictionary: Dictionary = {
   'Non è stato possibile rileggere il vault dal file.': 'Не удалось перечитать хранилище из файла.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'Вы ещё не создали учётную запись. Создайте учётную запись, прежде чем назначать ей пароль из истории.',
-  'Non impostata': 'Не задан',
   'Non impostato': 'Не задано',
   'Non rilevato': 'Не обнаружено',
   'Nota protetta': 'Защищённая заметка',

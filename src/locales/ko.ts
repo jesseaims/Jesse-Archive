@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': '즐겨찾기에서 제거',
+  'Aggiungi il gruppo {name} ai preferiti': '{name} 그룹을 즐겨찾기에 추가',
+  'Rimuovi il gruppo {name} dai preferiti': '{name} 그룹을 즐겨찾기에서 제거',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "지원되지 않는 암호화 매개변수입니다. Jesse's Archive를 최신 버전으로 업데이트하세요.",
   'Copia del vault più vecchia': '더 오래된 볼트 사본',
@@ -473,7 +476,6 @@ const dictionary: Dictionary = {
   'Non è stato possibile rileggere il vault dal file.': '파일에서 보관함을 다시 읽지 못했습니다.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     '아직 계정을 만들지 않았습니다. 기록의 비밀번호를 지정하기 전에 계정을 만드세요.',
-  'Non impostata': '설정 안 됨',
   'Non impostato': '설정 안 됨',
   'Non rilevato': '감지되지 않음',
   'Nota protetta': '보안 메모',

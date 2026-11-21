@@ -16,6 +16,24 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'group-favorites',
+    addedAt: '2026-11-21T04:00:00+01:00',
+    version: 'Beta 1.8.0',
+    title: 'Preferiti direttamente dai gruppi degli account',
+    description:
+      'Nella vista a gruppi degli account ogni account ha una stella per aggiungerlo o toglierlo dai preferiti, e la stella accanto al nome del gruppo mette o toglie dai preferiti tutti i suoi account insieme, senza aprirli uno alla volta.',
+    icon: 'sparkles',
+  },
+  {
+    id: 'ui-secrets-on-demand',
+    addedAt: '2026-11-21T03:15:00+01:00',
+    version: 'Beta 1.8.0',
+    title: 'Le password non restano più aperte nella finestra principale',
+    description:
+      'La finestra principale ora riceve solo nomi, username e indirizzi degli elementi. Password, PIN, CVV, numeri di carta, seed phrase, codici TOTP e testo delle note restano nel motore dell’app, separato dall’interfaccia, finché non li mostri, li copi o apri l’elemento per modificarlo, e vengono dimenticati quando chiudi l’elemento o blocchi il vault. Le password copiate dalle schede degli account e dallo storico passano direttamente agli appunti senza attraversare la finestra. La ricerca trova ancora le parole scritte nelle note.',
+    icon: 'shield',
+  },
+  {
     id: 'vault-scrypt-rollback',
     addedAt: '2026-11-20T23:45:00+01:00',
     version: 'Beta 1.7.0',

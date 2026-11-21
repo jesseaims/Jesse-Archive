@@ -2,6 +2,14 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'group-favorites': [
+    'Favoriten direkt in den Kontogruppen',
+    'In der gruppierten Ansicht der Konten hat jedes Konto einen Stern, um es zu den Favoriten hinzuzufügen oder daraus zu entfernen, und der Stern neben dem Gruppennamen fügt alle Konten der Gruppe auf einmal hinzu oder entfernt sie, ohne sie einzeln zu öffnen.',
+  ],
+  'ui-secrets-on-demand': [
+    'Passwörter bleiben nicht mehr im Hauptfenster geöffnet',
+    'Das Hauptfenster erhält jetzt nur noch Namen, Benutzernamen und Adressen der Einträge. Passwörter, PINs, CVVs, Kartennummern, Seed-Phrasen, TOTP-Codes und der Text von Notizen bleiben in der vom Interface getrennten App-Engine, bis du sie anzeigst, kopierst oder den Eintrag zum Bearbeiten öffnest, und werden vergessen, wenn du den Eintrag schließt oder den Tresor sperrst. Aus den Kontokarten und dem Verlauf kopierte Passwörter gelangen direkt in die Zwischenablage, ohne durch das Fenster zu gehen. Die Suche findet weiterhin Wörter in Notizen.',
+  ],
   'vault-scrypt-rollback': [
     'Master-Passwort schwerer zu knacken und Warnung vor alten Kopien',
     'Beim ersten Entsperren wechselt der Schutz des Master-Passworts zu einer viermal aufwendigeren Berechnung (scrypt mit 128 MB Speicher): Wer eine Kopie des Tresors erhält, braucht viel länger, um Passwörter auszuprobieren. Das Entsperren kann einen Sekundenbruchteil länger dauern. Neue .jshare-Pakete nutzen diesen Schutz ebenfalls. Wird die Tresordatei durch eine ältere Kopie ersetzt (zum Beispiel im Cloud-Ordner), erscheint beim Öffnen eine Warnung. Außerdem wird eine Änderung, die wegen einer belegten Datei nicht gespeichert wurde, jetzt bei der nächsten Synchronisierung gespeichert. Wenn du den Tresor auf mehreren PCs nutzt, aktualisiere alle: Nach dem ersten Entsperren mit dieser Version können ältere Versionen ihn nicht mehr öffnen.',

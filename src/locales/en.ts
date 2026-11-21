@@ -2,6 +2,9 @@ import type { Dictionary } from '../i18n';
 
 // English. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  'Rimuovi dai preferiti': 'Remove from favorites',
+  'Aggiungi il gruppo {name} ai preferiti': 'Add the {name} group to favorites',
+  'Rimuovi il gruppo {name} dai preferiti': 'Remove the {name} group from favorites',
   "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
     "Unsupported encryption parameters: update Jesse's Archive to the latest version.",
   'Copia del vault più vecchia': 'Older copy of the vault',
@@ -481,7 +484,6 @@ const dictionary: Dictionary = {
     'The vault could not be reloaded from the file.',
   'Non hai ancora creato un Account. Crea un Account prima di assegnargli una password dello storico.':
     'You have not created an Account yet. Create an Account before assigning it a password from the history.',
-  'Non impostata': 'Not set',
   'Non impostato': 'Not set',
   'Non rilevato': 'Not detected',
   'Nota protetta': 'Secure note',
