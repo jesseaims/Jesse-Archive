@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    'Better protected browser connection',
+    'The file with the access code the extension uses to connect to the app can now be read only by your Windows user, even when the folder lets others read, and it is deleted when you close the app. The app also closes connections that do not identify themselves in time, those in excess and those sending too many messages. Filling in credentials works as before and is always your choice in the mini window.',
+  ],
   'generator-checks': [
     'More accurate password generator and check',
     'The generator no longer creates trivial PINs like 000000 or 123456, and the «Unique characters» option also works with lengths close to the number of available characters, where before it often gave an error. The estimated bits of generated passwords are now a prudent estimate that accounts for the chosen options. The password health check also recognises common passwords with small changes (like «Password123!», «p4ssw0rd» or a name followed by a year), repetitions and keyboard sequences: some passwords considered strong before may now show up as weak.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    'Connexion avec le navigateur mieux protégée',
+    'Le fichier contenant le code d’accès que l’extension utilise pour se connecter à l’application ne peut désormais être lu que par votre utilisateur Windows, même si le dossier permet à d’autres de le lire, et il est supprimé à la fermeture de l’application. L’application ferme aussi les connexions qui ne s’identifient pas à temps, celles en trop et celles qui envoient trop de messages. Le remplissage des identifiants fonctionne comme avant et reste toujours votre choix dans la mini-fenêtre.',
+  ],
   'generator-checks': [
     'Générateur et contrôle des mots de passe plus précis',
     'Le générateur ne crée plus de codes PIN triviaux comme 000000 ou 123456, et l’option « Caractères uniques » fonctionne aussi avec des longueurs proches du nombre de caractères disponibles, alors qu’elle donnait souvent une erreur. Les bits estimés des mots de passe générés sont désormais une estimation prudente qui tient compte des options choisies. Le contrôle de santé des mots de passe reconnaît aussi les mots de passe courants légèrement modifiés (comme « Password123! », « p4ssw0rd » ou un prénom suivi d’une année), les répétitions et les suites du clavier : certains mots de passe jugés robustes peuvent désormais apparaître comme faibles.',

@@ -19,7 +19,7 @@ Il client attivo usa Rust per la logica, Tauri per l'integrazione desktop e Reac
 | `src-tauri/src/core.rs` | `Vault`, `Vault::call`, cifratura, CRUD, storico, import/export, merge, generatori e utility Windows |
 | `src/main.tsx`, `src/App.tsx` | Selezione della UI per finestra; stato e schermate principali React |
 | `src/api.ts`, `src/types.ts`, `src/theme.ts`, `src/style.css` | Contratti IPC, tipi, palette e stile condiviso |
-| `src-tauri/src/browser.rs` | Scorciatoia globale, connessioni locali, sessione di compilazione, ricerca e rilascio delle credenziali |
+| `src-tauri/src/browser.rs`, `browser_channel.rs` | Scorciatoia globale, connessioni locali (file del token riservato all'utente, autenticazione e limiti in `browser_channel.rs`), sessione di compilazione, ricerca e rilascio delle credenziali |
 | `src-tauri/src/browser_save.rs`, `browser-extension/save-capture.js` | Proposta di salvataggio degli account inviati sui siti: cattura, decisione nuovo/aggiorna, conferma nella mini finestra |
 | `src-tauri/src/browser_protocol.rs`, `src-tauri/src/bin/jesse_browser_host.rs` | Framing JSON e relay tra Native Messaging e socket loopback |
 | `src-tauri/src/browser_installer.rs`, `src-tauri/src/browser_navigation.rs` | Rilevamento browser e guida Windows con navigazione controllata via Win32 |

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    '与浏览器的连接更安全',
+    '扩展用来连接应用的访问码文件现在只能由你的 Windows 用户读取，即使文件夹允许其他人读取也是如此，并且关闭应用时会被删除。应用还会关闭未及时完成身份验证的连接、超出数量的连接以及发送过多消息的连接。填写凭据的方式与以前相同，并且始终由你在迷你窗口中选择。',
+  ],
   'generator-checks': [
     '更准确的密码生成器和检查',
     '生成器不再生成 000000 或 123456 这类简单 PIN，“唯一字符”选项在长度接近可用字符数时也能正常工作，以前常常报错。生成密码的估计位数现在是考虑所选选项的保守估计。密码健康检查也能识别略加改动的常见密码（如“Password123!”、“p4ssw0rd”或名字加年份）、重复内容和键盘序列：一些以前被视为强的密码现在可能显示为弱。',

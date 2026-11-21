@@ -1,4 +1,5 @@
 mod browser;
+mod browser_channel;
 mod browser_installer;
 #[cfg(windows)]
 mod browser_navigation;
@@ -438,6 +439,9 @@ pub fn run() {
             // the main window state while it is still visible.
             if let tauri::RunEvent::ExitRequested { .. } = event {
                 window_state::save(app);
+            }
+            if let tauri::RunEvent::Exit = event {
+                browser::cleanup();
             }
         });
 }
