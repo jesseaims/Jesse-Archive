@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'generator-checks': [
+    'Gerador e verificação de senhas mais precisos',
+    'O gerador não cria mais PINs triviais como 000000 ou 123456, e a opção «Caracteres únicos» funciona também com comprimentos próximos do número de caracteres disponíveis, onde antes costumava dar erro. Os bits estimados das senhas geradas agora são uma estimativa prudente que considera as opções escolhidas. A verificação de saúde das senhas reconhece também senhas comuns com pequenas alterações (como «Password123!», «p4ssw0rd» ou um nome seguido de um ano), repetições e sequências do teclado: algumas senhas antes consideradas fortes podem agora aparecer como fracas.',
+  ],
   'password-bulk-select': [
     'Arquivo de senhas mais fácil de limpar',
     'No Arquivo de senhas, o botão «Selecionar tudo» seleciona de uma vez todas as senhas excluíveis exibidas, também filtradas pela pesquisa, para limpar o histórico sem marcá-las uma a uma. As senhas atuais das contas não podem ser selecionadas: elas são alteradas na conta. Depois de excluir, o app informa quantas senhas removeu. Além disso, ao excluir definitivamente um item (inclusive esvaziando a lixeira), as senhas dele no histórico também são excluídas, em vez de ficarem como senhas não vinculadas.',

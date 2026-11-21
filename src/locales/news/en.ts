@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'generator-checks': [
+    'More accurate password generator and check',
+    'The generator no longer creates trivial PINs like 000000 or 123456, and the «Unique characters» option also works with lengths close to the number of available characters, where before it often gave an error. The estimated bits of generated passwords are now a prudent estimate that accounts for the chosen options. The password health check also recognises common passwords with small changes (like «Password123!», «p4ssw0rd» or a name followed by a year), repetitions and keyboard sequences: some passwords considered strong before may now show up as weak.',
+  ],
   'password-bulk-select': [
     'Password archive easier to clean up',
     'In the Password archive, the «Select all» button selects at once every deletable password shown, also when filtered by the search, so you can clean up the history without ticking them one by one. The current passwords of accounts can’t be selected: change them in the account. After deleting, the app tells you how many passwords it removed. Also, deleting an item for good (including by emptying the trash) now deletes its passwords in the history too, instead of leaving them as unlinked passwords.',

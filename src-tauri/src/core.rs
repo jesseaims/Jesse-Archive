@@ -3,7 +3,7 @@ use aes_gcm::{
     Aes256Gcm, Nonce,
 };
 use base64::{engine::general_purpose::STANDARD as B64, Engine};
-use rand::{rngs::OsRng, seq::SliceRandom, RngCore};
+use rand::{rngs::OsRng, seq::SliceRandom, Rng, RngCore};
 use scrypt::{scrypt, Params};
 use serde_json::{json, Value as V};
 use std::{
@@ -2382,9 +2382,195 @@ fn push_imported(d: &mut V, typ: &str, title: &str, folder: V, f: V, notes: &str
         }
     }
 }
+/// Common passwords and names, compared after `common_core` (lowercase, typical
+/// letter substitutions undone, digits and symbols around the word removed).
+const COMMON_WORDS: &[&str] = &[
+    "password",
+    "passwort",
+    "motdepasse",
+    "contrasena",
+    "qwerty",
+    "qwertz",
+    "azerty",
+    "letmein",
+    "admin",
+    "administrator",
+    "welcome",
+    "iloveyou",
+    "dragon",
+    "monkey",
+    "football",
+    "baseball",
+    "soccer",
+    "master",
+    "shadow",
+    "sunshine",
+    "princess",
+    "superman",
+    "batman",
+    "trustno",
+    "freedom",
+    "whatever",
+    "michael",
+    "jessica",
+    "charlie",
+    "ashley",
+    "jordan",
+    "hunter",
+    "killer",
+    "starwars",
+    "computer",
+    "internet",
+    "secret",
+    "login",
+    "hello",
+    "mustang",
+    "access",
+    "flower",
+    "cheese",
+    "summer",
+    "winter",
+    "pokemon",
+    "minecraft",
+    "google",
+    "samsung",
+    "apple",
+    "ninja",
+    "pepper",
+    "ginger",
+    "matrix",
+    "liverpool",
+    "chelsea",
+    "arsenal",
+    "test",
+    "user",
+    "guest",
+    "root",
+    "changeme",
+    "default",
+    "abc",
+    "abcd",
+    "abcdef",
+    "asdf",
+    "zxcv",
+    "ciao",
+    "ciaociao",
+    "amore",
+    "amoremio",
+    "tiamo",
+    "benvenuto",
+    "segreto",
+    "prova",
+    "utente",
+    "libero",
+    "juventus",
+    "juve",
+    "forzajuve",
+    "roma",
+    "forzaroma",
+    "milan",
+    "forzamilan",
+    "inter",
+    "forzainter",
+    "napoli",
+    "forzanapoli",
+    "lazio",
+    "fiorentina",
+    "torino",
+    "bologna",
+    "italia",
+    "ferrari",
+    "francesco",
+    "giuseppe",
+    "giovanni",
+    "alessandro",
+    "andrea",
+    "marco",
+    "luca",
+    "matteo",
+    "lorenzo",
+    "giulia",
+    "chiara",
+    "sara",
+    "martina",
+    "federica",
+    "valentina",
+    "francesca",
+    "antonio",
+    "mario",
+    "stella",
+    "tesoro",
+    "cucciolo",
+    "cuore",
+    "famiglia",
+    "mamma",
+    "papa",
+    "pippo",
+    "topolino",
+    "paperino",
+    "fragola",
+];
+/// The word inside a password: lowercase, `4`/`@`→a, `3`→e, `1`/`!`→i, `0`→o,
+/// `$`/`5`→s, `7`→t, then the digits and symbols at the start and end removed
+/// ("Passw0rd123!" → "password").
+fn common_core(p: &str) -> String {
+    let leet: String = p
+        .to_lowercase()
+        .chars()
+        .map(|c| match c {
+            '4' | '@' => 'a',
+            '3' => 'e',
+            '1' | '!' => 'i',
+            '0' => 'o',
+            '$' | '5' => 's',
+            '7' => 't',
+            c => c,
+        })
+        .collect();
+    // Only the substitutions inside the word count: the characters around it are
+    // taken from the original, so "pass2024" keeps its year out of the word.
+    let original: Vec<char> = p.to_lowercase().chars().collect();
+    let chars: Vec<char> = leet.chars().collect();
+    if chars.len() != original.len() {
+        return leet;
+    }
+    let start = original
+        .iter()
+        .position(|c| c.is_alphabetic())
+        .unwrap_or(original.len());
+    let end = original
+        .iter()
+        .rposition(|c| c.is_alphabetic())
+        .map_or(start, |i| i + 1);
+    chars[start..end.max(start)].iter().collect()
+}
+/// Length of the shortest block the password repeats ("abcabcab" → 3), if any.
+fn repeated_block(chars: &[char]) -> Option<usize> {
+    (1..=chars.len() / 2).find(|&k| (k..chars.len()).all(|i| chars[i] == chars[i - k]))
+}
+/// Two characters next to each other on a keyboard row (either direction).
+fn keyboard_neighbours(a: char, b: char) -> bool {
+    const ROWS: [&str; 4] = ["1234567890", "qwertyuiop", "asdfghjkl", "zxcvbnm"];
+    let (a, b) = (a.to_ascii_lowercase(), b.to_ascii_lowercase());
+    ROWS.iter().any(|row| {
+        let r: Vec<char> = row.chars().collect();
+        r.windows(2)
+            .any(|w| (w[0] == a && w[1] == b) || (w[0] == b && w[1] == a))
+    })
+}
 fn bits(p: &str) -> f64 {
     if p.is_empty() {
         return 0.;
+    }
+    let chars: Vec<char> = p.chars().collect();
+    if let Some(k) = repeated_block(&chars) {
+        let block: String = chars[..k].iter().collect();
+        return ((bits(&block) + (chars.len() as f64 / k as f64).log2()) * 10.).round() / 10.;
+    }
+    let core = common_core(p);
+    if COMMON_WORDS.contains(&core.as_str()) {
+        let extra = chars.len().saturating_sub(core.chars().count()) as f64;
+        return ((4. + extra * 10f64.log2()) * 10.).round() / 10.;
     }
     let lower = p.to_ascii_lowercase();
     if [
@@ -2436,7 +2622,7 @@ fn bits(p: &str) -> f64 {
     let seq = p
         .chars()
         .zip(p.chars().skip(1))
-        .filter(|(a, b)| (*a as i64 - *b as i64).abs() == 1)
+        .filter(|(a, b)| (*a as i64 - *b as i64).abs() == 1 || keyboard_neighbours(*a, *b))
         .count() as f64;
     (((unique + 0.3 * (count - unique) - 0.7 * seq).max(1.)) * (pool.max(2) as f64).log2() * 10.)
         .round()
@@ -2617,6 +2803,44 @@ fn word(n: usize) -> String {
     }
     result
 }
+/// PINs anyone tries first: all digits equal, or a straight run up or down.
+fn weak_pin(v: &str) -> bool {
+    let d: Vec<i32> = v.bytes().map(|c| c as i32 - b'0' as i32).collect();
+    let steps: Vec<i32> = d.windows(2).map(|w| w[1] - w[0]).collect();
+    [0, 1, -1].iter().any(|s| steps.iter().all(|x| x == s))
+}
+/// Estimated bits of a generated password, never above the real figure: the
+/// characters each set must supply count with that set alone, the others with the
+/// whole pool; with `unique` each one counts on what is left; with `start_letter`
+/// one free position counts on the letters only. The shuffle, which adds some
+/// unpredictability on where the required characters go, is left out.
+fn password_bits(
+    active: &[(Vec<char>, usize)],
+    pool: &[char],
+    len: usize,
+    unique: bool,
+    start_letter: bool,
+) -> f64 {
+    let mut sizes: Vec<usize> = Vec::new();
+    for (set, m) in active {
+        sizes.extend(std::iter::repeat_n(set.len(), *m));
+    }
+    sizes.truncate(len);
+    let forced = sizes.len();
+    sizes.extend(std::iter::repeat_n(pool.len(), len - forced));
+    if start_letter && forced < len {
+        sizes[forced] = pool.iter().filter(|c| c.is_alphabetic()).count();
+    }
+    let total: f64 = sizes
+        .iter()
+        .enumerate()
+        .map(|(i, &n)| {
+            let n = if unique { n.saturating_sub(i) } else { n };
+            (n.max(1) as f64).log2()
+        })
+        .sum();
+    (total * 10.).round() / 10.
+}
 fn generate(b: &V) -> Res<Vec<V>> {
     let mode = s(b, "mode");
     let count = b["count"].as_u64().unwrap_or(5).clamp(1, 10);
@@ -2626,17 +2850,25 @@ fn generate(b: &V) -> Res<Vec<V>> {
         let (value, entropy) = match mode {
             "pin" => {
                 let len = b["pin_len"].as_u64().unwrap_or(6).clamp(4, 16) as usize;
-                let val: String = (0..len)
-                    .map(|_| (b'0' + (rng.next_u32() % 10) as u8) as char)
-                    .collect();
-                (val, (len as f64 * 10f64.log2() * 10.).round() / 10.)
+                let val = loop {
+                    let v: String = (0..len)
+                        .map(|_| (b'0' + rng.gen_range(0..10u8)) as char)
+                        .collect();
+                    if !weak_pin(&v) {
+                        break v;
+                    }
+                };
+                // Left out: 10 with all digits equal and the runs up and down.
+                let weak = 10. + 2. * 11usize.saturating_sub(len) as f64;
+                let bits = (10f64.powi(len as i32) - weak).log2();
+                (val, (bits * 10.).round() / 10.)
             }
             "username" => (
                 format!(
                     "{}{}{}",
                     capitalize(&word(2)),
                     word(2),
-                    rng.next_u32() % 100
+                    rng.gen_range(0..100u32)
                 ),
                 33.,
             ),
@@ -2655,7 +2887,7 @@ fn generate(b: &V) -> Res<Vec<V>> {
                     .collect();
                 let mut entropy = n as f64 * 3. * 70f64.log2();
                 if b["add_number"] != false {
-                    ws.push((rng.next_u32() % 100).to_string());
+                    ws.push(rng.gen_range(0..100u32).to_string());
                     entropy += 100f64.log2()
                 }
                 let sep = b["sep"]
@@ -2674,8 +2906,8 @@ fn generate(b: &V) -> Res<Vec<V>> {
                     } else {
                         ""
                     };
-                let min_digits = b["min_digits"].as_u64().unwrap_or(1) as usize;
-                let min_symbols = b["min_symbols"].as_u64().unwrap_or(1) as usize;
+                let min_digits = b["min_digits"].as_u64().unwrap_or(1).min(len as u64) as usize;
+                let min_symbols = b["min_symbols"].as_u64().unwrap_or(1).min(len as u64) as usize;
                 let symbol_set = b["symset"]
                     .as_str()
                     .filter(|s| !s.is_empty())
@@ -2689,8 +2921,13 @@ fn generate(b: &V) -> Res<Vec<V>> {
                 let mut active = Vec::new();
                 for (on, chars, m) in sets {
                     if on {
-                        let clean: Vec<char> =
-                            chars.chars().filter(|c| !excluded.contains(*c)).collect();
+                        // Without repeats, so a symbol typed twice is not drawn twice as often.
+                        let mut clean: Vec<char> = Vec::new();
+                        for c in chars.chars() {
+                            if !excluded.contains(c) && !clean.contains(&c) {
+                                clean.push(c)
+                            }
+                        }
                         if !clean.is_empty() {
                             active.push((clean, m))
                         }
@@ -2698,6 +2935,11 @@ fn generate(b: &V) -> Res<Vec<V>> {
                 }
                 if active.is_empty() {
                     return Err("Seleziona almeno un tipo di caratteri".into());
+                }
+                if active.iter().map(|(_, m)| m).sum::<usize>() > len {
+                    return Err(
+                        "Le cifre e i simboli minimi superano la lunghezza della password".into(),
+                    );
                 }
                 let pool: Vec<char> = active
                     .iter()
@@ -2708,18 +2950,37 @@ fn generate(b: &V) -> Res<Vec<V>> {
                 if b["unique"] == true && len > pool.len() {
                     return Err("Troppi caratteri unici richiesti".into());
                 }
+                let unique = b["unique"] == true;
+                // With `unique` each character is drawn from those not used yet:
+                // discarding the repeats instead almost always failed when the length
+                // was close to the number of characters available.
+                let pick = |set: &[char], ch: &[char], rng: &mut OsRng| -> Option<char> {
+                    if unique {
+                        let left: Vec<char> =
+                            set.iter().filter(|c| !ch.contains(c)).copied().collect();
+                        left.choose(rng).copied()
+                    } else {
+                        set.choose(rng).copied()
+                    }
+                };
                 let mut candidate = None;
-                for _ in 0..1000 {
+                'attempt: for _ in 0..1000 {
                     let mut ch = Vec::new();
                     for (set, m) in &active {
                         for _ in 0..*m {
                             if ch.len() < len {
-                                ch.push(*set.choose(&mut rng).unwrap())
+                                match pick(set, &ch, &mut rng) {
+                                    Some(c) => ch.push(c),
+                                    None => continue 'attempt,
+                                }
                             }
                         }
                     }
                     while ch.len() < len {
-                        ch.push(*pool.choose(&mut rng).unwrap())
+                        match pick(&pool, &ch, &mut rng) {
+                            Some(c) => ch.push(c),
+                            None => continue 'attempt,
+                        }
                     }
                     ch.shuffle(&mut rng);
                     if b["start_letter"] == true && !ch[0].is_alphabetic() {
@@ -2729,17 +2990,12 @@ fn generate(b: &V) -> Res<Vec<V>> {
                             continue;
                         }
                     }
-                    if b["unique"] == true && ch.iter().collect::<HashSet<_>>().len() != ch.len() {
-                        continue;
-                    }
                     candidate = Some(ch.into_iter().collect::<String>());
                     break;
                 }
                 let p = candidate.ok_or("Impossibile rispettare le opzioni")?;
-                (
-                    p,
-                    (len as f64 * (pool.len() as f64).log2() * 10.).round() / 10.,
-                )
+                let bits = password_bits(&active, &pool, len, unique, b["start_letter"] == true);
+                (p, bits)
             }
         };
         out.push(json!({"value":value,"bits":entropy}))
@@ -3014,6 +3270,111 @@ mod legacy_python_vectors {
 #[cfg(test)]
 mod vault_tests {
     use super::*;
+    fn gen(b: V) -> Vec<String> {
+        generate(&b)
+            .unwrap()
+            .iter()
+            .map(|r| s(r, "value").to_string())
+            .collect()
+    }
+    fn gen_bits(b: V) -> f64 {
+        num(&generate(&b).unwrap()[0], "bits")
+    }
+    #[test]
+    fn pin_digits_are_uniform() {
+        let mut counts = [0f64; 10];
+        for _ in 0..700 {
+            for pin in gen(json!({"mode": "pin", "pin_len": 16, "count": 10})) {
+                for c in pin.bytes() {
+                    counts[(c - b'0') as usize] += 1.;
+                }
+            }
+        }
+        let total: f64 = counts.iter().sum();
+        let expected = total / 10.;
+        let chi2: f64 = counts
+            .iter()
+            .map(|c| (c - expected).powi(2) / expected)
+            .sum();
+        // 9 degrees of freedom: above 40 happens by chance less than once in 100 000.
+        assert!(chi2 < 40., "chi2 {chi2}, counts {counts:?}");
+    }
+    #[test]
+    fn generated_pins_are_never_trivial() {
+        assert!(weak_pin("0000") && weak_pin("123456") && weak_pin("9876") && !weak_pin("1235"));
+        // Without the filter about 5 of these 2000 four-digit PINs would be trivial.
+        for _ in 0..200 {
+            for pin in gen(json!({"mode": "pin", "pin_len": 4, "count": 10})) {
+                assert!(!weak_pin(&pin), "{pin}");
+            }
+        }
+        // 10^6 PINs minus 10 with equal digits and 5 runs up and 5 down.
+        let expected = ((1e6f64 - 20.).log2() * 10.).round() / 10.;
+        assert_eq!(gen_bits(json!({"mode": "pin", "pin_len": 6})), expected);
+    }
+    #[test]
+    fn password_options_are_kept_and_counted_prudently() {
+        let lower = json!({"length": 10, "upper": false, "digits": false, "symbols": false});
+        assert_eq!(gen_bits(lower), 47.0);
+        let unique = json!({"length": 20, "upper": false, "digits": false, "symbols": false, "unique": true, "count": 10});
+        for p in gen(unique.clone()) {
+            assert_eq!(p.chars().collect::<HashSet<_>>().len(), 20, "{p}");
+        }
+        let b = gen_bits(unique);
+        assert!(b < 94.0 && b > 70., "{b}");
+        let start = json!({"length": 8, "start_letter": true, "count": 10});
+        for _ in 0..20 {
+            for p in gen(start.clone()) {
+                assert!(p.chars().next().unwrap().is_alphabetic(), "{p}");
+            }
+        }
+        assert!(gen_bits(start) < gen_bits(json!({"length": 8})));
+        let minimums = json!({"length": 12, "min_digits": 5, "min_symbols": 3, "count": 10});
+        for p in gen(minimums) {
+            assert!(p.chars().filter(|c| c.is_ascii_digit()).count() >= 5, "{p}");
+            assert!(
+                p.chars().filter(|c| "!@#$%^&*".contains(*c)).count() >= 3,
+                "{p}"
+            );
+        }
+        for b in [
+            json!({"length": 12, "min_digits": 10, "min_symbols": 10}),
+            json!({"length": 8, "min_digits": u64::MAX}),
+        ] {
+            assert!(generate(&b).is_err());
+        }
+    }
+    #[test]
+    fn a_symbol_typed_twice_is_not_drawn_more_often() {
+        let only = json!({"length": 128, "count": 10, "lower": false, "upper": false,
+                          "digits": false, "symset": "!!!!!!!!#"});
+        let text: String = gen(only).concat();
+        let share = text.chars().filter(|c| *c == '!').count() as f64 / text.len() as f64;
+        assert!((0.4..0.6).contains(&share), "{share}");
+    }
+    #[test]
+    fn common_passwords_with_small_changes_are_weak() {
+        for p in [
+            "Password123!",
+            "p4ssw0rd",
+            "juventus2024",
+            "Juventus2024!",
+            "abcabcabc",
+            "qwertyuiop",
+            "asdfghjkl1",
+            "Marco1985",
+        ] {
+            assert!(bits(p) < 60., "{p}: {}", bits(p));
+        }
+        for _ in 0..20 {
+            for p in gen(json!({"length": 20, "count": 10})) {
+                assert!(bits(&p) >= 60., "{p}: {}", bits(&p));
+            }
+            for p in gen(json!({"mode": "passphrase", "words": 5, "count": 10})) {
+                assert!(bits(&p) >= 60., "{p}: {}", bits(&p));
+            }
+        }
+    }
     /// Synthetic vault in an isolated temporary directory; never touches real data.
     fn test_vault() -> (Vault, PathBuf) {
         let dir =

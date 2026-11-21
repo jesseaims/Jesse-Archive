@@ -965,6 +965,8 @@ const dictionary: Dictionary = {
   'Chiave TOTP non valida': '잘못된 TOTP 키',
   'Seleziona almeno un tipo di caratteri': '문자 유형을 하나 이상 선택하세요',
   'Troppi caratteri unici richiesti': '요청한 고유 문자가 너무 많습니다',
+  'Le cifre e i simboli minimi superano la lunghezza della password':
+    '최소 숫자 및 기호 수가 비밀번호 길이를 초과합니다',
   'Impossibile rispettare le opzioni': '옵션을 충족할 수 없습니다',
   'Impossibile contattare Pwned Passwords': 'Pwned Passwords에 연결할 수 없습니다',
   "Impossibile modificare l'avvio automatico": '자동 시작을 변경할 수 없습니다',

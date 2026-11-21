@@ -61,6 +61,7 @@ export const RUNTIME_KEYS = [
   'Chiave TOTP non valida',
   'Seleziona almeno un tipo di caratteri',
   'Troppi caratteri unici richiesti',
+  'Le cifre e i simboli minimi superano la lunghezza della password',
   'Impossibile rispettare le opzioni',
   'Impossibile contattare Pwned Passwords',
   "Impossibile modificare l'avvio automatico",
