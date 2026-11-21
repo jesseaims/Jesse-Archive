@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    'Besser geschützte Verbindung zum Browser',
+    'Die Datei mit dem Zugangscode, mit dem sich die Erweiterung mit der App verbindet, kann jetzt nur noch dein Windows-Benutzer lesen, auch wenn der Ordner anderen das Lesen erlaubt, und sie wird beim Schließen der App gelöscht. Außerdem schließt die App Verbindungen, die sich nicht rechtzeitig ausweisen, überzählige Verbindungen und solche, die zu viele Nachrichten senden. Das Ausfüllen von Zugangsdaten funktioniert wie bisher und bleibt immer deine Entscheidung im Mini-Fenster.',
+  ],
   'generator-checks': [
     'Genauerer Passwortgenerator und -check',
     'Der Generator erstellt keine trivialen PINs wie 000000 oder 123456 mehr, und die Option „Eindeutige Zeichen“ funktioniert auch bei Längen nahe der Anzahl verfügbarer Zeichen, wo sie vorher oft einen Fehler gab. Die geschätzten Bits generierter Passwörter sind jetzt eine vorsichtige Schätzung, die die gewählten Optionen berücksichtigt. Der Passwort-Gesundheitscheck erkennt auch gängige Passwörter mit kleinen Änderungen (wie „Password123!“, „p4ssw0rd“ oder ein Name mit Jahreszahl), Wiederholungen und Tastaturfolgen: Manche bisher als stark eingestufte Passwörter können nun als schwach erscheinen.',

@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'browser-channel-hardening',
+    addedAt: '2026-11-21T17:03:00+01:00',
+    version: 'Beta 1.9.2',
+    title: 'Collegamento con il browser più protetto',
+    description:
+      'Il file con il codice di accesso che l’estensione usa per collegarsi all’app ora può essere letto solo dal tuo utente di Windows, anche se la cartella permette ad altri di leggere, e viene cancellato quando chiudi l’app. L’app chiude inoltre i collegamenti che non si presentano in tempo, quelli in eccesso e quelli che mandano troppi messaggi. L’inserimento delle credenziali funziona come prima e resta sempre una tua scelta nella mini finestra.',
+    icon: 'shield',
+  },
+  {
     id: 'generator-checks',
     addedAt: '2026-11-21T16:14:00+01:00',
     version: 'Beta 1.9.1',

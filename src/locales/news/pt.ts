@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    'Conexão com o navegador mais protegida',
+    'O arquivo com o código de acesso que a extensão usa para se conectar ao app agora só pode ser lido pelo seu usuário do Windows, mesmo que a pasta permita a leitura por outros, e é excluído quando você fecha o app. O app também fecha as conexões que não se identificam a tempo, as que excedem o limite e as que enviam mensagens demais. O preenchimento de credenciais funciona como antes e continua sempre sendo uma escolha sua na minijanela.',
+  ],
   'generator-checks': [
     'Gerador e verificação de senhas mais precisos',
     'O gerador não cria mais PINs triviais como 000000 ou 123456, e a opção «Caracteres únicos» funciona também com comprimentos próximos do número de caracteres disponíveis, onde antes costumava dar erro. Os bits estimados das senhas geradas agora são uma estimativa prudente que considera as opções escolhidas. A verificação de saúde das senhas reconhece também senhas comuns com pequenas alterações (como «Password123!», «p4ssw0rd» ou um nome seguido de um ano), repetições e sequências do teclado: algumas senhas antes consideradas fortes podem agora aparecer como fracas.',

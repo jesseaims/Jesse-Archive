@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'browser-channel-hardening': [
+    'Conexión con el navegador más protegida',
+    'El archivo con el código de acceso que la extensión usa para conectarse a la app ahora solo puede leerlo tu usuario de Windows, aunque la carpeta permita leer a otros, y se elimina al cerrar la app. Además, la app cierra las conexiones que no se identifican a tiempo, las que sobran y las que envían demasiados mensajes. El rellenado de credenciales funciona como antes y sigue siendo siempre tu elección en la miniventana.',
+  ],
   'generator-checks': [
     'Generador y comprobación de contraseñas más precisos',
     'El generador ya no crea PIN triviales como 000000 o 123456, y la opción «Caracteres únicos» funciona también con longitudes cercanas al número de caracteres disponibles, donde antes solía dar error. Los bits estimados de las contraseñas generadas son ahora una estimación prudente que tiene en cuenta las opciones elegidas. La comprobación de salud de las contraseñas reconoce también contraseñas comunes con pequeños cambios (como «Password123!», «p4ssw0rd» o un nombre seguido de un año), repeticiones y secuencias del teclado: algunas contraseñas antes consideradas robustas pueden aparecer ahora como débiles.',

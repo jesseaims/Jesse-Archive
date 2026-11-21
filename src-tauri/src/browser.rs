@@ -285,9 +285,9 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         shortcut_error: Mutex::new(String::new()),
         reload_asked: Mutex::new(HashSet::new()),
     });
-    std::fs::write(
-        directory.join("connection.json"),
-        serde_json::to_vec(&json!({"port":listener.local_addr()?.port(),"token":token}))?,
+    crate::browser_channel::write_private(
+        &directory.join("connection.json"),
+        &serde_json::to_vec(&json!({"port":listener.local_addr()?.port(),"token":token}))?,
     )?;
     let shortcut_result = shortcut
         .parse::<Shortcut>()
@@ -309,46 +309,43 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     .skip_taskbar(true)
     .build()?;
     let handle = app.clone();
+    let limits = crate::browser_channel::LIMITS;
     std::thread::spawn(move || {
-        for socket in listener.incoming().flatten() {
+        crate::browser_channel::serve(listener, token, limits, move |mut socket| {
             let app = handle.clone();
-            let token = token.clone();
-            std::thread::spawn(move || {
-                let mut socket = socket;
-                let _ = socket.set_read_timeout(Some(Duration::from_secs(3)));
-                if !wire::read_frame(&mut socket)
-                    .ok()
-                    .is_some_and(|v| v["token"] == token)
-                {
-                    return;
+            let _ = socket.set_write_timeout(Some(Duration::from_secs(2)));
+            let id = random();
+            let Ok(writer) = socket.try_clone() else {
+                return;
+            };
+            app.state::<Bridge>()
+                .clients
+                .lock()
+                .unwrap()
+                .insert(id.clone(), Arc::new(Mutex::new(writer)));
+            let mut rate = crate::browser_channel::Rate::new(limits);
+            while let Ok(message) = wire::read_frame(&mut socket) {
+                if !rate.allow() {
+                    break;
                 }
-                let _ = socket.set_read_timeout(None);
-                let _ = socket.set_write_timeout(Some(Duration::from_secs(2)));
-                let id = random();
-                let Ok(writer) = socket.try_clone() else {
-                    return;
-                };
-                app.state::<Bridge>()
-                    .clients
-                    .lock()
-                    .unwrap()
-                    .insert(id.clone(), Arc::new(Mutex::new(writer)));
-                while let Ok(message) = wire::read_frame(&mut socket) {
-                    receive(&app, &id, message);
-                }
-                let bridge = app.state::<Bridge>();
-                bridge.clients.lock().unwrap().remove(&id);
-                let mut session = bridge.session.lock().unwrap();
-                if session.as_ref().is_some_and(|s| s.client == id) {
-                    *session = None;
-                    let _ = app.emit_to("quick-fill", "browser-changed", ());
-                }
-                drop(session);
-                crate::passkey::aborted(&app, &id, None);
-            });
-        }
+                receive(&app, &id, message);
+            }
+            let bridge = app.state::<Bridge>();
+            bridge.clients.lock().unwrap().remove(&id);
+            let mut session = bridge.session.lock().unwrap();
+            if session.as_ref().is_some_and(|s| s.client == id) {
+                *session = None;
+                let _ = app.emit_to("quick-fill", "browser-changed", ());
+            }
+            drop(session);
+            crate::passkey::aborted(&app, &id, None);
+        })
     });
     Ok(())
+}
+/// The token of this run is useless once the app is closed: remove its file.
+pub fn cleanup() {
+    let _ = std::fs::remove_file(wire::directory().join("connection.json"));
 }
 /// Active browser-fill shortcut, to keep the Quick Search one different.
 pub(crate) fn shortcut(app: &tauri::AppHandle) -> Option<Shortcut> {
