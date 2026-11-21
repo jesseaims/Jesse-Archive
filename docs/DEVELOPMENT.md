@@ -26,6 +26,8 @@ Versioni osservate con comandi di sola lettura: `rustc 1.100.0`, `cargo 1.100.0`
 | windows-sys diretto | 0.61.2 | Clipboard, registro, finestre e integrazione Windows |
 | jsdom | 31.0.1 | DOM sintetico nei test estensione |
 
+Nel profilo `dev` (test e `tauri dev`) `scrypt`, `salsa20`, `pbkdf2` e `sha2` sono compilati con `opt-level = 3` (`[profile.dev.package.*]` in `Cargo.toml`): senza ottimizzazioni lo scrypt a N=2^17 del wrapper master (dalla Beta 1.7.0) renderebbe lenti test e sblocco. Le build release sono già ottimizzate.
+
 `serde`/`serde_json` (con `float_roundtrip`, dalla Beta 1.6.0, per rileggere esattamente i decimali dell'header autenticato), `base64`, `url`, `sha1`/`sha2`, `hmac`, `csv`, `roxmltree` (dalla Beta 1.5.0: lettura in sola lettura dell'export XML di KeePass, senza dipendenze proprie), `regex` e librerie di sistema completano il core; lucide-react fornisce icone UI. Il riferimento integrale è [Cargo.toml](../src-tauri/Cargo.toml), [Cargo.lock](../src-tauri/Cargo.lock), [package.json](../package.json), [package-lock.json](../package-lock.json). Le dipendenze transitive possono contenere versioni aggiuntive: non attribuirle automaticamente alle dipendenze dirette.
 
 ## Comandi e livello di verifica

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-scrypt-rollback': [
+    'Contraseña maestra más difícil de forzar y aviso sobre copias antiguas',
+    'En el primer desbloqueo, la protección de la contraseña maestra pasa a un cálculo cuatro veces más pesado (scrypt con 128 MB de memoria): quien consiga una copia del vault tardará mucho más en probar contraseñas. El desbloqueo puede tardar una fracción de segundo más. Los nuevos paquetes .jshare también usan esta protección. Si el archivo del vault se sustituye por una copia más antigua (por ejemplo, en la carpeta de la nube), aparece un aviso al abrirlo. Además, un cambio que no se guardó porque el archivo estaba ocupado ahora se guarda en la siguiente sincronización. Si usas el vault en varios PC, actualízalos todos: tras el primer desbloqueo con esta versión, las anteriores ya no pueden abrirlo.',
+  ],
   'vault-header-key-rotation': [
     'Más protección al cambiar la contraseña maestra',
     'El encabezado del vault ahora está firmado con una clave que solo tú puedes obtener: una copia antigua colocada en la carpeta del vault (por ejemplo, por alguien con acceso a tu nube) ya no puede devolver una contraseña maestra antigua. Al cambiar la contraseña maestra puedes marcar «Puede que alguien haya descubierto la contraseña anterior»: también cambia la clave que cifra los datos, así la contraseña anterior ya no abre el vault, ni siquiera desde una copia, y recibes un nuevo código de recuperación para guardar. Un nuevo código de recuperación siempre cambia también la clave. Si usas el vault en varios PC, actualízalos todos antes.',

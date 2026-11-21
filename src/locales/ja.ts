@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Japanese. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "サポートされていない暗号化パラメーターです。Jesse's Archive を最新バージョンに更新してください。",
+  'Copia del vault più vecchia': '古い保管庫のコピー',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    '保管庫ファイルが、この PC で最後に開いたか保存したバージョンより古くなっています。以前のコピーに置き換えられた可能性があり（クラウドフォルダーなど）、最新の変更が失われているかもしれません。自分でバックアップを復元した場合は、この警告を無視してかまいません。そうでない場合は、変更する前にクラウドサービスのバージョン履歴を確認してください。何か変更するまで、ファイルはそのまま残ります。',
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     'データを暗号化している鍵も変更します。古いパスワードでは、コピーを含めて保管庫を開けなくなります。新しい復旧コードが発行されるので保存してください。他の PC でも保管庫を使っている場合は、このバージョンに更新してください。開いている PC はロックされ、新しいパスワードを求められます。',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

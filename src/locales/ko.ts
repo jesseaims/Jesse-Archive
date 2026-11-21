@@ -2,6 +2,11 @@ import type { Dictionary } from '../i18n';
 
 // Korean. Keys are the Italian source strings (see src/i18n.ts).
 const dictionary: Dictionary = {
+  "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.":
+    "지원되지 않는 암호화 매개변수입니다. Jesse's Archive를 최신 버전으로 업데이트하세요.",
+  'Copia del vault più vecchia': '더 오래된 볼트 사본',
+  "Il file del vault è più vecchio dell'ultima versione aperta o salvata su questo PC: potrebbe essere stato sostituito con una copia precedente (per esempio nella cartella cloud) e le modifiche più recenti potrebbero mancare. Se hai ripristinato tu un backup, puoi ignorare questo avviso. Altrimenti, prima di fare modifiche, controlla la cronologia delle versioni del tuo servizio cloud: finché non modifichi qualcosa il file resta com'è.":
+    '볼트 파일이 이 PC에서 마지막으로 열거나 저장한 버전보다 오래되었습니다. 이전 사본으로 바뀌었을 수 있으며(예: 클라우드 폴더에서) 최근 변경 사항이 빠져 있을 수 있습니다. 직접 백업을 복원했다면 이 경고는 무시해도 됩니다. 그렇지 않다면 변경하기 전에 클라우드 서비스의 버전 기록을 확인하세요. 무언가를 변경하기 전까지 파일은 그대로 유지됩니다.',
   'Cambia anche la chiave che cifra i dati: la vecchia password non aprirà più il vault nemmeno da una sua copia. Riceverai un nuovo codice di recupero da salvare. Se usi il vault su altri PC, aggiornali a questa versione: quelli aperti si bloccheranno e chiederanno la nuova password.':
     '데이터를 암호화하는 키도 바꿉니다. 이전 비밀번호로는 복사본을 포함해 더 이상 볼트를 열 수 없습니다. 새 복구 코드가 발급되니 저장하세요. 다른 PC에서도 볼트를 사용한다면 이 버전으로 업데이트하세요. 열려 있는 PC는 잠기고 새 비밀번호를 요청합니다.',
   'Il vecchio codice di recupero smetterà di funzionare: anche la chiave che cifra i dati viene cambiata.':

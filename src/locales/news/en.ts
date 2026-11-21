@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-scrypt-rollback': [
+    'Master password harder to crack and a warning about old copies',
+    'At the first unlock, the master password protection moves to a calculation four times heavier (scrypt with 128 MB of memory): anyone who gets a copy of the vault needs much longer to try passwords. Unlocking may take a fraction of a second longer. New .jshare packages use this protection too. If the vault file is replaced with an older copy of itself (for example in the cloud folder), a warning appears when you open it. Also, a change not saved because the file was busy is now saved at the next synchronization. If you use the vault on several PCs, update all of them: after the first unlock with this version, earlier ones can no longer open it.',
+  ],
   'vault-header-key-rotation': [
     'Stronger protection when you change the master password',
     'The vault header is now signed with a key only you can obtain: an old copy placed in the vault folder (for example by someone with access to your cloud) can no longer bring back an old master password. When you change the master password you can tick “The old password may have been discovered”: the key that encrypts the data changes too, so the old password no longer opens the vault, not even from a copy, and you get a new recovery code to save. A new recovery code always changes the key as well. If you use the vault on several PCs, update all of them first.',

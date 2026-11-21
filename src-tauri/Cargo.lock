@@ -2233,7 +2233,7 @@ dependencies = [
 
 [[package]]
 name = "jesse_archive"
-version = "1.6.0"
+version = "1.7.0"
 dependencies = [
  "aes-gcm",
  "base64 0.22.1",

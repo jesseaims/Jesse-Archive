@@ -72,9 +72,19 @@ fn key(k: &str) -> String {
         .filter(|c| c.is_ascii_alphanumeric())
         .collect()
 }
+/// scrypt cost (log2 N, r = 8, p = 1). The master password wrapper and `.jshare`
+/// packages use `MASTER_LOG_N` from Beta 1.7.0 (128 MiB, recorded as `kdf` / `n`);
+/// files without it use the previous 15 (32 MiB). The recovery code keeps 15: it has
+/// 120 random bits, so its strength does not depend on the scrypt cost.
+const LEGACY_LOG_N: u8 = 15;
+const MASTER_LOG_N: u8 = 17;
+#[cfg(test)]
 fn kdf(pass: &str, salt: &[u8]) -> Res<Zeroizing<[u8; 32]>> {
+    kdf_n(pass, salt, LEGACY_LOG_N)
+}
+fn kdf_n(pass: &str, salt: &[u8], log_n: u8) -> Res<Zeroizing<[u8; 32]>> {
     let mut out = Zeroizing::new([0; 32]);
-    let params = Params::new(15, 8, 1, 32).map_err(err)?;
+    let params = Params::new(log_n, 8, 1, 32).map_err(err)?;
     scrypt(pass.as_bytes(), salt, &params, &mut *out).map_err(err)?;
     Ok(out)
 }
@@ -98,6 +108,19 @@ fn unseal(k: &[u8; 32], blob: &str) -> Res<Vec<u8>> {
         .decrypt(Nonce::from_slice(&raw[..12]), &raw[12..])
         .map_err(|_| AUTH_FAILED.into())
 }
+/// scrypt cost stored in a file (`k` absent: the previous 15). Read from untrusted
+/// files, so only the known values are accepted: a huge N would exhaust the memory.
+fn log_n_of(v: &V, k: &str) -> Res<u8> {
+    match v.get(k) {
+        None | Some(V::Null) => Ok(LEGACY_LOG_N),
+        Some(x) => match x.as_u64() {
+            Some(n) if (LEGACY_LOG_N as u64..=18).contains(&n) => Ok(n as u8),
+            _ => Err(KDF_UNSUPPORTED.into()),
+        },
+    }
+}
+const KDF_UNSUPPORTED: &str =
+    "Parametri di cifratura non supportati: aggiorna Jesse's Archive all'ultima versione.";
 fn decode(v: &V, k: &str) -> Res<Vec<u8>> {
     B64.decode(s(v, k)).map_err(err)
 }
@@ -131,7 +154,14 @@ fn header_mac_engine(dek: &[u8; 32], h: &V) -> Res<hmac::Hmac<sha2::Sha256>> {
     derive.update(b"jesse-archive header mac v1");
     let key = Zeroizing::new(derive.finalize().into_bytes());
     // serde_json maps keep their keys sorted: the same header always gives the same text.
-    let fields = json!({"v":h["v"],"salt":h["salt"],"wrap":h["wrap"],"rsalt":h["rsalt"],"rwrap":h["rwrap"],"hv":h["hv"]});
+    // `kdf` and `wt` (Beta 1.7.0) are covered only when present, so headers written
+    // by 1.6.0 keep their mac.
+    let mut fields = json!({"v":h["v"],"salt":h["salt"],"wrap":h["wrap"],"rsalt":h["rsalt"],"rwrap":h["rwrap"],"hv":h["hv"]});
+    for k in ["kdf", "wt"] {
+        if !h[k].is_null() {
+            fields[k] = h[k].clone();
+        }
+    }
     let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(&key).map_err(err)?;
     mac.update(&serde_json::to_vec(&fields).map_err(err)?);
     Ok(mac)
@@ -148,10 +178,19 @@ fn header_mac_ok(dek: &[u8; 32], h: &V) -> bool {
         _ => false,
     }
 }
-fn wrapped(secret: &str, dek: &[u8; 32]) -> Res<(String, String)> {
+fn wrapped(secret: &str, dek: &[u8; 32], log_n: u8) -> Res<(String, String)> {
     let salt = rand_bytes::<16>();
-    let wrap = seal(&*kdf(secret, &salt)?, dek)?;
+    let wrap = seal(&*kdf_n(secret, &salt, log_n)?, dek)?;
     Ok((B64.encode(salt), wrap))
+}
+/// Wraps the data key with the master password at the current scrypt cost.
+fn wrap_master(h: &mut V, password: &str, dek: &[u8; 32]) -> Res<()> {
+    let (salt, wrap) = wrapped(password, dek, MASTER_LOG_N)?;
+    h["salt"] = json!(salt);
+    h["wrap"] = json!(wrap);
+    h["kdf"] = json!(MASTER_LOG_N);
+    h["hv"] = json!(now());
+    Ok(())
 }
 fn empty() -> V {
     json!({"items":[],"passwords":[],"folders":[],"deleted":{},"settings_upd":0,"settings":{"autolock":5,"clip":30,"old_days":180}})
@@ -429,15 +468,17 @@ fn atomic_write(path: &Path, text: &[u8]) -> Res<()> {
     }
     Ok(())
 }
-fn sig(path: &Path) -> Option<(u64, u128)> {
-    let m = fs::metadata(path).ok()?;
-    let t = m
-        .modified()
-        .ok()?
-        .duration_since(UNIX_EPOCH)
-        .ok()?
-        .as_nanos();
-    Some((m.len(), t))
+/// Identity of the vault file's content, used by `pull` to notice writes from other
+/// PCs. A hash, not size and modification time: two writes of the same size within
+/// one tick of the file clock (up to ~15 ms on Windows) looked identical, and the
+/// second one was never merged.
+type FileSig = [u8; 32];
+fn sig(path: &Path) -> Option<FileSig> {
+    content_sig(&fs::read(path).ok()?).into()
+}
+fn content_sig(bytes: &[u8]) -> FileSig {
+    use sha2::Digest;
+    sha2::Sha256::digest(bytes).into()
 }
 pub struct Vault {
     pub path: PathBuf,
@@ -447,7 +488,7 @@ pub struct Vault {
     data: V,
     last: f64,
     last_sync: f64,
-    signature: Option<(u64, u128)>,
+    signature: Option<FileSig>,
     push: bool,
     rev: u64,
     fails: u32,
@@ -576,7 +617,10 @@ impl Vault {
     }
     fn read(&self, path: &Path) -> Res<(V, V)> {
         let h: V = serde_json::from_slice(&fs::read(path).map_err(err)?).map_err(err)?;
-        let plain = unseal(&**self.key.as_ref().ok_or("Vault bloccato")?, s(&h, "data"))?;
+        let plain = Zeroizing::new(unseal(
+            &**self.key.as_ref().ok_or("Vault bloccato")?,
+            s(&h, "data"),
+        )?);
         let mut d = serde_json::from_slice(&plain).map_err(err)?;
         ensure_shape(&mut d)?;
         Ok((h, d))
@@ -605,6 +649,7 @@ impl Vault {
                     if merge_data(&mut self.data, &remote) {
                         self.rev += 1;
                     }
+                    self.note_write(&h);
                     self.adopt(&h);
                     self.push |= self.data != remote || num(&h, "hv") < num(&self.header, "hv");
                     self.signature = sign;
@@ -667,14 +712,62 @@ impl Vault {
     /// Writes the vault with the current key; the header is authenticated every time.
     fn write_out(&mut self) -> Res<()> {
         let key = Zeroizing::new(**self.key.as_ref().ok_or("Vault bloccato")?);
+        // Write counter for the rollback check: always above every write seen, even
+        // with another PC's clock ahead of this one.
+        let written = now()
+            .max(num(&self.header, "wt") + 0.001)
+            .max(self.seen_write() + 0.001);
+        self.header["wt"] = json!(written);
         self.header["mac"] = json!(header_mac(&key, &self.header)?);
         let mut h = self.header.clone();
-        h["data"] = json!(seal(&key, &serde_json::to_vec(&self.data).map_err(err)?)?);
-        atomic_write(&self.path, &serde_json::to_vec(&h).map_err(err)?)?;
-        self.signature = sig(&self.path);
+        let plain = Zeroizing::new(serde_json::to_vec(&self.data).map_err(err)?);
+        h["data"] = json!(seal(&key, &plain)?);
+        let bytes = serde_json::to_vec(&h).map_err(err)?;
+        if let Err(e) = atomic_write(&self.path, &bytes) {
+            // Retried at the next synchronization (ping), e.g. when another PC was
+            // replacing the file at the same moment.
+            self.push = true;
+            return Err(e);
+        }
+        self.record_seen(written);
+        // From what was written, not re-read from the file: another PC may already
+        // have replaced it, and its changes would then never be merged.
+        self.signature = Some(content_sig(&bytes));
         self.push = false;
         self.rev += 1;
         Ok(())
+    }
+    /// Anti-rollback: the device configuration keeps, per vault file, the newest write
+    /// counter (`wt`, authenticated by the header mac) seen on this PC. A file whose
+    /// counter is lower was replaced with an older copy. Against a swap in the vault or
+    /// cloud folder; not against someone who can also edit this PC's configuration.
+    fn seen_write(&self) -> f64 {
+        num(
+            &read_config_key(&self.config, "seen_writes"),
+            &self.path.to_string_lossy(),
+        )
+    }
+    fn record_seen(&self, written: f64) {
+        if written <= self.seen_write() {
+            return;
+        }
+        let mut all = read_config_key(&self.config, "seen_writes");
+        if !all.is_object() {
+            all = json!({});
+        }
+        all[self.path.to_string_lossy().as_ref()] = json!(written);
+        // Best effort: without it the check is only weaker on this PC.
+        let _ = write_config_key(&self.config, "seen_writes", all);
+    }
+    /// Keeps the write counter of an authenticated copy written by another device.
+    fn note_write(&mut self, h: &V) {
+        let Some(key) = self.key.as_ref() else {
+            return;
+        };
+        if num(h, "wt") > num(&self.header, "wt") && header_mac_ok(key, h) {
+            self.header["wt"] = h["wt"].clone();
+            self.record_seen(num(h, "wt"));
+        }
     }
     /// New data key: everything is re-encrypted, the master password is wrapped again
     /// and a new recovery code is created (the old one cannot be re-wrapped: only its
@@ -685,18 +778,13 @@ impl Vault {
         self.pull()?;
         let dek = Zeroizing::new(rand_bytes::<32>());
         let rec = recovery();
-        let (salt, wrap) = wrapped(password, &dek)?;
-        let (rsalt, rwrap) = wrapped(&key(&rec), &dek)?;
+        let (rsalt, rwrap) = wrapped(&key(&rec), &dek, LEGACY_LOG_N)?;
         let snapshot = (self.key.clone(), self.header.clone());
-        for (k, v) in [
-            ("salt", salt),
-            ("wrap", wrap),
-            ("rsalt", rsalt),
-            ("rwrap", rwrap),
-        ] {
-            self.header[k] = json!(v);
-        }
-        self.header["hv"] = json!(now());
+        let mut header = self.header.clone();
+        wrap_master(&mut header, password, &dek)?;
+        header["rsalt"] = json!(rsalt);
+        header["rwrap"] = json!(rwrap);
+        self.header = header;
         self.key = Some(dek);
         if let Err(e) = self.write_out() {
             (self.key, self.header) = snapshot;
@@ -713,7 +801,11 @@ impl Vault {
     }
     fn check_master(&self, pw: &str) -> Res<()> {
         unseal(
-            &*kdf(pw, &decode(&self.header, "salt")?)?,
+            &*kdf_n(
+                pw,
+                &decode(&self.header, "salt")?,
+                log_n_of(&self.header, "kdf")?,
+            )?,
             s(&self.header, "wrap"),
         )
         .map(|_| ())
@@ -772,10 +864,9 @@ impl Vault {
                 }
                 let dek = Zeroizing::new(rand_bytes::<32>());
                 let rec = recovery();
-                let (salt, wrap) = wrapped(pw, &dek)?;
-                let (rsalt, rwrap) = wrapped(&key(&rec), &dek)?;
-                self.header =
-                    json!({"v":1,"salt":salt,"wrap":wrap,"rsalt":rsalt,"rwrap":rwrap,"hv":now()});
+                let (rsalt, rwrap) = wrapped(&key(&rec), &dek, LEGACY_LOG_N)?;
+                self.header = json!({"v":1,"rsalt":rsalt,"rwrap":rwrap});
+                wrap_master(&mut self.header, pw, &dek)?;
                 self.key = Some(dek);
                 self.data = empty();
                 self.save()?;
@@ -813,21 +904,28 @@ impl Vault {
                 if !new_password.is_empty() && !long_enough(new_password) {
                     return Err("Nuova password: minimo 8 caratteri".into());
                 }
-                let (salt, blob, pass) = if is_rec {
-                    (decode(&h, "rsalt")?, s(&h, "rwrap"), key(s(&b, "recovery")))
+                let (salt, blob, pass, log_n) = if is_rec {
+                    (
+                        decode(&h, "rsalt")?,
+                        s(&h, "rwrap"),
+                        Zeroizing::new(key(s(&b, "recovery"))),
+                        LEGACY_LOG_N,
+                    )
                 } else {
                     (
                         decode(&h, "salt")?,
                         s(&h, "wrap"),
-                        s(&b, "password").to_string(),
+                        Zeroizing::new(s(&b, "password").to_string()),
+                        log_n_of(&h, "kdf")?,
                     )
                 };
                 let decryption = (|| -> Res<(Zeroizing<[u8; 32]>, V)> {
-                    let bytes = unseal(&*kdf(&pass, &salt)?, blob)?;
-                    let dek: [u8; 32] = bytes.try_into().map_err(|_| "DEK non valida")?;
+                    let bytes = Zeroizing::new(unseal(&*kdf_n(&pass, &salt, log_n)?, blob)?);
+                    let dek: [u8; 32] =
+                        bytes.as_slice().try_into().map_err(|_| "DEK non valida")?;
                     let dek = Zeroizing::new(dek);
-                    let data: V =
-                        serde_json::from_slice(&unseal(&dek, s(&h, "data"))?).map_err(err)?;
+                    let plain = Zeroizing::new(unseal(&dek, s(&h, "data"))?);
+                    let data: V = serde_json::from_slice(&plain).map_err(err)?;
                     Ok((dek, data))
                 })();
                 let (dek, mut data) = match decryption {
@@ -849,6 +947,15 @@ impl Vault {
                     }
                 };
                 ensure_shape(&mut data)?;
+                // A file older than the newest write seen on this PC was put back in
+                // place of the current one. It still opens (the data may be needed), it
+                // is not rewritten automatically and the interface warns.
+                let written = if header_mac_ok(&dek, &h) {
+                    num(&h, "wt")
+                } else {
+                    0.
+                };
+                let rollback = written < self.seen_write();
                 if fails > 0 {
                     let _ = write_config_key(&self.config, "unlock_fails", json!(0));
                     let _ = write_config_key(&self.config, "unlock_last_fail", V::Null);
@@ -861,15 +968,35 @@ impl Vault {
                 self.signature = sig(&self.path);
                 self.push = false;
                 if !new_password.is_empty() {
-                    let (salt, wrap) = wrapped(new_password, self.key.as_ref().unwrap())?;
-                    self.header["salt"] = json!(salt);
-                    self.header["wrap"] = json!(wrap);
-                    self.header["hv"] = json!(now());
+                    wrap_master(
+                        &mut self.header,
+                        new_password,
+                        self.key.as_ref().ok_or("Vault bloccato")?,
+                    )?;
                     self.save()?
+                } else if !is_rec && !rollback && log_n < MASTER_LOG_N {
+                    // Once per vault: the master password wrapper moves to the stronger
+                    // scrypt cost (same data key, so other copies keep opening). If the
+                    // file cannot be written now it is retried at the next unlock.
+                    let previous = self.header.clone();
+                    wrap_master(
+                        &mut self.header,
+                        &pass,
+                        self.key.as_ref().ok_or("Vault bloccato")?,
+                    )?;
+                    if let Err(e) = self.save() {
+                        if !self.unlocked() {
+                            return Err(e);
+                        }
+                        self.header = previous;
+                    }
                 } else {
                     self.pull()?
                 }
-                Ok(json!({"ok":1}))
+                if !rollback {
+                    self.record_seen(written);
+                }
+                Ok(json!({"ok":1,"rollback":rollback}))
             }
             "lock" => {
                 self.lock();
@@ -1206,10 +1333,11 @@ impl Vault {
                     let rec = self.rotate_key(s(&b, "new"))?;
                     return Ok(json!({"ok":1,"recovery":rec}));
                 }
-                let (salt, wrap) = wrapped(s(&b, "new"), self.key.as_ref().unwrap())?;
-                self.header["salt"] = json!(salt);
-                self.header["wrap"] = json!(wrap);
-                self.header["hv"] = json!(now());
+                wrap_master(
+                    &mut self.header,
+                    s(&b, "new"),
+                    self.key.as_ref().ok_or("Vault bloccato")?,
+                )?;
                 self.save()?;
                 Ok(json!({"ok":1}))
             }
@@ -1253,23 +1381,22 @@ impl Vault {
                     .collect();
                 let payload = json!({"folders":self.data["folders"],"items":items,"passwords":ps});
                 let salt = rand_bytes::<16>();
-                let blob = seal(
-                    &*kdf(pw, &salt)?,
-                    &serde_json::to_vec(&payload).map_err(err)?,
-                )?;
+                let plain = Zeroizing::new(serde_json::to_vec(&payload).map_err(err)?);
+                let blob = seal(&*kdf_n(pw, &salt, MASTER_LOG_N)?, &plain)?;
                 Ok(
-                    json!({"data":json!({"jessamine":1,"salt":B64.encode(salt),"blob":blob}).to_string(),"state":self.state()}),
+                    json!({"data":json!({"jessamine":1,"n":MASTER_LOG_N,"salt":B64.encode(salt),"blob":blob}).to_string(),"state":self.state()}),
                 )
             }
             "unpack" => {
                 let pkg: V =
                     serde_json::from_str(s(&b, "data")).map_err(|_| "Pacchetto non valido")?;
                 let salt = decode(&pkg, "salt")?;
-                let pl: V = serde_json::from_slice(&unseal(
-                    &*kdf(s(&b, "passphrase"), &salt)?,
+                let plain = Zeroizing::new(unseal(
+                    &*kdf_n(s(&b, "passphrase"), &salt, log_n_of(&pkg, "n")?)?,
                     s(&pkg, "blob"),
-                )?)
-                .map_err(|_| "Passphrase errata o pacchetto non valido")?;
+                )?);
+                let pl: V = serde_json::from_slice(&plain)
+                    .map_err(|_| "Passphrase errata o pacchetto non valido")?;
                 validate_import(&pl)?;
                 let n = self.transact(|d| Ok(merge_import(d, &pl)))?;
                 Ok(json!({"count":n,"state":self.state()}))
@@ -2835,7 +2962,12 @@ mod vault_tests {
         // the current data.
         let after = header_on_disk(&v);
         let old_dek: [u8; 32] = unseal(
-            &kdf("password-uno", &decode(&before, "salt").unwrap()).unwrap(),
+            &kdf_n(
+                "password-uno",
+                &decode(&before, "salt").unwrap(),
+                MASTER_LOG_N,
+            )
+            .unwrap(),
             s(&before, "wrap"),
         )
         .unwrap()
@@ -2894,6 +3026,302 @@ mod vault_tests {
         assert!(array(&b.data, "items")
             .iter()
             .any(|i| s(i, "title") == "dopo la rotazione"));
+        fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    /// Another PC: same vault file, its own device configuration.
+    fn other_device(v: &Vault) -> (Vault, PathBuf) {
+        let (mut other, dir) = test_vault();
+        other.path = v.path.clone();
+        (other, dir)
+    }
+    fn note(v: &mut Vault, title: &str) -> Res<String> {
+        v.call("item", json!({"type": "note", "title": title}))
+            .map(|r| s(&r, "id").to_string())
+    }
+    fn titles(d: &V) -> HashSet<String> {
+        array(d, "items")
+            .iter()
+            .map(|i| s(i, "title").to_string())
+            .collect()
+    }
+    fn data_on_disk(v: &Vault) -> V {
+        let h = header_on_disk(v);
+        let plain = unseal(v.key.as_ref().unwrap(), s(&h, "data")).unwrap();
+        serde_json::from_slice(&plain).unwrap()
+    }
+    #[test]
+    fn scrypt_cost_is_read_only_within_known_values() {
+        assert_eq!(log_n_of(&json!({}), "kdf").unwrap(), LEGACY_LOG_N);
+        assert_eq!(log_n_of(&json!({"kdf": 17}), "kdf").unwrap(), 17);
+        for bad in [json!(14), json!(19), json!(40), json!("17"), json!(-1)] {
+            assert_eq!(
+                log_n_of(&json!({ "kdf": bad }), "kdf").unwrap_err(),
+                KDF_UNSUPPORTED
+            );
+        }
+    }
+    #[test]
+    fn old_vaults_move_to_the_stronger_scrypt_cost_once() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut v, "prima della migrazione").unwrap();
+        // The file as written by Beta 1.6.0 and earlier: master wrapper at N = 2^15,
+        // no `kdf` nor write counter.
+        let dek = **v.key.as_ref().unwrap();
+        let mut old = header_on_disk(&v);
+        let (salt, wrap) = wrapped("password-uno", &dek, LEGACY_LOG_N).unwrap();
+        old["salt"] = json!(salt);
+        old["wrap"] = json!(wrap);
+        for k in ["kdf", "wt", "mac"] {
+            old.as_object_mut().unwrap().remove(k);
+        }
+        v.lock();
+        fs::write(&v.path, serde_json::to_vec(&old).unwrap()).unwrap();
+        let _ = fs::remove_file(&v.config);
+        v.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        let now_on_disk = header_on_disk(&v);
+        assert_eq!(now_on_disk["kdf"], json!(MASTER_LOG_N));
+        assert_ne!(now_on_disk["wrap"], old["wrap"]);
+        // Same data key: the recovery code and the data are untouched.
+        assert_eq!(now_on_disk["rwrap"], old["rwrap"]);
+        assert_eq!(**v.key.as_ref().unwrap(), dek);
+        assert!(header_mac_ok(&dek, &now_on_disk));
+        assert!(opens(&mut v, json!({"password": "password-uno"})));
+        assert!(titles(&v.data).contains("prima della migrazione"));
+        // Already migrated: the next unlock does not rewrite the wrapper.
+        let wrap_now = header_on_disk(&v)["wrap"].clone();
+        assert!(opens(&mut v, json!({"password": "password-uno"})));
+        assert_eq!(header_on_disk(&v)["wrap"], wrap_now);
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn packages_use_the_stronger_cost_and_old_ones_still_open() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut v, "condivisa").unwrap();
+        let pkg = v
+            .call("pack", json!({"passphrase": "frase-segreta"}))
+            .unwrap();
+        let pkg: V = serde_json::from_str(s(&pkg, "data")).unwrap();
+        assert_eq!(pkg["n"], json!(MASTER_LOG_N));
+        let (mut w, wdir) = test_vault();
+        w.call("create", json!({"password": "password-due"}))
+            .unwrap();
+        let n = w
+            .call(
+                "unpack",
+                json!({"data": pkg.to_string(), "passphrase": "frase-segreta"}),
+            )
+            .unwrap();
+        assert_eq!(n["count"], json!(1));
+        // A package made by an earlier version (no `n`, N = 2^15).
+        let salt = rand_bytes::<16>();
+        let payload = json!({"items":[{"id":"vecchio","type":"note","title":"vecchio pacchetto","created":1.,"updated":1.}]});
+        let blob = seal(
+            &kdf("frase-segreta", &salt).unwrap(),
+            &serde_json::to_vec(&payload).unwrap(),
+        )
+        .unwrap();
+        let old = json!({"jessamine":1,"salt":B64.encode(salt),"blob":blob});
+        w.call(
+            "unpack",
+            json!({"data": old.to_string(), "passphrase": "frase-segreta"}),
+        )
+        .unwrap();
+        assert!(titles(&w.data).contains("vecchio pacchetto"));
+        fs::remove_dir_all(wdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_vault_file_swapped_with_an_older_copy_is_reported() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        note(&mut v, "uno").unwrap();
+        let older = fs::read(&v.path).unwrap();
+        note(&mut v, "due").unwrap();
+        v.lock();
+        let r = v
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(false));
+        // Someone puts the older (intact, correctly encrypted) copy back.
+        v.lock();
+        fs::write(&v.path, &older).unwrap();
+        let r = v
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(true));
+        assert!(!titles(&v.data).contains("due"));
+        // Not rewritten automatically, and still reported at the next unlock.
+        assert_eq!(fs::read(&v.path).unwrap(), older);
+        v.lock();
+        let r = v
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(true));
+        // Once the user saves again, the file is current for this PC.
+        note(&mut v, "tre").unwrap();
+        v.lock();
+        let r = v
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(false));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_file_without_a_valid_mac_cannot_fake_a_newer_write() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let older = fs::read(&v.path).unwrap();
+        note(&mut v, "dopo").unwrap();
+        v.lock();
+        // Old copy with an inflated write counter: the mac no longer matches.
+        let mut forged: V = serde_json::from_slice(&older).unwrap();
+        forged["wt"] = json!(now() + 1e6);
+        fs::write(&v.path, serde_json::to_vec(&forged).unwrap()).unwrap();
+        let r = v
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(true));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn another_pc_with_its_clock_ahead_is_not_a_rollback() {
+        let (mut a, dir) = test_vault();
+        a.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let (mut b, bdir) = other_device(&a);
+        b.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        // B's clock is far ahead: its writes carry a future counter.
+        b.header["wt"] = json!(now() + 1e6);
+        note(&mut b, "da B").unwrap();
+        let ahead = num(&header_on_disk(&b), "wt");
+        // A, with the correct clock, synchronizes and writes afterwards.
+        note(&mut a, "da A").unwrap();
+        assert!(num(&header_on_disk(&a), "wt") > ahead);
+        b.lock();
+        let r = b
+            .call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        assert_eq!(r["rollback"], json!(false));
+        assert!(titles(&b.data).is_superset(&HashSet::from(["da A".into(), "da B".into()])));
+        fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn two_pcs_writing_at_the_same_time_end_with_every_change() {
+        let (mut a, dir) = test_vault();
+        a.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let (mut b, bdir) = other_device(&a);
+        b.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        let run = |mut v: Vault, who: &'static str| {
+            std::thread::spawn(move || {
+                // A write can fail while the other one replaces the file (Windows
+                // rename): the change stays in memory and is written later.
+                let made: Vec<String> = (0..15)
+                    .map(|i| {
+                        let title = format!("{who}-{i}");
+                        let _ = note(&mut v, &title);
+                        title
+                    })
+                    .collect();
+                (v, made)
+            })
+        };
+        let (ta, tb) = (run(a, "a"), run(b, "b"));
+        let (mut a, made_a) = ta.join().unwrap();
+        let (mut b, made_b) = tb.join().unwrap();
+        // The normal synchronization (ping every few seconds) settles both copies.
+        for _ in 0..3 {
+            a.call("ping", json!({})).unwrap();
+            b.call("ping", json!({})).unwrap();
+        }
+        let all: HashSet<String> = made_a.into_iter().chain(made_b).collect();
+        assert_eq!(all.len(), 30);
+        assert!(titles(&a.data).is_superset(&all));
+        assert!(titles(&b.data).is_superset(&all));
+        assert!(titles(&data_on_disk(&a)).is_superset(&all));
+        fs::remove_dir_all(bdir).unwrap();
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn same_size_writes_in_the_same_clock_tick_are_told_apart() {
+        let (v, dir) = test_vault();
+        let when = std::time::SystemTime::now();
+        let write = |text: &[u8]| {
+            fs::write(&v.path, text).unwrap();
+            fs::File::options()
+                .write(true)
+                .open(&v.path)
+                .unwrap()
+                .set_modified(when)
+                .unwrap();
+            sig(&v.path)
+        };
+        // Same size, same modification time: size + time alone saw no change.
+        assert_ne!(write(b"{\"a\":1}"), write(b"{\"b\":2}"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_failed_write_is_retried_at_the_next_sync() {
+        let (mut v, dir) = test_vault();
+        v.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        // The backup copy cannot be made (a folder in its place): the write fails.
+        let bak = v.path.with_extension("bak");
+        let _ = fs::remove_file(&bak);
+        fs::create_dir(&bak).unwrap();
+        assert!(note(&mut v, "non ancora scritta").is_err());
+        assert!(!titles(&data_on_disk(&v)).contains("non ancora scritta"));
+        fs::remove_dir(&bak).unwrap();
+        v.call("ping", json!({})).unwrap();
+        assert!(titles(&data_on_disk(&v)).contains("non ancora scritta"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn the_later_change_wins_between_two_pcs() {
+        let (mut a, dir) = test_vault();
+        a.call("create", json!({"password": "password-uno"}))
+            .unwrap();
+        let edited = note(&mut a, "da modificare").unwrap();
+        let deleted = note(&mut a, "da eliminare").unwrap();
+        let (mut b, bdir) = other_device(&a);
+        b.call("unlock", json!({"password": "password-uno"}))
+            .unwrap();
+        // Same item edited on both: the later edit is kept on both PCs.
+        a.call("item", json!({"id": edited, "title": "modifica di A"}))
+            .unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(20));
+        b.call("item", json!({"id": edited, "title": "modifica di B"}))
+            .unwrap();
+        // Deleted on A, then edited on B: the later edit brings it back...
+        a.call("delete", json!({"id": deleted})).unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(20));
+        b.call("item", json!({"id": deleted, "title": "ripresa da B"}))
+            .unwrap();
+        for _ in 0..2 {
+            a.call("ping", json!({})).unwrap();
+            b.call("ping", json!({})).unwrap();
+        }
+        for v in [&a, &b] {
+            let t = titles(&v.data);
+            assert!(t.contains("modifica di B") && !t.contains("modifica di A"));
+            assert!(t.contains("ripresa da B"));
+        }
+        // ...while a deletion after the last edit removes it everywhere.
+        std::thread::sleep(std::time::Duration::from_millis(20));
+        b.call("delete", json!({"id": deleted})).unwrap();
+        a.call("ping", json!({})).unwrap();
+        assert!(!titles(&a.data).contains("ripresa da B"));
         fs::remove_dir_all(bdir).unwrap();
         fs::remove_dir_all(dir).unwrap();
     }

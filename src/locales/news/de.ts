@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-scrypt-rollback': [
+    'Master-Passwort schwerer zu knacken und Warnung vor alten Kopien',
+    'Beim ersten Entsperren wechselt der Schutz des Master-Passworts zu einer viermal aufwendigeren Berechnung (scrypt mit 128 MB Speicher): Wer eine Kopie des Tresors erhält, braucht viel länger, um Passwörter auszuprobieren. Das Entsperren kann einen Sekundenbruchteil länger dauern. Neue .jshare-Pakete nutzen diesen Schutz ebenfalls. Wird die Tresordatei durch eine ältere Kopie ersetzt (zum Beispiel im Cloud-Ordner), erscheint beim Öffnen eine Warnung. Außerdem wird eine Änderung, die wegen einer belegten Datei nicht gespeichert wurde, jetzt bei der nächsten Synchronisierung gespeichert. Wenn du den Tresor auf mehreren PCs nutzt, aktualisiere alle: Nach dem ersten Entsperren mit dieser Version können ältere Versionen ihn nicht mehr öffnen.',
+  ],
   'vault-header-key-rotation': [
     'Besserer Schutz beim Ändern des Master-Passworts',
     'Der Tresor-Header ist jetzt mit einem Schlüssel signiert, den nur du erhalten kannst: Eine alte Kopie im Tresorordner (etwa von jemandem mit Zugriff auf deine Cloud) kann kein altes Master-Passwort mehr zurückbringen. Beim Ändern des Master-Passworts kannst du „Das alte Passwort könnte bekannt geworden sein“ ankreuzen: Dann ändert sich auch der Schlüssel, der die Daten verschlüsselt, das alte Passwort öffnet den Tresor nicht mehr, auch nicht aus einer Kopie, und du erhältst einen neuen Wiederherstellungscode zum Speichern. Ein neuer Wiederherstellungscode ändert immer auch den Schlüssel. Wenn du den Tresor auf mehreren PCs nutzt, aktualisiere zuerst alle.',

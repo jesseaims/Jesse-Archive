@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'vault-scrypt-rollback': [
+    'Palavra-passe principal mais difícil de quebrar e aviso sobre cópias antigas',
+    'No primeiro desbloqueio, a proteção da palavra-passe principal passa a um cálculo quatro vezes mais pesado (scrypt com 128 MB de memória): quem obtiver uma cópia do cofre demora muito mais a experimentar palavras-passe. O desbloqueio pode demorar uma fração de segundo a mais. Os novos pacotes .jshare também usam esta proteção. Se o ficheiro do cofre for substituído por uma cópia mais antiga (por exemplo, na pasta da nuvem), aparece um aviso ao abri-lo. Além disso, uma alteração não guardada porque o ficheiro estava ocupado passa a ser guardada na sincronização seguinte. Se usas o cofre em vários PC, atualiza-os todos: depois do primeiro desbloqueio com esta versão, as anteriores deixam de o conseguir abrir.',
+  ],
   'vault-header-key-rotation': [
     'Mais proteção ao mudar a palavra-passe principal',
     'O cabeçalho do cofre passa a ser assinado com uma chave que só tu podes obter: uma cópia antiga colocada na pasta do cofre (por exemplo, por alguém com acesso à tua nuvem) já não pode trazer de volta uma palavra-passe principal antiga. Ao mudar a palavra-passe principal podes marcar «A palavra-passe antiga pode ter sido descoberta»: a chave que cifra os dados também muda, por isso a palavra-passe antiga deixa de abrir o cofre, mesmo a partir de uma cópia, e recebes um novo código de recuperação para guardar. Um novo código de recuperação muda sempre também a chave. Se usas o cofre em vários PC, atualiza-os todos primeiro.',

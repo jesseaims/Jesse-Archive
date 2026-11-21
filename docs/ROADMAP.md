@@ -7,6 +7,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Applicazione desktop Tauri/React con vault JSON cifrato, master password e recupero, sei tipi di schede, cartelle, cestino e cronologia password.
 - Generazione password, controllo salute, TOTP, verifica Pwned Passwords, temi, icone, appunti e integrazioni Windows/tray.
 - Import/export CSV/JSON, pacchetti cifrati, scelta/copia della posizione del vault, fusione di file locali e di conflitto.
+- Wrapper master a scrypt N=2^17 con migrazione automatica, avviso se il file del vault viene sostituito con una copia più vecchia, nuovo tentativo delle scritture fallite e test di concorrenza fra due PC (dalla Beta 1.7.0).
 - Header del vault autenticato (HMAC dalla DEK) e cambio della chiave dati facoltativo nel cambio master, sempre con un nuovo codice di recupero (dalla Beta 1.6.0).
 - Rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii (dalla Beta 1.4.0).
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
@@ -48,8 +49,8 @@ Le criticità sono motivate in [SECURITY](SECURITY.md), con identificativi SEC-0
 |---|---|
 | Rafforzare confini IPC e gestione memoria | Valutare comandi accessibili alle finestre, copie plaintext, cleanup di draft/state e buffer; non promettere wipe assoluto |
 | Validazione strutturale e migrazioni | Rifiutare dati malformati senza panic o mutazioni parziali; mantenere compatibilità con vault e fixture v1 |
-| Durabilità, concorrenza e merge | Test di guasto e rollback, writer concorrenti, timestamp conflittuali e interazione UI/revisione prima di cambiare formato |
-| Documentare/rafforzare modello chiave e rotazione | Dalla Beta 1.6.0 header autenticato e cambio della chiave dati facoltativo (vedi SECURITY). Restano: parametri scrypt più alti (N=2^17) con migrazione, contatore anti-rollback |
+| Durabilità, concorrenza e merge | Dalla Beta 1.7.0 test di scrittori concorrenti, conflitti fra due PC e scrittura fallita (con nuovo tentativo alla sincronizzazione). Restano: collaudo reale con client cloud (OneDrive, Dropbox), interazione UI/revisione |
+| Documentare/rafforzare modello chiave e rotazione | Dalla Beta 1.6.0 header autenticato e cambio della chiave dati facoltativo (vedi SECURITY). Dalla Beta 1.7.0 scrypt `log_n=17` con migrazione e avviso anti-rollback per dispositivo. Resta: riferimento anti-rollback in una configurazione non protetta |
 | Verificare bridge locale | ACL, limiti di connessioni/frame/thread, processi dello stesso utente, gestione errori e app assente |
 | Ampliare collaudo browser/installazione | Sei browser, origini/frame, login multistep, app bloccata, cambio focus, aggiornamento e rimozione estensione |
 | Ridurre debito di organizzazione | Formattazione uniforme applicata e verificata dalla CI; `core.rs`/`App.tsx` restano monolitici e il CSS stratificato; eventuale estrazione graduale con test, senza riscrittura indiscriminata |
