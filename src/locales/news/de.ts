@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Bereit für die Erweiterung aus dem Chrome Web Store',
+    'Die App erkennt jetzt auch die Erweiterung, die im Chrome Web Store veröffentlicht wird, neben der von Hand aus dem App-Ordner geladenen. Wenn du die Browser schon eingerichtet hattest, wird die Verbindung beim Start von selbst aktualisiert: Du musst die Anleitung nicht wiederholen.',
+  ],
   'remote-changes-refresh': [
     'Änderungen anderer PCs erscheinen von selbst',
     'Wenn du denselben Tresor über einen Cloud-Ordner auf mehreren PCs nutzt, erscheinen Änderungen von einem anderen PC jetzt innerhalb von etwa 15 Sekunden von selbst. Vorher hatte die App sie zwar schon erhalten, aber man musste „Aktualisieren“ drücken oder etwas speichern, um sie zu sehen.',

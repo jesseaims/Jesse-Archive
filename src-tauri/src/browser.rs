@@ -302,6 +302,11 @@ pub fn setup(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let token = random();
     let directory = wire::directory();
     std::fs::create_dir_all(&directory)?;
+    // Browsers set up by an older version allow only the extension IDs of then:
+    // rewrite the registration so a copy installed from a store connects too.
+    if directory.join("chromium.json").exists() {
+        let _ = browser_install();
+    }
     let shortcut = std::fs::read(directory.join("preferences.json"))
         .ok()
         .and_then(|b| serde_json::from_slice::<Value>(&b).ok())
@@ -519,7 +524,7 @@ pub fn browser_install() -> Result<String, String> {
     let firefox = dir.join("firefox.json");
     let base = json!({"name":wire::HOST,"description":"JesseArchive browser integration","path":exe,"type":"stdio"});
     let mut c = base.clone();
-    c["allowed_origins"] = json!([format!("chrome-extension://{}/", wire::CHROMIUM_ID.trim())]);
+    c["allowed_origins"] = json!(wire::chromium_origins());
     let mut f = base;
     f["allowed_extensions"] = json!([wire::FIREFOX_ID]);
     std::fs::write(&chromium, c.to_string()).map_err(|e| e.to_string())?;

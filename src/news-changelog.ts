@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'chrome-store-extension',
+    addedAt: '2026-11-21T23:06:00+01:00',
+    version: 'Beta 1.9.5',
+    title: 'Pronta per l’estensione del Chrome Web Store',
+    description:
+      'L’app riconosce anche l’estensione che sarà pubblicata sul Chrome Web Store, oltre a quella caricata a mano dalla cartella dell’app. Se avevi già configurato i browser, il collegamento viene aggiornato da solo all’avvio: non devi rifare la guida.',
+    icon: 'package',
+  },
+  {
     id: 'remote-changes-refresh',
     addedAt: '2026-11-21T21:36:00+01:00',
     version: 'Beta 1.9.4',

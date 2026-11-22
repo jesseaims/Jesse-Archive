@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Pronta para a extensão da Chrome Web Store',
+    'O app também reconhece a extensão que será publicada na Chrome Web Store, além da carregada manualmente da pasta do app. Se você já tinha configurado os navegadores, a conexão é atualizada sozinha ao iniciar: não é preciso refazer o guia.',
+  ],
   'remote-changes-refresh': [
     'Alterações de outros PCs aparecem sozinhas',
     'Se você usa o mesmo cofre em vários PCs por meio de uma pasta na nuvem, as alterações feitas em outro PC agora aparecem sozinhas em cerca de 15 segundos. Antes o app já as recebia, mas era preciso pressionar «Atualizar» ou salvar algo para vê-las.',

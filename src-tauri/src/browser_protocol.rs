@@ -3,6 +3,18 @@ use std::io::{self, Read, Write};
 pub const HOST: &str = "com.jessearchive.browser";
 pub const FIREFOX_ID: &str = "browser@jessearchive.local";
 pub const CHROMIUM_ID: &str = include_str!("../../browser-extension/chromium-id.txt");
+/// IDs the stores assigned to the published Chromium extension: unlike the unpacked
+/// copy (CHROMIUM_ID, fixed by the public key in its manifest) they cannot be chosen.
+pub const CHROMIUM_STORE_IDS: &[&str] = &[
+    "odgnlpapinmknnmibaiogdmbcamlajgf", // Chrome Web Store
+];
+/// Origins of every Chromium copy of the extension the helper accepts.
+pub fn chromium_origins() -> Vec<String> {
+    std::iter::once(CHROMIUM_ID.trim())
+        .chain(CHROMIUM_STORE_IDS.iter().copied())
+        .map(|id| format!("chrome-extension://{id}/"))
+        .collect()
+}
 pub fn directory() -> std::path::PathBuf {
     std::path::PathBuf::from(std::env::var_os("APPDATA").unwrap_or_default())
         .join("JesseArchive")
@@ -46,5 +58,21 @@ mod tests {
         assert_eq!(read_frame(&mut bytes.as_slice()).unwrap(), expected);
         assert!(read_frame(&mut u32::MAX.to_le_bytes().as_slice()).is_err());
         assert!(read_frame(&mut [0, 0, 0, 0].as_slice()).is_err());
+    }
+    #[test]
+    fn unpacked_and_store_extensions_are_both_allowed() {
+        let origins = chromium_origins();
+        assert_eq!(origins.len(), 1 + CHROMIUM_STORE_IDS.len());
+        assert_eq!(
+            origins[0],
+            format!("chrome-extension://{}/", CHROMIUM_ID.trim())
+        );
+        for id in std::iter::once(CHROMIUM_ID.trim()).chain(CHROMIUM_STORE_IDS.iter().copied()) {
+            // Chromium IDs: 32 letters a-p.
+            assert!(
+                id.len() == 32 && id.bytes().all(|b| (b'a'..=b'p').contains(&b)),
+                "{id}"
+            );
+        }
     }
 }

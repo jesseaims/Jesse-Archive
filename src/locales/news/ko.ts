@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'chrome-store-extension': [
+    'Chrome 웹 스토어 확장 프로그램 지원 준비',
+    '앱 폴더에서 직접 불러온 확장 프로그램 외에, Chrome 웹 스토어에 게시될 확장 프로그램도 앱이 인식합니다. 이미 브라우저를 설정했다면 시작할 때 연결이 자동으로 업데이트되므로 안내를 다시 진행할 필요가 없습니다.',
+  ],
   'remote-changes-refresh': [
     '다른 PC의 변경 사항이 자동으로 표시',
     '클라우드 폴더를 통해 여러 PC에서 같은 보관함을 사용하면, 다른 PC에서 한 변경 사항이 이제 약 15초 안에 자동으로 표시됩니다. 이전에도 앱은 변경 사항을 받았지만, 보려면 «새로 고침»을 누르거나 무언가를 저장해야 했습니다.',
