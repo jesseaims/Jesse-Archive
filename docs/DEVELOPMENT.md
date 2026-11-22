@@ -182,6 +182,7 @@ La soglia di 100 MB sull'installer WebView2 è un'euristica, non prova che ogni 
 ## Artefatti generati e versioni
 
 - `scripts/generate-commits.mjs`, eseguito dal prebuild npm, riscrive il file versionato `src/commits.generated.json` usando Git. Le date commit sono `%cI`, lo snapshot arriva fino a 250 voci; non è un servizio live.
+- `scripts/package-store-extension.mjs` (`npm run package:store`) crea in `store/out/` (ignorata da Git) gli zip per gli store dalle copie generate in `browser-extension/<browser>/`: per Chromium toglie `key` dal manifest (lo store assegna il proprio ID), usa separatori `/` con il `tar.exe` di Windows. Testi e immagini delle schede sono in `store/`, l'informativa in `PRIVACY.md`.
 - `scripts/package-browser-extension.mjs` copia il background canonico nelle due directory, prepara manifest e identità Chromium. Preservare la chiave **pubblica** e l'identità esistenti: rigenerarle cambia il collegamento Native Messaging. Non introdurre chiavi private nel repository.
 - `src-tauri/resources/` e la configurazione browser merge sono artefatti ignorati. I profili dei test e gli output di compilazione non sono sorgenti.
 - La versione compare in package.json/Cargo/Tauri/Inno e nei manifest generati; lockfile e fallback UI vanno valutati se si modifica la versione. Non eseguire un bump per una richiesta soltanto documentale.
