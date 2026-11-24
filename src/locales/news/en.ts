@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    'Store extension always up to date',
+    'New versions of the extension now reach the Chrome Web Store and Firefox Add-ons on their own together with app updates, and the browser installs them automatically after the store review. If you use the extension installed from the store, the app no longer asks it to reload at every start.',
+  ],
   'chrome-store-extension': [
     'Ready for the Chrome Web Store extension',
     'The app also recognises the extension that will be published on the Chrome Web Store, besides the one loaded by hand from the app folder. If you had already set up your browsers, the connection is updated on its own at startup: you do not need to run the guide again.',

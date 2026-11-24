@@ -237,6 +237,38 @@ try {
     }
     Write-Host "`nPubblicata: $($asset.url)" -ForegroundColor Green
     Write-Host "Asset: JesseArchive-Setup.exe ($($file.Length) byte, SHA-256 $hash) + JesseArchive-Setup.exe.sig" -ForegroundColor Green
+
+    # --- Estensione negli store ---------------------------------------------------
+    # After the release, and never blocking it: the extension goes to the Chrome Web
+    # Store and addons.mozilla.org only when its code changed since the last submission
+    # (scripts\publish-store-extension.mjs). Credentials: scripts\Store-Keys.ps1, kept
+    # DPAPI-encrypted and passed on stdin, never written in clear.
+    if (-not $Draft) {
+        Step 'Estensione negli store'
+        $storeKeys = Join-Path $env:APPDATA 'JesseArchive-Release\store-keys.dpapi'
+        $storeState = Join-Path $env:APPDATA 'JesseArchive-Release\store-state.json'
+        $storeExit = 0
+        $ErrorActionPreference = 'Continue'
+        try {
+            $storeJson = '{}'
+            if (Test-Path -LiteralPath $storeKeys) {
+                $storeBytes = [System.Security.Cryptography.ProtectedData]::Unprotect([IO.File]::ReadAllBytes($storeKeys), $null, 'CurrentUser')
+                $storeJson = [System.Text.Encoding]::UTF8.GetString($storeBytes)
+                [Array]::Clear($storeBytes, 0, $storeBytes.Length)
+            }
+            $storeJson | node scripts/publish-store-extension.mjs --state $storeState 2>&1 | ForEach-Object { "$_" } | Write-Host
+            $storeExit = $LASTEXITCODE
+        } catch {
+            $storeExit = 1
+            Write-Host $_.Exception.Message
+        } finally {
+            $storeJson = $null
+            $ErrorActionPreference = 'Stop'
+        }
+        if ($storeExit -ne 0) {
+            Write-Warning 'Invio agli store non riuscito: la release dell''app è pubblicata comunque. Si riprova alla prossima release (dettagli sopra).'
+        }
+    }
 } finally {
     # Released explicitly too: the desktop shortcut keeps its window (-NoExit) open.
     $mutex.ReleaseMutex()

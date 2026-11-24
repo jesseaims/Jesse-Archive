@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'store-extension-updates',
+    addedAt: '2026-11-24T17:28:00+01:00',
+    version: 'Beta 1.9.6',
+    title: 'Estensione degli store sempre aggiornata',
+    description:
+      'Le nuove versioni dell’estensione arrivano da sole al Chrome Web Store e al sito dei componenti aggiuntivi di Firefox insieme agli aggiornamenti dell’app, e il browser le installa in automatico dopo la revisione dello store. Se usi l’estensione installata dallo store, l’app non le chiede più di ricaricarsi a ogni avvio.',
+    icon: 'package',
+  },
+  {
     id: 'chrome-store-extension',
     addedAt: '2026-11-21T23:06:00+01:00',
     version: 'Beta 1.9.5',

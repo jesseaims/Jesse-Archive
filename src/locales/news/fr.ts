@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    'Extension des boutiques toujours à jour',
+    'Les nouvelles versions de l’extension arrivent seules sur le Chrome Web Store et sur le site des modules Firefox avec les mises à jour de l’application, et le navigateur les installe automatiquement après la vérification de la boutique. Si vous utilisez l’extension installée depuis la boutique, l’application ne lui demande plus de se recharger à chaque démarrage.',
+  ],
   'chrome-store-extension': [
     'Prête pour l’extension du Chrome Web Store',
     'L’application reconnaît aussi l’extension qui sera publiée sur le Chrome Web Store, en plus de celle chargée à la main depuis le dossier de l’application. Si vous aviez déjà configuré vos navigateurs, la liaison se met à jour seule au démarrage : inutile de refaire le guide.',
