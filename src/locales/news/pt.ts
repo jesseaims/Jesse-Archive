@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    'Extensão das lojas sempre atualizada',
+    'As novas versões da extensão chegam sozinhas à Chrome Web Store e aos complementos do Firefox junto com as atualizações do app, e o navegador as instala automaticamente após a revisão da loja. Se você usa a extensão instalada pela loja, o app não pede mais que ela recarregue a cada início.',
+  ],
   'chrome-store-extension': [
     'Pronta para a extensão da Chrome Web Store',
     'O app também reconhece a extensão que será publicada na Chrome Web Store, além da carregada manualmente da pasta do app. Se você já tinha configurado os navegadores, a conexão é atualizada sozinha ao iniciar: não é preciso refazer o guia.',

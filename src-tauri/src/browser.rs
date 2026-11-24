@@ -35,6 +35,12 @@ pub struct Bridge {
 fn needs_reload(extension: &str) -> bool {
     crate::updater::is_newer(env!("CARGO_PKG_VERSION"), extension)
 }
+/// A reload helps only the copy loaded from the app folder, which the setup updates
+/// on disk. A store copy is updated by its store: reloading it would only repeat the
+/// same version at every start of the app.
+fn should_reload(version: &str, id: Option<&str>) -> bool {
+    needs_reload(version) && !id.is_some_and(|id| wire::CHROMIUM_STORE_IDS.contains(&id))
+}
 fn random() -> String {
     use rand::RngCore;
     let mut b = [0; 32];
@@ -221,7 +227,7 @@ fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
     match message["kind"].as_str().unwrap_or("") {
         "hello" => {
             let version = message["version"].as_str().unwrap_or("");
-            if needs_reload(version)
+            if should_reload(version, message["id"].as_str())
                 && app
                     .state::<Bridge>()
                     .reload_asked
@@ -573,6 +579,16 @@ mod tests {
         for bad in ["", "1.1", "abc", "1.1.x"] {
             assert!(!needs_reload(bad), "{bad}");
         }
+    }
+    #[test]
+    fn a_store_copy_of_the_extension_is_never_asked_to_reload() {
+        let unpacked = wire::CHROMIUM_ID.trim();
+        let store = wire::CHROMIUM_STORE_IDS[0];
+        assert!(should_reload("0.9.0", Some(unpacked)));
+        // Extensions older than this check send no ID: same behaviour as before.
+        assert!(should_reload("0.9.0", None));
+        assert!(!should_reload("0.9.0", Some(store)));
+        assert!(!should_reload(env!("CARGO_PKG_VERSION"), Some(unpacked)));
     }
     #[test]
     fn login_frames_only_on_the_same_registrable_domain() {

@@ -147,7 +147,9 @@ Un'installazione avviene solo dopo la conferma esplicita dell'utente e solo se:
 
 Si accettano solo link diretti `https://github.com/jesseaims/Jesse-Archive/releases/download/<tag>/…`. Il backend ripete il controllo da zero prima di installare, quindi un valore manipolato nella UI non basta.
 
-Un account GitHub compromesso, da solo, non può quindi far installare un setup non firmato. Chi possiede la chiave privata invece sì: la chiave resta su un solo PC, cifrata con DPAPI per l'utente (`%APPDATA%\JesseArchive-Release\update-signing-key.dpapi`) e gestita da `scripts/Update-SigningKey.ps1`, con backup cifrato da passphrase.
+Un account GitHub compromesso, da solo, non può quindi far installare un setup non firmato.
+
+**Credenziali degli store (dalla Beta 1.9.6).** La chiave del service account Google (Chrome Web Store) e issuer/secret di addons.mozilla.org stanno solo su questo PC, cifrate con DPAPI per l'utente (`%APPDATA%\JesseArchive-Release\store-keys.dpapi`, gestite da `scripts/Store-Keys.ps1`). `Publish-Release.ps1` le decifra in memoria e le passa sullo stdin a `publish-store-extension.mjs`, che non le scrive su disco né le stampa; gli errori riportano solo stato HTTP e messaggio degli store. Chi le ottiene può caricare una versione dell'estensione, che però passa comunque dalla revisione dello store. Il service account non ha ruoli in Google Cloud: è collegato solo al publisher del Chrome Web Store. Chi possiede la chiave privata invece sì: la chiave resta su un solo PC, cifrata con DPAPI per l'utente (`%APPDATA%\JesseArchive-Release\update-signing-key.dpapi`) e gestita da `scripts/Update-SigningKey.ps1`, con backup cifrato da passphrase.
 
 Limiti:
 - non c'è protezione anti-rollback oltre al confronto di versione;

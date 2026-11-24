@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    'ストアの拡張機能を常に最新に',
+    '拡張機能の新しいバージョンは、アプリの更新とともに Chrome ウェブストアと Firefox のアドオンサイトへ自動で届き、ストアの審査後にブラウザーが自動でインストールします。ストアからインストールした拡張機能を使っている場合、アプリは起動のたびに再読み込みを求めなくなりました。',
+  ],
   'chrome-store-extension': [
     'Chrome ウェブストアの拡張機能に対応',
     'アプリのフォルダーから手動で読み込んだ拡張機能に加えて、Chrome ウェブストアで公開予定の拡張機能も認識するようになりました。ブラウザーを設定済みの場合、起動時に接続が自動で更新されるため、ガイドをやり直す必要はありません。',

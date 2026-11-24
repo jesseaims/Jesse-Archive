@@ -68,6 +68,9 @@ jobs:
       - name: Window permissions match the commands each window uses
         run: npm run test:capabilities
 
+      - name: Store publishing against simulated APIs
+        run: npm run test:store
+
       - name: Build native messaging host
         run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 

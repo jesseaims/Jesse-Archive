@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    '商店中的扩展始终保持最新',
+    '扩展的新版本现在会随应用更新自动提交到 Chrome 应用商店和 Firefox 附加组件网站，商店审核通过后浏览器会自动安装。如果你使用的是从商店安装的扩展，应用不再在每次启动时要求它重新加载。',
+  ],
   'chrome-store-extension': [
     '已支持 Chrome 应用商店中的扩展',
     '除了从应用文件夹手动加载的扩展外，应用现在也能识别即将发布到 Chrome 应用商店的扩展。如果你之前已经设置过浏览器，连接会在启动时自动更新，无需重新运行向导。',

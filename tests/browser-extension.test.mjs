@@ -63,6 +63,7 @@ test('greets the app with its version and reloads itself when the app asks',asyn
  w.chrome={runtime:{getManifest:()=>({version:'1.2.3'}),reload:()=>reloads++,connectNative:()=>({postMessage:m=>sent.push(m),onMessage:{addListener:fn=>onPort=fn},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
  w.eval(source);
  assert.deepEqual(sent.map(m=>[m.kind,m.version]),[['hello','1.2.3']]);
+ assert.ok('id' in sent[0]);
  assert.equal(reloads,0);
  onPort({kind:'reload'});await new Promise(r=>setTimeout(r,0));
  assert.equal(reloads,1);w.close();

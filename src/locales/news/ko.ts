@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-extension-updates': [
+    '스토어 확장 프로그램 항상 최신 상태 유지',
+    '확장 프로그램의 새 버전이 앱 업데이트와 함께 Chrome 웹 스토어와 Firefox 부가 기능 사이트에 자동으로 전달되며, 스토어 검토 후 브라우저가 자동으로 설치합니다. 스토어에서 설치한 확장 프로그램을 사용하면 앱이 더 이상 시작할 때마다 다시 로드를 요청하지 않습니다.',
+  ],
   'chrome-store-extension': [
     'Chrome 웹 스토어 확장 프로그램 지원 준비',
     '앱 폴더에서 직접 불러온 확장 프로그램 외에, Chrome 웹 스토어에 게시될 확장 프로그램도 앱이 인식합니다. 이미 브라우저를 설정했다면 시작할 때 연결이 자동으로 업데이트되므로 안내를 다시 진행할 필요가 없습니다.',
