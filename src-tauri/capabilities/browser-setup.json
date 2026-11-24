@@ -1,6 +1,6 @@
 {
   "identifier": "browser-setup",
-  "description": "Browser extension setup guide: its steps and copying the extension folder path; no vault command. tests/capabilities.test.mjs checks this list against the window code.",
+  "description": "Browser extension setup guide: its steps, opening the extension's store page and copying the extension folder path; no vault command. tests/capabilities.test.mjs checks this list against the window code.",
   "windows": [
     "browser-setup"
   ],
@@ -10,6 +10,7 @@
     "allow-browser-setup-finish",
     "allow-browser-setup-open",
     "allow-browser-setup-status",
+    "allow-browser-store-open",
     "allow-copy-secret",
     "allow-language-get",
     "allow-language-set",

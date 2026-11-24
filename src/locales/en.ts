@@ -119,7 +119,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ Select · Enter Fill · Esc Close',
   '1. Collegamento con JesseArchive': '1. Connection with JesseArchive',
   '2. Scegli il browser': '2. Choose the browser',
-  '3. Conferma nel browser': '3. Confirm in the browser',
   'Accesso con passkey': 'Sign in with passkey',
   Account: 'Account',
   'Account da aggiornare': 'Account to update',
@@ -157,8 +156,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': 'Open extensions page',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     'Open an HTTPS site in the connected browser, select the username or password field and press the shortcut. Check the extension in Settings if the browser does not respond.',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    "We open the extensions page and the right folder, then copy the path to the clipboard. You can paste it with Ctrl+V in the browser's file picker.",
   'Archivio password': 'Password archive',
   Aspetto: 'Appearance',
   'Aspetto salvato': 'Appearance saved',
@@ -420,8 +417,6 @@ const dictionary: Dictionary = {
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.":
     'Closing to the notification area locks the vault.',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    "The browser's initial confirmation is required for this local distribution.",
   'La password principale rimane nell’app.': 'The master password stays in the app.',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     'The setup wizard detects your browsers, configures the connection and opens the right page and folder. You only need to confirm loading the extension locally in the browser. In Firefox an unsigned extension stays loaded only temporarily.',
@@ -1096,6 +1091,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     'Opening websites is available in the Windows build',
   'Elenco degli usati di recente non valido': 'Invalid recently used list',
+  '3. Aggiungi l’estensione': '3. Add the extension',
+  'Aggiungi a Chrome': 'Add to Chrome',
+  'Aggiungi a Firefox': 'Add to Firefox',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    'We open the extension page in the official store of the chosen browser.',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge may ask you to allow extensions from other stores: accept.',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    'Alternatively you can load the extension from the app folder. It is updated together with the app.',
+  'Installazione manuale (senza store)': 'Manual installation (without the store)',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    'The store copy is updated by the store; the one loaded by hand is updated with the app.',
+  'Nella pagina dello store premi {button} e conferma.':
+    'On the store page press {button} and confirm.',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera may ask you to first install support for Chrome Web Store extensions: accept.',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    'If you had loaded the extension by hand, remove it from the browser’s extensions page, so that two copies do not remain.',
+  'Browser non rilevato.': 'Browser not detected.',
 };
 
 export default dictionary;

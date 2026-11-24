@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    '可从商店安装扩展',
+    '“设置浏览器”向导会在 Chrome 网上应用店（Chrome、Edge、Brave、Opera、Vivaldi）或 Firefox 附加组件网站中打开扩展页面：只需点击“添加”，扩展就会自动更新。在 Firefox 中，重启浏览器后扩展仍会保留。仍可从应用文件夹手动加载扩展；如果你之前这样做过，请在安装商店版本后移除那个副本。',
+  ],
   'store-extension-updates': [
     '商店中的扩展始终保持最新',
     '扩展的新版本现在会随应用更新自动提交到 Chrome 应用商店和 Firefox 附加组件网站，商店审核通过后浏览器会自动安装。如果你使用的是从商店安装的扩展，应用不再在每次启动时要求它重新加载。',

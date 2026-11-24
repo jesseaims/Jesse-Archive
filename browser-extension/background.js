@@ -15,8 +15,18 @@ function connect() {
     clearTimeout(retry); retry = setTimeout(connect, 10000);
   });
   // The app asks for a reload when it is newer: the setup has replaced these files on disk.
-  // The ID tells it apart from a copy installed from a store, which the store updates.
-  send({kind:'hello', version: api.runtime.getManifest().version, id: api.runtime.id});
+  // The install type ("development" only for a copy loaded by hand) and the ID tell it
+  // apart from a copy installed from a store, which the store updates.
+  const current = port;
+  void installType().then(install => {
+    if (port === current) send({kind:'hello', version: api.runtime.getManifest().version, id: api.runtime.id, install});
+  });
+}
+/* management.getSelf needs no permission; undefined where it is missing. */
+function installType() {
+  try {
+    return Promise.resolve(api.management?.getSelf?.()).then(self => self?.installType, () => undefined);
+  } catch { return Promise.resolve(undefined); }
 }
 /* WebAuthn requests from passkey-bridge.js. The origin comes from the browser
  * (sender), only for HTTPS top-level frames; the page cannot choose it. */

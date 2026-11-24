@@ -119,7 +119,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ 選択 · Enter 入力 · Esc 閉じる',
   '1. Collegamento con JesseArchive': '1. JesseArchive との接続',
   '2. Scegli il browser': '2. ブラウザーを選択',
-  '3. Conferma nel browser': '3. ブラウザーで確認',
   'Accesso con passkey': 'パスキーでサインイン',
   Account: 'アカウント',
   'Account da aggiornare': '更新するアカウント',
@@ -158,8 +157,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': '拡張機能ページを開く',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     '接続済みのブラウザーで HTTPS サイトを開き、ユーザー名またはパスワードの欄を選択してショートカットを押してください。ブラウザーが応答しない場合は、設定で拡張機能を確認してください。',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    '拡張機能ページと正しいフォルダーを開き、パスをクリップボードにコピーします。ブラウザーの選択画面で Ctrl+V を押して貼り付けられます。',
   'Archivio password': 'パスワード アーカイブ',
   Aspetto: '外観',
   'Aspetto salvato': '外観を保存しました',
@@ -420,8 +417,6 @@ const dictionary: Dictionary = {
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.":
     '通知領域に閉じると保管庫がロックされます。',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    'このローカル配布では、最初にブラウザーでの確認が必要です。',
   'La password principale rimane nell’app.': 'マスター パスワードはアプリ内に残ります。',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     'セットアップ ウィザードがブラウザーを検出し、接続を設定し、正しいページとフォルダーを開きます。ブラウザーでローカルの読み込みを確認するだけです。Firefox では、署名なしの読み込みは一時的です。',
@@ -1102,6 +1097,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     'サイトを開く機能は Windows 版で利用できます',
   'Elenco degli usati di recente non valido': '最近使用した項目の一覧が無効です',
+  '3. Aggiungi l’estensione': '3. 拡張機能を追加',
+  'Aggiungi a Chrome': 'Chrome に追加',
+  'Aggiungi a Firefox': 'Firefox へ追加',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    '選択したブラウザーの公式ストアで拡張機能のページを開きます。',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge では他のストアからの拡張機能を許可するよう求められることがあります。許可してください。',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    'または、アプリのフォルダーから拡張機能を読み込むこともできます。アプリと一緒に更新されます。',
+  'Installazione manuale (senza store)': '手動インストール（ストアを使わない）',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    'ストア版はストアから更新され、手動で読み込んだ版はアプリと一緒に更新されます。',
+  'Nella pagina dello store premi {button} e conferma.':
+    'ストアのページで {button} を押して確認してください。',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera では、先に Chrome ウェブストアの拡張機能のサポートをインストールするよう求められることがあります。許可してください。',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    '以前に拡張機能を手動で読み込んでいた場合は、2 つのコピーが残らないよう、ブラウザーの拡張機能ページから削除してください。',
+  'Browser non rilevato.': 'ブラウザーが見つかりません。',
 };
 
 export default dictionary;

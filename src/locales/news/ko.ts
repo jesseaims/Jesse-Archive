@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    '스토어에서 확장 프로그램 설치 가능',
+    '“브라우저 설정” 안내가 Chrome 웹 스토어(Chrome, Edge, Brave, Opera, Vivaldi) 또는 Firefox 부가 기능 사이트에서 확장 프로그램 페이지를 엽니다. “추가”만 누르면 확장 프로그램이 알아서 업데이트됩니다. Firefox에서는 브라우저를 다시 시작해도 설치된 상태로 유지됩니다. 앱 폴더에서 수동으로 불러오는 방법도 계속 사용할 수 있으며, 사용했다면 스토어 버전을 설치한 뒤 그 사본을 제거하세요.',
+  ],
   'store-extension-updates': [
     '스토어 확장 프로그램 항상 최신 상태 유지',
     '확장 프로그램의 새 버전이 앱 업데이트와 함께 Chrome 웹 스토어와 Firefox 부가 기능 사이트에 자동으로 전달되며, 스토어 검토 후 브라우저가 자동으로 설치합니다. 스토어에서 설치한 확장 프로그램을 사용하면 앱이 더 이상 시작할 때마다 다시 로드를 요청하지 않습니다.',

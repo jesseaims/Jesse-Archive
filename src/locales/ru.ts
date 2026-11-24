@@ -121,7 +121,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ Выбор · Enter Заполнить · Esc Закрыть',
   '1. Collegamento con JesseArchive': '1. Подключение к JesseArchive',
   '2. Scegli il browser': '2. Выберите браузер',
-  '3. Conferma nel browser': '3. Подтвердите в браузере',
   'Accesso con passkey': 'Вход с ключом доступа',
   Account: 'Учётная запись',
   'Account da aggiornare': 'Учётная запись для обновления',
@@ -160,8 +159,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': 'Открыть страницу расширений',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     'Откройте сайт по HTTPS в подключённом браузере, выберите поле логина или пароля и нажмите сочетание клавиш. Если браузер не отвечает, проверьте расширение в настройках.',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    'Мы откроем страницу расширений и нужную папку, а затем скопируем путь в буфер обмена. Его можно вставить сочетанием Ctrl+V в окне выбора браузера.',
   'Archivio password': 'Архив паролей',
   Aspetto: 'Оформление',
   'Aspetto salvato': 'Оформление сохранено',
@@ -425,8 +422,6 @@ const dictionary: Dictionary = {
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.":
     'Сворачивание в область уведомлений блокирует хранилище.',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    'Для этой локальной сборки требуется первоначальное подтверждение в браузере.',
   'La password principale rimane nell’app.': 'Мастер-пароль остаётся в приложении.',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     'Мастер настройки находит браузеры, настраивает подключение и открывает нужные страницу и папку. Вам нужно только подтвердить локальную загрузку в браузере. В Firefox неподписанное расширение загружается только временно.',
@@ -1111,6 +1106,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     'Открытие сайтов доступно в версии для Windows',
   'Elenco degli usati di recente non valido': 'Недопустимый список недавно использованных',
+  '3. Aggiungi l’estensione': '3. Добавьте расширение',
+  'Aggiungi a Chrome': 'Установить',
+  'Aggiungi a Firefox': 'Добавить в Firefox',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    'Мы откроем страницу расширения в официальном магазине выбранного браузера.',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge может попросить разрешить расширения из других магазинов: согласитесь.',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    'Также можно загрузить расширение из папки приложения. Оно обновляется вместе с приложением.',
+  'Installazione manuale (senza store)': 'Ручная установка (без магазина)',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    'Копия из магазина обновляется магазином, а загруженная вручную — вместе с приложением.',
+  'Nella pagina dello store premi {button} e conferma.':
+    'На странице магазина нажмите {button} и подтвердите.',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera может попросить сначала установить поддержку расширений из Chrome Web Store: согласитесь.',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    'Если вы ранее загрузили расширение вручную, удалите его на странице расширений браузера, чтобы не осталось двух копий.',
+  'Browser non rilevato.': 'Браузер не обнаружен.',
 };
 
 export default dictionary;

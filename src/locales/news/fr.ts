@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    'Extension disponible dans les boutiques',
+    'Le guide « Configurer les navigateurs » ouvre la page de l’extension sur le Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) ou sur le site des modules complémentaires de Firefox : il suffit d’appuyer sur « Ajouter » et l’extension se met à jour toute seule. Sur Firefox, elle reste installée après le redémarrage du navigateur. Le chargement manuel depuis le dossier de l’application reste disponible ; si vous l’utilisiez, supprimez cette copie après avoir installé celle de la boutique.',
+  ],
   'store-extension-updates': [
     'Extension des boutiques toujours à jour',
     'Les nouvelles versions de l’extension arrivent seules sur le Chrome Web Store et sur le site des modules Firefox avec les mises à jour de l’application, et le navigateur les installe automatiquement après la vérification de la boutique. Si vous utilisez l’extension installée depuis la boutique, l’application ne lui demande plus de se recharger à chaque démarrage.',
