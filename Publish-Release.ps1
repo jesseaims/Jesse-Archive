@@ -268,6 +268,10 @@ try {
         if ($storeExit -ne 0) {
             Write-Warning 'Invio agli store non riuscito: la release dell''app è pubblicata comunque. Si riprova alla prossima release (dettagli sopra).'
         }
+        # $LASTEXITCODE still holds the store step's node exit code: a caller that checks it
+        # after this script (AutoPublish's Invoke-Publisher.ps1) would mark the published
+        # release as failed.
+        $global:LASTEXITCODE = 0
     }
 } finally {
     # Released explicitly too: the desktop shortcut keeps its window (-NoExit) open.
