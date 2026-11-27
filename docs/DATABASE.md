@@ -23,6 +23,7 @@ La configurazione dispositivo è `%APPDATA%/JesseArchive/config.json`, con perco
 |---|---|
 | Vault principale | Envelope e dati cifrati; `save`, `atomic_write` |
 | File `.bak` | Una precedente copia cifrata, accanto al vault; non uno storico illimitato |
+| Copie giornaliere | Dalla Beta 1.9.8: `%LOCALAPPDATA%\JesseArchive\backups\<16 cifre esadecimali dello SHA-256 del percorso del vault>\AAAA-MM-GG.vault`, copie del file cifrato su questo PC, ultime 14 giornate |
 | Configurazione dispositivo | JSON non cifrato: percorso e preferenze locali; `persist_config`, `set_pref` |
 | `browser/preferences.json` sotto AppData | Scorciatoia locale, non sincronizzata nel vault |
 | `browser/connection.json` sotto AppData | Porta e token per avvio; effimero nel significato, file riscritto all'avvio |
@@ -101,7 +102,9 @@ Non c'è una transazione con rollback generale: molte operazioni cambiano il JSO
 
 Questo riduce il rischio di scritture parziali, ma non implementa transazioni concorrenti, lock file o una garanzia universale contro perdita di alimentazione. Possono restare temporanei in alcuni percorsi d'errore. La directory non viene esplicitamente sincronizzata dal codice.
 
-Non esiste una UI dedicata che ripristini automaticamente la `.bak`. Un ripristino va progettato su copie indipendenti e autorizzato quando riguarda dati reali. I file storici possono contenere dati e wrapper precedenti: non sono cancellazione sicura né revoca delle vecchie credenziali.
+**Copie giornaliere (dalla Beta 1.9.8).** Prima di ogni scrittura, `write_out` chiama `snapshot_daily`: se per la data UTC di oggi non c'è ancora una copia, copia il file che sta per essere sostituito in `backups/<vault>/AAAA-MM-GG.vault` sotto `%LOCALAPPDATA%\JesseArchive` (cartella diversa per ogni percorso di vault, fuori dalla cartella del vault e quindi fuori da OneDrive/Dropbox) e cancella le copie oltre le ultime `BACKUP_DAYS` (14). Se la copia non riesce, il salvataggio prosegue. Sono copie del file cifrato, non dati in chiaro. Comandi: `backups_list` (nome, dimensione, `created` = quando è stata fatta la copia e `modified` = quando era stato salvato il vault che contiene: la copia di Windows conserva la data di modifica del file copiato, `copy_times`), `backup_read` (testo cifrato, per «Salva una copia altrove»), `backup_open` (decifra la copia in memoria con la password principale che aveva, `open_with_password`, e restituisce gli elementi come `public_item`, senza segreti e senza scrivere il vault), `backup_restore` (aggiunge gli elementi scelti con `restore_item`: id nuovo, cartella mantenuta solo se esiste ancora, gruppo copiato se manca, password collegata allo storico; in `transact`). Il vault non viene mai sostituito con una copia: con la sincronizzazione attiva, gli altri PC riporterebbero le modifiche più recenti e le tombstone, mentre un elemento con id nuovo non è toccato né dalle tombstone né dalla fusione. Accettati solo nomi `AAAA-MM-GG.vault` presenti nella cartella (`backup_name_ok`). `backup_info` riporta anche `copies` e `copy_created`. Test: `vault_tests::one_daily_copy_kept_for_fourteen_days`, `a_lost_item_is_recovered_as_a_new_item`, `a_copy_opens_with_the_password_it_had_and_a_new_key_forgets_them`, `utc_day_and_backup_names`.
+
+La UI non ripristina automaticamente la `.bak`. Un ripristino va progettato su copie indipendenti e autorizzato quando riguarda dati reali. I file storici possono contenere dati e wrapper precedenti: non sono cancellazione sicura né revoca delle vecchie credenziali.
 
 ## Fusione e cartelle cloud
 

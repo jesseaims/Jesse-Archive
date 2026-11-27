@@ -1263,6 +1263,51 @@ p {
 .cloud-suggestions button + button {
   border-top: 1px solid var(--ui-border);
 }
+/* Settings → daily backup copies (BackupHistory.tsx) */
+.backup-list,
+.backup-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ui-border);
+  border-radius: 9px;
+  overflow: hidden auto;
+  max-height: 340px;
+}
+.backup-list li,
+.backup-items li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--ui-input);
+}
+.backup-list li + li,
+.backup-items li + li {
+  border-top: 1px solid var(--ui-border);
+}
+.backup-list li > span {
+  flex: 1;
+  min-width: 140px;
+}
+.backup-list span,
+.backup-items label > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.backup-list small,
+.backup-items small {
+  color: var(--ui-muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.backup-list button {
+  padding: 6px 10px;
+  font-size: 12px;
+}
 .cloud-suggestions button:hover {
   background: var(--ui-hover);
 }

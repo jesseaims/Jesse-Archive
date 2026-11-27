@@ -1123,6 +1123,35 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     'Si habías cargado la extensión a mano, quítala de la página de extensiones del navegador para que no queden dos copias.',
   'Browser non rilevato.': 'Navegador no detectado.',
+  '{n} · ultima: {date}': '{n} · última: {date}',
+  'Apri copia': 'Abrir copia',
+  'Copie di sicurezza giornaliere': 'Copias de seguridad diarias',
+  'Copie di sicurezza giornaliere ({n})': 'Copias de seguridad diarias ({n})',
+  'Copie giornaliere su questo PC': 'Copias diarias en este PC',
+  'Elementi recuperati': 'Elementos recuperados',
+  'già nel vault': 'ya en el vault',
+  Indietro: 'Atrás',
+  'La copia non contiene elementi.': 'La copia no contiene elementos.',
+  Nessuna: 'Ninguna',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'Aún no hay copias: la primera se creará en el próximo guardado.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Cada día, en el primer guardado, la app conserva una copia cifrada del vault en este PC, fuera de la carpeta del vault. Se conservan los últimos {n} días.',
+  'Password principale della copia': 'Contraseña maestra de la copia',
+  'Recupera ({n})': 'Recuperar ({n})',
+  'Recupera elementi': 'Recuperar elementos',
+  'Salva una copia altrove': 'Guardar una copia en otro lugar',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Elige los elementos que quieres recuperar: se añaden al vault como elementos nuevos, sin tocar los actuales.',
+  'Password non corretta per questa copia': 'Contraseña incorrecta para esta copia',
+  'Copia di sicurezza non trovata': 'Copia de seguridad no encontrada',
+  'Nessun elemento selezionato': 'Ningún elemento seleccionado',
+  'Copia del {date}': 'Copia del {date}',
+  'vault salvato il {date}': 'vault guardado el {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'La copia contiene el vault guardado el {date}: introduce la contraseña maestra que usabas entonces.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Cada copia se abre con la contraseña maestra que tenía el vault cuando se guardó. Cuando cambias la clave de los datos (contraseña descubierta o nuevo código de recuperación) las copias se eliminan.',
 };
 
 export default dictionary;

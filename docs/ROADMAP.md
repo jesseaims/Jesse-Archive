@@ -37,7 +37,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |
 | Salvataggio account | Dalla Beta 1.3.0: cattura solo con digitazione reale, conferma esplicita, note a scelta; test jsdom e Rust, collaudo su siti reali **Da verificare** | FEATURES, SECURITY; `browser_save.rs`, `save-capture.js` |
 | Passkey | WebAuthn tramite estensione dalla Beta 1.1.14: solo ES256, frame principale, niente autofill condizionale né PRF; UV dichiarato per vault sbloccato e conferma | FEATURES, SECURITY; `passkey.rs`, `passkey-page.js` |
-| Backup | Copia intero vault e singolo `.bak`; export non equivale a backup completo; niente catalogo versioni | DATABASE |
+| Backup | Copia intero vault, singolo `.bak` e, dalla Beta 1.9.8, copie giornaliere locali (14 giorni) con recupero dei singoli elementi; export non equivale a backup completo; copie solo sul PC che le crea, nessun ripristino dell'intero vault | DATABASE |
 | Copertura test | Test mirati, non intera matrice UI/browser/installazione/durabilità | [DEVELOPMENT](DEVELOPMENT.md) |
 
 ## Funzionalità non rilevate nel client Rust

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    '일일 백업 사본',
+    '매일 첫 저장 시 앱이 볼트의 암호화된 사본을 볼트 폴더 밖, 이 PC에 보관하고 최근 14일 분량을 유지합니다. 설정 → 데이터 및 백업 → “일일 백업 사본”에서 사본을 다른 곳에 저장하거나 잃어버린 항목을 하나씩 복구할 수 있습니다. 그날의 마스터 비밀번호로 사본을 열고 볼트에 다시 추가할 항목을 고르세요. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 사본이 삭제됩니다.',
+  ],
   'store-install-guide': [
     '스토어에서 확장 프로그램 설치 가능',
     '“브라우저 설정” 안내가 Chrome 웹 스토어(Chrome, Edge, Brave, Opera, Vivaldi) 또는 Firefox 부가 기능 사이트에서 확장 프로그램 페이지를 엽니다. “추가”만 누르면 확장 프로그램이 알아서 업데이트됩니다. Firefox에서는 브라우저를 다시 시작해도 설치된 상태로 유지됩니다. 앱 폴더에서 수동으로 불러오는 방법도 계속 사용할 수 있으며, 사용했다면 스토어 버전을 설치한 뒤 그 사본을 제거하세요.',

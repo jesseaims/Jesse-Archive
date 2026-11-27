@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    'Tägliche Sicherungskopien',
+    'Jeden Tag beim ersten Speichern bewahrt die App eine verschlüsselte Kopie des Tresors auf diesem PC auf, außerhalb des Tresorordners, und behält die letzten 14 Tage. Unter Einstellungen → Daten und Sicherung → „Tägliche Sicherungskopien“ kannst du eine an einem anderen Ort speichern oder einzelne verlorene Einträge wiederherstellen: Öffne die Kopie mit dem Master-Passwort jenes Tages und wähle aus, was wieder in den Tresor soll. Wenn du den Datenschlüssel änderst (Passwort entdeckt oder neuer Wiederherstellungscode), werden die Kopien gelöscht.',
+  ],
   'store-install-guide': [
     'Erweiterung aus den Stores installierbar',
     'Die Anleitung „Browser einrichten“ öffnet die Seite der Erweiterung im Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) oder auf der Add-on-Seite von Firefox: einfach „Hinzufügen“ drücken, und die Erweiterung aktualisiert sich selbst. In Firefox bleibt sie auch nach einem Neustart des Browsers installiert. Das manuelle Laden aus dem App-Ordner bleibt als Alternative verfügbar; wenn du es genutzt hast, entferne diese Kopie nach der Installation aus dem Store.',

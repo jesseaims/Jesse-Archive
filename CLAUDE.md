@@ -92,7 +92,7 @@ Non ci sono tabelle SQL: `Vault.data` è un `serde_json::Value` con collezioni `
 
 Percorso del vault: override `JESSE_ARCHIVE_VAULT`, poi configurazione dispositivo, poi file legacy accanto all'EXE se presente, altrimenti AppData locale Windows. Le preferenze dispositivo e browser sono fuori dal vault. Non riportare valori reali di questi file nei documenti.
 
-`atomic_write` usa temporaneo, sincronizzazione del file, copia `.bak` e sostituzione con percorso di rollback Windows. `loc_move` copia e verifica SHA-256, conservando l'originale. `pull`/`merge_data` fondono per timestamp e tombstone; non sono un database transazionale. Import JSON, CSV e `.jshare` hanno comportamenti diversi: leggere [DATABASE](docs/DATABASE.md) prima di intervenire.
+`atomic_write` usa temporaneo, sincronizzazione del file, copia `.bak` e sostituzione con percorso di rollback Windows; dalla Beta 1.9.8 `snapshot_daily` conserva anche una copia cifrata al giorno (14 giorni) in `%LOCALAPPDATA%\JesseArchive\backups`, da cui si recuperano singoli elementi. `loc_move` copia e verifica SHA-256, conservando l'originale. `pull`/`merge_data` fondono per timestamp e tombstone; non sono un database transazionale. Import JSON, CSV e `.jshare` hanno comportamenti diversi: leggere [DATABASE](docs/DATABASE.md) prima di intervenire.
 
 ## G. Development Guidelines
 
