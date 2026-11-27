@@ -71,7 +71,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | Inserimento browser | Parziale: login HTTPS, selezione esplicita, PSL e due passaggi manuali; campi in shadow root aperti e iframe dello stesso dominio registrabile (`frame_allowed`); provato su Brave, altri siti e browser da collaudare |
 | Salvataggio account dal browser | Parziale/da collaudare sui siti (Beta 1.3.0): registrazione, login non salvati e password cambiate; solo digitazione reale, conferma nella mini finestra, note a scelta, «Mai per questo sito» in `settings.never_save` |
 | Passkey WebAuthn | Parziale/da collaudare sui siti: `passkey-page.js` → bridge → `passkey.rs`; ES256, conferma nella mini finestra, fallback al browser; niente autofill condizionale |
-| Guida estensioni | Implementata: apre la pagina dello store (Chrome Web Store o addons.mozilla.org, dalla Beta 1.9.7; approvazioni da verificare), caricamento manuale come alternativa |
+| Guida estensioni | Implementata: apre la pagina dello store (Chrome Web Store o addons.mozilla.org, dalla Beta 1.9.7; estensione pubblicata su entrambi), caricamento manuale come alternativa |
 | News e commit offline con orari individuali | Implementati in `NewsPanel.tsx`, changelog e snapshot generato |
 
 Non esiste una roadmap approvata per biometria, provider passkey di sistema o servizi cloud: sono assenze rilevate, non impegni di sviluppo.

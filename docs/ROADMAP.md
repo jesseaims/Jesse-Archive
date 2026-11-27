@@ -15,7 +15,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 - Rallentamento progressivo dei tentativi di sblocco errati, persistente fra riavvii (dalla Beta 1.4.0).
 - Shortcut configurabile, pannello con sblocco, selezione account per dominio e riempimento browser attraverso Native Messaging.
 - Proposta di salvataggio degli account inviati sui siti (nuovi, login non salvati, password cambiate) con conferma nella mini finestra (dalla Beta 1.3.0).
-- Guida locale e registrazione host per Chrome, Edge, Brave, Opera, Vivaldi e Firefox; pacchetti delle estensioni locali.
+- Guida locale e registrazione host per Chrome, Edge, Brave, Opera, Vivaldi e Firefox; estensione pubblicata sul Chrome Web Store e su addons.mozilla.org, pacchetti locali per il caricamento manuale.
 - Aggiornamento automatico verificato con firma Ed25519 (dalla Beta 1.1.13); controllo disattivabile e installazione solo su conferma.
 - Ricerca rapida globale con scorciatoia di sistema, raggruppamento degli account per servizio e copia sicura delle credenziali (dalla Beta 1.1.19).
 - Dashboard personalizzabile con widget, layout multipli e salvataggio automatico (dalla Beta 1.1.17).
@@ -32,7 +32,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 | Memoria sensibile | Alcune chiavi Zeroizing, ma copie JSON, frontend e buffer non cancellati integralmente | SECURITY; `core.rs`, `App.tsx` |
 | Sincronizzazione | File esterni e timestamp per record intero; nessun trasporto cloud proprio, lock multiprocesso o transazione; UI non segue sempre rev | [DATABASE](DATABASE.md), [ARCHITECTURE](ARCHITECTURE.md) |
 | Validazione e migrazioni | Import JSON/`.jshare` validato e atomico, forma del vault garantita allo sblocco; import JSON, CSV, `.jshare` e rifiuto di un file corrotto provati a mano con file sintetici; nessuno schema completo dei campi né motore di migrazione | DATABASE; `core.rs` |
-| Distribuzione browser | Guida automatizzata e registrazione host; dalla Beta 1.9.7 installazione dagli store (Chrome Web Store e addons.mozilla.org, approvazioni **Da verificare**), caricamento manuale come alternativa | FEATURES; `browser_installer.rs` |
+| Distribuzione browser | Guida automatizzata e registrazione host; dalla Beta 1.9.7 installazione dagli store (Chrome Web Store e addons.mozilla.org, pubblicata dal 27/11/2026; ogni versione passa dalla revisione), caricamento manuale come alternativa | FEATURES; `browser_installer.rs` |
 | Compilazione nei siti | HTTPS e campi supportati, anche in shadow root aperti e in iframe dello stesso dominio registrabile (Beta 1.1.20); casi ambigui o frame di altri siti rifiutati; multistep richiede nuova invocazione. Provata su Brave: login in due passaggi su Epic Games e rifiuto al cambio pagina | FEATURES; background canonico |
 | Selezione pacchetto | Backend supporta ID selezionati, percorso UI soprattutto pacchetto completo; flag shared anticipato | DATABASE; `App.tsx` |
 | Salvataggio account | Dalla Beta 1.3.0: cattura solo con digitazione reale, conferma esplicita, note a scelta; test jsdom e Rust, collaudo su siti reali **Da verificare** | FEATURES, SECURITY; `browser_save.rs`, `save-capture.js` |
@@ -42,7 +42,7 @@ Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4
 
 ## Funzionalità non rilevate nel client Rust
 
-Autenticazione biometrica, provider passkey di sistema Windows (uso fuori dai browser), servizio cloud con account e API proprie, installazione silenziosa universale dell'estensione, pacchetti store pubblicati/firmati e riempimento universale di app desktop non risultano implementati. Il foglio di emergenza stampabile e il dispatcher `.jbackup` sono presenti nel client Python storico, non nella UI React esaminata. Questa lista non è una richiesta di portarli o aggiungerli.
+Autenticazione biometrica, provider passkey di sistema Windows (uso fuori dai browser), servizio cloud con account e API proprie, installazione silenziosa universale dell'estensione, firma digitale del setup Windows e riempimento universale di app desktop non risultano implementati. Il foglio di emergenza stampabile e il dispatcher `.jbackup` sono presenti nel client Python storico, non nella UI React esaminata. Questa lista non è una richiesta di portarli o aggiungerli.
 
 ## Criticità da valutare e proposte tecniche non approvate
 
