@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    'Erweiterung aus den Stores installierbar',
+    'Die Anleitung „Browser einrichten“ öffnet die Seite der Erweiterung im Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) oder auf der Add-on-Seite von Firefox: einfach „Hinzufügen“ drücken, und die Erweiterung aktualisiert sich selbst. In Firefox bleibt sie auch nach einem Neustart des Browsers installiert. Das manuelle Laden aus dem App-Ordner bleibt als Alternative verfügbar; wenn du es genutzt hast, entferne diese Kopie nach der Installation aus dem Store.',
+  ],
   'store-extension-updates': [
     'Store-Erweiterung immer aktuell',
     'Neue Versionen der Erweiterung gelangen jetzt zusammen mit den App-Updates von selbst in den Chrome Web Store und zu den Firefox-Add-ons, und der Browser installiert sie nach der Prüfung durch den Store automatisch. Wenn du die Erweiterung aus dem Store nutzt, fordert die App sie nicht mehr bei jedem Start zum Neuladen auf.',

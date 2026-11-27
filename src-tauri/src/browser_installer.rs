@@ -159,6 +159,44 @@ pub async fn browser_setup_open(id: String) -> Result<Value, String> {
         .await
         .map_err(|e| e.to_string())?
 }
+/// Store page of the extension for a browser: Firefox uses addons.mozilla.org, the
+/// Chromium browsers the Chrome Web Store. Fixed here: the guide sends only the ID.
+fn store_url(id: &str) -> Result<String, String> {
+    browser(id)?;
+    Ok(if id == "firefox" {
+        "https://addons.mozilla.org/firefox/addon/jesse-archive/".into()
+    } else {
+        format!(
+            "https://chromewebstore.google.com/detail/{}",
+            crate::browser_protocol::CHROMIUM_STORE_IDS[0]
+        )
+    })
+}
+fn store_open_impl(id: String) -> Result<Value, String> {
+    let browser = browser(&id)?;
+    let url = store_url(&id)?;
+    let executable = executable(browser).ok_or("Browser non rilevato.")?;
+    crate::browser::browser_install()?;
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        // An https address is opened as given on the command line (unlike the
+        // browsers' internal pages, which need browser_navigation).
+        std::process::Command::new(&executable)
+            .arg(&url)
+            .creation_flags(0x08000000)
+            .spawn()
+            .map_err(|e| format!("Impossibile aprire il browser: {e}"))?;
+    }
+    Ok(json!({ "url": url }))
+}
+/// Opens the extension's store page in the chosen browser.
+#[tauri::command]
+pub async fn browser_store_open(id: String) -> Result<Value, String> {
+    tauri::async_runtime::spawn_blocking(move || store_open_impl(id))
+        .await
+        .map_err(|e| e.to_string())?
+}
 #[tauri::command]
 pub async fn browser_setup_show(app: tauri::AppHandle) -> Result<(), String> {
     show(&app)
@@ -212,5 +250,19 @@ mod tests {
         ] {
             assert!(browser(value).is_err());
         }
+    }
+    #[test]
+    fn every_browser_has_a_fixed_https_store_page() {
+        for b in BROWSERS {
+            let url = store_url(b.id).unwrap();
+            assert!(url.starts_with("https://"), "{url}");
+            if b.id == "firefox" {
+                assert!(url.starts_with("https://addons.mozilla.org/"));
+            } else {
+                assert!(url.ends_with(crate::browser_protocol::CHROMIUM_STORE_IDS[0]));
+            }
+        }
+        assert!(store_url("https://example.com").is_err());
+        assert!(store_url("").is_err());
     }
 }

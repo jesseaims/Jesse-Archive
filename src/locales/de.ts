@@ -120,7 +120,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ Auswählen · Enter Ausfüllen · Esc Schließen',
   '1. Collegamento con JesseArchive': '1. Verbindung mit JesseArchive',
   '2. Scegli il browser': '2. Browser auswählen',
-  '3. Conferma nel browser': '3. Im Browser bestätigen',
   'Accesso con passkey': 'Mit Passkey anmelden',
   Account: 'Konto',
   'Account da aggiornare': 'Zu aktualisierendes Konto',
@@ -159,8 +158,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': 'Erweiterungsseite öffnen',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     'Öffne eine HTTPS-Website im verbundenen Browser, wähle das Benutzername- oder Passwortfeld aus und drücke das Tastenkürzel. Prüfe die Erweiterung in den Einstellungen, wenn der Browser nicht reagiert.',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    'Wir öffnen die Erweiterungsseite und den richtigen Ordner und kopieren den Pfad in die Zwischenablage. Du kannst ihn mit Strg+V in der Ordnerauswahl des Browsers einfügen.',
   'Archivio password': 'Passwortarchiv',
   Aspetto: 'Darstellung',
   'Aspetto salvato': 'Darstellung gespeichert',
@@ -423,8 +420,6 @@ const dictionary: Dictionary = {
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.":
     'Das Schließen in den Infobereich sperrt den Tresor.',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    'Für diese lokale Verteilung ist die anfängliche Bestätigung im Browser erforderlich.',
   'La password principale rimane nell’app.': 'Das Master-Passwort bleibt in der App.',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     'Der Assistent erkennt die Browser, richtet die Verbindung ein und öffnet die richtige Seite und den richtigen Ordner. Du musst nur das lokale Laden im Browser bestätigen. In Firefox bleibt das Laden ohne Signatur vorübergehend.',
@@ -1111,6 +1106,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     'Das Öffnen von Websites ist in der Windows-Version verfügbar',
   'Elenco degli usati di recente non valido': 'Ungültige Liste der zuletzt verwendeten Einträge',
+  '3. Aggiungi l’estensione': '3. Erweiterung hinzufügen',
+  'Aggiungi a Chrome': 'Zu Chrome hinzufügen',
+  'Aggiungi a Firefox': 'Zu Firefox hinzufügen',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    'Wir öffnen die Seite der Erweiterung im offiziellen Store des gewählten Browsers.',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge fragt eventuell, ob Erweiterungen aus anderen Stores erlaubt werden sollen: zustimmen.',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    'Alternativ kannst du die Erweiterung aus dem Ordner der App laden. Sie wird zusammen mit der App aktualisiert.',
+  'Installazione manuale (senza store)': 'Manuelle Installation (ohne Store)',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    'Die Store-Version wird vom Store aktualisiert, die manuell geladene mit der App.',
+  'Nella pagina dello store premi {button} e conferma.':
+    'Drücke auf der Store-Seite {button} und bestätige.',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera fragt eventuell, ob zuerst die Unterstützung für Erweiterungen aus dem Chrome Web Store installiert werden soll: zustimmen.',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    'Wenn du die Erweiterung manuell geladen hattest, entferne sie auf der Erweiterungsseite des Browsers, damit keine zwei Kopien bleiben.',
+  'Browser non rilevato.': 'Browser nicht gefunden.',
 };
 
 export default dictionary;

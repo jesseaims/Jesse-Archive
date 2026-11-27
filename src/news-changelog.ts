@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'store-install-guide',
+    addedAt: '2026-11-24T20:14:00+01:00',
+    version: 'Beta 1.9.7',
+    title: 'Estensione installabile dagli store',
+    description:
+      'La guida «Configura i browser» apre la pagina dell’estensione nel Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) o nel sito dei componenti aggiuntivi di Firefox: basta premere «Aggiungi» e l’estensione si aggiorna da sola. Su Firefox resta installata anche dopo il riavvio del browser. Il caricamento manuale dalla cartella dell’app resta disponibile come alternativa; se lo usavi, rimuovi quella copia dopo aver installato quella dello store.',
+    icon: 'package',
+  },
+  {
     id: 'store-extension-updates',
     addedAt: '2026-11-24T17:28:00+01:00',
     version: 'Beta 1.9.6',

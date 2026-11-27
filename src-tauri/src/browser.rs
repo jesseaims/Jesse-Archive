@@ -37,9 +37,15 @@ fn needs_reload(extension: &str) -> bool {
 }
 /// A reload helps only the copy loaded from the app folder, which the setup updates
 /// on disk. A store copy is updated by its store: reloading it would only repeat the
-/// same version at every start of the app.
-fn should_reload(version: &str, id: Option<&str>) -> bool {
-    needs_reload(version) && !id.is_some_and(|id| wire::CHROMIUM_STORE_IDS.contains(&id))
+/// same version at every start of the app. Extensions from Beta 1.9.7 say how they
+/// were installed ("development" = loaded by hand); older ones only send their ID,
+/// which tells the Chrome Web Store copy apart but not the Firefox one.
+fn should_reload(version: &str, id: Option<&str>, install: Option<&str>) -> bool {
+    needs_reload(version)
+        && match install {
+            Some(install) => install == "development",
+            None => !id.is_some_and(|id| wire::CHROMIUM_STORE_IDS.contains(&id)),
+        }
 }
 fn random() -> String {
     use rand::RngCore;
@@ -227,7 +233,7 @@ fn receive(app: &tauri::AppHandle, client: &str, message: Value) {
     match message["kind"].as_str().unwrap_or("") {
         "hello" => {
             let version = message["version"].as_str().unwrap_or("");
-            if should_reload(version, message["id"].as_str())
+            if should_reload(version, message["id"].as_str(), message["install"].as_str())
                 && app
                     .state::<Bridge>()
                     .reload_asked
@@ -584,11 +590,29 @@ mod tests {
     fn a_store_copy_of_the_extension_is_never_asked_to_reload() {
         let unpacked = wire::CHROMIUM_ID.trim();
         let store = wire::CHROMIUM_STORE_IDS[0];
-        assert!(should_reload("0.9.0", Some(unpacked)));
+        assert!(should_reload("0.9.0", Some(unpacked), None));
         // Extensions older than this check send no ID: same behaviour as before.
-        assert!(should_reload("0.9.0", None));
-        assert!(!should_reload("0.9.0", Some(store)));
-        assert!(!should_reload(env!("CARGO_PKG_VERSION"), Some(unpacked)));
+        assert!(should_reload("0.9.0", None, None));
+        assert!(!should_reload("0.9.0", Some(store), None));
+        assert!(!should_reload(
+            env!("CARGO_PKG_VERSION"),
+            Some(unpacked),
+            None
+        ));
+    }
+    #[test]
+    fn only_a_copy_loaded_by_hand_is_asked_to_reload() {
+        // Firefox: the copy from addons.mozilla.org has the same ID as the local one.
+        let firefox = Some("browser@jessearchive.local");
+        assert!(should_reload("0.9.0", firefox, Some("development")));
+        for install in ["normal", "admin", "sideload", "other", ""] {
+            assert!(!should_reload("0.9.0", firefox, Some(install)), "{install}");
+        }
+        assert!(!should_reload(
+            env!("CARGO_PKG_VERSION"),
+            firefox,
+            Some("development")
+        ));
     }
     #[test]
     fn login_frames_only_on_the_same_registrable_domain() {

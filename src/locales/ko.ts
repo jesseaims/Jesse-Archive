@@ -117,7 +117,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ 선택 · Enter 입력 · Esc 닫기',
   '1. Collegamento con JesseArchive': '1. JesseArchive 연결',
   '2. Scegli il browser': '2. 브라우저 선택',
-  '3. Conferma nel browser': '3. 브라우저에서 확인',
   'Accesso con passkey': '패스키로 로그인',
   Account: '계정',
   'Account da aggiornare': '업데이트할 계정',
@@ -155,8 +154,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': '확장 프로그램 페이지 열기',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     '연결된 브라우저에서 HTTPS 사이트를 열고 사용자 이름 또는 비밀번호 필드를 선택한 다음 단축키를 누르세요. 브라우저가 응답하지 않으면 설정에서 확장 프로그램을 확인하세요.',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    '확장 프로그램 페이지와 올바른 폴더를 연 다음 경로를 클립보드에 복사합니다. 브라우저의 선택 창에서 Ctrl+V로 붙여 넣을 수 있습니다.',
   'Archivio password': '비밀번호 보관소',
   Aspetto: '모양',
   'Aspetto salvato': '모양을 저장했습니다',
@@ -413,8 +410,6 @@ const dictionary: Dictionary = {
     "Jesse's Archive · Tauri 2 + Rust · 보관함 AES-256-GCM v1",
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.": '알림 영역으로 닫으면 보관함이 잠깁니다.',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    '이 로컬 배포판은 처음에 브라우저에서 확인해야 합니다.',
   'La password principale rimane nell’app.': '마스터 비밀번호는 앱에만 남습니다.',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     '설정 마법사가 브라우저를 감지하고 연결을 구성한 뒤 올바른 페이지와 폴더를 엽니다. 브라우저에서 로컬 로드만 확인하면 됩니다. Firefox에서는 서명 없는 로드가 임시로만 유지됩니다.',
@@ -1086,6 +1081,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     '사이트 열기는 Windows 버전에서 사용할 수 있습니다',
   'Elenco degli usati di recente non valido': '최근 사용 목록이 올바르지 않습니다',
+  '3. Aggiungi l’estensione': '3. 확장 프로그램 추가',
+  'Aggiungi a Chrome': 'Chrome에 추가',
+  'Aggiungi a Firefox': 'Firefox에 추가',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    '선택한 브라우저의 공식 스토어에서 확장 프로그램 페이지를 엽니다.',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge에서 다른 스토어의 확장 프로그램을 허용할지 물을 수 있습니다. 허용하세요.',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    '또는 앱 폴더에서 확장 프로그램을 불러올 수 있습니다. 앱과 함께 업데이트됩니다.',
+  'Installazione manuale (senza store)': '수동 설치(스토어 없이)',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    '스토어 버전은 스토어에서, 수동으로 불러온 버전은 앱과 함께 업데이트됩니다.',
+  'Nella pagina dello store premi {button} e conferma.':
+    '스토어 페이지에서 {button}을(를) 누르고 확인하세요.',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera에서 Chrome 웹 스토어 확장 프로그램 지원을 먼저 설치하라고 할 수 있습니다. 허용하세요.',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    '이전에 확장 프로그램을 수동으로 불러왔다면 두 개의 사본이 남지 않도록 브라우저의 확장 프로그램 페이지에서 제거하세요.',
+  'Browser non rilevato.': '브라우저를 찾을 수 없습니다.',
 };
 
 export default dictionary;

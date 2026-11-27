@@ -121,7 +121,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ Seleccionar · Intro Rellenar · Esc Cerrar',
   '1. Collegamento con JesseArchive': '1. Conexión con JesseArchive',
   '2. Scegli il browser': '2. Elige el navegador',
-  '3. Conferma nel browser': '3. Confirma en el navegador',
   'Accesso con passkey': 'Iniciar sesión con llave de acceso',
   Account: 'Cuenta',
   'Account da aggiornare': 'Cuenta que actualizar',
@@ -160,8 +159,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': 'Abrir página de extensiones',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     'Abre un sitio HTTPS en el navegador conectado, selecciona el usuario o la contraseña y pulsa el atajo. Comprueba la extensión en Ajustes si el navegador no responde.',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    'Abrimos la página de extensiones y la carpeta correcta, y copiamos la ruta al portapapeles. Puedes pegarla con Ctrl+V en el selector del navegador.',
   'Archivio password': 'Archivo de contraseñas',
   Aspetto: 'Apariencia',
   'Aspetto salvato': 'Apariencia guardada',
@@ -424,8 +421,6 @@ const dictionary: Dictionary = {
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.":
     'Cerrar en el área de notificación bloquea la bóveda.',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    'La confirmación inicial del navegador es necesaria para esta distribución local.',
   'La password principale rimane nell’app.': 'La contraseña maestra se queda en la aplicación.',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     'El asistente detecta los navegadores, configura la conexión y abre la página y la carpeta correctas. Solo tienes que confirmar la carga local en el navegador. En Firefox, la carga sin firma es temporal.',
@@ -1109,6 +1104,25 @@ const dictionary: Dictionary = {
   'Apertura dei siti disponibile nella build Windows':
     'La apertura de sitios está disponible en la versión para Windows',
   'Elenco degli usati di recente non valido': 'Lista de usados recientemente no válida',
+  '3. Aggiungi l’estensione': '3. Añade la extensión',
+  'Aggiungi a Chrome': 'Añadir a Chrome',
+  'Aggiungi a Firefox': 'Agregar a Firefox',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    'Abrimos la página de la extensión en la tienda oficial del navegador elegido.',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge puede pedirte que permitas extensiones de otras tiendas: acepta.',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    'También puedes cargar la extensión desde la carpeta de la aplicación. Se actualiza junto con la aplicación.',
+  'Installazione manuale (senza store)': 'Instalación manual (sin tienda)',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    'La copia de la tienda se actualiza desde la tienda; la cargada a mano se actualiza con la aplicación.',
+  'Nella pagina dello store premi {button} e conferma.':
+    'En la página de la tienda pulsa {button} y confirma.',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera puede pedirte que instales primero el soporte para extensiones de Chrome Web Store: acepta.',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    'Si habías cargado la extensión a mano, quítala de la página de extensiones del navegador para que no queden dos copias.',
+  'Browser non rilevato.': 'Navegador no detectado.',
 };
 
 export default dictionary;

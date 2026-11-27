@@ -22,6 +22,7 @@ const COMMANDS: &[&str] = &[
     "browser_setup_open",
     "browser_setup_show",
     "browser_setup_finish",
+    "browser_store_open",
     "zoom_get",
     "zoom_change",
     "language_get",

@@ -402,6 +402,7 @@ pub fn run() {
             browser_installer::browser_setup_open,
             browser_installer::browser_setup_show,
             browser_installer::browser_setup_finish,
+            browser_installer::browser_store_open,
             zoom::zoom_get,
             zoom::zoom_change,
             i18n::language_get,

@@ -114,7 +114,6 @@ const dictionary: Dictionary = {
   '↑ ↓ Seleziona · Invio Inserisci · Esc Chiudi': '↑ ↓ 选择 · Enter 填充 · Esc 关闭',
   '1. Collegamento con JesseArchive': '1. 连接 JesseArchive',
   '2. Scegli il browser': '2. 选择浏览器',
-  '3. Conferma nel browser': '3. 在浏览器中确认',
   'Accesso con passkey': '使用通行密钥登录',
   Account: '账户',
   'Account da aggiornare': '要更新的账户',
@@ -150,8 +149,6 @@ const dictionary: Dictionary = {
   'Apri pagina estensioni': '打开扩展程序页面',
   'Apri un sito HTTPS nel browser collegato, seleziona username o password e premi la scorciatoia. Verifica l’estensione nelle Impostazioni se il browser non risponde.':
     '在已连接的浏览器中打开 HTTPS 网站，选中用户名或密码字段，然后按快捷键。如果浏览器没有响应，请在设置中检查扩展程序。',
-  'Apriamo la gestione estensioni e la cartella corretta, poi copiamo il percorso negli appunti. Puoi incollarlo con Ctrl+V nel selettore del browser.':
-    '我们会打开扩展程序页面和正确的文件夹，然后把路径复制到剪贴板。你可以在浏览器的选择窗口中按 Ctrl+V 粘贴。',
   'Archivio password': '密码档案',
   Aspetto: '外观',
   'Aspetto salvato': '外观已保存',
@@ -402,8 +399,6 @@ const dictionary: Dictionary = {
     "Jesse's Archive · Tauri 2 + Rust · 保险库 AES-256-GCM v1",
   JesseArchive: 'JesseArchive',
   "La chiusura nell'area di notifica blocca il vault.": '关闭到通知区域时会锁定保险库。',
-  'La conferma iniziale del browser è necessaria per questa distribuzione locale.':
-    '此本地分发版本需要先在浏览器中进行初次确认。',
   'La password principale rimane nell’app.': '主密码只保存在应用中。',
   'La procedura guidata rileva i browser, configura il collegamento e apre pagina e cartella corrette. Devi solo confermare il caricamento locale nel browser. Per Firefox il caricamento senza firma rimane temporaneo.':
     '设置向导会检测浏览器、配置连接，并打开正确的页面和文件夹。你只需在浏览器中确认本地加载。在 Firefox 中，未签名的加载只是临时的。',
@@ -1045,6 +1040,24 @@ const dictionary: Dictionary = {
   'Impossibile aprire il sito nel browser': '无法在浏览器中打开网站',
   'Apertura dei siti disponibile nella build Windows': '打开网站功能仅在 Windows 版本中可用',
   'Elenco degli usati di recente non valido': '最近使用列表无效',
+  '3. Aggiungi l’estensione': '3. 添加扩展',
+  'Aggiungi a Chrome': '添加至 Chrome',
+  'Aggiungi a Firefox': '添加到 Firefox',
+  'Apriamo la pagina dell’estensione nello store ufficiale del browser scelto.':
+    '我们会在所选浏览器的官方商店中打开扩展页面。',
+  'Edge può chiedere di consentire le estensioni da altri store: accetta.':
+    'Edge 可能会要求允许来自其他商店的扩展：请接受。',
+  'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
+    '你也可以从应用文件夹加载扩展。它会随应用一起更新。',
+  'Installazione manuale (senza store)': '手动安装（不通过商店）',
+  'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
+    '商店版本由商店更新；手动加载的版本随应用更新。',
+  'Nella pagina dello store premi {button} e conferma.': '在商店页面中点击 {button} 并确认。',
+  'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
+    'Opera 可能会要求先安装 Chrome 网上应用店扩展支持：请接受。',
+  'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
+    '如果之前手动加载过扩展，请在浏览器的扩展页面中将其移除，以免保留两个副本。',
+  'Browser non rilevato.': '未检测到浏览器。',
 };
 
 export default dictionary;

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    'Extension available from the stores',
+    'The “Set up browsers” guide opens the extension page on the Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) or on the Firefox add-ons site: just press “Add” and the extension updates itself. On Firefox it stays installed after the browser restarts. Loading it by hand from the app folder remains available as an alternative; if you used it, remove that copy after installing the store one.',
+  ],
   'store-extension-updates': [
     'Store extension always up to date',
     'New versions of the extension now reach the Chrome Web Store and Firefox Add-ons on their own together with app updates, and the browser installs them automatically after the store review. If you use the extension installed from the store, the app no longer asks it to reload at every start.',

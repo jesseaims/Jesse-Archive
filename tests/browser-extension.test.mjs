@@ -61,12 +61,21 @@ test('greets the app with its version and reloads itself when the app asks',asyn
  const dom=new JSDOM('',{url:'https://extension.invalid/',runScripts:'outside-only'});const w=dom.window;
  const sent=[];let onPort,reloads=0;
  w.chrome={runtime:{getManifest:()=>({version:'1.2.3'}),reload:()=>reloads++,connectNative:()=>({postMessage:m=>sent.push(m),onMessage:{addListener:fn=>onPort=fn},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
- w.eval(source);
+ w.eval(source);await new Promise(r=>setTimeout(r,0));
  assert.deepEqual(sent.map(m=>[m.kind,m.version]),[['hello','1.2.3']]);
  assert.ok('id' in sent[0]);
+ assert.equal(sent[0].install,undefined);
  assert.equal(reloads,0);
  onPort({kind:'reload'});await new Promise(r=>setTimeout(r,0));
  assert.equal(reloads,1);w.close();
+});
+test('tells the app whether it is a copy loaded by hand or from a store',async()=>{
+ for(const type of ['development','normal']){
+  const dom=new JSDOM('',{url:'https://extension.invalid/',runScripts:'outside-only'});const w=dom.window;const sent=[];
+  w.chrome={management:{getSelf:async()=>({installType:type})},runtime:{id:'x',getManifest:()=>({version:'1.2.3'}),reload(){},connectNative:()=>({postMessage:m=>sent.push(m),onMessage:{addListener(){}},onDisconnect:{addListener(){}}}),onStartup:{addListener(){}},onInstalled:{addListener(){}},onMessage:{addListener(){}}},action:{onClicked:{addListener(){}}}};
+  w.eval(source);await new Promise(r=>setTimeout(r,0));
+  assert.deepEqual(sent.map(m=>[m.kind,m.install]),[['hello',type]]);w.close();
+ }
 });
 test('manifests ask only for the permissions the extension uses (SEC-08)',()=>{
  const read=b=>JSON.parse(readFileSync(new URL(`../browser-extension/${b}/manifest.json`,import.meta.url),'utf8'));

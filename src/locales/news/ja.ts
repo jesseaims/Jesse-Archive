@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    '拡張機能をストアからインストール可能に',
+    '「ブラウザーを設定」ガイドで、Chrome ウェブストア（Chrome、Edge、Brave、Opera、Vivaldi）または Firefox アドオンサイトの拡張機能ページが開きます。「追加」を押すだけで、拡張機能は自動的に更新されます。Firefox ではブラウザーを再起動してもインストールされたままです。アプリのフォルダーから手動で読み込む方法も引き続き使えます。使っていた場合は、ストア版をインストールした後にそのコピーを削除してください。',
+  ],
   'store-extension-updates': [
     'ストアの拡張機能を常に最新に',
     '拡張機能の新しいバージョンは、アプリの更新とともに Chrome ウェブストアと Firefox のアドオンサイトへ自動で届き、ストアの審査後にブラウザーが自動でインストールします。ストアからインストールした拡張機能を使っている場合、アプリは起動のたびに再読み込みを求めなくなりました。',

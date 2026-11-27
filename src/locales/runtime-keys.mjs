@@ -161,4 +161,6 @@ export const RUNTIME_KEYS = [
   'Impossibile aprire il sito nel browser',
   'Apertura dei siti disponibile nella build Windows',
   'Elenco degli usati di recente non valido',
+  // browser_installer.rs: browser setup guide
+  'Browser non rilevato.',
 ];

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'store-install-guide': [
+    'Extensão disponível nas lojas',
+    'O guia «Configurar navegadores» abre a página da extensão na Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) ou no site de extras do Firefox: basta premir «Adicionar» e a extensão atualiza-se sozinha. No Firefox continua instalada depois de reiniciar o navegador. O carregamento manual a partir da pasta da aplicação continua disponível como alternativa; se o usavas, remove essa cópia depois de instalar a da loja.',
+  ],
   'store-extension-updates': [
     'Extensão das lojas sempre atualizada',
     'As novas versões da extensão chegam sozinhas à Chrome Web Store e aos complementos do Firefox junto com as atualizações do app, e o navegador as instala automaticamente após a revisão da loja. Se você usa a extensão instalada pela loja, o app não pede mais que ela recarregue a cada início.',
