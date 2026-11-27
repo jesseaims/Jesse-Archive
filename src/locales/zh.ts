@@ -1060,8 +1060,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': '未检测到浏览器。',
   '{n} · ultima: {date}': '{n} 份 · 最新：{date}',
   'Apri copia': '打开副本',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    '{date} 的副本。请输入你当天使用的主密码。',
   'Copie di sicurezza giornaliere': '每日备份副本',
   'Copie di sicurezza giornaliere ({n})': '每日备份副本（{n}）',
   'Copie giornaliere su questo PC': '此电脑上的每日副本',
@@ -1069,8 +1067,6 @@ const dictionary: Dictionary = {
   'già nel vault': '已在保险库中',
   Indietro: '返回',
   'La copia non contiene elementi.': '此副本不包含项目。',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    '副本需要使用保险库当天的主密码打开。更改数据密钥时（密码泄露或新的恢复代码）副本会被删除。',
   Nessuna: '无',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     '还没有副本：下次保存时会创建第一个副本。',
@@ -1085,6 +1081,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': '此副本的密码不正确',
   'Copia di sicurezza non trovata': '找不到备份副本',
   'Nessun elemento selezionato': '未选择任何项目',
+  'Copia del {date}': '{date} 的副本',
+  'vault salvato il {date}': '保险库保存于 {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    '此副本包含 {date} 保存的保险库：请输入你当时使用的主密码。',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    '每个副本都需要使用保险库保存时的主密码打开。更改数据密钥时（密码泄露或新的恢复代码），副本会被删除。',
 };
 
 export default dictionary;

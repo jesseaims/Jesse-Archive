@@ -58,7 +58,8 @@ export type BackupInfo = {
   synced_at: number;
   /** Daily copies on this PC (Settings → Data and backup → Backup copies). */
   copies?: number;
-  copy_modified?: number | null;
+  /** When the newest daily copy was made. */
+  copy_created?: number | null;
 };
 export type DashboardContext = {
   vault: State;
@@ -783,7 +784,7 @@ function BackupStatus({ ctx }: WidgetProps) {
         <dt>{t('Copie giornaliere su questo PC')}</dt>
         <dd>
           {b.copies
-            ? t('{n} · ultima: {date}', { n: b.copies, date: dateLabel(b.copy_modified ?? null) })
+            ? t('{n} · ultima: {date}', { n: b.copies, date: dateLabel(b.copy_created ?? null) })
             : t('Nessuna')}
         </dd>
         <dt>{t('Ultima lettura delle copie nella cartella')}</dt>

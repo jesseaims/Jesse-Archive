@@ -1118,8 +1118,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'ブラウザーが見つかりません。',
   '{n} · ultima: {date}': '{n} 件 · 最新: {date}',
   'Apri copia': 'コピーを開く',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    '{date} のコピー。その日に使っていたマスターパスワードを入力してください。',
   'Copie di sicurezza giornaliere': '毎日のバックアップコピー',
   'Copie di sicurezza giornaliere ({n})': '毎日のバックアップコピー（{n}）',
   'Copie giornaliere su questo PC': 'この PC の毎日のコピー',
@@ -1127,8 +1125,6 @@ const dictionary: Dictionary = {
   'già nel vault': '保管庫にあり',
   Indietro: '戻る',
   'La copia non contiene elementi.': 'このコピーには項目がありません。',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'コピーは、その日に保管庫で使われていたマスターパスワードで開きます。データキーを変更すると（パスワードの漏えい、または新しい回復コード）削除されます。',
   Nessuna: 'なし',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'まだコピーはありません。次回の保存時に最初のコピーが作成されます。',
@@ -1143,6 +1139,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'このコピーのパスワードが正しくありません',
   'Copia di sicurezza non trovata': 'バックアップコピーが見つかりません',
   'Nessun elemento selezionato': '項目が選択されていません',
+  'Copia del {date}': '{date} のコピー',
+  'vault salvato il {date}': '保管庫の保存日時: {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'このコピーには {date} に保存された保管庫が含まれます。当時使っていたマスターパスワードを入力してください。',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    '各コピーは、保存時に保管庫で使われていたマスターパスワードで開きます。データキーを変更すると（パスワードの漏えい、または新しい回復コード）コピーは削除されます。',
 };
 
 export default dictionary;

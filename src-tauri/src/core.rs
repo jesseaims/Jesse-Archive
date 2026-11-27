@@ -488,6 +488,20 @@ fn utc_day(t: f64) -> String {
     let year = yoe + era * 400 + i64::from(month <= 2);
     format!("{year:04}-{month:02}-{day:02}")
 }
+/// When a daily copy was made, and when the vault it holds was saved: the copy keeps
+/// the modification time of the file it copied (Windows `CopyFileEx`), so only its
+/// creation time says when it was made.
+fn copy_times(p: &Path) -> (Option<f64>, Option<f64>) {
+    let secs = |t: std::io::Result<std::time::SystemTime>| {
+        t.ok()
+            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+            .map(|d| d.as_secs_f64())
+    };
+    match fs::metadata(p) {
+        Ok(m) => (secs(m.created()), secs(m.modified())),
+        Err(_) => (None, None),
+    }
+}
 /// Only names written by `snapshot_daily`: the webview chooses a copy by name.
 fn backup_name_ok(name: &str) -> bool {
     let b = name.as_bytes();
@@ -1535,7 +1549,7 @@ impl Vault {
                     "bak_modified": modified(&bak),
                     "synced_at": self.last_sync,
                     "copies": self.backup_files().len(),
-                    "copy_modified": self.backup_files().first().map(|(_, p)| modified(p)).unwrap_or(V::Null),
+                    "copy_created": self.backup_files().first().map(|(_, p)| json!(copy_times(p).0)).unwrap_or(V::Null),
                 }))
             }
             // Daily copies (`snapshot_daily`): list, save elsewhere, open with the
@@ -1545,13 +1559,9 @@ impl Vault {
                     .backup_files()
                     .iter()
                     .map(|(name, p)| {
-                        let meta = fs::metadata(p).ok();
-                        let modified = meta
-                            .as_ref()
-                            .and_then(|m| m.modified().ok())
-                            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
-                            .map(|d| d.as_secs_f64());
-                        json!({"name": name, "size": meta.map(|m| m.len()), "modified": modified})
+                        let (created, modified) = copy_times(p);
+                        let size = fs::metadata(p).ok().map(|m| m.len());
+                        json!({"name": name, "size": size, "created": created, "modified": modified})
                     })
                     .collect();
                 Ok(json!({"backups": list, "days": BACKUP_DAYS}))
@@ -4715,6 +4725,11 @@ mod vault_tests {
         let files = v.backup_files();
         assert_eq!(files.len(), 1, "one copy per day");
         assert_eq!(files[0].0, format!("{}.vault", utc_day(now())));
+        // Listed with when the copy was made, not only the date of the vault it holds.
+        let listed = v.call("backups_list", json!({})).unwrap();
+        let made = listed["backups"][0]["created"].as_f64().unwrap();
+        assert!((now() - made).abs() < 120., "{made}");
+        assert!(listed["backups"][0]["modified"].as_f64().is_some());
         // Older days beyond the limit are removed when today's copy is made.
         fs::remove_file(&files[0].1).unwrap();
         for d in 1..=20 {

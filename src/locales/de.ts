@@ -1127,8 +1127,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'Browser nicht gefunden.',
   '{n} · ultima: {date}': '{n} · neueste: {date}',
   'Apri copia': 'Kopie öffnen',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    'Kopie vom {date}. Gib das Master-Passwort ein, das du an diesem Tag verwendet hast.',
   'Copie di sicurezza giornaliere': 'Tägliche Sicherungskopien',
   'Copie di sicurezza giornaliere ({n})': 'Tägliche Sicherungskopien ({n})',
   'Copie giornaliere su questo PC': 'Tägliche Kopien auf diesem PC',
@@ -1136,8 +1134,6 @@ const dictionary: Dictionary = {
   'già nel vault': 'bereits im Tresor',
   Indietro: 'Zurück',
   'La copia non contiene elementi.': 'Die Kopie enthält keine Einträge.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'Kopien öffnen sich mit dem Master-Passwort, das der Tresor an diesem Tag hatte. Sie werden gelöscht, wenn du den Datenschlüssel änderst (Passwort entdeckt oder neuer Wiederherstellungscode).',
   Nessuna: 'Keine',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'Noch keine Kopien: Die erste wird beim nächsten Speichern erstellt.',
@@ -1152,6 +1148,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'Falsches Passwort für diese Kopie',
   'Copia di sicurezza non trovata': 'Sicherungskopie nicht gefunden',
   'Nessun elemento selezionato': 'Kein Eintrag ausgewählt',
+  'Copia del {date}': 'Kopie vom {date}',
+  'vault salvato il {date}': 'Tresor gespeichert am {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'Die Kopie enthält den am {date} gespeicherten Tresor: Gib das Master-Passwort ein, das du damals verwendet hast.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Jede Kopie öffnet sich mit dem Master-Passwort, das der Tresor beim Speichern hatte. Wenn du den Datenschlüssel änderst (Passwort entdeckt oder neuer Wiederherstellungscode), werden die Kopien gelöscht.',
 };
 
 export default dictionary;

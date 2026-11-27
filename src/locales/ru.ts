@@ -1127,8 +1127,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'Браузер не обнаружен.',
   '{n} · ultima: {date}': '{n} · последняя: {date}',
   'Apri copia': 'Открыть копию',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    'Копия от {date}. Введите мастер-пароль, который вы использовали в тот день.',
   'Copie di sicurezza giornaliere': 'Ежедневные резервные копии',
   'Copie di sicurezza giornaliere ({n})': 'Ежедневные резервные копии ({n})',
   'Copie giornaliere su questo PC': 'Ежедневные копии на этом ПК',
@@ -1136,8 +1134,6 @@ const dictionary: Dictionary = {
   'già nel vault': 'уже в хранилище',
   Indietro: 'Назад',
   'La copia non contiene elementi.': 'Копия не содержит элементов.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'Копии открываются мастер-паролем, который был у хранилища в тот день. Они удаляются, когда вы меняете ключ данных (пароль раскрыт или новый код восстановления).',
   Nessuna: 'Нет',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'Копий пока нет: первая будет создана при следующем сохранении.',
@@ -1152,6 +1148,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'Неверный пароль для этой копии',
   'Copia di sicurezza non trovata': 'Резервная копия не найдена',
   'Nessun elemento selezionato': 'Не выбран ни один элемент',
+  'Copia del {date}': 'Копия от {date}',
+  'vault salvato il {date}': 'хранилище сохранено {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'Копия содержит хранилище, сохранённое {date}: введите мастер-пароль, который вы использовали тогда.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Каждая копия открывается мастер-паролем, который был у хранилища при сохранении. Когда вы меняете ключ данных (пароль раскрыт или новый код восстановления), копии удаляются.',
 };
 
 export default dictionary;

@@ -4,7 +4,8 @@ import { api, saveFile } from './api';
 import { locale, t, translateMessage } from './i18n';
 import { categories, type Item } from './types';
 
-type Copy = { name: string; size: number | null; modified: number | null };
+/** `created`: when the copy was made; `modified`: when the vault it holds was saved. */
+type Copy = { name: string; size: number | null; created: number | null; modified: number | null };
 type Found = Item & { present?: boolean };
 
 const when = (seconds: number | null) =>
@@ -125,8 +126,13 @@ export default function BackupHistory({
                     {copies?.map((c) => (
                       <li key={c.name}>
                         <span>
-                          <strong>{when(c.modified)}</strong>
-                          <small>{kb(c.size)}</small>
+                          <strong>
+                            {t('Copia del {date}', { date: when(c.created ?? c.modified) })}
+                          </strong>
+                          <small>
+                            {t('vault salvato il {date}', { date: when(c.modified) })} ·{' '}
+                            {kb(c.size)}
+                          </small>
                         </span>
                         <button
                           className="secondary"
@@ -159,7 +165,7 @@ export default function BackupHistory({
                   </ul>
                   <p className="helper">
                     {t(
-                      'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.',
+                      'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.',
                     )}
                   </p>
                 </>
@@ -168,10 +174,8 @@ export default function BackupHistory({
                 <>
                   <p className="helper">
                     {t(
-                      'Copia del {date}. Inserisci la password principale che usavi quel giorno.',
-                      {
-                        date: when(chosen.modified),
-                      },
+                      'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.',
+                      { date: when(chosen.modified) },
                     )}
                   </p>
                   <label className="field">

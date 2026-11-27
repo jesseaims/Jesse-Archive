@@ -1125,8 +1125,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'Navegador no detectado.',
   '{n} · ultima: {date}': '{n} · última: {date}',
   'Apri copia': 'Abrir copia',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    'Copia del {date}. Introduce la contraseña maestra que usabas ese día.',
   'Copie di sicurezza giornaliere': 'Copias de seguridad diarias',
   'Copie di sicurezza giornaliere ({n})': 'Copias de seguridad diarias ({n})',
   'Copie giornaliere su questo PC': 'Copias diarias en este PC',
@@ -1134,8 +1132,6 @@ const dictionary: Dictionary = {
   'già nel vault': 'ya en el vault',
   Indietro: 'Atrás',
   'La copia non contiene elementi.': 'La copia no contiene elementos.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'Las copias se abren con la contraseña maestra que tenía el vault ese día. Se eliminan cuando cambias la clave de los datos (contraseña descubierta o nuevo código de recuperación).',
   Nessuna: 'Ninguna',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'Aún no hay copias: la primera se creará en el próximo guardado.',
@@ -1150,6 +1146,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'Contraseña incorrecta para esta copia',
   'Copia di sicurezza non trovata': 'Copia de seguridad no encontrada',
   'Nessun elemento selezionato': 'Ningún elemento seleccionado',
+  'Copia del {date}': 'Copia del {date}',
+  'vault salvato il {date}': 'vault guardado el {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'La copia contiene el vault guardado el {date}: introduce la contraseña maestra que usabas entonces.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Cada copia se abre con la contraseña maestra que tenía el vault cuando se guardó. Cuando cambias la clave de los datos (contraseña descubierta o nuevo código de recuperación) las copias se eliminan.',
 };
 
 export default dictionary;

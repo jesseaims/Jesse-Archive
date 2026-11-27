@@ -1129,8 +1129,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'Navegador não detectado.',
   '{n} · ultima: {date}': '{n} · mais recente: {date}',
   'Apri copia': 'Abrir cópia',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    'Cópia de {date}. Digite a senha mestra que você usava nesse dia.',
   'Copie di sicurezza giornaliere': 'Cópias de segurança diárias',
   'Copie di sicurezza giornaliere ({n})': 'Cópias de segurança diárias ({n})',
   'Copie giornaliere su questo PC': 'Cópias diárias neste PC',
@@ -1138,8 +1136,6 @@ const dictionary: Dictionary = {
   'già nel vault': 'já no cofre',
   Indietro: 'Voltar',
   'La copia non contiene elementi.': 'A cópia não contém itens.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'As cópias abrem com a senha mestra que o cofre tinha nesse dia. Elas são excluídas quando você muda a chave dos dados (senha descoberta ou novo código de recuperação).',
   Nessuna: 'Nenhuma',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'Ainda não há cópias: a primeira será criada no próximo salvamento.',
@@ -1154,6 +1150,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'Senha incorreta para esta cópia',
   'Copia di sicurezza non trovata': 'Cópia de segurança não encontrada',
   'Nessun elemento selezionato': 'Nenhum item selecionado',
+  'Copia del {date}': 'Cópia de {date}',
+  'vault salvato il {date}': 'cofre salvo em {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'A cópia contém o cofre salvo em {date}: digite a senha mestra que você usava na época.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Cada cópia abre com a senha mestra que o cofre tinha quando foi salvo. Quando você muda a chave dos dados (senha descoberta ou novo código de recuperação), as cópias são excluídas.',
 };
 
 export default dictionary;

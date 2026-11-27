@@ -1112,8 +1112,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': 'Browser not detected.',
   '{n} · ultima: {date}': '{n} · latest: {date}',
   'Apri copia': 'Open copy',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    'Copy of {date}. Enter the master password you used that day.',
   'Copie di sicurezza giornaliere': 'Daily backup copies',
   'Copie di sicurezza giornaliere ({n})': 'Daily backup copies ({n})',
   'Copie giornaliere su questo PC': 'Daily copies on this PC',
@@ -1121,8 +1119,6 @@ const dictionary: Dictionary = {
   'già nel vault': 'already in the vault',
   Indietro: 'Back',
   'La copia non contiene elementi.': 'The copy contains no items.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    'Copies open with the master password the vault had that day. They are deleted when you change the data key (password discovered or new recovery code).',
   Nessuna: 'None',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     'No copies yet: the first one will be created at the next save.',
@@ -1137,6 +1133,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': 'Wrong password for this copy',
   'Copia di sicurezza non trovata': 'Backup copy not found',
   'Nessun elemento selezionato': 'No item selected',
+  'Copia del {date}': 'Copy of {date}',
+  'vault salvato il {date}': 'vault saved on {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'The copy holds the vault saved on {date}: enter the master password you used then.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Each copy opens with the master password the vault had when it was saved. When you change the data key (password discovered or new recovery code) the copies are deleted.',
 };
 
 export default dictionary;

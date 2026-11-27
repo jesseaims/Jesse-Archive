@@ -1102,8 +1102,6 @@ const dictionary: Dictionary = {
   'Browser non rilevato.': '브라우저를 찾을 수 없습니다.',
   '{n} · ultima: {date}': '{n}개 · 최근: {date}',
   'Apri copia': '사본 열기',
-  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
-    '{date} 사본입니다. 그날 사용하던 마스터 비밀번호를 입력하세요.',
   'Copie di sicurezza giornaliere': '일일 백업 사본',
   'Copie di sicurezza giornaliere ({n})': '일일 백업 사본({n})',
   'Copie giornaliere su questo PC': '이 PC의 일일 사본',
@@ -1111,8 +1109,6 @@ const dictionary: Dictionary = {
   'già nel vault': '이미 볼트에 있음',
   Indietro: '뒤로',
   'La copia non contiene elementi.': '사본에 항목이 없습니다.',
-  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
-    '사본은 그날 볼트에서 사용하던 마스터 비밀번호로 열립니다. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 삭제됩니다.',
   Nessuna: '없음',
   'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
     '아직 사본이 없습니다. 다음 저장 시 첫 사본이 만들어집니다.',
@@ -1127,6 +1123,12 @@ const dictionary: Dictionary = {
   'Password non corretta per questa copia': '이 사본의 비밀번호가 올바르지 않습니다',
   'Copia di sicurezza non trovata': '백업 사본을 찾을 수 없습니다',
   'Nessun elemento selezionato': '선택된 항목이 없습니다',
+  'Copia del {date}': '{date} 사본',
+  'vault salvato il {date}': '볼트 저장 시각: {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    '이 사본에는 {date}에 저장된 볼트가 들어 있습니다. 그때 사용하던 마스터 비밀번호를 입력하세요.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    '각 사본은 저장 당시 볼트의 마스터 비밀번호로 열립니다. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 사본이 삭제됩니다.',
 };
 
 export default dictionary;
