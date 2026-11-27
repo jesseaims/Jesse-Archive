@@ -163,4 +163,8 @@ export const RUNTIME_KEYS = [
   'Elenco degli usati di recente non valido',
   // browser_installer.rs: browser setup guide
   'Browser non rilevato.',
+  // core.rs: daily backup copies
+  'Password non corretta per questa copia',
+  'Copia di sicurezza non trovata',
+  'Nessun elemento selezionato',
 ];

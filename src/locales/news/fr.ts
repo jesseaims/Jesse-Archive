@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    'Copies de sécurité quotidiennes',
+    'Chaque jour, au premier enregistrement, l’application conserve une copie chiffrée du coffre sur ce PC, en dehors du dossier du coffre, et garde les 14 derniers jours. Depuis Paramètres → Données et sauvegarde → « Copies de sécurité quotidiennes », vous pouvez en enregistrer une ailleurs ou récupérer des éléments perdus : ouvrez la copie avec le mot de passe principal de ce jour-là et choisissez ce qu’il faut remettre dans le coffre. Quand vous changez la clé des données (mot de passe découvert ou nouveau code de récupération), les copies sont supprimées.',
+  ],
   'store-install-guide': [
     'Extension disponible dans les boutiques',
     'Le guide « Configurer les navigateurs » ouvre la page de l’extension sur le Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) ou sur le site des modules complémentaires de Firefox : il suffit d’appuyer sur « Ajouter » et l’extension se met à jour toute seule. Sur Firefox, elle reste installée après le redémarrage du navigateur. Le chargement manuel depuis le dossier de l’application reste disponible ; si vous l’utilisiez, supprimez cette copie après avoir installé celle de la boutique.',

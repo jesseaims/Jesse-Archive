@@ -68,6 +68,7 @@ import {
 import { CheckSquare, ChevronDown, Newspaper } from 'lucide-react';
 import NewsPanel from './NewsPanel';
 import BrowserSettings from './BrowserSettings';
+import BackupHistory from './BackupHistory';
 import { groupFor, savedGroupKey } from './groups';
 import GroupLogo from './GroupLogo';
 import type { QuickOpen } from './quick-search/actions';
@@ -3854,6 +3855,9 @@ function SettingsPage({
               <ShieldCheck size={16} />
               {t('Esporta pacchetto cifrato')}
             </button>
+            <BackupHistory
+              restore={(body) => mutate('backup_restore', body, t('Elementi recuperati'))}
+            />
             <div className="divider" />
             <div className="path-info">
               <strong>{t('Posizione vault')}</strong>

@@ -46,6 +46,7 @@ L'interfaccia Tauri usa IPC nativo, non il server HTTP del vecchio client Python
 | [App.tsx](../src/App.tsx) | Schermata auth, shell, pagine, editor e dialoghi condivisi |
 | [QuickFill.tsx](../src/QuickFill.tsx) | Sblocco e selezione account senza ricevere l'intero vault nel pannello; viste passkey e «Salvare questo account?» (priorità: passkey, salvataggio, inserimento) |
 | [BrowserInstaller.tsx](../src/BrowserInstaller.tsx), [BrowserSettings.tsx](../src/BrowserSettings.tsx) | Configurazione guidata e preferenze browser |
+| [BackupHistory.tsx](../src/BackupHistory.tsx) | Impostazioni → Dati e backup: copie giornaliere del vault (dalla Beta 1.9.8), salvataggio altrove e recupero di elementi con `backups_list`, `backup_read`, `backup_open`, `backup_restore` (tramite `mutate`) |
 | [NewsPanel.tsx](../src/NewsPanel.tsx), [news-changelog.ts](../src/news-changelog.ts), [commits.generated.json](../src/commits.generated.json) | Novità curate, cronologia Git e timestamp per voce |
 | [api.ts](../src/api.ts), [types.ts](../src/types.ts) | Wrapper `invoke` e tipi frontend; non validano da soli dati esterni |
 | [theme.ts](../src/theme.ts), [style.css](../src/style.css) | Otto preset, palette personalizzata e stile responsive |

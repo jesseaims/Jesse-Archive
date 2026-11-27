@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'daily-backups',
+    addedAt: '2026-11-28T00:45:00+01:00',
+    version: 'Beta 1.9.8',
+    title: 'Copie di sicurezza giornaliere',
+    description:
+      'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault, e tiene le ultime 14 giornate. Da Impostazioni → Dati e backup → «Copie di sicurezza giornaliere» puoi salvarne una altrove oppure recuperare singoli elementi persi: apri la copia con la password principale di quel giorno e scegli cosa riaggiungere al vault. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.',
+    icon: 'shield',
+  },
+  {
     id: 'store-install-guide',
     addedAt: '2026-11-24T20:14:00+01:00',
     version: 'Beta 1.9.7',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    '每日备份副本',
+    '每天首次保存时，应用会在此电脑上、保险库文件夹之外保留一份保险库的加密副本，并保留最近 14 天。在“设置 → 数据和备份 → 每日备份副本”中，你可以把副本保存到其他位置，或恢复单个丢失的项目：用当天的主密码打开副本，然后选择要重新加入保险库的内容。更改数据密钥时（密码泄露或新的恢复代码），副本会被删除。',
+  ],
   'store-install-guide': [
     '可从商店安装扩展',
     '“设置浏览器”向导会在 Chrome 网上应用店（Chrome、Edge、Brave、Opera、Vivaldi）或 Firefox 附加组件网站中打开扩展页面：只需点击“添加”，扩展就会自动更新。在 Firefox 中，重启浏览器后扩展仍会保留。仍可从应用文件夹手动加载扩展；如果你之前这样做过，请在安装商店版本后移除那个副本。',

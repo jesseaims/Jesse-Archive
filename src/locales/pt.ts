@@ -1116,17 +1116,46 @@ const dictionary: Dictionary = {
   'Edge può chiedere di consentire le estensioni da altri store: accetta.':
     'O Edge pode pedir para permitir extensões de outras lojas: aceite.',
   'In alternativa puoi caricare l’estensione dalla cartella dell’app. Si aggiorna insieme all’app.':
-    'Em alternativa, pode carregar a extensão a partir da pasta da aplicação. É atualizada juntamente com a aplicação.',
+    'Como alternativa, você pode carregar a extensão da pasta do aplicativo. Ela é atualizada junto com o aplicativo.',
   'Installazione manuale (senza store)': 'Instalação manual (sem loja)',
   'La copia dello store si aggiorna dallo store; quella caricata a mano si aggiorna con l’app.':
-    'A cópia da loja é atualizada pela loja; a carregada manualmente é atualizada com a aplicação.',
+    'A cópia da loja é atualizada pela loja; a carregada manualmente é atualizada com o aplicativo.',
   'Nella pagina dello store premi {button} e conferma.':
-    'Na página da loja prima {button} e confirme.',
+    'Na página da loja, clique em {button} e confirme.',
   'Opera può chiedere di installare prima il supporto per le estensioni del Chrome Web Store: accetta.':
     'O Opera pode pedir para instalar primeiro o suporte para extensões da Chrome Web Store: aceite.',
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
-    'Se tinha carregado a extensão manualmente, remova-a da página de extensões do navegador, para não ficarem duas cópias.',
-  'Browser non rilevato.': 'Navegador não detetado.',
+    'Se você tinha carregado a extensão manualmente, remova-a da página de extensões do navegador para não ficar com duas cópias.',
+  'Browser non rilevato.': 'Navegador não detectado.',
+  '{n} · ultima: {date}': '{n} · mais recente: {date}',
+  'Apri copia': 'Abrir cópia',
+  'Copie di sicurezza giornaliere': 'Cópias de segurança diárias',
+  'Copie di sicurezza giornaliere ({n})': 'Cópias de segurança diárias ({n})',
+  'Copie giornaliere su questo PC': 'Cópias diárias neste PC',
+  'Elementi recuperati': 'Itens recuperados',
+  'già nel vault': 'já no cofre',
+  Indietro: 'Voltar',
+  'La copia non contiene elementi.': 'A cópia não contém itens.',
+  Nessuna: 'Nenhuma',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'Ainda não há cópias: a primeira será criada no próximo salvamento.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Todos os dias, no primeiro salvamento, o aplicativo guarda uma cópia criptografada do cofre neste PC, fora da pasta do cofre. Os últimos {n} dias são mantidos.',
+  'Password principale della copia': 'Senha mestra da cópia',
+  'Recupera ({n})': 'Recuperar ({n})',
+  'Recupera elementi': 'Recuperar itens',
+  'Salva una copia altrove': 'Salvar uma cópia em outro lugar',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Escolha os itens a recuperar: eles são adicionados ao cofre como itens novos, sem alterar os atuais.',
+  'Password non corretta per questa copia': 'Senha incorreta para esta cópia',
+  'Copia di sicurezza non trovata': 'Cópia de segurança não encontrada',
+  'Nessun elemento selezionato': 'Nenhum item selecionado',
+  'Copia del {date}': 'Cópia de {date}',
+  'vault salvato il {date}': 'cofre salvo em {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'A cópia contém o cofre salvo em {date}: digite a senha mestra que você usava na época.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Cada cópia abre com a senha mestra que o cofre tinha quando foi salvo. Quando você muda a chave dos dados (senha descoberta ou novo código de recuperação), as cópias são excluídas.',
 };
 
 export default dictionary;

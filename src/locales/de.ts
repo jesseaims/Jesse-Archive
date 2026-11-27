@@ -1125,6 +1125,35 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     'Wenn du die Erweiterung manuell geladen hattest, entferne sie auf der Erweiterungsseite des Browsers, damit keine zwei Kopien bleiben.',
   'Browser non rilevato.': 'Browser nicht gefunden.',
+  '{n} · ultima: {date}': '{n} · neueste: {date}',
+  'Apri copia': 'Kopie öffnen',
+  'Copie di sicurezza giornaliere': 'Tägliche Sicherungskopien',
+  'Copie di sicurezza giornaliere ({n})': 'Tägliche Sicherungskopien ({n})',
+  'Copie giornaliere su questo PC': 'Tägliche Kopien auf diesem PC',
+  'Elementi recuperati': 'Einträge wiederhergestellt',
+  'già nel vault': 'bereits im Tresor',
+  Indietro: 'Zurück',
+  'La copia non contiene elementi.': 'Die Kopie enthält keine Einträge.',
+  Nessuna: 'Keine',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'Noch keine Kopien: Die erste wird beim nächsten Speichern erstellt.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Jeden Tag beim ersten Speichern bewahrt die App eine verschlüsselte Kopie des Tresors auf diesem PC auf, außerhalb des Tresorordners. Die letzten {n} Tage bleiben erhalten.',
+  'Password principale della copia': 'Master-Passwort der Kopie',
+  'Recupera ({n})': 'Wiederherstellen ({n})',
+  'Recupera elementi': 'Einträge wiederherstellen',
+  'Salva una copia altrove': 'Kopie an anderem Ort speichern',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Wähle die wiederherzustellenden Einträge: Sie werden dem Tresor als neue Einträge hinzugefügt, ohne die aktuellen zu verändern.',
+  'Password non corretta per questa copia': 'Falsches Passwort für diese Kopie',
+  'Copia di sicurezza non trovata': 'Sicherungskopie nicht gefunden',
+  'Nessun elemento selezionato': 'Kein Eintrag ausgewählt',
+  'Copia del {date}': 'Kopie vom {date}',
+  'vault salvato il {date}': 'Tresor gespeichert am {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'Die Kopie enthält den am {date} gespeicherten Tresor: Gib das Master-Passwort ein, das du damals verwendet hast.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Jede Kopie öffnet sich mit dem Master-Passwort, das der Tresor beim Speichern hatte. Wenn du den Datenschlüssel änderst (Passwort entdeckt oder neuer Wiederherstellungscode), werden die Kopien gelöscht.',
 };
 
 export default dictionary;

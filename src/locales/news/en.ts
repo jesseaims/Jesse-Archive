@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    'Daily backup copies',
+    'Every day, at the first save, the app keeps an encrypted copy of the vault on this PC, outside the vault folder, and keeps the last 14 days. From Settings → Data and backup → “Daily backup copies” you can save one elsewhere or recover single lost items: open the copy with that day’s master password and choose what to add back to the vault. When you change the data key (password discovered or new recovery code) the copies are deleted.',
+  ],
   'store-install-guide': [
     'Extension available from the stores',
     'The “Set up browsers” guide opens the extension page on the Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) or on the Firefox add-ons site: just press “Add” and the extension updates itself. On Firefox it stays installed after the browser restarts. Loading it by hand from the app folder remains available as an alternative; if you used it, remove that copy after installing the store one.',

@@ -1110,6 +1110,35 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     'If you had loaded the extension by hand, remove it from the browser’s extensions page, so that two copies do not remain.',
   'Browser non rilevato.': 'Browser not detected.',
+  '{n} · ultima: {date}': '{n} · latest: {date}',
+  'Apri copia': 'Open copy',
+  'Copie di sicurezza giornaliere': 'Daily backup copies',
+  'Copie di sicurezza giornaliere ({n})': 'Daily backup copies ({n})',
+  'Copie giornaliere su questo PC': 'Daily copies on this PC',
+  'Elementi recuperati': 'Items recovered',
+  'già nel vault': 'already in the vault',
+  Indietro: 'Back',
+  'La copia non contiene elementi.': 'The copy contains no items.',
+  Nessuna: 'None',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'No copies yet: the first one will be created at the next save.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Every day, at the first save, the app keeps an encrypted copy of the vault on this PC, outside the vault folder. The last {n} days are kept.',
+  'Password principale della copia': 'Master password of the copy',
+  'Recupera ({n})': 'Recover ({n})',
+  'Recupera elementi': 'Recover items',
+  'Salva una copia altrove': 'Save a copy elsewhere',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Choose the items to recover: they are added to the vault as new items, without touching the current ones.',
+  'Password non corretta per questa copia': 'Wrong password for this copy',
+  'Copia di sicurezza non trovata': 'Backup copy not found',
+  'Nessun elemento selezionato': 'No item selected',
+  'Copia del {date}': 'Copy of {date}',
+  'vault salvato il {date}': 'vault saved on {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'The copy holds the vault saved on {date}: enter the master password you used then.',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    'Each copy opens with the master password the vault had when it was saved. When you change the data key (password discovered or new recovery code) the copies are deleted.',
 };
 
 export default dictionary;

@@ -1116,6 +1116,35 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     '以前に拡張機能を手動で読み込んでいた場合は、2 つのコピーが残らないよう、ブラウザーの拡張機能ページから削除してください。',
   'Browser non rilevato.': 'ブラウザーが見つかりません。',
+  '{n} · ultima: {date}': '{n} 件 · 最新: {date}',
+  'Apri copia': 'コピーを開く',
+  'Copie di sicurezza giornaliere': '毎日のバックアップコピー',
+  'Copie di sicurezza giornaliere ({n})': '毎日のバックアップコピー（{n}）',
+  'Copie giornaliere su questo PC': 'この PC の毎日のコピー',
+  'Elementi recuperati': '項目を復元しました',
+  'già nel vault': '保管庫にあり',
+  Indietro: '戻る',
+  'La copia non contiene elementi.': 'このコピーには項目がありません。',
+  Nessuna: 'なし',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'まだコピーはありません。次回の保存時に最初のコピーが作成されます。',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    '毎日、最初の保存時に、アプリは保管庫の暗号化されたコピーをこの PC の保管庫フォルダーの外に保存します。直近 {n} 日分が保持されます。',
+  'Password principale della copia': 'コピーのマスターパスワード',
+  'Recupera ({n})': '復元（{n}）',
+  'Recupera elementi': '項目を復元',
+  'Salva una copia altrove': 'コピーを別の場所に保存',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    '復元する項目を選んでください。現在の項目には触れずに、新しい項目として保管庫に追加されます。',
+  'Password non corretta per questa copia': 'このコピーのパスワードが正しくありません',
+  'Copia di sicurezza non trovata': 'バックアップコピーが見つかりません',
+  'Nessun elemento selezionato': '項目が選択されていません',
+  'Copia del {date}': '{date} のコピー',
+  'vault salvato il {date}': '保管庫の保存日時: {date}',
+  'La copia contiene il vault salvato il {date}: inserisci la password principale che usavi allora.':
+    'このコピーには {date} に保存された保管庫が含まれます。当時使っていたマスターパスワードを入力してください。',
+  'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
+    '各コピーは、保存時に保管庫で使われていたマスターパスワードで開きます。データキーを変更すると（パスワードの漏えい、または新しい回復コード）コピーは削除されます。',
 };
 
 export default dictionary;
