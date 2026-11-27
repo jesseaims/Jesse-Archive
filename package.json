@@ -2,6 +2,7 @@
   "name": "jesse-archive-tauri",
   "private": true,
   "version": "1.9.7",
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "package:store": "node scripts/package-store-extension.mjs",
