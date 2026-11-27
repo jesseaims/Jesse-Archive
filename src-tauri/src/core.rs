@@ -472,6 +472,81 @@ fn merge_data(a: &mut V, b: &V) -> bool {
     }
     normalize(a) || ch
 }
+/// Days of daily copies kept on this PC (`Vault::snapshot_daily`).
+const BACKUP_DAYS: usize = 14;
+/// `AAAA-MM-GG` (UTC) of a Unix time in seconds.
+fn utc_day(t: f64) -> String {
+    // Civil date from days since 1970-01-01 (H. Hinnant's algorithm).
+    let z = (t / 86400.).floor() as i64 + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z.rem_euclid(146_097);
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let day = doy - (153 * mp + 2) / 5 + 1;
+    let month = if mp < 10 { mp + 3 } else { mp - 9 };
+    let year = yoe + era * 400 + i64::from(month <= 2);
+    format!("{year:04}-{month:02}-{day:02}")
+}
+/// Only names written by `snapshot_daily`: the webview chooses a copy by name.
+fn backup_name_ok(name: &str) -> bool {
+    let b = name.as_bytes();
+    name.len() == 16
+        && name.ends_with(".vault")
+        && b[..10].iter().enumerate().all(|(i, c)| {
+            if i == 4 || i == 7 {
+                *c == b'-'
+            } else {
+                c.is_ascii_digit()
+            }
+        })
+}
+/// Data of a vault file opened with the master password it had, without touching the
+/// open vault (a daily copy may predate a password change).
+fn open_with_password(bytes: &[u8], password: &str) -> Res<V> {
+    let h: V = serde_json::from_slice(bytes).map_err(err)?;
+    let wrap_key = kdf_n(password, &decode(&h, "salt")?, log_n_of(&h, "kdf")?)?;
+    let dek = Zeroizing::new(
+        unseal(&wrap_key, s(&h, "wrap"))
+            .map_err(|_| "Password non corretta per questa copia".to_string())?,
+    );
+    let dek: Zeroizing<[u8; 32]> =
+        Zeroizing::new(dek.as_slice().try_into().map_err(|_| "DEK non valida")?);
+    let plain = Zeroizing::new(unseal(&dek, s(&h, "data"))?);
+    let mut data: V = serde_json::from_slice(&plain).map_err(err)?;
+    ensure_shape(&mut data)?;
+    Ok(data)
+}
+/// Adds an item recovered from a daily copy as a new item: new id, so neither the
+/// deletion of the original (tombstone) nor a sync can remove it again.
+fn restore_item(d: &mut V, old: &V, groups: &V) {
+    let mut it = old.clone();
+    it["id"] = json!(id());
+    it["created"] = json!(now());
+    it["updated"] = json!(now());
+    it["trashed"] = V::Null;
+    it["shared"] = json!(false);
+    if !array(d, "folders")
+        .iter()
+        .any(|f| s(f, "id") == s(old, "folder"))
+    {
+        it["folder"] = V::Null;
+    }
+    let gk = s(&it, "gk").to_string();
+    if !gk.is_empty() && d["groups"].get(&gk).is_none() {
+        if let Some(g) = groups.get(&gk) {
+            let mut g = g.clone();
+            g["upd"] = json!(now());
+            obj(d, "groups").insert(gk, g);
+        }
+    }
+    arr(d, "items").push(it.clone());
+    if let Some(sf) = secret(s(&it, "type")) {
+        if !s(&it["f"], sf).is_empty() {
+            link(d, &it, s(&it["f"], sf));
+        }
+    }
+}
 fn atomic_write(path: &Path, text: &[u8]) -> Res<()> {
     fs::create_dir_all(path.parent().ok_or("Directory mancante")?).map_err(err)?;
     let tmp = path.with_extension(format!("tmp-{}", id()));
@@ -526,6 +601,8 @@ fn content_sig(bytes: &[u8]) -> FileSig {
 pub struct Vault {
     pub path: PathBuf,
     config: PathBuf,
+    /// Folder of the daily copies (`backups/<vault>/`), on this PC: see `snapshot_daily`.
+    backups: PathBuf,
     key: Option<Zeroizing<[u8; 32]>>,
     header: V,
     data: V,
@@ -602,6 +679,7 @@ impl Vault {
         Self {
             path,
             config: cfg,
+            backups: dirs_data().join("JesseArchive").join("backups"),
             key: None,
             header: V::Null,
             data: V::Null,
@@ -766,6 +844,7 @@ impl Vault {
         let plain = Zeroizing::new(serde_json::to_vec(&self.data).map_err(err)?);
         h["data"] = json!(seal(&key, &plain)?);
         let bytes = serde_json::to_vec(&h).map_err(err)?;
+        self.snapshot_daily();
         if let Err(e) = atomic_write(&self.path, &bytes) {
             // Retried at the next synchronization (ping), e.g. when another PC was
             // replacing the file at the same moment.
@@ -833,7 +912,68 @@ impl Vault {
             (self.key, self.header) = snapshot;
             return Err(e);
         }
+        // The key changes because the old password or recovery code may be known: the
+        // daily copies and the `.bak` would still open with them.
+        self.forget_backups();
         Ok(rec)
+    }
+    /// Daily copies of the encrypted file (`backups/<vault>/AAAA-MM-GG.vault`, UTC date),
+    /// on this PC and outside the vault folder: a vault damaged in the cloud folder, or
+    /// saved again after a mistake, still has a good copy for `BACKUP_DAYS` days. The
+    /// first write of each day copies the file it is about to replace. Best effort: a
+    /// copy that cannot be made never stops the save.
+    fn snapshot_daily(&self) {
+        if !self.path.is_file() {
+            return;
+        }
+        let dir = self.backup_dir();
+        let target = dir.join(format!("{}.vault", utc_day(now())));
+        if target.exists() {
+            return;
+        }
+        if fs::create_dir_all(&dir).is_err() || fs::copy(&self.path, &target).is_err() {
+            let _ = fs::remove_file(&target);
+            return;
+        }
+        for (_, old) in self.backup_files().into_iter().skip(BACKUP_DAYS) {
+            let _ = fs::remove_file(old);
+        }
+    }
+    /// One folder per vault file, so two vaults used on this PC never mix their copies.
+    fn backup_dir(&self) -> PathBuf {
+        let path = self.path.to_string_lossy().to_lowercase();
+        self.backups
+            .join(&hex::encode(content_sig(path.as_bytes()))[..16])
+    }
+    /// Daily copies of this vault, newest first.
+    fn backup_files(&self) -> Vec<(String, PathBuf)> {
+        let mut out: Vec<(String, PathBuf)> = fs::read_dir(self.backup_dir())
+            .into_iter()
+            .flatten()
+            .flatten()
+            .filter_map(|e| {
+                let name = e.file_name().to_str()?.to_string();
+                backup_name_ok(&name).then(|| (name, e.path()))
+            })
+            .collect();
+        out.sort_by(|a, b| b.0.cmp(&a.0));
+        out
+    }
+    fn backup_file(&self, name: &str) -> Res<PathBuf> {
+        self.backup_files()
+            .into_iter()
+            .find(|(n, _)| n == name)
+            .map(|(_, p)| p)
+            .ok_or_else(|| "Copia di sicurezza non trovata".to_string())
+    }
+    fn forget_backups(&self) {
+        for (_, p) in self.backup_files() {
+            let _ = fs::remove_file(p);
+        }
+        let bak = self.path.with_extension("bak");
+        if bak.exists() {
+            let _ = fs::copy(&self.path, bak);
+        }
     }
     /// What the main window receives: everything but the secrets (`public_item`)
     /// and the values of the password history.
@@ -1394,7 +1534,71 @@ impl Vault {
                     "bak_exists": bak.exists(),
                     "bak_modified": modified(&bak),
                     "synced_at": self.last_sync,
+                    "copies": self.backup_files().len(),
+                    "copy_modified": self.backup_files().first().map(|(_, p)| modified(p)).unwrap_or(V::Null),
                 }))
+            }
+            // Daily copies (`snapshot_daily`): list, save elsewhere, open with the
+            // password they had and recover chosen items as new items.
+            "backups_list" => {
+                let list: Vec<V> = self
+                    .backup_files()
+                    .iter()
+                    .map(|(name, p)| {
+                        let meta = fs::metadata(p).ok();
+                        let modified = meta
+                            .as_ref()
+                            .and_then(|m| m.modified().ok())
+                            .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+                            .map(|d| d.as_secs_f64());
+                        json!({"name": name, "size": meta.map(|m| m.len()), "modified": modified})
+                    })
+                    .collect();
+                Ok(json!({"backups": list, "days": BACKUP_DAYS}))
+            }
+            "backup_read" => {
+                let p = self.backup_file(s(&b, "name"))?;
+                Ok(json!({"text": fs::read_to_string(p).map_err(err)?}))
+            }
+            "backup_open" => {
+                let p = self.backup_file(s(&b, "name"))?;
+                let data = open_with_password(&fs::read(p).map_err(err)?, s(&b, "password"))?;
+                let current: HashSet<&str> = array(&self.data, "items")
+                    .iter()
+                    .filter(|x| x["trashed"].is_null())
+                    .map(|x| s(x, "id"))
+                    .collect();
+                let items: Vec<V> = array(&data, "items")
+                    .iter()
+                    .filter(|it| it["trashed"].is_null())
+                    .map(|it| {
+                        let mut out = public_item(it);
+                        out["present"] = json!(current.contains(s(it, "id")));
+                        out
+                    })
+                    .collect();
+                Ok(json!({"items": items}))
+            }
+            "backup_restore" => {
+                let p = self.backup_file(s(&b, "name"))?;
+                let ids: HashSet<&str> = array(&b, "ids").iter().filter_map(V::as_str).collect();
+                if ids.is_empty() {
+                    return Err("Nessun elemento selezionato".into());
+                }
+                let data = open_with_password(&fs::read(p).map_err(err)?, s(&b, "password"))?;
+                let chosen: Vec<V> = array(&data, "items")
+                    .iter()
+                    .filter(|it| it["trashed"].is_null() && ids.contains(s(it, "id")))
+                    .cloned()
+                    .collect();
+                let groups = data["groups"].clone();
+                let n = self.transact(|d| {
+                    for it in &chosen {
+                        restore_item(d, it, &groups);
+                    }
+                    Ok(chosen.len())
+                })?;
+                Ok(json!({"count": n, "state": self.state()}))
             }
             "health" => Ok(health(&self.data)),
             "totp" => {
@@ -3383,6 +3587,7 @@ mod vault_tests {
         let v = Vault {
             path: dir.join("jesse_archive.vault"),
             config: dir.join("config.json"),
+            backups: dir.join("backups"),
             key: None,
             header: V::Null,
             data: V::Null,
@@ -4467,6 +4672,142 @@ mod vault_tests {
     fn item(id: &str) -> V {
         json!({"id": id, "type": "login", "title": "Esempio", "updated": 1.0,
                "f": {"url": "https://example.test", "username": "utente"}, "zz_unknown": 7})
+    }
+    #[test]
+    fn utc_day_and_backup_names() {
+        assert_eq!(utc_day(0.), "1970-01-01");
+        assert_eq!(utc_day(951_782_400.), "2000-02-29");
+        assert_eq!(utc_day(1_700_000_000.), "2023-11-14");
+        assert!(backup_name_ok("2026-11-28.vault"));
+        for bad in [
+            "../a/2026-11-28.vault",
+            "2026-11-28.vault.tmp",
+            "abcd-ef-gh.vault",
+            "2026-11-28.bak",
+            "2026_11_28.vault",
+            "",
+        ] {
+            assert!(!backup_name_ok(bad), "{bad}");
+        }
+    }
+    fn add_login(v: &mut Vault, title: &str) -> String {
+        let r = v
+            .call(
+                "item",
+                json!({"type": "login", "title": title,
+                       "f": {"username": "utente", "password": "segreto-sintetico"}}),
+            )
+            .unwrap();
+        let items = r["state"]["items"].as_array().cloned().unwrap_or_default();
+        items
+            .iter()
+            .find(|it| s(it, "title") == title)
+            .map(|it| s(it, "id").to_string())
+            .unwrap()
+    }
+    #[test]
+    fn one_daily_copy_kept_for_fourteen_days() {
+        let (mut v, dir) = unlocked_vault();
+        // Creating the vault has no previous file to copy.
+        assert!(v.backup_files().is_empty());
+        add_login(&mut v, "Primo");
+        add_login(&mut v, "Secondo");
+        let files = v.backup_files();
+        assert_eq!(files.len(), 1, "one copy per day");
+        assert_eq!(files[0].0, format!("{}.vault", utc_day(now())));
+        // Older days beyond the limit are removed when today's copy is made.
+        fs::remove_file(&files[0].1).unwrap();
+        for d in 1..=20 {
+            let name = format!("{}.vault", utc_day(now() - d as f64 * 86400.));
+            fs::write(v.backup_dir().join(name), b"{}").unwrap();
+        }
+        fs::write(v.backup_dir().join("estraneo.txt"), b"x").unwrap();
+        add_login(&mut v, "Terzo");
+        let files = v.backup_files();
+        assert_eq!(files.len(), BACKUP_DAYS);
+        assert_eq!(files[0].0, format!("{}.vault", utc_day(now())));
+        assert!(v.backup_dir().join("estraneo.txt").exists());
+        // The copies are outside the vault folder's files and are encrypted copies.
+        let text = fs::read_to_string(&files[0].1).unwrap();
+        assert!(!text.contains("segreto-sintetico"));
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_lost_item_is_recovered_as_a_new_item() {
+        let (mut v, dir) = unlocked_vault();
+        let lost = add_login(&mut v, "Da recuperare");
+        // Today's copy must hold the item: drop the earlier one, the next write makes it.
+        for (_, f) in v.backup_files() {
+            fs::remove_file(f).unwrap();
+        }
+        v.transact(|d| {
+            arr(d, "items").clear();
+            Ok(())
+        })
+        .unwrap();
+        let name = v.backup_files()[0].0.clone();
+        let vault_bytes = fs::read(&v.path).unwrap();
+        let wrong = json!({"name": name, "password": "password-sbagliata"});
+        assert!(v.call("backup_open", wrong).is_err());
+        let open = json!({"name": name, "password": "password-sintetica"});
+        let r = v.call("backup_open", open.clone()).unwrap();
+        let listed = r["items"].as_array().unwrap();
+        assert_eq!(listed.len(), 1);
+        assert_eq!(listed[0]["present"], false);
+        assert!(
+            listed[0]["f"].get("password").is_none(),
+            "no secret to the window"
+        );
+        // Opening a copy never writes the vault.
+        assert_eq!(fs::read(&v.path).unwrap(), vault_bytes);
+        assert!(v
+            .call(
+                "backup_restore",
+                json!({"name": name, "password": "password-sintetica", "ids": []})
+            )
+            .is_err());
+        let restore = json!({"name": name, "password": "password-sintetica", "ids": [lost]});
+        let r = v.call("backup_restore", restore).unwrap();
+        assert_eq!(r["count"], 1);
+        let items = array(&v.data, "items");
+        assert_eq!(items.len(), 1);
+        assert_ne!(s(&items[0], "id"), lost, "new id");
+        assert_eq!(s(&items[0]["f"], "password"), "segreto-sintetico");
+        let new_id = s(&items[0], "id").to_string();
+        assert!(array(&v.data, "passwords")
+            .iter()
+            .any(|p| s(p, "item_id") == new_id && p["active"] == true));
+        // Names other than the daily copies are refused.
+        let traversal = json!({"name": "../jesse_archive.vault", "password": "password-sintetica"});
+        assert!(v.call("backup_open", traversal).is_err());
+        fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn a_copy_opens_with_the_password_it_had_and_a_new_key_forgets_them() {
+        let (mut v, dir) = unlocked_vault();
+        add_login(&mut v, "Uno");
+        let name = v.backup_files()[0].0.clone();
+        v.call(
+            "master",
+            json!({"old": "password-sintetica", "new": "password-nuova"}),
+        )
+        .unwrap();
+        let old = json!({"name": name, "password": "password-sintetica"});
+        assert!(
+            v.call("backup_open", old).is_ok(),
+            "copy from before the change"
+        );
+        // "The old password may have been discovered": copies and .bak are forgotten.
+        v.call("recovery_new", json!({"password": "password-nuova"}))
+            .unwrap();
+        assert!(v.backup_files().is_empty());
+        assert_eq!(
+            fs::read(v.path.with_extension("bak")).unwrap(),
+            fs::read(&v.path).unwrap()
+        );
+        let info = v.call("backup_info", json!({})).unwrap();
+        assert_eq!(info["copies"], 0);
+        fs::remove_dir_all(dir).unwrap();
     }
     #[test]
     fn import_rejects_invalid_payloads_without_changes() {

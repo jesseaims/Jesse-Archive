@@ -2,9 +2,13 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    'Cópias de segurança diárias',
+    'Todos os dias, no primeiro salvamento, o aplicativo guarda uma cópia criptografada do cofre neste PC, fora da pasta do cofre, e mantém os últimos 14 dias. Em Configurações → Dados e backup → «Cópias de segurança diárias» você pode salvar uma em outro lugar ou recuperar itens perdidos: abra a cópia com a senha mestra daquele dia e escolha o que adicionar de volta ao cofre. Quando você muda a chave dos dados (senha descoberta ou novo código de recuperação), as cópias são excluídas.',
+  ],
   'store-install-guide': [
     'Extensão disponível nas lojas',
-    'O guia «Configurar navegadores» abre a página da extensão na Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) ou no site de extras do Firefox: basta premir «Adicionar» e a extensão atualiza-se sozinha. No Firefox continua instalada depois de reiniciar o navegador. O carregamento manual a partir da pasta da aplicação continua disponível como alternativa; se o usavas, remove essa cópia depois de instalar a da loja.',
+    'O guia «Configurar navegadores» abre a página da extensão na Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) ou no site de complementos do Firefox: basta clicar em «Adicionar» e a extensão se atualiza sozinha. No Firefox ela continua instalada depois de reiniciar o navegador. O carregamento manual da pasta do aplicativo continua disponível como alternativa; se você o usava, remova essa cópia depois de instalar a da loja.',
   ],
   'store-extension-updates': [
     'Extensão das lojas sempre atualizada',

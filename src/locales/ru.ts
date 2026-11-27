@@ -1125,6 +1125,33 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     'Если вы ранее загрузили расширение вручную, удалите его на странице расширений браузера, чтобы не осталось двух копий.',
   'Browser non rilevato.': 'Браузер не обнаружен.',
+  '{n} · ultima: {date}': '{n} · последняя: {date}',
+  'Apri copia': 'Открыть копию',
+  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
+    'Копия от {date}. Введите мастер-пароль, который вы использовали в тот день.',
+  'Copie di sicurezza giornaliere': 'Ежедневные резервные копии',
+  'Copie di sicurezza giornaliere ({n})': 'Ежедневные резервные копии ({n})',
+  'Copie giornaliere su questo PC': 'Ежедневные копии на этом ПК',
+  'Elementi recuperati': 'Элементы восстановлены',
+  'già nel vault': 'уже в хранилище',
+  Indietro: 'Назад',
+  'La copia non contiene elementi.': 'Копия не содержит элементов.',
+  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
+    'Копии открываются мастер-паролем, который был у хранилища в тот день. Они удаляются, когда вы меняете ключ данных (пароль раскрыт или новый код восстановления).',
+  Nessuna: 'Нет',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'Копий пока нет: первая будет создана при следующем сохранении.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Каждый день при первом сохранении приложение сохраняет зашифрованную копию хранилища на этом ПК, вне папки хранилища. Хранятся последние {n} дней.',
+  'Password principale della copia': 'Мастер-пароль копии',
+  'Recupera ({n})': 'Восстановить ({n})',
+  'Recupera elementi': 'Восстановить элементы',
+  'Salva una copia altrove': 'Сохранить копию в другом месте',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Выберите элементы для восстановления: они будут добавлены в хранилище как новые, не затрагивая текущие.',
+  'Password non corretta per questa copia': 'Неверный пароль для этой копии',
+  'Copia di sicurezza non trovata': 'Резервная копия не найдена',
+  'Nessun elemento selezionato': 'Не выбран ни один элемент',
 };
 
 export default dictionary;

@@ -1058,6 +1058,33 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     '如果之前手动加载过扩展，请在浏览器的扩展页面中将其移除，以免保留两个副本。',
   'Browser non rilevato.': '未检测到浏览器。',
+  '{n} · ultima: {date}': '{n} 份 · 最新：{date}',
+  'Apri copia': '打开副本',
+  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
+    '{date} 的副本。请输入你当天使用的主密码。',
+  'Copie di sicurezza giornaliere': '每日备份副本',
+  'Copie di sicurezza giornaliere ({n})': '每日备份副本（{n}）',
+  'Copie giornaliere su questo PC': '此电脑上的每日副本',
+  'Elementi recuperati': '已恢复项目',
+  'già nel vault': '已在保险库中',
+  Indietro: '返回',
+  'La copia non contiene elementi.': '此副本不包含项目。',
+  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
+    '副本需要使用保险库当天的主密码打开。更改数据密钥时（密码泄露或新的恢复代码）副本会被删除。',
+  Nessuna: '无',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    '还没有副本：下次保存时会创建第一个副本。',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    '每天首次保存时，应用会在此电脑上、保险库文件夹之外保留一份保险库的加密副本。保留最近 {n} 天。',
+  'Password principale della copia': '副本的主密码',
+  'Recupera ({n})': '恢复（{n}）',
+  'Recupera elementi': '恢复项目',
+  'Salva una copia altrove': '将副本保存到其他位置',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    '选择要恢复的项目：它们会作为新项目添加到保险库，不会改动当前项目。',
+  'Password non corretta per questa copia': '此副本的密码不正确',
+  'Copia di sicurezza non trovata': '找不到备份副本',
+  'Nessun elemento selezionato': '未选择任何项目',
 };
 
 export default dictionary;

@@ -56,6 +56,9 @@ export type BackupInfo = {
   bak_exists: boolean;
   bak_modified: number | null;
   synced_at: number;
+  /** Daily copies on this PC (Settings → Data and backup → Backup copies). */
+  copies?: number;
+  copy_modified?: number | null;
 };
 export type DashboardContext = {
   vault: State;
@@ -777,6 +780,12 @@ function BackupStatus({ ctx }: WidgetProps) {
         <dd>{dateLabel(b.modified)}</dd>
         <dt>{t('Copia precedente (.bak)')}</dt>
         <dd>{b.bak_exists ? dateLabel(b.bak_modified) : t('Assente')}</dd>
+        <dt>{t('Copie giornaliere su questo PC')}</dt>
+        <dd>
+          {b.copies
+            ? t('{n} · ultima: {date}', { n: b.copies, date: dateLabel(b.copy_modified ?? null) })
+            : t('Nessuna')}
+        </dd>
         <dt>{t('Ultima lettura delle copie nella cartella')}</dt>
         <dd>{dateLabel(b.synced_at)}</dd>
         <dt>{t('Destinazione')}</dt>

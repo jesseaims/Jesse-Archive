@@ -1131,6 +1131,33 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     'Si vous aviez chargé l’extension manuellement, supprimez-la de la page des extensions du navigateur, pour ne pas garder deux copies.',
   'Browser non rilevato.': 'Navigateur non détecté.',
+  '{n} · ultima: {date}': '{n} · dernière : {date}',
+  'Apri copia': 'Ouvrir la copie',
+  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
+    'Copie du {date}. Saisissez le mot de passe principal que vous utilisiez ce jour-là.',
+  'Copie di sicurezza giornaliere': 'Copies de sécurité quotidiennes',
+  'Copie di sicurezza giornaliere ({n})': 'Copies de sécurité quotidiennes ({n})',
+  'Copie giornaliere su questo PC': 'Copies quotidiennes sur ce PC',
+  'Elementi recuperati': 'Éléments récupérés',
+  'già nel vault': 'déjà dans le coffre',
+  Indietro: 'Retour',
+  'La copia non contiene elementi.': 'La copie ne contient aucun élément.',
+  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
+    'Les copies s’ouvrent avec le mot de passe principal qu’avait le coffre ce jour-là. Elles sont supprimées quand vous changez la clé des données (mot de passe découvert ou nouveau code de récupération).',
+  Nessuna: 'Aucune',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    'Aucune copie pour l’instant : la première sera créée au prochain enregistrement.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    'Chaque jour, au premier enregistrement, l’application conserve une copie chiffrée du coffre sur ce PC, en dehors du dossier du coffre. Les {n} derniers jours sont conservés.',
+  'Password principale della copia': 'Mot de passe principal de la copie',
+  'Recupera ({n})': 'Récupérer ({n})',
+  'Recupera elementi': 'Récupérer des éléments',
+  'Salva una copia altrove': 'Enregistrer une copie ailleurs',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    'Choisissez les éléments à récupérer : ils sont ajoutés au coffre comme nouveaux éléments, sans toucher aux éléments actuels.',
+  'Password non corretta per questa copia': 'Mot de passe incorrect pour cette copie',
+  'Copia di sicurezza non trovata': 'Copie de sécurité introuvable',
+  'Nessun elemento selezionato': 'Aucun élément sélectionné',
 };
 
 export default dictionary;

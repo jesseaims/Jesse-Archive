@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'daily-backups': [
+    'Copias de seguridad diarias',
+    'Cada día, en el primer guardado, la app conserva una copia cifrada del vault en este PC, fuera de la carpeta del vault, y mantiene los últimos 14 días. Desde Ajustes → Datos y copia de seguridad → «Copias de seguridad diarias» puedes guardar una en otro lugar o recuperar elementos perdidos: abre la copia con la contraseña maestra de ese día y elige qué volver a añadir al vault. Cuando cambias la clave de los datos (contraseña descubierta o nuevo código de recuperación) las copias se eliminan.',
+  ],
   'store-install-guide': [
     'Extensión disponible en las tiendas',
     'La guía «Configurar navegadores» abre la página de la extensión en Chrome Web Store (Chrome, Edge, Brave, Opera, Vivaldi) o en el sitio de complementos de Firefox: basta con pulsar «Añadir» y la extensión se actualiza sola. En Firefox sigue instalada después de reiniciar el navegador. La carga manual desde la carpeta de la app sigue disponible como alternativa; si la usabas, quita esa copia después de instalar la de la tienda.',

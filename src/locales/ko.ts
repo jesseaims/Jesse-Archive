@@ -1100,6 +1100,33 @@ const dictionary: Dictionary = {
   'Se avevi caricato l’estensione a mano, rimuovila dalla pagina delle estensioni del browser, così non restano due copie.':
     '이전에 확장 프로그램을 수동으로 불러왔다면 두 개의 사본이 남지 않도록 브라우저의 확장 프로그램 페이지에서 제거하세요.',
   'Browser non rilevato.': '브라우저를 찾을 수 없습니다.',
+  '{n} · ultima: {date}': '{n}개 · 최근: {date}',
+  'Apri copia': '사본 열기',
+  'Copia del {date}. Inserisci la password principale che usavi quel giorno.':
+    '{date} 사본입니다. 그날 사용하던 마스터 비밀번호를 입력하세요.',
+  'Copie di sicurezza giornaliere': '일일 백업 사본',
+  'Copie di sicurezza giornaliere ({n})': '일일 백업 사본({n})',
+  'Copie giornaliere su questo PC': '이 PC의 일일 사본',
+  'Elementi recuperati': '항목을 복구했습니다',
+  'già nel vault': '이미 볼트에 있음',
+  Indietro: '뒤로',
+  'La copia non contiene elementi.': '사본에 항목이 없습니다.',
+  'Le copie si aprono con la password principale che il vault aveva quel giorno. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) vengono eliminate.':
+    '사본은 그날 볼트에서 사용하던 마스터 비밀번호로 열립니다. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 삭제됩니다.',
+  Nessuna: '없음',
+  'Nessuna copia ancora: la prima verrà creata al prossimo salvataggio.':
+    '아직 사본이 없습니다. 다음 저장 시 첫 사본이 만들어집니다.',
+  'Ogni giorno, al primo salvataggio, l’app conserva una copia cifrata del vault su questo PC, fuori dalla cartella del vault. Restano le ultime {n} giornate.':
+    '매일 첫 저장 시 앱이 볼트의 암호화된 사본을 볼트 폴더 밖, 이 PC에 보관합니다. 최근 {n}일 분량이 유지됩니다.',
+  'Password principale della copia': '사본의 마스터 비밀번호',
+  'Recupera ({n})': '복구({n})',
+  'Recupera elementi': '항목 복구',
+  'Salva una copia altrove': '사본을 다른 곳에 저장',
+  'Scegli gli elementi da recuperare: vengono aggiunti al vault come elementi nuovi, senza toccare quelli attuali.':
+    '복구할 항목을 선택하세요. 현재 항목은 그대로 두고 새 항목으로 볼트에 추가됩니다.',
+  'Password non corretta per questa copia': '이 사본의 비밀번호가 올바르지 않습니다',
+  'Copia di sicurezza non trovata': '백업 사본을 찾을 수 없습니다',
+  'Nessun elemento selezionato': '선택된 항목이 없습니다',
 };
 
 export default dictionary;
