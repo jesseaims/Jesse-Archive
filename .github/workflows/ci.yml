@@ -71,6 +71,9 @@ jobs:
       - name: Store publishing against simulated APIs
         run: npm run test:store
 
+      - name: Discord release announcement (no network)
+        run: npm run test:discord
+
       - name: Build native messaging host
         run: cargo build --manifest-path src-tauri/Cargo.toml --release --bin jesse_browser_host
 
