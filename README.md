@@ -90,4 +90,4 @@ Per segnalare una vulnerabilità in privato (segnalazione privata di GitHub o em
 
 ## Code signing policy
 
-Come viene compilato e firmato il setup Windows, e chi approva le firme: [CODE_SIGNING.md](CODE_SIGNING.md). La firma Authenticode tramite SignPath Foundation è in fase di richiesta: finché non è attiva, il setup non è firmato.
+Come viene compilato e firmato il setup Windows, e chi approva le firme: [CODE_SIGNING.md](CODE_SIGNING.md). Il setup non è firmato con Authenticode: la domanda a SignPath Foundation non è stata approvata per ora (il programma gratuito richiede un progetto già noto) e verrà ripresentata più avanti. Lo SHA-256 del setup è indicato da GitHub accanto al file in ogni release.

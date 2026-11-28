@@ -1,5 +1,6 @@
 # Builds the Windows setup on GitHub-hosted runners from the public source, as the
-# SignPath Foundation free code signing requires (CODE_SIGNING.md). For now it only
+# code signing services such as SignPath Foundation require (CODE_SIGNING.md; the
+# application was not approved for now, to reapply later). For now it only
 # builds and keeps the unsigned setup as a short-lived workflow artifact: releases are
 # still built and published by AutoPublish on the maintainer's PC (Publish-Release.ps1).
 name: Release build
@@ -80,7 +81,7 @@ jobs:
           if ("$($exe.VersionInfo.ProductVersion)".Trim() -ne $version) { throw "Il setup non è della versione $version" }
           $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
           "version=$version" >> $env:GITHUB_OUTPUT
-          "### Setup $version`n`n- Commit: ``$env:GITHUB_SHA```n- Dimensione: $([math]::Round($exe.Length / 1MB, 1)) MB`n- SHA-256: ``$hash```n- Firma Authenticode: non ancora (SignPath da configurare)" >> $env:GITHUB_STEP_SUMMARY
+          "### Setup $version`n`n- Commit: ``$env:GITHUB_SHA```n- Dimensione: $([math]::Round($exe.Length / 1MB, 1)) MB`n- SHA-256: ``$hash```n- Firma Authenticode: no (vedi CODE_SIGNING.md)" >> $env:GITHUB_STEP_SUMMARY
 
       # Kept briefly: published releases keep their setup in the GitHub release.
       - uses: actions/upload-artifact@v4

@@ -1,6 +1,6 @@
 # Stato del progetto e aree aperte
 
-**Stato al 28 novembre 2026:** la 2.0.0 è la prima versione stabile (fine della beta). Restano aperti: firma Authenticode del setup (domanda a SignPath Foundation inviata), sincronizzazione tramite cartella cloud dichiarata sperimentale, audit di sicurezza indipendente e revisione delle traduzioni da parte di madrelingua (rimandati per costi), app mobile (in sospeso).
+**Stato al 28 novembre 2026:** la 2.0.0 è la prima versione stabile (fine della beta). Restano aperti: firma Authenticode del setup (domanda a SignPath Foundation non approvata per ora: il programma gratuito richiede un progetto già noto; da ripresentare quando il progetto avrà più visibilità), sincronizzazione tramite cartella cloud dichiarata sperimentale, audit di sicurezza indipendente e revisione delle traduzioni da parte di madrelingua (rimandati per costi), app mobile (in sospeso).
 
 Fotografia statica al 17 novembre 2026, commit di partenza `1f09624`, Beta 1.1.4. Questo documento **non è una roadmap approvata**, non assegna scadenze e non autorizza implementazioni. Le proposte sono distinte dai comportamenti presenti e dai problemi verificabili nel codice. Per il catalogo completo vedere [FEATURES](FEATURES.md).
 

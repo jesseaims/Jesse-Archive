@@ -132,7 +132,7 @@ Nel resoconto finale dichiarare quali documenti sono cambiati e perché; se ness
 
 ## J. Current Project Status
 
-Dalla 2.0.0 (28 novembre 2026) il progetto è uscito dalla beta: versione stabile per Windows, licenza GPL-3.0, estensione sugli store; sincronizzazione tramite cartella cloud dichiarata sperimentale, firma Authenticode del setup richiesta a SignPath Foundation. Il resto di questa sezione descrive la baseline dell'analisi iniziale. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
+Dalla 2.0.0 (28 novembre 2026) il progetto è uscito dalla beta: versione stabile per Windows, licenza GPL-3.0, estensione sugli store; sincronizzazione tramite cartella cloud dichiarata sperimentale, setup senza firma Authenticode (domanda a SignPath Foundation non approvata il 28/11/2026 per scarsa visibilità pubblica, da ripresentare). Il resto di questa sezione descrive la baseline dell'analisi iniziale. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
 
 Limiti principali: azzeramento dei segreti incompleto; validazione limitata agli import e alla forma del vault, senza schema completo; assenza di transazioni e test estesi di concorrenza; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
 
