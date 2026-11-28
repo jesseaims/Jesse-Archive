@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'stable-2-0': [
+    'Jesse’s Archive 结束测试版',
+    '2.0.0 是第一个稳定版本。代码是采用 GPL-3.0 许可证的自由软件，扩展可从 Chrome 网上应用店和 Firefox 安装，保险库有每日备份副本，安全问题可以私下报告（见仓库中的 SECURITY.md）。通过云文件夹在多台电脑之间同步仍处于实验阶段：请保留备份副本，并报告无法正常工作的地方。安装程序的数字签名已经申请，将在后续更新中提供；在此之前 Windows 可能会显示警告。',
+  ],
   'daily-backups': [
     '每日备份副本',
     '每天首次保存时，应用会在此电脑上、保险库文件夹之外保留一份保险库的加密副本，并保留最近 14 天。在“设置 → 数据和备份 → 每日备份副本”中，你可以把副本保存到其他位置，或恢复单个丢失的项目：用当天的主密码打开副本，然后选择要重新加入保险库的内容。更改数据密钥时（密码泄露或新的恢复代码），副本会被删除。',

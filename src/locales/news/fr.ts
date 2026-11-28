@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'stable-2-0': [
+    'Jesse’s Archive sort de la bêta',
+    'La version 2.0.0 est la première version stable. Le code est un logiciel libre sous licence GPL-3.0, l’extension s’installe depuis le Chrome Web Store et Firefox, le coffre dispose de copies de sécurité quotidiennes et les problèmes de sécurité peuvent être signalés en privé (SECURITY.md dans le dépôt). La synchronisation entre plusieurs PC via un dossier cloud reste expérimentale : gardez une copie de sécurité et signalez ce qui ne fonctionne pas. Une signature numérique de l’installateur a été demandée et arrivera avec une prochaine mise à jour ; d’ici là, Windows peut afficher un avertissement.',
+  ],
   'daily-backups': [
     'Copies de sécurité quotidiennes',
     'Chaque jour, au premier enregistrement, l’application conserve une copie chiffrée du coffre sur ce PC, en dehors du dossier du coffre, et garde les 14 derniers jours. Depuis Paramètres → Données et sauvegarde → « Copies de sécurité quotidiennes », vous pouvez en enregistrer une ailleurs ou récupérer des éléments perdus : ouvrez la copie avec le mot de passe principal de ce jour-là et choisissez ce qu’il faut remettre dans le coffre. Quand vous changez la clé des données (mot de passe découvert ou nouveau code de récupération), les copies sont supprimées.',

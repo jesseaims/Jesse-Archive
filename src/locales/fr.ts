@@ -178,7 +178,6 @@ const dictionary: Dictionary = {
   'Barra laterale': 'Barre latérale',
   'Barra superiore': 'Barre supérieure',
   'Bentornato.': 'Bon retour.',
-  Beta: 'Bêta',
   'bit stimati': 'bits estimés',
   'Blocca archivio': 'Verrouiller l’archive',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -300,8 +299,6 @@ const dictionary: Dictionary = {
     'Téléchargement de la mise à jour : {percent} % ({received} sur {total})',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     'Téléchargement : {size}. Le programme d’installation est signé et vérifié avant l’installation. Le coffre sera verrouillé, Windows demandera l’autorisation et l’application se rouvrira à la fin.',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Jesse's Archive Bêta {version} est disponible (installée : Bêta {current}).",
   "È l'unico modo per recuperare il vault senza la password.":
     'C’est le seul moyen de récupérer le coffre sans le mot de passe.',
   'Elaborazione…': 'Traitement…',
@@ -372,8 +369,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': 'Groupe {name} placé dans la corbeille',
   'Gruppo aggiornato': 'Groupe mis à jour',
   'Gruppo associato:': 'Groupe associé :',
-  "Hai già l'ultima versione (Beta {version}).":
-    'Vous avez déjà la dernière version (Bêta {version}).',
   'Ho capito': 'J’ai compris',
   'Ho conservato il codice': 'J’ai conservé le code',
   'Ho installato l’estensione: apri Jesse’s Archive':
@@ -713,7 +708,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': 'Vérifier les comptes compromis',
   'Verifica completata: avvio dell’installazione…': 'Vérifié : lancement de l’installation…',
   'Verifica violazioni': 'Vérification des fuites',
-  'Version: Beta': 'Version : Bêta',
   'Voce selezionata': 'Élément sélectionné',
   'Wallet crypto': 'Portefeuille crypto',
   WORKSPACE: 'ESPACE DE TRAVAIL',
@@ -1160,6 +1154,13 @@ const dictionary: Dictionary = {
     'La copie contient le coffre enregistré le {date} : saisissez le mot de passe principal que vous utilisiez alors.',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     'Chaque copie s’ouvre avec le mot de passe principal qu’avait le coffre lors de son enregistrement. Quand vous changez la clé des données (mot de passe découvert ou nouveau code de récupération), les copies sont supprimées.',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Jesse's Archive {version} est disponible (installée : {current}).",
+  "Hai già l'ultima versione ({version}).": 'Vous avez déjà la dernière version ({version}).',
+  'Versione {version}': 'Version {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    'La synchronisation entre plusieurs PC via un dossier cloud (OneDrive, Google Drive, Dropbox…) est encore expérimentale : gardez toujours une copie de sécurité et, si vous remarquez un problème, signalez-le sur github.com/jesseaims/Jesse-Archive/issues.',
+  'Notizia importante': 'Annonce importante',
 };
 
 export default dictionary;

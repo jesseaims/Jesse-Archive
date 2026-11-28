@@ -110,7 +110,7 @@ switch (command) {
     if (body !== (await manifestBody(file, fields.version)))
       fail('Il manifest non corrisponde al setup (dimensione o SHA-256).');
     console.log(
-      `Firma valida: Beta ${fields.version}, ${fields.size} byte, SHA-256 ${fields.sha256}`,
+      `Firma valida: versione ${fields.version}, ${fields.size} byte, SHA-256 ${fields.sha256}`,
     );
     break;
   }

@@ -47,7 +47,7 @@ export function summary(notes = '') {
 export async function offerUpdate(info: UpdateInfo, { askConfirm, showNotice }: Dialogs) {
   const notes = summary(info.notes);
   const ok = await askConfirm(
-    t("È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).", {
+    t("È disponibile Jesse's Archive {version} (installata: {current}).", {
       version: info.version,
       current: info.current,
     }) +
@@ -165,7 +165,7 @@ export function UpdateSettings(dialogs: Dialogs) {
     try {
       const info = await invoke<UpdateInfo>('update_check');
       if (info.available) await offerUpdate(info, dialogs);
-      else setMessage(t("Hai già l'ultima versione (Beta {version}).", { version: info.current }));
+      else setMessage(t("Hai già l'ultima versione ({version}).", { version: info.current }));
     } catch (e) {
       setMessage(translateMessage(e));
     } finally {

@@ -167,7 +167,6 @@ const dictionary: Dictionary = {
   'Barra laterale': '侧边栏',
   'Barra superiore': '顶部栏',
   'Bentornato.': '欢迎回来。',
-  Beta: '测试版',
   'bit stimati': '估算位数',
   'Blocca archivio': '锁定档案',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -284,8 +283,6 @@ const dictionary: Dictionary = {
     '正在下载更新：{percent}%（{received} / {total}）',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     '下载：{size}。安装程序已签名，并会在安装前进行验证。保险库将被锁定，Windows 会请求授权，完成后应用会重新打开。',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Jesse's Archive Beta {version} 已发布（已安装：Beta {current}）。",
   "È l'unico modo per recuperare il vault senza la password.":
     '这是在没有密码的情况下恢复保险库的唯一方法。',
   'Elaborazione…': '正在处理…',
@@ -351,7 +348,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': '组 {name} 已移至回收站',
   'Gruppo aggiornato': '组已更新',
   'Gruppo associato:': '关联的组：',
-  "Hai già l'ultima versione (Beta {version}).": '你已经在使用最新版本（Beta {version}）。',
   'Ho capito': '知道了',
   'Ho conservato il codice': '我已保存此代码',
   'Ho installato l’estensione: apri Jesse’s Archive': '我已安装扩展程序：打开 Jesse’s Archive',
@@ -671,7 +667,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': '检查泄露的账户',
   'Verifica completata: avvio dell’installazione…': '已验证：正在开始安装…',
   'Verifica violazioni': '泄露检查',
-  'Version: Beta': '版本：Beta',
   'Voce selezionata': '选中的项目',
   'Wallet crypto': '加密钱包',
   WORKSPACE: '工作区',
@@ -1087,6 +1082,13 @@ const dictionary: Dictionary = {
     '此副本包含 {date} 保存的保险库：请输入你当时使用的主密码。',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     '每个副本都需要使用保险库保存时的主密码打开。更改数据密钥时（密码泄露或新的恢复代码），副本会被删除。',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Jesse's Archive {version} 已发布（已安装：{current}）。",
+  "Hai già l'ultima versione ({version}).": '你已经在使用最新版本（{version}）。',
+  'Versione {version}': '版本 {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    '通过云文件夹（OneDrive、Google Drive、Dropbox 等）在多台电脑之间同步仍处于实验阶段：请始终保留备份副本，如发现问题，请在 github.com/jesseaims/Jesse-Archive/issues 报告。',
+  'Notizia importante': '重要消息',
 };
 
 export default dictionary;

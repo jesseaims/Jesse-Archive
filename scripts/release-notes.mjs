@@ -37,7 +37,7 @@ if (entries.length) {
   lines.push('## Novità', '');
   for (const e of entries) lines.push(`### ${e.title} (${e.version})`, '', e.description, '');
 } else {
-  lines.push(`Aggiornamento Beta ${version}.`, '');
+  lines.push(`Aggiornamento ${version}.`, '');
 }
 lines.push(
   '## Installazione',
@@ -45,6 +45,6 @@ lines.push(
   '1. Scarica **JesseArchive-Setup.exe** qui sotto e avvialo: aggiorna la versione già installata, i dati del vault restano dove sono.',
   '2. Il setup non è firmato digitalmente: se Windows SmartScreen mostra un avviso, scegli **Ulteriori informazioni → Esegui comunque**.',
   '',
-  '_Versione Beta: non costituisce una certificazione di sicurezza._',
+  '_Il progetto non è stato sottoposto a un audit di sicurezza indipendente: il modello di sicurezza e i limiti noti sono descritti in docs/SECURITY.md._',
 );
 console.log(lines.join('\n'));

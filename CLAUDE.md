@@ -62,7 +62,7 @@ Il catalogo completo, con file, dipendenze e limiti, è [FEATURES](docs/FEATURES
 | TOTP e salute password | Implementati in `core.rs`; TOTP fisso SHA-1/6 cifre/30 secondi |
 | Verifica violazioni e favicon | Implementate, opzionali e con rete; `breaches`, `group_logo`, `SecurityPage`, `saveItem` |
 | Esportazione/importazione e pacchetti cifrati | Implementati in `core.rs` e Settings; export JSON/CSV in chiaro, `.jshare` cifrato; selezione fine non completamente esposta nella UI |
-| Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale |
+| Cartelle cloud e fusione | Implementazione locale per timestamp; nessuna API cloud del progetto, collaudo concorrente parziale; dichiarata sperimentale nell'app dalla 2.0.0 |
 | Aggiornamento automatico | Implementato in `updater.rs`/`Updater.tsx`: controllo disattivabile, conferma utente, manifest firmato Ed25519 verificato prima del setup silenzioso; collaudato end-to-end dall'utente |
 | Ricerca rapida globale | Implementata: Ctrl+Shift+Space (personalizzabile), finestra `quick-search`, ricerca per nome/username/email/dominio con errori di battitura, account raggruppati per servizio, copia/mostra password, apri sito o vault, tastiera completa; solo metadati nella finestra, usati di recente salvati nel vault cifrato (solo id), nessuna cronologia delle ricerche; `npm run test:quick-search` |
 | Dashboard personalizzabile | Implementata in `src/dashboard/`: registro dei widget, layout multipli, drag & drop nativo, salvataggio automatico in `settings.dashboard`; `health`/`backup_info` passivi; `npm run test:dashboard` |
@@ -132,7 +132,7 @@ Nel resoconto finale dichiarare quali documenti sono cambiati e perché; se ness
 
 ## J. Current Project Status
 
-Il repository contiene una Beta Windows con core, UI e integrazione browser operativi nel codice. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
+Dalla 2.0.0 (28 novembre 2026) il progetto è uscito dalla beta: versione stabile per Windows, licenza GPL-3.0, estensione sugli store; sincronizzazione tramite cartella cloud dichiarata sperimentale, firma Authenticode del setup richiesta a SignPath Foundation. Il resto di questa sezione descrive la baseline dell'analisi iniziale. La sessione di sviluppo precedente a questa analisi ha prodotto il setup 1.1.4 e superato le suite automatiche; questa attività documentale non li ha rieseguiti e non è un nuovo collaudo del prodotto.
 
 Limiti principali: azzeramento dei segreti incompleto; validazione limitata agli import e alla forma del vault, senza schema completo; assenza di transazioni e test estesi di concorrenza; processo di distribuzione browser manuale/parziale; compatibilità su tutti i browser e installazione offline su macchina pulita **Da verificare**. L'apertura della pagina estensioni è stata provata su Brave nella sessione precedente, non certificata sugli altri browser.
 

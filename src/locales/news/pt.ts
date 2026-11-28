@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'stable-2-0': [
+    'Jesse’s Archive sai da beta',
+    'A 2.0.0 é a primeira versão estável. O código é software livre com licença GPL-3.0, a extensão é instalada pela Chrome Web Store e pelo Firefox, o cofre tem cópias de segurança diárias e problemas de segurança podem ser informados em privado (SECURITY.md no repositório). A sincronização entre vários PCs por uma pasta na nuvem continua experimental: mantenha uma cópia de segurança e informe o que não funcionar. A assinatura digital do instalador foi solicitada e virá em uma próxima atualização; até lá, o Windows pode mostrar um aviso.',
+  ],
   'daily-backups': [
     'Cópias de segurança diárias',
     'Todos os dias, no primeiro salvamento, o aplicativo guarda uma cópia criptografada do cofre neste PC, fora da pasta do cofre, e mantém os últimos 14 dias. Em Configurações → Dados e backup → «Cópias de segurança diárias» você pode salvar uma em outro lugar ou recuperar itens perdidos: abra a cópia com a senha mestra daquele dia e escolha o que adicionar de volta ao cofre. Quando você muda a chave dos dados (senha descoberta ou novo código de recuperação), as cópias são excluídas.',

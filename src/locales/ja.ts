@@ -175,7 +175,6 @@ const dictionary: Dictionary = {
   'Barra laterale': 'サイドバー',
   'Barra superiore': '上部バー',
   'Bentornato.': 'おかえりなさい。',
-  Beta: 'ベータ',
   'bit stimati': '推定ビット数',
   'Blocca archivio': 'アーカイブをロック',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -296,8 +295,6 @@ const dictionary: Dictionary = {
     'アップデートをダウンロード中: {percent}% ({received} / {total})',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     'ダウンロード: {size}。インストーラーは署名済みで、インストール前に検証されます。保管庫はロックされ、Windows が許可を求め、完了後にアプリが再び開きます。',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Jesse's Archive Beta {version} が利用可能です (インストール済み: Beta {current})。",
   "È l'unico modo per recuperare il vault senza la password.":
     'パスワードなしで保管庫を回復できる唯一の方法です。',
   'Elaborazione…': '処理中…',
@@ -366,7 +363,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': 'グループ {name} をごみ箱に移動しました',
   'Gruppo aggiornato': 'グループを更新しました',
   'Gruppo associato:': '関連付けられたグループ:',
-  "Hai già l'ultima versione (Beta {version}).": 'すでに最新バージョンです (Beta {version})。',
   'Ho capito': 'OK',
   'Ho conservato il codice': 'コードを保管しました',
   'Ho installato l’estensione: apri Jesse’s Archive':
@@ -703,7 +699,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': '侵害されたアカウントを確認',
   'Verifica completata: avvio dell’installazione…': '検証済み: インストールを開始しています…',
   'Verifica violazioni': '漏えいチェック',
-  'Version: Beta': 'バージョン: Beta',
   'Voce selezionata': '選択中の項目',
   'Wallet crypto': '暗号資産ウォレット',
   WORKSPACE: 'ワークスペース',
@@ -1145,6 +1140,13 @@ const dictionary: Dictionary = {
     'このコピーには {date} に保存された保管庫が含まれます。当時使っていたマスターパスワードを入力してください。',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     '各コピーは、保存時に保管庫で使われていたマスターパスワードで開きます。データキーを変更すると（パスワードの漏えい、または新しい回復コード）コピーは削除されます。',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Jesse's Archive {version} が利用可能です (インストール済み: {current})。",
+  "Hai già l'ultima versione ({version}).": 'すでに最新バージョンです ({version})。',
+  'Versione {version}': 'バージョン {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    'クラウドフォルダー（OneDrive、Google Drive、Dropbox など）を使った複数の PC 間の同期はまだ試験的です。常にバックアップを残し、問題に気づいたら github.com/jesseaims/Jesse-Archive/issues で報告してください。',
+  'Notizia importante': '重要なお知らせ',
 };
 
 export default dictionary;

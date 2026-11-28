@@ -2213,6 +2213,55 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   white-space: nowrap;
   color: var(--ui-accent);
 }
+/* Settings → Data and backup: syncing through a cloud folder is experimental. */
+.sync-warning {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--ui-danger, #e5484d) 45%, var(--ui-border));
+  border-left-width: 4px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--ui-danger, #e5484d) 11%, transparent);
+  color: color-mix(in srgb, var(--ui-danger, #e5484d) 72%, var(--ui-text));
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.sync-warning svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--ui-danger, #e5484d);
+}
+/* News: milestones such as leaving beta. */
+.news-entry-important {
+  position: relative;
+  background: color-mix(in srgb, var(--ui-accent) 10%, transparent);
+  box-shadow: inset 4px 0 0 var(--ui-accent);
+}
+.news-entry-important .news-entry-symbol {
+  color: var(--ui-accent);
+  border-color: color-mix(in srgb, var(--ui-accent) 55%, var(--ui-border));
+}
+.news-entry-important .news-entry-title h3 {
+  font-size: 15px;
+}
+.news-entry-important p {
+  color: var(--ui-text);
+}
+.news-important-tag {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--ui-accent);
+  color: var(--ui-background);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .news-commits {
   padding: 9px 18px 18px;
 }
