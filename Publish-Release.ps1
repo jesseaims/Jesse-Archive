@@ -270,7 +270,34 @@ try {
         if ($storeExit -ne 0) {
             Write-Warning 'Invio agli store non riuscito: la release dell''app è pubblicata comunque. Si riprova alla prossima release (dettagli sopra).'
         }
-        # $LASTEXITCODE still holds the store step's node exit code: a caller that checks it
+        # --- Annuncio su Discord ---------------------------------------------------
+        # The News entries of the release, posted in #announcements by the project's bot
+        # (scripts\discord-announce.mjs). Token and channel: scripts\Discord-Bot.ps1, kept
+        # DPAPI-encrypted and passed on stdin. Never blocks the release.
+        Step 'Annuncio su Discord'
+        $discordFile = Join-Path $env:APPDATA 'JesseArchive-Release\discord-bot.dpapi'
+        $discordExit = 0
+        $ErrorActionPreference = 'Continue'
+        try {
+            $discordJson = '{}'
+            if (Test-Path -LiteralPath $discordFile) {
+                $discordBytes = [System.Security.Cryptography.ProtectedData]::Unprotect([IO.File]::ReadAllBytes($discordFile), $null, 'CurrentUser')
+                $discordJson = [System.Text.Encoding]::UTF8.GetString($discordBytes)
+                [Array]::Clear($discordBytes, 0, $discordBytes.Length)
+            }
+            $discordJson | node scripts/discord-announce.mjs $version $NotesSince 2>&1 | ForEach-Object { "$_" } | Write-Host
+            $discordExit = $LASTEXITCODE
+        } catch {
+            $discordExit = 1
+            Write-Host $_.Exception.Message
+        } finally {
+            $discordJson = $null
+            $ErrorActionPreference = 'Stop'
+        }
+        if ($discordExit -ne 0) {
+            Write-Warning 'Annuncio su Discord non riuscito: la release è pubblicata comunque (dettagli sopra).'
+        }
+        # $LASTEXITCODE still holds the last node exit code: a caller that checks it
         # after this script (AutoPublish's Invoke-Publisher.ps1) would mark the published
         # release as failed.
         $global:LASTEXITCODE = 0
