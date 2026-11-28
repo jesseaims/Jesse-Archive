@@ -1,0 +1,91 @@
+# Builds the Windows setup on GitHub-hosted runners from the public source, as the
+# SignPath Foundation free code signing requires (CODE_SIGNING.md). For now it only
+# builds and keeps the unsigned setup as a short-lived workflow artifact: releases are
+# still built and published by AutoPublish on the maintainer's PC (Publish-Release.ps1).
+name: Release build
+
+on:
+  workflow_dispatch:
+  # A new version changes package.json.
+  push:
+    branches: [main]
+    paths: [package.json]
+  # A change to this workflow or to the setup build is tried in its pull request.
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/release-build.yml
+      - Build-Setup-EXE.ps1
+      - Build-Distribuzione-Windows.ps1
+      - installer/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-build-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      # Full history: the app ships the latest commits for its News panel
+      # (scripts/generate-commits.mjs), as the local builds do.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      # Saved also when a later step fails, so the next run does not rebuild every crate.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          key: release
+          cache-on-failure: true
+
+      # Same Inno Setup as the local builds, from the official release, checked by hash.
+      - name: Install Inno Setup 7.1.1
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'innosetup-7.1.1-x64.exe'
+          Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-7_1_1/innosetup-7.1.1-x64.exe' -OutFile $installer
+          $hash = (Get-FileHash $installer -Algorithm SHA256).Hash
+          if ($hash -ne '8A5A6711C3766A6E5FB74F280BA0E3551E719CE94538D901FDBD1F8F9920B3F0') { throw "Inno Setup: SHA-256 inatteso $hash" }
+          $process = Start-Process -FilePath $installer -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-', '/ALLUSERS' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Installazione di Inno Setup non riuscita: $($process.ExitCode)" }
+          if (-not (Test-Path 'C:\Program Files\Inno Setup 7\ISCC.exe')) { throw 'ISCC.exe non trovato dopo l''installazione' }
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # Tests, app, native host, WebView2 offline and the Inno setup.
+      - name: Build the setup
+        shell: pwsh
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Build-Setup-EXE.ps1 -SkipNpmInstall
+
+      - name: Describe the setup
+        id: setup
+        shell: pwsh
+        run: |
+          $exe = Get-Item 'src-tauri\target\release\bundle\distributable\JesseArchive-Setup.exe'
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ("$($exe.VersionInfo.ProductVersion)".Trim() -ne $version) { throw "Il setup non è della versione $version" }
+          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "### Setup $version`n`n- Commit: ``$env:GITHUB_SHA```n- Dimensione: $([math]::Round($exe.Length / 1MB, 1)) MB`n- SHA-256: ``$hash```n- Firma Authenticode: non ancora (SignPath da configurare)" >> $env:GITHUB_STEP_SUMMARY
+
+      # Kept briefly: published releases keep their setup in the GitHub release.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JesseArchive-Setup-${{ steps.setup.outputs.version }}-${{ github.sha }}
+          path: src-tauri/target/release/bundle/distributable/JesseArchive-Setup.exe
+          retention-days: 3
+          if-no-files-found: error

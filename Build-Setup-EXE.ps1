@@ -2,6 +2,9 @@
     [switch]$SkipNpmInstall
 )
 $ErrorActionPreference = 'Stop'
+# Windows PowerShell 5.1 draws a progress bar for every downloaded block: without this
+# the ~180 MB WebView2 download took over 8 minutes on GitHub's runners.
+$ProgressPreference = 'SilentlyContinue'
 Set-Location $PSScriptRoot
 
 $project = $PSScriptRoot
@@ -14,10 +17,12 @@ $webView2Url = 'https://go.microsoft.com/fwlink/?linkid=2124701'
 
 # Inno Setup is the only installer (Beta 1.2.0+): it installs the program, the browser
 # component and, when missing, WebView2; it replaces the old MSI install and uninstalls.
+# Inno Setup 7 first: an older ISCC on the PATH (GitHub runners ship Inno Setup 6)
+# lacks languages the installer uses, such as Chinese and Korean.
 $innoCandidates = @(
-    (Get-Command ISCC.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue),
     'C:\Program Files (x86)\Inno Setup 7\ISCC.exe',
-    'C:\Program Files\Inno Setup 7\ISCC.exe'
+    'C:\Program Files\Inno Setup 7\ISCC.exe',
+    (Get-Command ISCC.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue)
 ) | Where-Object { $_ -and (Test-Path $_) }
 $iscc = $innoCandidates | Select-Object -First 1
 if (-not $iscc) {
