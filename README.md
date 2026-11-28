@@ -79,3 +79,7 @@ Vedi `DISTRIBUZIONE-WINDOWS.md` e `Build-Distribuzione-Windows.ps1` per i bundle
 Copyright (C) 2026 jesseaims.
 
 Jesse's Archive è software libero: puoi ridistribuirlo e/o modificarlo secondo i termini della GNU General Public License pubblicata dalla Free Software Foundation, versione 3 della licenza o (a tua scelta) qualsiasi versione successiva. È distribuito nella speranza che sia utile, ma SENZA ALCUNA GARANZIA. Il testo completo è nel file [LICENSE](LICENSE). Il nome e il logo non sono coperti dalla licenza: le regole per usarli sono in [TRADEMARKS.md](TRADEMARKS.md).
+
+## Code signing policy
+
+Come viene compilato e firmato il setup Windows, e chi approva le firme: [CODE_SIGNING.md](CODE_SIGNING.md). La firma Authenticode tramite SignPath Foundation è in fase di richiesta: finché non è attiva, il setup non è firmato.
