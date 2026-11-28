@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'Schnellsuche ohne falsche Meldungen',
+    'Wenn die Schnellsuche direkt nach dem Entsperren des Tresors geöffnet wurde, konnte vor den Ergebnissen kurz die Meldung „Tresor gesperrt“ erscheinen. Jetzt zeigt das Fenster sofort den richtigen Zustand.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive verlässt die Beta',
     'Version 2.0.0 ist die erste stabile Version. Der Code ist freie Software unter der GPL-3.0-Lizenz, die Erweiterung wird aus dem Chrome Web Store und von Firefox installiert, der Tresor hat tägliche Sicherungskopien, und Sicherheitsprobleme können vertraulich gemeldet werden (SECURITY.md im Repository). Die Synchronisierung zwischen mehreren PCs über einen Cloud-Ordner bleibt experimentell: Bewahre eine Sicherungskopie auf und melde, was nicht funktioniert. Eine digitale Signatur für das Setup wurde beantragt und kommt mit einem späteren Update; bis dahin kann Windows eine Warnung anzeigen.',

@@ -138,6 +138,9 @@ export default function QuickSearch() {
     const listeners = [
       listen('quick-search-shown', () => {
         shown.current = true;
+        // The page may still hold the state read while hidden (locked at startup):
+        // drop it, or it shows "Vault bloccato" until the fresh data arrives.
+        setPayload(null);
         setLoading(true);
         // Focused once loaded (effect below): until then the field is disabled.
         wantFocus.current = true;
@@ -150,7 +153,9 @@ export default function QuickSearch() {
       }),
       listen('vault-locked', () => {
         wipe();
-        void load();
+        // Hidden: nothing to show, the state is read again when it opens.
+        if (shown.current) void load();
+        else setPayload(null);
       }),
       listen('vault-changed', () => {
         if (shown.current) void load();
@@ -172,6 +177,8 @@ export default function QuickSearch() {
 
   const settings = payload?.settings;
   const unlocked = !!payload?.unlocked;
+  // Opening: the state is not known yet, neither locked nor unlocked.
+  const pending = loading && !payload;
   useEffect(() => {
     if (!wantFocus.current || !payload) return;
     wantFocus.current = false;
@@ -397,7 +404,7 @@ export default function QuickSearch() {
   };
 
   let body: ReactNode;
-  if (loading && !payload) {
+  if (pending) {
     body = (
       <div className="qs-state" role="status">
         <LoaderCircle className="spin" size={22} />
@@ -537,15 +544,19 @@ export default function QuickSearch() {
             disabled={!unlocked}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={unlocked ? t('Cerca account, siti, email…') : t('Vault bloccato')}
+            placeholder={
+              unlocked || pending ? t('Cerca account, siti, email…') : t('Vault bloccato')
+            }
             aria-label={t('Ricerca rapida')}
             autoComplete="off"
             spellCheck={false}
           />
         </label>
-        <span className={`qs-status ${unlocked ? 'open' : 'closed'}`}>
-          {unlocked ? t('Sbloccato') : t('Bloccato')}
-        </span>
+        {!pending && (
+          <span className={`qs-status ${unlocked ? 'open' : 'closed'}`}>
+            {unlocked ? t('Sbloccato') : t('Bloccato')}
+          </span>
+        )}
       </header>
       {(error || notice) && (
         <div className={`qs-feedback ${error ? 'error' : ''}`} role={error ? 'alert' : 'status'}>

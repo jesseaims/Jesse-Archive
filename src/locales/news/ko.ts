@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    '잘못된 메시지 없는 빠른 검색',
+    '보관함 잠금을 해제한 직후 빠른 검색을 열면 결과가 나오기 전에 잠깐 “보관함 잠김” 메시지가 표시될 수 있었습니다. 이제 창이 바로 올바른 상태를 보여 줍니다.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive 베타 종료',
     '2.0.0은 첫 안정 버전입니다. 코드는 GPL-3.0 라이선스의 자유 소프트웨어이고, 확장 프로그램은 Chrome 웹 스토어와 Firefox에서 설치할 수 있으며, 볼트에는 일일 백업 사본이 있고, 보안 문제는 비공개로 신고할 수 있습니다(저장소의 SECURITY.md). 클라우드 폴더를 통한 여러 PC 간 동기화는 여전히 실험적입니다. 백업 사본을 보관하고 작동하지 않는 부분을 알려 주세요. 설치 프로그램의 디지털 서명은 신청했으며 이후 업데이트에서 제공됩니다. 그때까지 Windows가 경고를 표시할 수 있습니다.',

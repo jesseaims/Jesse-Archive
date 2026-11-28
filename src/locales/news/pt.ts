@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Portuguese (Brazil) titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'Busca rápida sem mensagens erradas',
+    'Ao abrir a busca rápida logo depois de desbloquear o cofre, a mensagem “Cofre bloqueado” podia aparecer por um instante antes dos resultados. Agora a janela mostra direto o estado certo.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive sai da beta',
     'A 2.0.0 é a primeira versão estável. O código é software livre com licença GPL-3.0, a extensão é instalada pela Chrome Web Store e pelo Firefox, o cofre tem cópias de segurança diárias e problemas de segurança podem ser informados em privado (SECURITY.md no repositório). A sincronização entre vários PCs por uma pasta na nuvem continua experimental: mantenha uma cópia de segurança e informe o que não funcionar. A assinatura digital do instalador foi solicitada e virá em uma próxima atualização; até lá, o Windows pode mostrar um aviso.',

@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // English titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'Quick search without wrong messages',
+    'Opening the quick search right after unlocking the vault, the “Vault locked” message could appear for an instant before the results. Now the window shows the right state straight away.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive leaves beta',
     'Version 2.0.0 is the first stable release. The code is free software under the GPL-3.0 license, the extension installs from the Chrome Web Store and Firefox, the vault has daily backup copies and security problems can be reported privately (SECURITY.md in the repository). Syncing between several PCs through a cloud folder remains experimental: keep a backup copy and report what does not work. A digital signature for the installer has been requested and will come with a future update; until then Windows may show a warning.',

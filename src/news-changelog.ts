@@ -18,6 +18,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'quick-search-open',
+    addedAt: '2026-11-28T16:00:00+01:00',
+    version: '2.0.1',
+    title: 'Ricerca rapida senza scritte sbagliate',
+    description:
+      'Aprendo la ricerca rapida subito dopo aver sbloccato il vault, per un istante poteva comparire la scritta «Vault bloccato» prima dei risultati. Ora la finestra mostra direttamente lo stato giusto.',
+    icon: 'wrench',
+  },
+  {
     id: 'stable-2-0',
     important: true,
     addedAt: '2026-11-28T02:59:00+01:00',
