@@ -10,10 +10,14 @@ on:
   push:
     branches: [main]
     paths: [package.json]
-  # A change to this workflow is tried in its pull request.
+  # A change to this workflow or to the setup build is tried in its pull request.
   pull_request:
     branches: [main]
-    paths: [.github/workflows/release-build.yml]
+    paths:
+      - .github/workflows/release-build.yml
+      - Build-Setup-EXE.ps1
+      - Build-Distribuzione-Windows.ps1
+      - installer/**
 
 permissions:
   contents: read
