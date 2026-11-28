@@ -39,7 +39,9 @@ test('the message has an Italian and an English embed per entry and no mentions'
     m.embeds.map((e) => e.title),
     ['⭐ 🇮🇹 Terza', '⭐ 🇬🇧 Third', '🇮🇹 Seconda', '🇬🇧 Second'],
   );
-  assert.ok(m.embeds.every((e) => e.url.endsWith('/releases/tag/v2.1.0')));
+  assert.ok(m.embeds.every((e) => e.url.includes('/releases/tag/v2.1.0#')));
+  // Discord merges embeds with the same URL and hides the second one's text.
+  assert.equal(new Set(m.embeds.map((e) => e.url)).size, m.embeds.length, 'distinct links');
   assert.deepEqual(m.allowed_mentions, { parse: [] });
   const many = Array.from({ length: 7 }, (_, i) => ({
     id: `n${i}`,
