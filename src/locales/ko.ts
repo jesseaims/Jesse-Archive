@@ -172,7 +172,6 @@ const dictionary: Dictionary = {
   'Barra laterale': '사이드바',
   'Barra superiore': '상단 표시줄',
   'Bentornato.': '다시 오신 것을 환영합니다.',
-  Beta: '베타',
   'bit stimati': '추정 비트',
   'Blocca archivio': '보관소 잠그기',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -291,8 +290,6 @@ const dictionary: Dictionary = {
     '업데이트 다운로드 중: {percent}% ({received}/{total})',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     '다운로드: {size}. 설치 프로그램은 서명되어 있으며 설치 전에 확인됩니다. 보관함이 잠기고 Windows에서 권한을 요청하며, 완료되면 앱이 다시 열립니다.',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Jesse's Archive Beta {version}을(를) 사용할 수 있습니다(설치됨: Beta {current}).",
   "È l'unico modo per recuperare il vault senza la password.":
     '비밀번호 없이 보관함을 복구하는 유일한 방법입니다.',
   'Elaborazione…': '처리 중…',
@@ -360,7 +357,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': '{name} 그룹을 휴지통으로 이동했습니다',
   'Gruppo aggiornato': '그룹을 업데이트했습니다',
   'Gruppo associato:': '연결된 그룹:',
-  "Hai già l'ultima versione (Beta {version}).": '이미 최신 버전입니다(Beta {version}).',
   'Ho capito': '확인',
   'Ho conservato il codice': '코드를 보관했습니다',
   'Ho installato l’estensione: apri Jesse’s Archive':
@@ -693,7 +689,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': '유출된 계정 확인',
   'Verifica completata: avvio dell’installazione…': '확인 완료: 설치를 시작하는 중…',
   'Verifica violazioni': '유출 확인',
-  'Version: Beta': '버전: Beta',
   'Voce selezionata': '선택한 항목',
   'Wallet crypto': '암호화폐 지갑',
   WORKSPACE: '작업 공간',
@@ -1129,6 +1124,12 @@ const dictionary: Dictionary = {
     '이 사본에는 {date}에 저장된 볼트가 들어 있습니다. 그때 사용하던 마스터 비밀번호를 입력하세요.',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     '각 사본은 저장 당시 볼트의 마스터 비밀번호로 열립니다. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 사본이 삭제됩니다.',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Jesse's Archive {version}을(를) 사용할 수 있습니다(설치됨: {current}).",
+  "Hai già l'ultima versione ({version}).": '이미 최신 버전입니다({version}).',
+  'Versione {version}': '버전 {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    '클라우드 폴더(OneDrive, Google Drive, Dropbox 등)를 통한 여러 PC 간 동기화는 아직 실험적입니다. 항상 백업 사본을 보관하고, 문제가 있으면 github.com/jesseaims/Jesse-Archive/issues 에 알려 주세요.',
 };
 
 export default dictionary;

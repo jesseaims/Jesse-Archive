@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Korean titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'stable-2-0': [
+    'Jesse’s Archive 베타 종료',
+    '2.0.0은 첫 안정 버전입니다. 코드는 GPL-3.0 라이선스의 자유 소프트웨어이고, 확장 프로그램은 Chrome 웹 스토어와 Firefox에서 설치할 수 있으며, 볼트에는 일일 백업 사본이 있고, 보안 문제는 비공개로 신고할 수 있습니다(저장소의 SECURITY.md). 클라우드 폴더를 통한 여러 PC 간 동기화는 여전히 실험적입니다. 백업 사본을 보관하고 작동하지 않는 부분을 알려 주세요. 설치 프로그램의 디지털 서명은 신청했으며 이후 업데이트에서 제공됩니다. 그때까지 Windows가 경고를 표시할 수 있습니다.',
+  ],
   'daily-backups': [
     '일일 백업 사본',
     '매일 첫 저장 시 앱이 볼트의 암호화된 사본을 볼트 폴더 밖, 이 PC에 보관하고 최근 14일 분량을 유지합니다. 설정 → 데이터 및 백업 → “일일 백업 사본”에서 사본을 다른 곳에 저장하거나 잃어버린 항목을 하나씩 복구할 수 있습니다. 그날의 마스터 비밀번호로 사본을 열고 볼트에 다시 추가할 항목을 고르세요. 데이터 키를 변경하면(비밀번호 노출 또는 새 복구 코드) 사본이 삭제됩니다.',

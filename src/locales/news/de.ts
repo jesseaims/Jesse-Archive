@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // German titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'stable-2-0': [
+    'Jesse’s Archive verlässt die Beta',
+    'Version 2.0.0 ist die erste stabile Version. Der Code ist freie Software unter der GPL-3.0-Lizenz, die Erweiterung wird aus dem Chrome Web Store und von Firefox installiert, der Tresor hat tägliche Sicherungskopien, und Sicherheitsprobleme können vertraulich gemeldet werden (SECURITY.md im Repository). Die Synchronisierung zwischen mehreren PCs über einen Cloud-Ordner bleibt experimentell: Bewahre eine Sicherungskopie auf und melde, was nicht funktioniert. Eine digitale Signatur für das Setup wurde beantragt und kommt mit einem späteren Update; bis dahin kann Windows eine Warnung anzeigen.',
+  ],
   'daily-backups': [
     'Tägliche Sicherungskopien',
     'Jeden Tag beim ersten Speichern bewahrt die App eine verschlüsselte Kopie des Tresors auf diesem PC auf, außerhalb des Tresorordners, und behält die letzten 14 Tage. Unter Einstellungen → Daten und Sicherung → „Tägliche Sicherungskopien“ kannst du eine an einem anderen Ort speichern oder einzelne verlorene Einträge wiederherstellen: Öffne die Kopie mit dem Master-Passwort jenes Tages und wähle aus, was wieder in den Tresor soll. Wenn du den Datenschlüssel änderst (Passwort entdeckt oder neuer Wiederherstellungscode), werden die Kopien gelöscht.',

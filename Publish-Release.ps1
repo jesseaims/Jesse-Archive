@@ -1,7 +1,7 @@
 ﻿<#
 .SYNOPSIS
   Compila Jesse's Archive su questo PC e pubblica JesseArchive-Setup.exe nelle
-  GitHub Releases come "Beta X.Y.Z" (tag vX.Y.Z).
+  GitHub Releases come "Versione X.Y.Z" (tag vX.Y.Z; fino alla 1.9.8 "Beta X.Y.Z").
 
 .DESCRIPTION
   Di norma lo script è avviato dall'automazione locale (attività Windows
@@ -116,8 +116,10 @@ try {
     foreach ($file in $checks.Keys) {
         if ($checks[$file] -ne $version) { throw "Versione non allineata: package.json $version, $file $($checks[$file])." }
     }
-    if (-not (Select-String -Path src/news-changelog.ts -SimpleMatch "version: 'Beta $version'" -Quiet)) {
-        throw "Manca la voce News per la Beta $version in src/news-changelog.ts."
+    # From 2.0.0 the News entries carry the plain version; earlier ones "Beta X.Y.Z".
+    if (-not (Select-String -Path src/news-changelog.ts -SimpleMatch "version: '$version'" -Quiet) -and
+        -not (Select-String -Path src/news-changelog.ts -SimpleMatch "version: 'Beta $version'" -Quiet)) {
+        throw "Manca la voce News per la versione $version in src/news-changelog.ts."
     }
 
     # --- CI verde sul commit da pubblicare ------------------------------------
@@ -158,7 +160,7 @@ try {
     }
     if ($notesExit -ne 0) { throw 'Generazione delle note di rilascio non riuscita.' }
     [System.IO.File]::WriteAllText($notesFile, ($notes -join "`n"), [System.Text.UTF8Encoding]::new($false))
-    Write-Host "Versione: Beta $version  |  tag: $tag  |  commit: $($sha.Substring(0,7))  |  note da: $(if ($NotesSince) { $NotesSince } else { 'solo questa versione' })"
+    Write-Host "Versione: $version  |  tag: $tag  |  commit: $($sha.Substring(0,7))  |  note da: $(if ($NotesSince) { $NotesSince } else { 'solo questa versione' })"
 
     if ($DryRun) {
         Write-Host "`n--- Note di rilascio (anteprima) ---`n$($notes -join "`n")"
@@ -218,11 +220,11 @@ try {
 
     # --- Pubblicazione --------------------------------------------------------
     if (-not $Yes) {
-        $answer = Read-Host "Pubblicare JesseArchive-Setup.exe come 'Beta $version' su GitHub? (s/N)"
+        $answer = Read-Host "Pubblicare JesseArchive-Setup.exe come 'Versione $version' su GitHub? (s/N)"
         if ($answer -notmatch '^(s|si|sì|y|yes)$') { Write-Host 'Pubblicazione annullata.' -ForegroundColor Yellow; exit 1 }
     }
     Step "Pubblicazione della release $tag"
-    $releaseArgs = @('release', 'create', $tag, $exe, $sigFile, '--title', "Beta $version", '--notes-file', $notesFile, '--target', $sha)
+    $releaseArgs = @('release', 'create', $tag, $exe, $sigFile, '--title', "Versione $version", '--notes-file', $notesFile, '--target', $sha)
     if ($Draft) { $releaseArgs += '--draft' } else { $releaseArgs += '--latest' }
     Native 'gh release create' { & $gh @releaseArgs }
 

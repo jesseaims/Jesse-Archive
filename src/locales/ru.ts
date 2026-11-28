@@ -177,7 +177,6 @@ const dictionary: Dictionary = {
   'Barra laterale': 'Боковая панель',
   'Barra superiore': 'Верхняя панель',
   'Bentornato.': 'С возвращением.',
-  Beta: 'Бета',
   'bit stimati': 'бит (оценка)',
   'Blocca archivio': 'Заблокировать архив',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -299,8 +298,6 @@ const dictionary: Dictionary = {
     'Загрузка обновления: {percent}% ({received} из {total})',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     'Загрузка: {size}. Установщик подписан и проверяется перед установкой. Хранилище будет заблокировано, Windows запросит разрешение, а после завершения приложение откроется снова.',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Доступна версия Jesse's Archive Beta {version} (установлена: Beta {current}).",
   "È l'unico modo per recuperare il vault senza la password.":
     'Это единственный способ восстановить хранилище без пароля.',
   'Elaborazione…': 'Обработка…',
@@ -370,8 +367,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': 'Группа {name} перемещена в корзину',
   'Gruppo aggiornato': 'Группа обновлена',
   'Gruppo associato:': 'Связанная группа:',
-  "Hai già l'ultima versione (Beta {version}).":
-    'У вас уже установлена последняя версия (Beta {version}).',
   'Ho capito': 'Понятно',
   'Ho conservato il codice': 'Я сохранил код',
   'Ho installato l’estensione: apri Jesse’s Archive':
@@ -709,7 +704,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': 'Проверить скомпрометированные учётные записи',
   'Verifica completata: avvio dell’installazione…': 'Проверено: запуск установки…',
   'Verifica violazioni': 'Проверка утечек',
-  'Version: Beta': 'Версия: Beta',
   'Voce selezionata': 'Выбранный элемент',
   'Wallet crypto': 'Криптокошелёк',
   WORKSPACE: 'РАБОЧАЯ ОБЛАСТЬ',
@@ -1154,6 +1148,12 @@ const dictionary: Dictionary = {
     'Копия содержит хранилище, сохранённое {date}: введите мастер-пароль, который вы использовали тогда.',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     'Каждая копия открывается мастер-паролем, который был у хранилища при сохранении. Когда вы меняете ключ данных (пароль раскрыт или новый код восстановления), копии удаляются.',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Доступна версия Jesse's Archive {version} (установлена: {current}).",
+  "Hai già l'ultima versione ({version}).": 'У вас уже установлена последняя версия ({version}).',
+  'Versione {version}': 'Версия {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    'Синхронизация между несколькими ПК через облачную папку (OneDrive, Google Drive, Dropbox…) пока экспериментальная: всегда храните резервную копию и сообщайте о проблемах на github.com/jesseaims/Jesse-Archive/issues.',
 };
 
 export default dictionary;

@@ -16,6 +16,15 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
+    id: 'stable-2-0',
+    addedAt: '2026-11-28T02:59:00+01:00',
+    version: '2.0.0',
+    title: 'Jesse’s Archive esce dalla beta',
+    description:
+      'La 2.0.0 è la prima versione stabile. Il codice è software libero con licenza GPL-3.0, l’estensione si installa dal Chrome Web Store e da Firefox, il vault ha copie di sicurezza giornaliere e i problemi di sicurezza si possono segnalare in privato (SECURITY.md nel repository). La sincronizzazione tra più PC tramite una cartella cloud resta sperimentale: tieni una copia di sicurezza e segnala ciò che non funziona. La firma digitale del setup è stata richiesta e arriverà con un prossimo aggiornamento; fino ad allora Windows può mostrare un avviso.',
+    icon: 'sparkles',
+  },
+  {
     id: 'daily-backups',
     addedAt: '2026-11-28T00:45:00+01:00',
     version: 'Beta 1.9.8',

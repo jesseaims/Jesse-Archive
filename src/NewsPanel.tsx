@@ -74,7 +74,7 @@ function EntryTimestamp({
 
 export default function NewsPanel({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('updates');
-  const [version, setVersion] = useState('1.9.8');
+  const [version, setVersion] = useState('2.0.0');
   const [query, setQuery] = useState('');
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -125,9 +125,7 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
           <div className="news-heading-copy">
             <h2 id="news-title">
               {t('Novità di JesseArchive')}{' '}
-              <span className="news-version">
-                {t('Beta')} {version}
-              </span>
+              <span className="news-version">{t('Versione {version}', { version })}</span>
             </h2>
             <p>{t('Tutte le evoluzioni del tuo archivio sicuro')}</p>
           </div>

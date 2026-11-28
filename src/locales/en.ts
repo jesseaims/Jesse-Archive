@@ -174,7 +174,6 @@ const dictionary: Dictionary = {
   'Barra laterale': 'Sidebar',
   'Barra superiore': 'Top bar',
   'Bentornato.': 'Welcome back.',
-  Beta: 'Beta',
   'bit stimati': 'estimated bits',
   'Blocca archivio': 'Lock archive',
   'Bloccare il vault corrente e collegare quello nella cartella selezionata?':
@@ -294,8 +293,6 @@ const dictionary: Dictionary = {
     'Downloading update: {percent}% ({received} of {total})',
   "Download: {size}. Il setup è firmato e verificato prima dell'installazione. Il vault verrà bloccato, Windows chiederà l'autorizzazione e l'app si riaprirà al termine.":
     'Download: {size}. The installer is signed and verified before installation. The vault will be locked, Windows will ask for permission and the app will reopen when done.',
-  "È disponibile Jesse's Archive Beta {version} (installata: Beta {current}).":
-    "Jesse's Archive Beta {version} is available (installed: Beta {current}).",
   "È l'unico modo per recuperare il vault senza la password.":
     'It is the only way to recover the vault without the password.',
   'Elaborazione…': 'Working…',
@@ -365,8 +362,6 @@ const dictionary: Dictionary = {
   'Gruppo {name} spostato nel cestino': 'Group {name} moved to the trash',
   'Gruppo aggiornato': 'Group updated',
   'Gruppo associato:': 'Linked group:',
-  "Hai già l'ultima versione (Beta {version}).":
-    'You already have the latest version (Beta {version}).',
   'Ho capito': 'Got it',
   'Ho conservato il codice': 'I have stored the code',
   'Ho installato l’estensione: apri Jesse’s Archive':
@@ -703,7 +698,6 @@ const dictionary: Dictionary = {
   'Verifica account compromessi': 'Check for breached accounts',
   'Verifica completata: avvio dell’installazione…': 'Verified: starting the installation…',
   'Verifica violazioni': 'Breach check',
-  'Version: Beta': 'Version: Beta',
   'Voce selezionata': 'Selected item',
   'Wallet crypto': 'Crypto wallet',
   WORKSPACE: 'WORKSPACE',
@@ -1139,6 +1133,12 @@ const dictionary: Dictionary = {
     'The copy holds the vault saved on {date}: enter the master password you used then.',
   'Ogni copia si apre con la password principale che il vault aveva quando è stato salvato. Quando cambi la chiave dei dati (password scoperta o nuovo codice di recupero) le copie vengono eliminate.':
     'Each copy opens with the master password the vault had when it was saved. When you change the data key (password discovered or new recovery code) the copies are deleted.',
+  "È disponibile Jesse's Archive {version} (installata: {current}).":
+    "Jesse's Archive {version} is available (installed: {current}).",
+  "Hai già l'ultima versione ({version}).": 'You already have the latest version ({version}).',
+  'Versione {version}': 'Version {version}',
+  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
+    'Syncing between several PCs through a cloud folder (OneDrive, Google Drive, Dropbox…) is still experimental: always keep a backup copy and, if you notice a problem, report it at github.com/jesseaims/Jesse-Archive/issues.',
 };
 
 export default dictionary;
