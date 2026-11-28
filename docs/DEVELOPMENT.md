@@ -165,7 +165,7 @@ Opzioni: `-DryRun` (solo controlli e anteprima delle note), `-SkipBuild` (pubbli
 
 Regole: ogni aggiornamento per gli utenti porta il bump di versione e la voce News nella stessa PR; si pubblica solo dopo il merge, da `main`. Non creare a mano tag `v*` o release. Nessun workflow GitHub compila o pubblica il setup: `ci.yml` esegue solo i controlli. Il setup non è firmato. La prima release pubblicata è Beta 1.1.12 (17 novembre 2026).
 
-Il repository è pubblico (dal 17 novembre 2026): codice, storia, release e asset sono visibili e scaricabili da chiunque. Non è presente un file di licenza, quindi il codice è consultabile ma non concesso in riuso. Le PR da fork eseguono solo `ci.yml` con token in sola lettura.
+Il repository è pubblico (dal 17 novembre 2026): codice, storia, release e asset sono visibili e scaricabili da chiunque. Dal 28 novembre 2026 il codice è distribuito con licenza GNU GPL versione 3 o successiva ([LICENSE](../LICENSE), `GPL-3.0-or-later` in `package.json` e `Cargo.toml`): chiunque può usarlo, studiarlo, modificarlo e ridistribuirlo, ma chi distribuisce una versione modificata deve pubblicarne il codice con la stessa licenza. Le PR da fork eseguono solo `ci.yml` con token in sola lettura.
 
 ## Setup Windows completo
 
