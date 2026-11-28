@@ -40,7 +40,9 @@ export function entriesFor(entries, version, previous) {
   });
 }
 
-/** The message: one Italian and one English embed per entry (Discord allows 10). */
+/** The message: one Italian and one English embed per entry (Discord allows 10).
+ * Every embed has its own link: Discord merges embeds sharing a URL into one (an image
+ * gallery) and shows only the first one's text, which hid the English translation. */
 export function buildMessage({ version, entries, english = {} }) {
   const url = `https://github.com/${REPOSITORY}/releases/tag/v${version}`;
   const shown = entries.slice(0, 4);
@@ -53,13 +55,13 @@ export function buildMessage({ version, entries, english = {} }) {
         title: clip(`${mark}🇮🇹 ${e.title}`, 256),
         description: clip(e.description, 4000),
         color: COLOR,
-        url,
+        url: `${url}#it-${e.id}`,
       },
       {
         title: clip(`${mark}🇬🇧 ${enTitle}`, 256),
         description: clip(enText, 4000),
         color: COLOR,
-        url,
+        url: `${url}#en-${e.id}`,
       },
     );
   }
