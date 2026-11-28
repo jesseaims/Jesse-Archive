@@ -8,8 +8,9 @@ Jesse's Archive custodisce password e dati personali: le segnalazioni di sicurez
 
 1. **GitHub, segnalazione privata (consigliato):** nella scheda [Security](https://github.com/jesseaims/Jesse-Archive/security) del repository premi **Report a vulnerability**. La segnalazione resta visibile solo a te e al maintainer, e lì si può discutere e preparare la correzione.
 2. **Email:** <support@jessearchive.it>, con oggetto che inizia per «[Sicurezza]».
+3. **Discord, ticket privato:** nel [server Discord](https://discord.gg/7XBuDu9UYA) apri un ticket nel canale `#open-a-ticket` e scrivi «Sicurezza» nel primo messaggio. **Mai nei canali pubblici del server.**
 
-Per domande, problemi normali o suggerimenti usa invece le [issue](https://github.com/jesseaims/Jesse-Archive/issues) o i contatti in <https://jessearchive.it/supporto/>.
+Per domande, problemi normali o suggerimenti usa invece le [issue](https://github.com/jesseaims/Jesse-Archive/issues), il [server Discord](https://discord.gg/7XBuDu9UYA) o i contatti in <https://jessearchive.it/supporto/>.
 
 ## Cosa includere
 
@@ -45,4 +46,4 @@ Le ricerche fatte in buona fede, su vault e dati di prova, senza danneggiare alt
 
 ## Reporting a security issue (English)
 
-Please **do not open a public issue** for a vulnerability. Report it privately through [GitHub's private vulnerability reporting](https://github.com/jesseaims/Jesse-Archive/security) (recommended) or by email to <support@jessearchive.it> with a subject starting with "[Security]". Include the app (and extension/browser) version, steps to reproduce and the impact; never send real passwords, recovery codes, vaults or personal data. The single maintainer aims to acknowledge within 7 days and give a first assessment within 14 days. Fixes are released for the latest version only. Please keep the issue private until a fix is available, or 90 days after your report if there is no answer. Good-faith research on test vaults and data is welcome. Known limits are documented in [docs/SECURITY.md](docs/SECURITY.md).
+Please **do not open a public issue** for a vulnerability. Report it privately through [GitHub's private vulnerability reporting](https://github.com/jesseaims/Jesse-Archive/security) (recommended) by email to <support@jessearchive.it> with a subject starting with "[Security]", or in a private ticket on the [Discord server](https://discord.gg/7XBuDu9UYA) (`#open-a-ticket`, never in public channels). Include the app (and extension/browser) version, steps to reproduce and the impact; never send real passwords, recovery codes, vaults or personal data. The single maintainer aims to acknowledge within 7 days and give a first assessment within 14 days. Fixes are released for the latest version only. Please keep the issue private until a fix is available, or 90 days after your report if there is no answer. Good-faith research on test vaults and data is welcome. Known limits are documented in [docs/SECURITY.md](docs/SECURITY.md).
