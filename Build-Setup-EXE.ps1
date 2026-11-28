@@ -2,6 +2,9 @@
     [switch]$SkipNpmInstall
 )
 $ErrorActionPreference = 'Stop'
+# Windows PowerShell 5.1 draws a progress bar for every downloaded block: without this
+# the ~180 MB WebView2 download took over 8 minutes on GitHub's runners.
+$ProgressPreference = 'SilentlyContinue'
 Set-Location $PSScriptRoot
 
 $project = $PSScriptRoot

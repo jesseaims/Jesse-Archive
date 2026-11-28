@@ -44,10 +44,12 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      # Saved also when a later step fails, so the next run does not rebuild every crate.
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
           key: release
+          cache-on-failure: true
 
       # Same Inno Setup as the local builds, from the official release, checked by hash.
       - name: Install Inno Setup 7.1.1
