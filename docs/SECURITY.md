@@ -2,6 +2,8 @@
 
 Questa pagina descrive ciò che è verificabile nel codice della baseline indicata in [ARCHITECTURE](ARCHITECTURE.md). Non è un audit indipendente, una certificazione o una garanzia contro compromissioni del sistema operativo. Nessuna criticità riportata è stata corretta durante l'incarico documentale.
 
+**Segnalazioni.** Dal 28 novembre 2026 [SECURITY.md](../SECURITY.md) nella root spiega come segnalare una vulnerabilità in privato: segnalazione privata di GitHub (attivata sul repository) o email a support@jessearchive.it; tempi indicativi, versioni supportate (solo l'ultima) e limiti già noti.
+
 ## Confini di fiducia
 
 Il file su disco è cifrato; dopo lo sblocco il processo Rust contiene il vault in chiaro. Dalla Beta 1.8.0 il frontend principale riceve uno stato senza segreti (vedere «Segreti su richiesta»); la webview contiene in chiaro solo i valori che l'utente mostra o modifica. Il sistema operativo, l'utente della sessione Windows e il codice caricato nelle webview locali fanno parte della base fidata.
