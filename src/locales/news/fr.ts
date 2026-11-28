@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // French titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'Recherche rapide sans messages erronés',
+    'En ouvrant la recherche rapide juste après avoir déverrouillé le coffre, le message « Coffre verrouillé » pouvait apparaître un instant avant les résultats. La fenêtre affiche désormais directement le bon état.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive sort de la bêta',
     'La version 2.0.0 est la première version stable. Le code est un logiciel libre sous licence GPL-3.0, l’extension s’installe depuis le Chrome Web Store et Firefox, le coffre dispose de copies de sécurité quotidiennes et les problèmes de sécurité peuvent être signalés en privé (SECURITY.md dans le dépôt). La synchronisation entre plusieurs PC via un dossier cloud reste expérimentale : gardez une copie de sécurité et signalez ce qui ne fonctionne pas. Une signature numérique de l’installateur a été demandée et arrivera avec une prochaine mise à jour ; d’ici là, Windows peut afficher un avertissement.',

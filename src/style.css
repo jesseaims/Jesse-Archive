@@ -3980,6 +3980,13 @@ input[type='password']::-webkit-credentials-auto-fill-button {
   color: var(--ui-muted);
   text-align: center;
   padding: 20px;
+  /* Usually the data arrives in a few milliseconds: show the loader only if it is slow. */
+  animation: qs-state-in 0.15s ease-out 0.25s both;
+}
+@keyframes qs-state-in {
+  from {
+    opacity: 0;
+  }
 }
 .qs-locked {
   flex: 1;

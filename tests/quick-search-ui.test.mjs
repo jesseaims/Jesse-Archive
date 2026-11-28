@@ -250,6 +250,37 @@ test('the search field takes the focus once the data arrives', async () => {
   assert.equal(d.w.document.activeElement, d.input(), 'typing goes to the field at once');
 });
 
+test('opening after an unlock never shows the state read while hidden', async () => {
+  // The window is created hidden at startup and reads the vault locked.
+  const d = await setup({ locked: true, holdData: true });
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  // Unlocked from the main window, then the shortcut: the answer is not there yet.
+  d.state.locked = false;
+  await d.emit('quick-search-shown');
+  assert.doesNotMatch(d.text(), /Vault bloccato|Bloccato/, 'no stale locked state');
+  assert.ok(d.$('.qs-state'), 'loading state');
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  assert.match(d.text(), /Sbloccato/);
+  assert.equal(d.input().disabled, false);
+});
+
+test('a lock while hidden drops the state until the window opens again', async () => {
+  const d = await setup({ holdData: true });
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  const before = d.count('quick_search_data');
+  d.state.locked = true;
+  await d.emit('vault-locked');
+  assert.equal(d.count('quick_search_data'), before, 'nothing read while hidden');
+  await d.emit('quick-search-shown');
+  assert.doesNotMatch(d.text(), /Sbloccato/);
+  await d.H.act(async () => d.state.release());
+  await d.flush();
+  assert.match(d.text(), /Vault bloccato/);
+});
+
 test('recently used items saved in the vault are listed when the search is empty', async () => {
   const d = await setup({ recent: ['b1', 'eliminato'] });
   await d.emit('quick-search-shown');

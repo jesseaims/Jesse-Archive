@@ -1,6 +1,6 @@
 [package]
 name = "jesse_archive"
-version = "2.0.0"
+version = "2.0.1"
 description = "Jesse's Archive — local encrypted password manager"
 authors = ["Jesse's Archive"]
 license = "GPL-3.0-or-later"

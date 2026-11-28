@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Simplified Chinese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    '快速搜索不再显示错误提示',
+    '在解锁保险库后立即打开快速搜索时，结果出现前可能会短暂显示“保险库已锁定”。现在窗口会直接显示正确的状态。',
+  ],
   'stable-2-0': [
     'Jesse’s Archive 结束测试版',
     '2.0.0 是第一个稳定版本。代码是采用 GPL-3.0 许可证的自由软件，扩展可从 Chrome 网上应用店和 Firefox 安装，保险库有每日备份副本，安全问题可以私下报告（见仓库中的 SECURITY.md）。通过云文件夹在多台电脑之间同步仍处于实验阶段：请保留备份副本，并报告无法正常工作的地方。安装程序的数字签名已经申请，将在后续更新中提供；在此之前 Windows 可能会显示警告。',

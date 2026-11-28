@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Spanish titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'Búsqueda rápida sin mensajes erróneos',
+    'Al abrir la búsqueda rápida justo después de desbloquear la bóveda, el mensaje «Bóveda bloqueada» podía aparecer un instante antes de los resultados. Ahora la ventana muestra directamente el estado correcto.',
+  ],
   'stable-2-0': [
     'Jesse’s Archive sale de la beta',
     'La 2.0.0 es la primera versión estable. El código es software libre con licencia GPL-3.0, la extensión se instala desde Chrome Web Store y Firefox, el vault tiene copias de seguridad diarias y los problemas de seguridad se pueden informar en privado (SECURITY.md en el repositorio). La sincronización entre varios PC mediante una carpeta en la nube sigue siendo experimental: guarda una copia de seguridad e informa de lo que no funcione. Se ha solicitado la firma digital del instalador, que llegará con una próxima actualización; hasta entonces Windows puede mostrar un aviso.',

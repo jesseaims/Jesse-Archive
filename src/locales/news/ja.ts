@@ -2,6 +2,10 @@ import type { NewsTranslations } from '../../news-changelog';
 
 // Japanese titles and descriptions of the News entries, by entry id.
 const news: NewsTranslations = {
+  'quick-search-open': [
+    'クイック検索で誤った表示が出なくなりました',
+    '保管庫のロックを解除した直後にクイック検索を開くと、結果の前に一瞬「保管庫はロックされています」と表示されることがありました。現在は最初から正しい状態が表示されます。',
+  ],
   'stable-2-0': [
     'Jesse’s Archive がベータを卒業',
     '2.0.0 は最初の安定版です。コードは GPL-3.0 ライセンスのフリーソフトウェアで、拡張機能は Chrome ウェブストアと Firefox からインストールでき、保管庫には毎日のバックアップコピーがあり、セキュリティ上の問題は非公開で報告できます（リポジトリの SECURITY.md）。クラウドフォルダーを使った複数の PC 間の同期は引き続き試験的です。バックアップを残し、動作しない点を報告してください。インストーラーのデジタル署名は申請済みで、今後のアップデートで提供されます。それまでは Windows が警告を表示する場合があります。',
