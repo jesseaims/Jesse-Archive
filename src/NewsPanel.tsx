@@ -197,11 +197,17 @@ export default function NewsPanel({ onClose }: { onClose: () => void }) {
                 const Icon = icons[entry.icon];
                 const text = localizedNews(entry);
                 return (
-                  <article className="news-entry" key={entry.id}>
+                  <article
+                    className={entry.important ? 'news-entry news-entry-important' : 'news-entry'}
+                    key={entry.id}
+                  >
                     <div className="news-entry-symbol">
                       <Icon size={19} />
                     </div>
                     <div className="news-entry-copy">
+                      {entry.important && (
+                        <span className="news-important-tag">{t('Notizia importante')}</span>
+                      )}
                       <div className="news-entry-title">
                         <h3>{text.title}</h3>
                         <span className="news-entry-tag">{entry.version}</span>

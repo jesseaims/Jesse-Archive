@@ -3863,10 +3863,13 @@ function SettingsPage({
               <strong>{t('Posizione vault')}</strong>
               <code>{vault.path}</code>
             </div>
-            <p className="helper">
-              {t(
-                'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.',
-              )}
+            <p className="sync-warning" role="note">
+              <ShieldAlert size={16} aria-hidden="true" />
+              <span>
+                {t(
+                  'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.',
+                )}
+              </span>
             </p>
             <button
               className="secondary"

@@ -1154,6 +1154,7 @@ const dictionary: Dictionary = {
   'Versione {version}': 'Version {version}',
   'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
     'Die Synchronisierung zwischen mehreren PCs über einen Cloud-Ordner (OneDrive, Google Drive, Dropbox…) ist noch experimentell: Bewahre immer eine Sicherungskopie auf und melde Probleme unter github.com/jesseaims/Jesse-Archive/issues.',
+  'Notizia importante': 'Wichtige Neuigkeit',
 };
 
 export default dictionary;

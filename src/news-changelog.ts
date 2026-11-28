@@ -7,6 +7,8 @@ export type NewsEntry = {
   description: string;
   addedAt: string;
   dateSource?: 'git';
+  /** A milestone (such as leaving beta): highlighted in the News panel. */
+  important?: boolean;
   icon: 'sparkles' | 'shield' | 'palette' | 'folder' | 'package' | 'wrench' | 'key' | 'cloud';
 };
 
@@ -17,6 +19,7 @@ export type NewsTranslations = Record<string, [title: string, description: strin
 export const NEWS_ENTRIES: NewsEntry[] = [
   {
     id: 'stable-2-0',
+    important: true,
     addedAt: '2026-11-28T02:59:00+01:00',
     version: '2.0.0',
     title: 'Jesse’s Archive esce dalla beta',

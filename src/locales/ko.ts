@@ -1130,6 +1130,7 @@ const dictionary: Dictionary = {
   'Versione {version}': '버전 {version}',
   'La sincronizzazione tra più PC tramite una cartella cloud (OneDrive, Google Drive, Dropbox…) è ancora sperimentale: tieni sempre una copia di sicurezza e, se noti un problema, segnalalo su github.com/jesseaims/Jesse-Archive/issues.':
     '클라우드 폴더(OneDrive, Google Drive, Dropbox 등)를 통한 여러 PC 간 동기화는 아직 실험적입니다. 항상 백업 사본을 보관하고, 문제가 있으면 github.com/jesseaims/Jesse-Archive/issues 에 알려 주세요.',
+  'Notizia importante': '중요 소식',
 };
 
 export default dictionary;
